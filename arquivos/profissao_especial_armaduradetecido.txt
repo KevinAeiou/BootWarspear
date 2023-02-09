@@ -1,0 +1,8 @@
+BotaspoderosasdeRagnar,Armaduradetecido,14,
+CapotepoderosodeRagnar,Armaduradetecido,14,
+CarapuçatodapoderosadeRagnar,Armaduradetecido,14,
+LuvasdepelepoderosasdeRagnar,Armaduradetecido,14,
+LuvastodaspoderosasdeRagnar,Armaduradetecido,14,
+SapatostodospoderososdeRagnar,Armaduradetecido,14,
+VestimentapoderosadeRagnar,Armaduradetecido,14,
+VestimentatodapoderosadeRagnar,Armaduradetecido,14,

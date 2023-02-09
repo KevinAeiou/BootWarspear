@@ -1,0 +1,4 @@
+Cordãodejadeelegante,amuletos,4,
+Pingentedejadeelegante,amuletos,4,
+Melhorarlicençacomum,amuletos,5,
+Grandecoleçãoderecursosavançados,amuletos,10,

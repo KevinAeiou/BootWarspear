@@ -1,0 +1,3 @@
+1,22,41,42,22,10,armaduraleve,
+54,35,29,22,9,4,armadurapesada,
+15,42,35,18,7,6,armaduradetecido,

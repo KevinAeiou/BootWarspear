@@ -1,0 +1,4 @@
+Aneldejadeelegante,aneis,4,
+Sinetedejadeelegante,aneis,4,
+Melhorarlicençacomum,aneis,5,
+Grandecoleçãoderecursosavançados,aneis,10,

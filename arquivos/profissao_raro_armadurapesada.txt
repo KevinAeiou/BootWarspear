@@ -1,0 +1,8 @@
+Grandecoleçãoderecursoscomuns,armadurapesada,3,
+Armaduradavidaeterna,armadurapesada,4,
+Elmofechadodavidaeterna,armadurapesada,4,
+Avambraçosdavidaeterna,armadurapesada,4,
+Botaslongasdavidaeterna,armadurapesada,4,
+Cintodeespadadavidaeterna,armadurapesada,4,
+Licençadeproduçãodoaprendiz,armadurapesada,5,
+Coletaemmassaderecursosavançados,armadurapesada,10,

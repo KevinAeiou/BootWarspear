@@ -1,0 +1,8 @@
+Capotedavidaeterna,Armaduradetecido,4,
+Vestimentadavidaeterna,Armaduradetecido,4,
+Luvasdavidaeterna,Armaduradetecido,4,
+Sapatosdavidaeterna,Armaduradetecido,4,
+Faixadavidaeterna,Armaduradetecido,4,
+Licençadeproduçãodoaprendiz,Armaduradetecido,5,
+Coletaemmassaderecursosavançados,Armaduradetecido,10,
+Vestimentadaperseverançainesgotável,Armaduradetecido,14,

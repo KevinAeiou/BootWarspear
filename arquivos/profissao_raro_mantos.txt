@@ -1,0 +1,5 @@
+Grandecoleçãoderecursoscomuns,mantos,3,
+Túnicadovingador,mantos,4,
+Mantodovingador,mantos,4,
+Melhorarlicençacomum,mantos,5,
+Grandecoleçãoderecursosavançados,mantos,10,

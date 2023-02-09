@@ -1,0 +1,8 @@
+Elmodavidaeterna,Armaduraleve,4,
+Gibãodavidaeterna,Armaduraleve,4,
+Botasdavidaeterna,Armaduraleve,4,
+Braceletedavidaeterna,Armaduraleve,4,
+Cilhadavidaeterna,Armaduraleve,4,
+Licençadeproduçãodoaprendiz,Armaduraleve,5,
+Coletaemmassaderecursosavançados,Armaduraleve,10,
+Braceletedaperseverançainesgotável,Armaduraleve,14,
