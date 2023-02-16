@@ -202,7 +202,7 @@ def menu(personagem_id):
                 print(f'Voltar.')
                 manipula_funcoes.linha_separacao()
             elif opcao_lista == 1:#Inicia busca
-                manipula_funcoes.busca_trabalho_desejado(personagem_id)
+                manipula_funcoes.prepara_personagem(personagem_id)
                 manipula_funcoes.linha_separacao()
             elif opcao_lista == 2:#Exclui trabalho da lista
                 excluir_trabalho(personagem_id)

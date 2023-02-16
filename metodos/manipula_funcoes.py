@@ -457,7 +457,7 @@ def verifica_posicoes_trabalhos(personagem_id,coluna_lista_profissao_necessaria,
                             verifica_licenca(nome_licenca_lista_desejo)
                             #antes de modificar qualquer araquivo, verifica erros
                             while not verifica_erro(nome_licenca_lista_desejo):
-                                verifica_erro(nome_licenca_lista_desejo)
+                                continue
                             manipula_teclado.click_especifico(2,'f2')
                             manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_lista_desejo,1)
                             return True
@@ -624,7 +624,7 @@ def retorna_tipo_erro(tela_inteira):
     for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
         if tipo_erro_trabalho[tamanho_tipo_erro].replace(' ','') in erro_encontrado.replace(' ',''):
             erro_encontrado=''
-            return tamanho_tipo_erro+1   
+            return tamanho_tipo_erro+1
     return 0
 
 def retorna_nome_inimigo(tela_inteira):
@@ -681,14 +681,32 @@ def verifica_arquivo_existe(caminho_arquivo):
           return True
     return False
 #modificado 23/01
-def verifica_nome_personagem(nome_personagem,x,y,altura,largura):
+def verifica_nome_personagem(nome_personagem):
+    posicao_nome = [[197,354,170,27],[2,33,169,21]]
     tela_inteira = retorna_atualizacao_tela()
-    frame_nome_personagem = tela_inteira[y:y+altura,x:x+largura]
+    for indice in range(len(posicao_nome)):
+        frame_nome_personagem = tela_inteira[posicao_nome[indice][1]:posicao_nome[indice][1]+posicao_nome[indice][3],posicao_nome[indice][0]:posicao_nome[indice][0]+posicao_nome[indice][2]]
+        frame_nome_personagem_tratado = manipula_imagem.transforma_amarelo_preto(frame_nome_personagem)
+        nome_personagem_reconhecido = manipula_imagem.reconhece_texto(frame_nome_personagem_tratado)
+        # manipula_imagem.mostra_imagem(0,frame_nome_personagem,nome_personagem_reconhecido)
+        print(nome_personagem_reconhecido)
+        if nome_personagem_reconhecido.replace(' ','').lower()\
+            in nome_personagem.replace(' ','').lower():
+            return True
+    return False
+
+def verifica_email_personagem(email_personagem):
+    lista_caracter = ['.','@','_']
+    for caracter in lista_caracter:
+        email_personagem.replace(caracter,'')
+    tela_inteira = retorna_atualizacao_tela()
+    frame_nome_personagem = tela_inteira[534:534+32,208:208+264]
     frame_nome_personagem_tratado = manipula_imagem.transforma_amarelo_preto(frame_nome_personagem)
     nome_personagem_reconhecido = manipula_imagem.reconhece_texto(frame_nome_personagem_tratado)
-    manipula_imagem.mostra_imagem(0,frame_nome_personagem_tratado,nome_personagem_reconhecido)
+    manipula_imagem.mostra_imagem(0,frame_nome_personagem,nome_personagem_reconhecido)
     print(nome_personagem_reconhecido)
-    if nome_personagem.replace(' ','').lower() in nome_personagem_reconhecido.replace(' ','').lower():
+    if nome_personagem_reconhecido.replace(' ','').lower()\
+        in email_personagem.replace(' ','').lower():
         return True
     return False
 
@@ -753,26 +771,29 @@ def passa_proxima_posicao():
 def entra_personagem_ativo(nome):
     manipula_teclado.click_especifico(1,'enter')
     while verifica_erro(''):
-        verifica_erro('')
-    menu = retorna_menu()
-    while menu != 8:
-        if menu == 10:
-            manipula_teclado.click_especifico(1,'enter')
-        elif menu == 7:
-            manipula_teclado.click_especifico(1,'f2')
+        continue
+    else:
         menu = retorna_menu()
-    manipula_teclado.vai_inicio_fila()                
-    while not verifica_nome_personagem(nome,197,354,27,170):
-        manipula_teclado.click_especifico(1,'right')
-        verifica_nome_personagem(nome,197,354,27,170)
-    manipula_teclado.click_especifico(1,'f2')
-    while verifica_erro(''):
-        verifica_erro('')
-    menu = retorna_menu()
-    if menu == 9:
-        print(f'Login efetuado com sucesso!')
-        return True
-    print(f'Erro ao tentar entrar...')
+        while menu != 2:
+            if menu == 0:#se estiver no menu jogar
+                manipula_teclado.click_especifico(1,'enter')
+            elif menu == 1:#se estiver no menu noticias
+                manipula_teclado.click_especifico(1,'f2')
+            menu = retorna_menu()
+        else:
+            manipula_teclado.vai_inicio_fila()                
+            while not verifica_nome_personagem(nome):
+                manipula_teclado.click_especifico(1,'right')
+            else:
+                manipula_teclado.click_especifico(1,'f2')
+                while verifica_erro(''):
+                    continue
+                else:
+                    if not retorna_menu():
+                        print(f'Login efetuado com sucesso!')
+                        return True
+                    else:
+                        print(f'Erro ao tentar entrar...')
     return False
 
 def retorna_medidas_modelos():
@@ -786,14 +807,9 @@ def retorna_medidas_modelos():
         lista_medidas.append(modelo.shape[:2])
     return lista_medidas
 #modificado 16/01
-def busca_trabalho_desejado(personagem_id):
+def prepara_personagem(personagem_id):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
-    #e o indice 1=nome da profissão
-    posicao_profissao = 0
-    menus = 2,11
-    lista_medidas_modelos = retorna_medidas_modelos()
-    lista_histograma_menu = retorna_lista_histograma_menu()
-    
+    #e o indice 1=nome da profissão    
     dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
     nome = dados_personagem[0][1]
     email = dados_personagem[0][2]
@@ -801,96 +817,93 @@ def busca_trabalho_desejado(personagem_id):
     estado = dados_personagem[0][4]
     if estado!=1:#se o personagem estiver inativo, troca o estado
         manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
-    #verificar em que menu está
-    if encontra_menu_especifico(menus):
+    else:
+        #verificar em que menu está
+        encontra_menu_especifico(nome,email,senha)
         #verificar qual personagem está logado
-        if verifica_nome_personagem():
+        if verifica_nome_personagem(nome):
             #iniciar busca por trabalho
-            if inicia_busca_trabalho():
-
-                menu = retorna_menu()
-    while menu != 9:
-        manipula_teclado.click_especifico(1,'f1')
-        menu = retorna_menu()
-        if not verifica_nome_personagem(nome,2,33,21,169):
-            menu = retorna_menu()
-        while menu != 9:
-            manipula_teclado.click_especifico(1,'f1')
-            menu = retorna_menu()
-        else:
-            manipula_teclado.encerra_secao()
-            manipula_teclado.entra_secao(email,senha)
-            while verifica_erro(''):
-                manipula_teclado.entra_secao(email,senha)
-                verifica_erro('')
-            while not entra_personagem_ativo(nome,lista_medidas_modelos,lista_histograma_menu):
-                entra_personagem_ativo(nome,lista_medidas_modelos,lista_histograma_menu)
-            
-            lista_profissao_necessaria = retorna_lista_profissao_verificada(personagem_id)
-            if len(lista_profissao_necessaria)>0:
-                conteudo_lista_desejo= manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
-                manipula_teclado.click_atalho_especifico('alt','tab')
-                while len(conteudo_lista_desejo)>0:
-                    #percorre toda lista de indice de profissao
-                    for indice_lista_profissao_necessaria in range(len(lista_profissao_necessaria)):
-                        menu = retorna_menu()
-                        while menu != 3:
-                            trata_menu(menu)
-                            menu = retorna_menu()
-                        #retorna a profissão eespecífica
-                        posicao_nome_profissao = lista_profissao_necessaria[indice_lista_profissao_necessaria]
-                        manipula_teclado.retorna_menu_profissao_especifica(posicao_nome_profissao[posicao_profissao])
-                        if verifica_posicoes_trabalhos(personagem_id,lista_profissao_necessaria[indice_lista_profissao_necessaria],conteudo_lista_desejo):
-                            lista_profissao_necessaria = retorna_lista_profissao_verificada(personagem_id)
-                            manipula_teclado.click_especifico(1,'left')
-                            break
-                        manipula_teclado.click_especifico(3,'up')
-                        manipula_teclado.click_especifico(1,'left')
-                        #verifca se existe trabalho concluido
-                        trabalho_concluido = verifica_trabalho_concluido()
-                        if trabalho_concluido:
-                            tela_inteira = retorna_atualizacao_tela()
-                            frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
-                            nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
-                            manipula_teclado.click_especifico(1,'down')
-                            manipula_teclado.click_especifico(1,'f2')
-                            if not verifica_erro(''):
-                                manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
-                            manipula_teclado.click_especifico(1,'up')
-                            manipula_teclado.click_especifico(1,'left')
-                        else:
-                            manipula_teclado.click_especifico(1,'left')
-                    dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
-                    estado = dados_personagem[4]
-                    if estado!=1:
-                        busca_trabalho_desejado(manipula_teclado.retorna_idpersonagem_ativo(usuario_id))
-                    conteudo_lista_desejo = manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+            inicia_busca_trabalho(personagem_id, dados_personagem, estado)
+        else:#se o nome do personagem for diferente
+            while True:
+                while verifica_erro(''):
+                    continue
                 else:
-                    print(f'Todos os trabalhos desejados foram iniciados.')
-                    print(f'Voltando...')
-            else:
-                print(f'Lista de trabalhos desejados vazia.')
-                print(f'Voltando.')
-                linha_separacao()
+                    while retorna_menu() != False:
+                        manipula_teclado.click_mouse_esquerdo(1,2,35)
+                    else:
+                        manipula_teclado.encerra_secao()
+                        loga_email_entra_personagem(nome, email, senha)
     return
-def encontra_menu_especifico(menus):
-    lista_diferenca = []
+
+def loga_email_entra_personagem(nome, email, senha):
+    manipula_teclado.entra_secao(email,senha)
+    while verifica_erro(''):
+        manipula_teclado.entra_secao(email,senha)
+    else:
+        while not entra_personagem_ativo(nome):
+            continue
+
+def inicia_busca_trabalho(personagem_id, dados_personagem, estado):
+    posicao_profissao = 0
+    lista_profissao_necessaria = retorna_lista_profissao_verificada(personagem_id)
+    print('Inicia busca...')
+    if len(lista_profissao_necessaria)>0:
+        conteudo_lista_desejo= manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+        manipula_teclado.click_atalho_especifico('alt','tab')
+        while len(conteudo_lista_desejo)>0:
+                    #percorre toda lista de indice de profissao
+            for indice_lista_profissao_necessaria in range(len(lista_profissao_necessaria)):
+                menu = retorna_menu()
+                while menu != 3:
+                    trata_menu(menu)
+                    menu = retorna_menu()
+                        #retorna a profissão eespecífica
+                posicao_nome_profissao = lista_profissao_necessaria[indice_lista_profissao_necessaria]
+                manipula_teclado.retorna_menu_profissao_especifica(posicao_nome_profissao[posicao_profissao])
+                if verifica_posicoes_trabalhos(personagem_id,lista_profissao_necessaria[indice_lista_profissao_necessaria],conteudo_lista_desejo):
+                    lista_profissao_necessaria = retorna_lista_profissao_verificada(personagem_id)
+                    manipula_teclado.click_especifico(1,'left')
+                    break
+                lista_profissao_necessaria = retorna_lista_profissao_verificada(personagem_id)
+                manipula_teclado.click_especifico(3,'up')
+                manipula_teclado.click_especifico(1,'left')
+                        #verifca se existe trabalho concluido
+                trabalho_concluido = verifica_trabalho_concluido()
+                if trabalho_concluido:
+                    tela_inteira = retorna_atualizacao_tela()
+                    frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
+                    nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
+                    manipula_teclado.click_especifico(1,'down')
+                    manipula_teclado.click_especifico(1,'f2')
+                    if not verifica_erro(''):
+                        manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
+                    manipula_teclado.click_especifico(1,'up')
+                    manipula_teclado.click_especifico(1,'left')
+                else:
+                    manipula_teclado.click_especifico(1,'left')
+            dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
+            estado = dados_personagem[4]
+            if estado!=1:
+                prepara_personagem(manipula_teclado.retorna_idpersonagem_ativo(usuario_id))
+            conteudo_lista_desejo = manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+        else:
+            print(f'Todos os trabalhos desejados foram iniciados.')
+            print(f'Voltando...')
+    else:
+        print(f'Lista de trabalhos desejados vazia.')
+        print(f'Voltando.')
+        linha_separacao()
+
+def encontra_menu_especifico(nome,email,senha):
     menu_reconhecido = retorna_menu()
     print(menu_reconhecido)
-    for menu in menus:
-        diferenca = menu_reconhecido-menu
-        if diferenca<0:
-            diferenca = diferenca*-1
-        lista_diferenca.append(diferenca)
-    else:
-        if lista_diferenca[0]<lista_diferenca[1]:
-            menu_destino = menus[0]
-        else:
-            menu_destino = menus[1]
-    # while True:
-    #     for x in range(len(menus)):
-    #         if menu_reconhecido==menus[x]:
-    #             return True     
+    if menu_reconhecido == 1:#menu notícias
+        manipula_teclado.click_especifico(1,'f1')
+    menu_reconhecido = retorna_menu()
+    if menu_reconhecido == 0:#menu jogar
+        if not verifica_email_personagem(email):
+            loga_email_entra_personagem(nome,email,senha)            
 
 def usa_habilidade():
     #719:752, 85:128 137:180 189:232
@@ -1016,92 +1029,77 @@ def trata_menu(menu):
     elif menu == 10:
         #Tela inicial do jogo
         manipula_teclado.click_especifico(1,'enter')
-#modificado 10/01
+    
 def retorna_menu():
-    esquerda = 0
-    direita = 1
-    lista_menus_esquerda = 'voltar','fechar','cancelar','sair'
-    lista_menus_direita = 'avançar','jogar','concluir','iniciar','batepapo'
     #0 MENU JOGAR
-    #1NOTICIAS VOLTAR/AVANÇAR
-    #5SECUNDARIO VOLTAR
-    #7TRABALHOS DISPONIVEIS VOLTAR
-    #8TRABALHO ESPECIFICO VOLTAR/INICIAR
 
-    #2PERSONAGEM FECHAR/JOGAR
-    #4PRINCIPAL FECHAR
-    #5PROFISSÕES FECHAR
-    #6TRABALHOS ATUAIS FECHAR
+    #1 NOTICIAS VOLTAR/AVANÇAR
+    #4 PERSONAGEM VOLTAR
+    #13 PRODUZIR/TRABALHOS DISPONIVEIS VOLTAR
+    #14 TRABALHO ESPECIFICO VOLTAR/INICIAR
 
-    #9LICENÇA CANCELAR/AVANÇAR
-    #10TRABALHO ATRIBUTOS CANCELAR/BATEPAPO
+    #2 ESCOLHA DE PERSONAGEM FECHAR/JOGAR
+    #4 PRINCIPAL FECHAR
+    #11 PRODUZIR/PROFISSÕES FECHAR
+    #12 PRODUZIR/TRABALHOS ATUAIS FECHAR
+
+    #15 LICENÇA CANCELAR/AVANÇAR
+    #16 TRABALHO ATRIBUTOS CANCELAR/BATEPAPO
 
     #3TELA INICIAL
-
     print(f'Reconhecendo menu.')
     linha_separacao()
     texto_jogar = retorna_texto_sair()
     if texto_jogar.replace(' ','').lower() == 'sair':
         print(f'Menu jogar...')
         return 0
-    lista_menus_reconhecidos = retorna_lista_menus_reconhecidos()
-    print(lista_menus_reconhecidos)
-    for menu in lista_menus_esquerda:
-        if lista_menus_reconhecidos[esquerda]!='':
-            if lista_menus_reconhecidos[esquerda].replace(' ','').lower() in menu:
-                if menu == lista_menus_esquerda[0].replace(' ','').lower():#VOLTAR
-                    if lista_menus_reconhecidos[direita]!='':
-                        if lista_menus_reconhecidos[direita].replace(' ','').lower() in lista_menus_direita[0]:#VOLTAR/AVANÇAR
-                            print(f'Menu notícias...')
-                            return 1
-                        elif lista_menus_reconhecidos[direita].replace(' ','').lower() in lista_menus_direita[3]:#VOLTAR/INICIAR
-                            print(f'Menu trabalho específico...')
-                            return 8
-                    else:
-                        texto_produzir = retorna_texto_produzir()
-                        if texto_produzir.replace(' ','').lower()=='profissões':
-                            print(f'Menu trabalhos diponíveis...')
-                            return 7
-                        else:
-                            print(f'Menu secundário...')
-                            return 4    
-                elif menu == lista_menus_esquerda[1]:#FECHAR
-                    if lista_menus_reconhecidos[direita]=='':
-                        texto_produzir = retorna_texto_produzir()
-                        if texto_produzir.replace(' ','').lower()=='profissões':
-                            print('Menu profissões...')
-                            return 5
-                        elif texto_produzir.replace(' ','').lower()=='trabalhosatuais':
-                            print('Menu trabalhos atuais...')
-                            return 6
-                        else:
-                            print(f'Menu principal...')
-                            return 3
-                    else:
-                        print(f'Menu personagem...')
-                        return 2
-                elif menu == lista_menus_esquerda[2]:#CANCELAR
-                    if lista_menus_reconhecidos[direita].replace(' ','').lower()in lista_menus_direita[0]:
-                        print('Menu licença...')
-                        return 9
-                    elif lista_menus_reconhecidos[direita].replace(' ','').lower()in lista_menus_direita[4]:
-                        print('Menu atributos do trabalho...')
-                        return 10
     else:
-        print(f'Tela inicial...')
-        return 11
-    
-def retorna_entrada_menu(origem,destino):#função que retorna tecla de entrada de um menu específico
-    avancar = 'enter'#f2,enter,1,2,3,4,5,6,7,8,9
-    if (origem==0 and destino=='menu_perfil')or(origem==1 and destino==2)or(origem==11 and destino==3):
-        avancar='f2'
-    elif origem==11 and destino==4:#principal->secundario(personagem)
-        avancar=1
-    elif origem==4 and destino==5:#secundario(personagem)->profissoes
-        avancar=7
-    elif (origem==5 and destino==6)or(origem==6 and destino==5)or(origem==7 and destino==6):
-        avancar='left'
-    return avancar
+        texto_menu = retorna_texto_menu_reconhecido()
+        print(texto_menu)
+        if 'voltar' in texto_menu and'notícias' in texto_menu\
+            and'avancar' in texto_menu:
+            print(f'Menu notícias...')
+            return 1
+        elif ('voltar'in texto_menu and'conquistas'in texto_menu):
+            print(f'Menu personagem...')
+            return 4
+        elif ('voltar'in texto_menu and'profissões'in texto_menu):
+            print(f'Menu trabalhos diponíveis...')
+            return 13
+        elif ('voltar'in texto_menu and'iniciar'in texto_menu):
+            print(f'Menu trabalho específico...')
+            return 14
+        elif ('fechar'in texto_menu and'jogar'in texto_menu):
+            print(f'Menu escolha de personagem...')
+            return 2
+        elif ('fechar'in texto_menu and'interagir'in texto_menu):
+            print(f'Menu principal...')
+            return 4
+        elif ('fechar'in texto_menu and'profissões'in texto_menu):
+            print(f'Menu produzir...')
+            return 11
+        elif ('fechar'in texto_menu and'trabalhosatuais'in texto_menu):
+            print(f'Menu trabalhos atuais...')
+            return 12
+        elif ('cancelar'in texto_menu and'avançar'in texto_menu):
+            print(f'Menu licenças...')
+            return 15
+        elif ('cancelar'in texto_menu and'batepapo'in texto_menu):
+            print(f'Menu atributo do trabalho...')
+            return 16
+        elif ('fechar'in texto_menu and'ofertadiária'in texto_menu):
+            print(f'Menu oferta diária...')
+            return 40
+        else:
+            print(f'Menu não reconhecido...')
+            return False
+
+def retorna_texto_menu_reconhecido():
+    tela_inteira = retorna_atualizacao_tela()
+    frame_menu = tela_inteira[187:187+450,140:140+400]
+    frame_menu_tratado = manipula_imagem.transforma_amarelo_preto(frame_menu)
+    texto_menu = manipula_imagem.reconhece_texto(frame_menu_tratado)
+    return texto_menu.lower().replace(' ','')
 
 def retorna_texto_sair():
     tela_inteira = retorna_atualizacao_tela()
@@ -1143,7 +1141,10 @@ def entra_usuario():
     return False
 
 def funcao_teste(personagem_id):
-    encontra_menu_especifico([2,11])
+    # atualiza_nova_tela()
+    # retorna_menu()
+    # entra_personagem_ativo('tolinda')
+    verifica_email_personagem('gunsa')
     # menu = retorna_menu()
     # print(menu)
 #funcao_teste()

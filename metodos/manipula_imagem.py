@@ -51,7 +51,10 @@ def transforma_amarelo_preto(imagem_original):
     for y in range(0,imagem_original.shape[0]):
         for x in range(0, imagem_original.shape[1]):
             #se a cor do pixel for diferente de preto ou marrom 
-            if (imagem_original[y,x] == (0,255,255)).all():
+            if (imagem_original[y,x] == (0,255,255)).all()\
+                or(imagem_original[y,x] == (139,236,255)).all()\
+                or(imagem_original[y,x] == (93,218,254)).all()\
+                or(imagem_original[y,x] == (88,219,255)).all():
                 #tranforma pixel em preto
                 imagem_tratada[y,x] = (0,0,0)
             else:
