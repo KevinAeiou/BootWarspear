@@ -354,7 +354,6 @@ def verifica_habilidade_ativa(tela_inteira,lista):
         else:
             print(f'Tamanho do frame diferente do modelo!')
             linha_separacao()
-    return
 #Codigo modificado 23/01 11:20
 def verifica_trabalho_concluido():
     #icone do primeiro espaço de produç 181,295 228,342
