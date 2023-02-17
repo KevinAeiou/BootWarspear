@@ -681,6 +681,7 @@ def verifica_arquivo_existe(caminho_arquivo):
     return False
 #modificado 23/01
 def verifica_nome_personagem(nome_personagem):
+    print(f'Verificando nome personagem...')
     posicao_nome = [[197,354,170,27],[2,33,169,21]]
     tela_inteira = retorna_atualizacao_tela()
     for indice in range(len(posicao_nome)):
@@ -691,22 +692,28 @@ def verifica_nome_personagem(nome_personagem):
         print(nome_personagem_reconhecido)
         if nome_personagem_reconhecido.replace(' ','').lower()\
             in nome_personagem.replace(' ','').lower():
+            print(f'Nome personagem confirmado!')
             return True
+    print(f'Nome personagem diferente!')
     return False
 
 def verifica_email_personagem(email_personagem):
-    lista_caracter = ['.','@','_']
-    for caracter in lista_caracter:
-        email_personagem.replace(caracter,'')
+    print(f'Reconhecendo email...')
+    lista_caracter = ['.','@','_','1','2','3','4','5','6','7','8','9','0']
     tela_inteira = retorna_atualizacao_tela()
-    frame_nome_personagem = tela_inteira[534:534+32,208:208+264]
-    frame_nome_personagem_tratado = manipula_imagem.transforma_amarelo_preto(frame_nome_personagem)
-    nome_personagem_reconhecido = manipula_imagem.reconhece_texto(frame_nome_personagem_tratado)
-    manipula_imagem.mostra_imagem(0,frame_nome_personagem,nome_personagem_reconhecido)
-    print(nome_personagem_reconhecido)
-    if nome_personagem_reconhecido.replace(' ','').lower()\
-        in email_personagem.replace(' ','').lower():
+    frame_email_personagem = tela_inteira[534:534+32,208:208+264]
+    frame_email_personagem_tratado = manipula_imagem.transforma_amarelo_preto(frame_email_personagem)
+    email_personagem_reconhecido = manipula_imagem.reconhece_texto(frame_email_personagem_tratado)
+    for i in range(len(lista_caracter)):
+        email_personagem.replace(lista_caracter[i],'')
+        print(f'{email_personagem}')
+    # manipula_imagem.mostra_imagem(0,frame_nome_personagem,nome_personagem_reconhecido)
+    print(f'{email_personagem}-{email_personagem_reconhecido}')
+    if email_personagem_reconhecido.lower()\
+        in email_personagem.lower():
+        print(f'Email confirmado!')
         return True
+    print(f'Email diferente!')
     return False
 
 def retorna_lista_profissao_verificada(personagem_id):
@@ -768,6 +775,7 @@ def passa_proxima_posicao():
     yfinal = yfinal+altura_frame
 
 def entra_personagem_ativo(nome):
+    print(f'Buscando personagem ativo...')
     manipula_teclado.click_especifico(1,'enter')
     while verifica_erro(''):
         continue
@@ -817,6 +825,7 @@ def prepara_personagem(personagem_id):
     if estado!=1:#se o personagem estiver inativo, troca o estado
         manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
     else:
+        manipula_teclado.click_atalho_especifico('alt','tab')
         #verificar em que menu está
         encontra_menu_especifico(nome,email,senha)
         #verificar qual personagem está logado
@@ -832,16 +841,15 @@ def prepara_personagem(personagem_id):
                         manipula_teclado.click_mouse_esquerdo(1,2,35)
                     else:
                         manipula_teclado.encerra_secao()
-                        loga_email_entra_personagem(nome, email, senha)
+                        loga_personagem(email, senha)
     return
 
-def loga_email_entra_personagem(nome, email, senha):
+def loga_personagem(email, senha):
+    print(f'Tentando logar conta personagem...')
     manipula_teclado.entra_secao(email,senha)
     while verifica_erro(''):
         manipula_teclado.entra_secao(email,senha)
-    else:
-        while not entra_personagem_ativo(nome):
-            continue
+    print(f'Login efetuado com sucesso!')
 
 def inicia_busca_trabalho(personagem_id, dados_personagem, estado):
     posicao_profissao = 0
@@ -849,7 +857,6 @@ def inicia_busca_trabalho(personagem_id, dados_personagem, estado):
     print('Inicia busca...')
     if len(lista_profissao_necessaria)>0:
         conteudo_lista_desejo= manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
-        manipula_teclado.click_atalho_especifico('alt','tab')
         while len(conteudo_lista_desejo)>0:
                     #percorre toda lista de indice de profissao
             for indice_lista_profissao_necessaria in range(len(lista_profissao_necessaria)):
@@ -902,7 +909,9 @@ def encontra_menu_especifico(nome,email,senha):
     menu_reconhecido = retorna_menu()
     if menu_reconhecido == 0:#menu jogar
         if not verifica_email_personagem(email):
-            loga_email_entra_personagem(nome,email,senha)            
+            loga_personagem(email,senha)
+        while not entra_personagem_ativo(nome):
+            continue       
 
 def usa_habilidade():
     #719:752, 85:128 137:180 189:232
@@ -944,6 +953,8 @@ def usa_habilidade():
                             #clica a tecla específica de cada habilidade
                             posicao_habilidade = retorna_posicao_habilidade(conteudo_coluna[0])
                             manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
+                            # x,y = manipula_teclado.retorna_posicao_mouse()
+                            # manipula_teclado.click_mouse_esquerdo(2,x,y)
                     else:
                         print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}-{tamanho_modelo}')
                         linha_separacao()
@@ -1144,8 +1155,7 @@ def funcao_teste(personagem_id):
     # retorna_menu()
     # entra_personagem_ativo('tolinda')
     # verifica_email_personagem('gunsa')
-    modelo_menu_referencia = manipula_imagem.abre_imagem('modelos/modelo_menu_9.png')
-    verifica_menu_referencia(modelo_menu_referencia)
+    verifica_email_personagem('caah.rm15@gmail.com')
     # menu = retorna_menu()
     # print(menu)
 #funcao_teste()

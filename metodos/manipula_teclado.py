@@ -175,33 +175,6 @@ def encerra_secao():
     click_especifico(1,5)
     click_especifico(1,'f2')
 
-def click_para_cima(clicks):
-    time.sleep(1)
-    for x in range(clicks):
-        tecla.hotkey('up')
-        print('Cima.')
-        time.sleep(1)
-    print('____________________________________')
-    time.sleep(1)
-
-def click_f2(clicks):
-    time.sleep(1)
-    for x in range(clicks):
-        tecla.hotkey('F2')
-        print('F2.')
-        time.sleep(3)
-    print('____________________________________')
-    time.sleep(1)
-
-def click_enter(clicks):
-    time.sleep(1)
-    for x in range(clicks):
-        tecla.hotkey('enter')
-        print('Enter.')
-        time.sleep(2)
-    print('____________________________________')
-    time.sleep(1)
-
 def click_especifico(clicks,tecla_esp):
     time.sleep(0.5)
     for x in range(clicks):
@@ -235,11 +208,11 @@ def click_especifico_habilidade(clicks,tecla_esp):
         time.sleep(0.5)
 
 def click_mouse_esquerdo(clicks,x_tela,y_tela):
-    time.sleep(1)
+    time.sleep(0.5)
     for x in range(clicks):
         tecla.leftClick(x_tela,y_tela)
         print(f'Click em {x_tela}:{y_tela}.')
-        time.sleep(2)
+        time.sleep(1)
 
 def retorna_posicao_mouse():
     return tecla.position()
