@@ -110,12 +110,11 @@ def consulta_dados_personagem(usuario_id,personagem_id):
         try:
             requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/.json')
             dicionario_requisicao = requisicao.json()
-            nome = dicionario_requisicao['nome']
-            email = dicionario_requisicao['email']
-            senha = dicionario_requisicao['senha']
-            estado = dicionario_requisicao['estado']
-            id = dicionario_requisicao['id']
-            dados_personagem.append([id,nome,email,senha,estado])
+            dados_personagem.append(dicionario_requisicao['id'])
+            dados_personagem.append(dicionario_requisicao['nome'])
+            dados_personagem.append(dicionario_requisicao['email'])
+            dados_personagem.append(dicionario_requisicao['senha'])
+            dados_personagem.append(dicionario_requisicao['estado'])
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')

@@ -170,6 +170,7 @@ def entra_personagem(personagem):
     click_especifico(1,'f2')
 
 def encerra_secao():
+    print(f'Encerrando seção...')
     click_especifico(1,'f2')
     click_especifico(1,8)
     click_especifico(1,5)
