@@ -40,8 +40,6 @@ def define_licenca():
     else:
         tipo_licenca = int(tipo_licenca)
         if tipo_licenca==0:
-            print(f'Voltar...')
-            manipula_funcoes.linha_separacao()
             return ''
         if tipo_licenca == 1:
             licenca = 'Licença de produção do iniciante'
@@ -68,9 +66,7 @@ def define_raridade():
     else:
         raridade = int(raridade)
         if raridade==0:
-            print(f'Voltar...')
-            manipula_funcoes.linha_separacao()
-            return 0
+            return ''
         elif raridade == 1:
             tipo_raridade = 'Comum'
         elif raridade == 2:
@@ -132,8 +128,6 @@ def define_profissao(personagem_id):
         else:
             opcao_profissao = int(opcao_profissao)
             if opcao_profissao==0:
-                print(f'Voltar...')
-                manipula_funcoes.linha_separacao()
                 return ''
             else:
                 nome_profissao = conteudo_lista_profissao[opcao_profissao-1][1]
@@ -156,8 +150,6 @@ def mostra_menu_trabalho(nome_profissao,tipo_raridade):
         else:
             opcao_trabalho = int(opcao_trabalho)
             if opcao_trabalho==0:
-                print(f'Voltar...')
-                manipula_funcoes.linha_separacao()
                 return ''
     return conteudo_lista_trabalho[opcao_trabalho-1]
 

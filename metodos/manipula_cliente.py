@@ -233,7 +233,7 @@ def muda_estado_personagem(usuario_id,personagem_id):
 def excluir_trabalho(trabalho_id):
     for x in range(10):
         try:
-            requisicao = requests.delete(f'{link_database}/Usuarios/{trabalho_id}/.json')
+            requisicao = requests.delete(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{trabalho_id}/.json')
             print('Trabalho exluido da lista de desejo.')
             break
         except requests.exceptions.ConnectionError:
