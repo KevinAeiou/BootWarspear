@@ -955,14 +955,12 @@ def usa_habilidade():
                         else:
                             print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}-{tamanho_modelo}')
                             linha_separacao()
-                else:
-                    posicao_habilidade=verifica_habilidade_central(lista_habilidade)
-                    if posicao_habilidade!=0:
-                        manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
-                        linha_separacao()
+                posicao_habilidade=verifica_habilidade_central(lista_habilidade)
+                if posicao_habilidade!=0:
+                    manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
+                    linha_separacao()
 
 def verifica_habilidade_central(lista_habilidade):
-    print(f'Verificando habilidade central...')
     tela_inteira = retorna_atualizacao_tela()
     for indice in range(len(lista_habilidade)):
         habilidade=lista_habilidade[indice]
@@ -982,7 +980,6 @@ def verifica_habilidade_central(lista_habilidade):
                 else:
                     print(f'Tamanho do frame diferente do modelo!')
                     linha_separacao()
-    linha_separacao()
     return 0
 
 def recorta_novo_modelo_habilidade():
