@@ -1,9 +1,7 @@
 import cv2
 import numpy as np
-import manipula_arquivo
 import manipula_imagem
 import manipula_teclado
-import manipula_navegador
 import manipula_cliente
 import time
 import os.path
@@ -342,20 +340,6 @@ def verifica_porcentagem_vida():
         print(f'Vida abaixo de {porcentagem_vida}%.')
         return True
     return False
-
-def verifica_habilidade_ativa(tela_inteira,lista):
-    for x in range(len(lista)):
-        imagem_lista = lista[x]
-        frame_tela = tela_inteira[668:668+imagem_lista[1].shape[0],661:661+imagem_lista[1].shape[1]]
-        if frame_tela.shape[:2] == imagem_lista[1].shape[:2]:
-            diferenca = cv2.subtract(frame_tela, imagem_lista[1])
-            b, g, r = cv2.split(diferenca)
-            if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-                posicao_habilidade = retorna_posicao_habilidade(imagem_lista[0])
-                manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
-        else:
-            print(f'Tamanho do frame diferente do modelo!')
-            linha_separacao()
 #Codigo modificado 23/01 11:20
 def verifica_trabalho_concluido():
     #icone do primeiro espaço de produç 181,295 228,342
@@ -719,26 +703,33 @@ def mostra_profissoes_necessarias(lista_profissao_verificada):
     linha_separacao()
 
 def retorna_lista_habilidade_verificada():
+    print(f'Criando lista de habilidades...')
     lista_habilidade_encontrada = []
     lista_imagem_habilidade = retorna_lista_imagem_habilidade()
     tela_inteira = retorna_atualizacao_tela()
     altura_modelo = lista_imagem_habilidade[0].shape[0]
     largura_modelo = lista_imagem_habilidade[0].shape[1]
-    for x in range(382,983):
-        frame_habilidade = tela_inteira[728:728+altura_modelo, x:x+largura_modelo]
-        tamanho_frame_habilidade = frame_habilidade.shape[:2]
-        for y in range(len(lista_imagem_habilidade)):
-            tamanho_modelo = lista_imagem_habilidade[y].shape[:2]
-            if tamanho_frame_habilidade == tamanho_modelo:
-                diferenca = cv2.subtract(lista_imagem_habilidade[y], frame_habilidade)
-                b, g, r = cv2.split(diferenca)
-                if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-                    lista_habilidade_encontrada.append([x,lista_imagem_habilidade[y]])
+    for x in range(380,980):
+        for y in range(726,730):
+            frame_habilidade = tela_inteira[y:y+altura_modelo, x:x+largura_modelo]
+            tamanho_frame_habilidade = frame_habilidade.shape[:2]
+            for indice in lista_imagem_habilidade:
+                tamanho_modelo = indice.shape[:2]
+                if tamanho_frame_habilidade == tamanho_modelo:
+                    diferenca = cv2.subtract(indice, frame_habilidade)
+                    b, g, r = cv2.split(diferenca)
+                    if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
+                        lista_habilidade_encontrada.append([x,indice])
+                        # print(f'Habilidade reconhecida em: {x},{y}')
+                        retorna_posicao_habilidade(x)
+                        break
+                else:
+                    print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}:{tamanho_modelo}')
+                    linha_separacao()
                     break
-            else:
-                print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}:{tamanho_modelo}')
-                linha_separacao()
-                break
+    else:
+        print(f'Processo concluído!')
+        linha_separacao()
     return lista_habilidade_encontrada
 
 def passa_proxima_posicao():
@@ -919,46 +910,80 @@ def usa_habilidade():
     manipula_teclado.click_atalho_especifico('win','up')
     modelo_menu_referencia = manipula_imagem.abre_imagem('modelos/modelo_menu_9.png')
     #cria lista com habilidades a serem usadas
-    lista = retorna_lista_habilidade_verificada()
-    if len(lista)==0:
-        return
-    print(f'Buscando referência!')
-    linha_separacao()
-    while True:
-        if verifica_menu_referencia(modelo_menu_referencia):
-            #verifica se está em modo de ataque
-            tela_inteira = retorna_atualizacao_tela()
-            if verifica_modo_ataque() or verifica_alvo():
-                #percorre a lista de habilidades
-                for indice_habilidade in range(len(lista)):
-                    #atualiza a tela
-                    conteudo_coluna = lista[indice_habilidade]
-                    #recorta frame na posição da habilidade específica
-                    frame_habilidade = tela_inteira[728:728+conteudo_coluna[1].shape[0], conteudo_coluna[0]:conteudo_coluna[0]+conteudo_coluna[1].shape[1]]
-                    #define o tamanho do frame
-                    tamanho_frame_habilidade = frame_habilidade.shape[:2]
-                    #define o tamanho do modelo
-                    tamanho_modelo = conteudo_coluna[1].shape[:2]
-                    if verifica_porcentagem_vida() and verifica_menu_referencia(modelo_menu_referencia):
-                        manipula_teclado.click_especifico_habilidade(1,'t')
-                    #compara os tamanhos das imagens
-                    if tamanho_frame_habilidade == tamanho_modelo:
-                        #subtrai as imgagens de comparação
-                        diferenca = cv2.subtract(conteudo_coluna[1], frame_habilidade)
-                        #divide os canais de cores
-                        b, g, r = cv2.split(diferenca)
-                        #se cada cor subtraida for igual a zero
-                        if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-                            #clica a tecla específica de cada habilidade
-                            posicao_habilidade = retorna_posicao_habilidade(conteudo_coluna[0])
-                            manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
-                            # x,y = manipula_teclado.retorna_posicao_mouse()
-                            # manipula_teclado.click_mouse_esquerdo(2,x,y)
-                    else:
-                        print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}-{tamanho_modelo}')
+    lista_habilidade = retorna_lista_habilidade_verificada()
+    if len(lista_habilidade)==0:
+        print(f'Erro!')
+        linha_separacao()
+    else:
+        print(f'Buscando referência!')
+        linha_separacao()
+        while True:
+            if verifica_menu_referencia(modelo_menu_referencia):
+                #verifica se está em modo de ataque
+                tela_inteira = retorna_atualizacao_tela()
+                if verifica_modo_ataque() or verifica_alvo():
+                    #percorre a lista de habilidades
+                    for habilidade in lista_habilidade:
+                        #atualiza a tela
+                        #recorta frame na posição da habilidade específica
+                        frame_habilidade = tela_inteira[728:728+habilidade[1].shape[0], habilidade[0]:habilidade[0]+habilidade[1].shape[1]]
+                        #define o tamanho do frame
+                        tamanho_frame_habilidade = frame_habilidade.shape[:2]
+                        #define o tamanho do modelo
+                        tamanho_modelo = habilidade[1].shape[:2]
+                        if verifica_porcentagem_vida() and verifica_menu_referencia(modelo_menu_referencia):
+                            manipula_teclado.click_especifico_habilidade(1,'t')
+                        #compara os tamanhos das imagens
+                        if tamanho_frame_habilidade == tamanho_modelo:
+                            #subtrai as imgagens de comparação
+                            diferenca = cv2.subtract(habilidade[1], frame_habilidade)
+                            #divide os canais de cores
+                            b, g, r = cv2.split(diferenca)
+                            #se cada cor subtraida for igual a zero
+                            if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
+                                #clica a tecla específica de cada habilidade
+                                lista_habilidade_clicada = []
+                                posicao_habilidade = retorna_posicao_habilidade(habilidade[0])
+                                manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
+                                linha_separacao()
+                                #verica se a habilidade clicada precisa de click do mouse
+                                lista_habilidade_clicada.append(habilidade)
+                                if verifica_habilidade_central(lista_habilidade_clicada)!=0:
+                                    x,y = manipula_teclado.retorna_posicao_mouse()
+                                    manipula_teclado.click_mouse_esquerdo(1,x,y)
+                                    linha_separacao()
+                        else:
+                            print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}-{tamanho_modelo}')
+                            linha_separacao()
+                else:
+                    posicao_habilidade=verifica_habilidade_central(lista_habilidade)
+                    if posicao_habilidade!=0:
+                        manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
                         linha_separacao()
-            else:
-                verifica_habilidade_ativa(tela_inteira,lista)
+
+def verifica_habilidade_central(lista_habilidade):
+    print(f'Verificando habilidade central...')
+    tela_inteira = retorna_atualizacao_tela()
+    for indice in range(len(lista_habilidade)):
+        habilidade=lista_habilidade[indice]
+        for x in range(658,662):
+            for y in range(666,670):
+                frame_habilidade_central = tela_inteira[y:y+habilidade[1].shape[0],x:x+habilidade[1].shape[1]]
+                if frame_habilidade_central.shape[:2]==habilidade[1].shape[:2]:
+                    diferenca=cv2.subtract(frame_habilidade_central, habilidade[1])
+                    b,g,r=cv2.split(diferenca)
+                    # frame_concatenado = manipula_imagem.retorna_imagem_concatenada(frame_habilidade_central,diferenca)
+                    # manipula_imagem.mostra_imagem(0,frame_concatenado,'Teste')
+                    if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
+                        print(f'Habilidade central encontrada!')
+                        # print(f'x: {x}, y: {y}')
+                        linha_separacao()
+                        return retorna_posicao_habilidade(habilidade[0])
+                else:
+                    print(f'Tamanho do frame diferente do modelo!')
+                    linha_separacao()
+    linha_separacao()
+    return 0
 
 def recorta_novo_modelo_habilidade():
     lista_imagem_habilidade = retorna_lista_imagem_habilidade()
@@ -1185,8 +1210,13 @@ def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
     # retorna_menu(None)
-    trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
-    inicia_producao(trabalho)
+    manipula_teclado.click_atalho_especifico('alt','tab')
+    manipula_teclado.click_atalho_especifico('win','up')
+    lista_habilidade = retorna_lista_habilidade_verificada()
+    while True:
+        verifica_habilidade_central(lista_habilidade)
+    # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
+    # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
     # atualiza_nova_tela()
     # while inicia_busca_trabalho(personagem_id):
