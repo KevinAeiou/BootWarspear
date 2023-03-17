@@ -163,7 +163,7 @@ def consulta_lista_trabalho(nome_proficao,raridade):
     return lista_profissao
 
 #modificado 12/01
-def consultar_lista_desejo(tipo_lista):
+def consulta_lista_desejo(tipo_lista):
     lista_desejo = []
     for x in range(10):
         try:
@@ -186,6 +186,25 @@ def consultar_lista_desejo(tipo_lista):
     #print(requisicao)
     #print(requisicao.text)
     return lista_desejo
+
+def consulta_lista_personagem(usuario_id):
+    lista_desejo=[]
+    for x in range(10):
+        try:
+            requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
+            dicionario_requisicao = requisicao.json()
+            for id in dicionario_requisicao:
+                if dicionario_requisicao[id]['estado']==1:
+                    lista_desejo.append(id)
+            break
+        except requests.exceptions.ConnectionError:
+            print(f'Conecção recusada!')
+    else:
+        print(f'Limite de tentativas de conexão atingido.')
+    #print(requisicao)
+    #print(requisicao.text)
+    return lista_desejo
+
 #modificado 23/01
 def muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho,novo_estado):
     dados = {'estado':novo_estado}
@@ -208,7 +227,6 @@ def muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho,novo_estado):
         print(f'Limite de tentativas de conexão atingido.')
 
 def muda_estado_personagem(usuario_id,personagem_id):
-    
     for x in range(10):
         try:
             requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
@@ -229,6 +247,18 @@ def muda_estado_personagem(usuario_id,personagem_id):
     else:
         print(f'Limite de tentativas de conexão atingido.')
 
+def muda_quantidade_personagem(usuario_id,nova_quantidade):
+    for x in range(10):
+        try:
+            dados = {'personagem_ativo':nova_quantidade}
+            requests.patch(f'{link_database}/Usuarios/{usuario_id}/.json',data=json.dumps(dados))
+            return True
+        except requests.exceptions.ConnectionError:
+            print(f'Conecção recusada!')
+            time.sleep(1)
+    else:
+        print(f'Limite de tentativas de conexão atingido.')
+    return False
 #modificado 12/01
 def excluir_trabalho(trabalho_id):
     for x in range(10):

@@ -153,6 +153,22 @@ def mostra_menu_trabalho(nome_profissao,tipo_raridade):
                 return ''
     return conteudo_lista_trabalho[opcao_trabalho-1]
 
+def mostra_menu_confiuracao():
+    print(f'Configurações:')
+    print(f'1 - Quantidade de personagens ativos.')
+    print(f'0 - Voltar.')
+    opcao_configuracao = input(f'Sua escolha: ')
+    manipula_funcoes.linha_separacao()
+    while not opcao_configuracao.isdigit() or int(opcao_configuracao)<0 or int(opcao_configuracao)>1:
+        print(f'Opção inválida! Selecione uma das opções.')
+        opcao_configuracao = input(f'Sua escolha: ')
+        manipula_funcoes.linha_separacao()
+    else:
+        opcao_configuracao = int(opcao_configuracao)
+        if opcao_configuracao==0:
+            return 0
+    return opcao_configuracao
+
 def menu(personagem_id):
     print(f'Menu')
     print(f'Opções:')
@@ -161,11 +177,12 @@ def menu(personagem_id):
     print(f'3 - Usar habilidade.')
     print(f'4 - Atualizar lista de profissões.')
     print(f'5 - Cadastrar.')
-    print(f'6 - Temporario.')
+    print(f'6 - Configurações.')
+    print(f'7 - Temporario.')
     print(f'0 - Voltar.')
     escolha = input('Sua escolha: ')
     manipula_funcoes.linha_separacao()
-    while not escolha.isdigit() or int(escolha)<0 or int(escolha)>6:
+    while not escolha.isdigit() or int(escolha)<0 or int(escolha)>7:
         print(f'Opção inválida! Selecione uma das opções.')
         escolha = input(f'Sua escolha: ')
         manipula_funcoes.linha_separacao()
@@ -225,7 +242,14 @@ def menu(personagem_id):
             elif opcao_cadastro == 2:#Cadastra novo modelo de habilidade
                 print(f'Em desenvolvimento...')
                 manipula_funcoes.linha_separacao()
-        elif escolha==6:#Menu teste
+        elif escolha==6:#Menu configurações
+            opcao_configuracao = mostra_menu_confiuracao()
+            if opcao_configuracao == 0:#Volta ao menu anterior
+                print(f'Voltar.')
+                manipula_funcoes.linha_separacao()
+            elif opcao_configuracao==1:
+                manipula_funcoes.modifica_quantidade_personagem_ativo()
+        elif escolha==7:#Menu teste
             manipula_funcoes.funcao_teste(personagem_id)
             manipula_funcoes.linha_separacao()
         menu(personagem_id)

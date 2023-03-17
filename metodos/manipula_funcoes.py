@@ -658,13 +658,17 @@ def verifica_nome_personagem(nome_personagem):
         frame_nome_personagem = tela_inteira[posicao_nome[indice][1]:posicao_nome[indice][1]+posicao_nome[indice][3],posicao_nome[indice][0]:posicao_nome[indice][0]+posicao_nome[indice][2]]
         frame_nome_personagem_tratado = manipula_imagem.transforma_amarelo_preto(frame_nome_personagem)
         nome_personagem_reconhecido = manipula_imagem.reconhece_texto(frame_nome_personagem_tratado)
-        # manipula_imagem.mostra_imagem(0,frame_nome_personagem,nome_personagem_reconhecido)
-        # print(f'Personagem reconhecido: {nome_personagem_reconhecido}')
-        if nome_personagem_reconhecido!='' and nome_personagem_reconhecido.replace(' ','').lower()\
+        nome_personagem_reconhecido_tratado = unidecode(nome_personagem_reconhecido)
+        # concatenado = manipula_imagem.retorna_imagem_concatenada(frame_nome_personagem,frame_nome_personagem_tratado)
+        # manipula_imagem.mostra_imagem(0,concatenado,nome_personagem_reconhecido_tratado)
+        print(f'Personagem reconhecido: {nome_personagem_reconhecido_tratado}')
+        if nome_personagem_reconhecido_tratado!='' and nome_personagem_reconhecido_tratado.replace(' ','').lower()\
             in nome_personagem.replace(' ','').lower():
             print(f'Nome personagem confirmado!')
+            linha_separacao()
             return True
     print(f'Nome personagem diferente!')
+    linha_separacao()
     return False
 
 def retorna_lista_profissao_verificada(personagem_id):
@@ -674,7 +678,7 @@ def retorna_lista_profissao_verificada(personagem_id):
     #abre o arquivo lista de profissoes
     conteudo_lista_profissoes = manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_profissoes')
     #abre o arquivo lista de desejos
-    conteudo_lista_desejo = manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+    conteudo_lista_desejo = manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
     #percorre todas as linha do aquivo profissoes
     for linhaProfissao in range(len(conteudo_lista_profissoes)):
         nome_profissao = conteudo_lista_profissoes[linhaProfissao]
@@ -777,41 +781,45 @@ def prepara_personagem(id_personagem):
     global personagem_id
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
     #e o indice 1=nome da profissão
+    manipula_teclado.click_atalho_especifico('alt','tab')
     personagem_id=id_personagem
+
+    lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
     nome = dados_personagem[1]
     email = dados_personagem[2]
     senha = dados_personagem[3]
     estado = dados_personagem[4]
-    manipula_teclado.click_atalho_especifico('alt','tab')
-    if estado!=1:#se o personagem estiver inativo, troca o estado
-        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
-    else:
-        #verificar qual personagem está logado
-        if verifica_nome_personagem(nome):
-            #iniciar busca por trabalho
-            print('Inicia busca...')
-            linha_separacao()
-            while inicia_busca_trabalho(personagem_id):
-                continue
-        else:#se o nome do personagem for diferente
-            while verifica_erro('')!=0:
-                continue
-            else:
-                while retorna_menu(None)==1 or retorna_menu(None)==2:
-                    manipula_teclado.click_especifico(1,'f1')
-                else:
-                    while retorna_menu(None)!=False:
-                        manipula_teclado.click_mouse_esquerdo(1,2,35)
-                    if not retorna_menu(None):
-                        manipula_teclado.encerra_secao()
-                loga_personagem(email,senha)
-                while not entra_personagem_ativo(nome):
+    for personagem in lista_personagem_ativo:
+        if personagem==personagem_id:
+            #verificar qual personagem está logado
+            if verifica_nome_personagem(nome):
+                #iniciar busca por trabalho
+                print('Inicia busca...')
+                linha_separacao()
+                while inicia_busca_trabalho(personagem_id):
+                    continue
+            else:#se o nome do personagem for diferente
+                while verifica_erro('')!=0:
                     continue
                 else:
-                    manipula_teclado.click_atalho_especifico('alt','tab')
-                    prepara_personagem(personagem_id)
-
+                    while retorna_menu(None)==1 or retorna_menu(None)==2:
+                        manipula_teclado.click_especifico(1,'f1')
+                    else:
+                        while retorna_menu(None)!=False:
+                            manipula_teclado.click_mouse_esquerdo(1,2,35)
+                        if not retorna_menu(None):
+                            manipula_teclado.encerra_secao()
+                    loga_personagem(email,senha)
+                    while not entra_personagem_ativo(nome):
+                        continue
+                    else:
+                        manipula_teclado.click_atalho_especifico('alt','tab')
+                        prepara_personagem(personagem_id)
+            break
+    if estado!=1:#se o personagem estiver inativo, troca o estado
+        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
+    
 def loga_personagem(email, senha):
     print(f'Tentando logar conta personagem...')
     manipula_teclado.entra_secao(email,senha)
@@ -823,7 +831,7 @@ def inicia_busca_trabalho(personagem_id):
     posicao_profissao = 0
     lista_profissao_necessaria = retorna_lista_profissao_verificada(personagem_id)
     if len(lista_profissao_necessaria)>0:
-        conteudo_lista_desejo= manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+        conteudo_lista_desejo= manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
         if len(conteudo_lista_desejo)>0:
             #percorre toda lista de indice de profissao
             for profissao_necessaria in lista_profissao_necessaria:
@@ -861,7 +869,7 @@ def inicia_busca_trabalho(personagem_id):
                 if estado!=1:
                     prepara_personagem(manipula_cliente.retorna_idpersonagem_ativo(usuario_id))
                 else:
-                    conteudo_lista_desejo = manipula_cliente.consultar_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+                    conteudo_lista_desejo = manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
             return True
         else:
             print(f'Todos os trabalhos desejados foram iniciados.')
@@ -1003,6 +1011,17 @@ def recorta_novo_modelo_habilidade():
             print(f'Voltar.')
             linha_separacao()
 
+def modifica_quantidade_personagem_ativo():
+    nova_quantidade = input(f'Digite a nova quantidade: ')
+    linha_separacao()
+    while not nova_quantidade.isdigit() or int(nova_quantidade)<=0:
+        print(f'Quantidade inválida! Tente novamente...')
+        nova_quantidade = input(f'Sua escolha: ')
+        linha_separacao()
+    else:
+        if (manipula_cliente.muda_quantidade_personagem(usuario_id,nova_quantidade)):
+            print(f'Quantidade de personagens ativos modificada com sucesso!')
+            linha_separacao()
 def retorna_lista_menus_reconhecidos():
     x=0
     y=1
@@ -1205,9 +1224,12 @@ def funcao_teste(id_personagem):
     # manipula_teclado.click_atalho_especifico('alt','tab')
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_habilidade = retorna_lista_habilidade_verificada()
+    # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
+    # print(lista_ativos)
+    # modifica_quantidade_personagem_ativo()
     # while True:
     #     verifica_habilidade_central(lista_habilidade)
-    verifica_licenca('Licença de produção do principiante')
+    # verifica_licenca('Licença de produção do principiante')
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
@@ -1215,5 +1237,5 @@ def funcao_teste(id_personagem):
     # while inicia_busca_trabalho(personagem_id):
     #     continue
     # entra_personagem_ativo('tolinda')
-    # verifica_nome_personagem('MrNinguem')
+    verifica_nome_personagem('Axe')
 #funcao_teste()
