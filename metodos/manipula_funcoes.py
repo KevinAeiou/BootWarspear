@@ -360,20 +360,15 @@ def verifica_licenca(licenca_trabalho):
     licenca_reconhecida = retorna_licenca_reconhecida()
     print(f"Buscando: {licenca_trabalho}")
     linha_separacao()
-    while not licenca_reconhecida.replace(' ','').lower() in licenca_trabalho.replace(' ','').lower():
+    if 'licençasdeproduçaomaspode'in licenca_reconhecida.replace(' ','').lower():
+        print(f"Parando programa...")
+        exit()
+    while not licenca_reconhecida.replace(' ','').lower()in licenca_trabalho.replace(' ','').lower():
         manipula_teclado.click_especifico(1,"right")
-        licenca_reconhecida = retorna_licenca_reconhecida()
+        licenca_reconhecida=retorna_licenca_reconhecida()
         print(f'Licença reconhecida: {licenca_reconhecida}.')
-        # if licenca_reconhecida.replace(' ','') == "Nenhumitem":
-        #     if licenca_trabalho_lista_desejo != "Licençadeproduçãodoiniciante":
-        #         licenca_trabalho_lista_desejo = "Licençadeproduçãodoiniciante"
-        #     elif licenca_trabalho_lista_desejo == "Licençadeproduçãodoiniciante":
-        #         licenca_trabalho_lista_desejo = "Licençadeproduçãodoaprendiz"
-        #     elif licenca_trabalho_lista_desejo == "Licençadeproduçãodoaprendiz":
-        #         licenca_trabalho_lista_desejo = "Licençadeproduçãodomestre"
-        #     elif licenca_trabalho_lista_desejo == "Licençadeproduçãodomestre":
-        #         print(f"Parando programa...")
-        #         exit()
+        if 'nenhumitem'in licenca_reconhecida.replace(' ','').lower():
+            licenca_trabalho='licençadeproduçãodoiniciante'
     else:#se encontrou a licença buscada
         manipula_teclado.click_especifico(1,"f2")
 
@@ -920,11 +915,11 @@ def usa_habilidade():
         while True:
             if verifica_menu_referencia(modelo_menu_referencia):
                 #verifica se está em modo de ataque
-                tela_inteira = retorna_atualizacao_tela()
                 if verifica_modo_ataque() or verifica_alvo():
                     #percorre a lista de habilidades
                     for habilidade in lista_habilidade:
                         #atualiza a tela
+                        tela_inteira = retorna_atualizacao_tela()
                         #recorta frame na posição da habilidade específica
                         frame_habilidade = tela_inteira[728:728+habilidade[1].shape[0], habilidade[0]:habilidade[0]+habilidade[1].shape[1]]
                         #define o tamanho do frame
@@ -1207,11 +1202,12 @@ def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
     # retorna_menu(None)
-    manipula_teclado.click_atalho_especifico('alt','tab')
-    manipula_teclado.click_atalho_especifico('win','up')
-    lista_habilidade = retorna_lista_habilidade_verificada()
-    while True:
-        verifica_habilidade_central(lista_habilidade)
+    # manipula_teclado.click_atalho_especifico('alt','tab')
+    # manipula_teclado.click_atalho_especifico('win','up')
+    # lista_habilidade = retorna_lista_habilidade_verificada()
+    # while True:
+    #     verifica_habilidade_central(lista_habilidade)
+    verifica_licenca('Licença de produção do principiante')
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
