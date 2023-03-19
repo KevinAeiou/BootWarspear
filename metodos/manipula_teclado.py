@@ -185,13 +185,13 @@ def click_especifico(clicks,tecla_esp):
         else:
             tecla_num = tecla_esp
         tecla.hotkey(tecla_num)
-        print(f'{tecla_esp}.')
+        # print(f'{tecla_esp}.')
         time.sleep(1)
     
 def click_atalho_especifico(tecla1,tecla2):
     time.sleep(1)
     tecla.hotkey(tecla1,tecla2)
-    print(f'{tecla1}+{tecla2}')
+    # print(f'{tecla1}+{tecla2}')
     time.sleep(1)
 
 def click_especifico_habilidade(clicks,tecla_esp):
@@ -205,7 +205,7 @@ def click_especifico_habilidade(clicks,tecla_esp):
         tecla.keyDown('alt')
         tecla.hotkey(tecla_num)
         tecla.keyUp('alt')
-        print(f'{tecla_esp}.')
+        # print(f'{tecla_esp}.')
         time.sleep(0.5)
 
 def click_mouse_esquerdo(clicks,x_tela,y_tela):
