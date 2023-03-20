@@ -872,6 +872,8 @@ def inicia_producao(trabalho):
     verifica_licenca(trabalho[4])#verifica tipo de licença de produção
     manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
     if verifica_erro(trabalho[4])==0:
+        if retorna_menu(trabalho)==17:
+            manipula_teclado.click_especifico(2,'f2')
         menu=retorna_menu(trabalho)
         if menu==14:#trabalho especifico
             manipula_teclado.click_especifico(1,'f2')
@@ -1114,8 +1116,8 @@ def retorna_menu(trabalho):
             print(f'Menu jogar...')
             return 0
         else:
-            texto_menu = retorna_texto_menu_reconhecido()
-            print(texto_menu)
+            texto_menu,texto_menu_auxiliar=retorna_texto_menu_reconhecido()
+            print(texto_menu,texto_menu_auxiliar)
             if 'voltar' in texto_menu and'notícias' in texto_menu\
                 and'avancar' in texto_menu:
                 print(f'Menu notícias...')
@@ -1149,13 +1151,18 @@ def retorna_menu(trabalho):
                 print(f'Menu trabalhos atuais...')
                 linha_separacao()
                 return 12
-            elif ('cancelar'in texto_menu and'avançar'in texto_menu):
+            elif ('cancelar'in texto_menu and'avançar'in texto_menu and'permiteexecutartrabalhos'in texto_menu_auxiliar):
                 print(f'Menu licenças...')
+                linha_separacao()
                 return 15
             elif ('cancelar'in texto_menu and'batepapo'in texto_menu):
                 print(f'Menu atributo do trabalho...')
                 linha_separacao()
                 return 16
+            elif ('cancelar'in texto_menu and'avançar'in texto_menu):
+                print(f'Menu escolha de equipamento...')
+                linha_separacao()
+                return 17
             elif ('fechar'in texto_menu and'ofertadiária'in texto_menu):
                 print(f'Menu oferta diária...')
                 linha_separacao()
@@ -1168,9 +1175,12 @@ def retorna_menu(trabalho):
 def retorna_texto_menu_reconhecido():
     tela_inteira = retorna_atualizacao_tela()
     frame_menu = tela_inteira[187:187+450,140:140+400]
-    frame_menu_tratado = manipula_imagem.transforma_amarelo_preto(frame_menu)
+    frame_menu_auxiliar=tela_inteira[380:380+60,140:140+400]
+    frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
+    # manipula_imagem.mostra_imagem(0,frame_menu_auxiliar,'Teste')
     texto_menu = manipula_imagem.reconhece_texto(frame_menu_tratado)
-    return texto_menu.lower().replace(' ','')
+    texto_menu_auxiliar = manipula_imagem.reconhece_texto(frame_menu_auxiliar)
+    return texto_menu.lower().replace(' ',''),texto_menu_auxiliar.lower().replace(' ','')
 
 def retorna_texto_sair():
     tela_inteira = retorna_atualizacao_tela()
@@ -1214,7 +1224,7 @@ def entra_usuario():
 def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
-    # retorna_menu(None)
+    retorna_menu(None)
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('alt','tab')
     # manipula_teclado.click_atalho_especifico('win','up')
@@ -1232,5 +1242,5 @@ def funcao_teste(id_personagem):
     # while inicia_busca_trabalho(personagem_id):
     #     continue
     # entra_personagem_ativo('tolinda')
-    verifica_nome_personagem('Axe')
+    # verifica_nome_personagem('Axe')
 #funcao_teste()
