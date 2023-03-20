@@ -871,18 +871,23 @@ def inicia_producao(trabalho):
     entra_licenca()
     verifica_licenca(trabalho[4])#verifica tipo de licença de produção
     manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
-    if verifica_erro(trabalho[4])==0:
+    erro=verifica_erro(trabalho[4])
+    if erro==0:
         if retorna_menu(trabalho)==17:
             manipula_teclado.click_especifico(2,'f2')
         menu=retorna_menu(trabalho)
         if menu==14:#trabalho especifico
             manipula_teclado.click_especifico(1,'f2')
             manipula_teclado.click_especifico(9,'up')
+            manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
         elif menu==12:#trabalhos atuais
             manipula_teclado.click_especifico(9,'up')
-        manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
+            manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
         while verifica_erro(trabalho[4])!=0:
             continue
+    elif erro==3:
+        caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
+        manipula_cliente.excluir_trabalho(caminho_trabalho)
     
 def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
@@ -1116,8 +1121,8 @@ def retorna_menu(trabalho):
             print(f'Menu jogar...')
             return 0
         else:
-            texto_menu,texto_menu_auxiliar=retorna_texto_menu_reconhecido()
-            print(texto_menu,texto_menu_auxiliar)
+            texto_menu=retorna_texto_menu_reconhecido()
+            print(texto_menu)
             if 'voltar' in texto_menu and'notícias' in texto_menu\
                 and'avancar' in texto_menu:
                 print(f'Menu notícias...')
@@ -1131,7 +1136,7 @@ def retorna_menu(trabalho):
                 print(f'Menu trabalhos diponíveis...')
                 linha_separacao()
                 return 13
-            elif ('voltar'in texto_menu and'iniciar'in texto_menu):
+            elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'temponecessário'in texto_menu):
                 print(f'Menu trabalho específico...')
                 linha_separacao()
                 return 14
@@ -1151,11 +1156,11 @@ def retorna_menu(trabalho):
                 print(f'Menu trabalhos atuais...')
                 linha_separacao()
                 return 12
-            elif ('cancelar'in texto_menu and'avançar'in texto_menu and'permiteexecutartrabalhos'in texto_menu_auxiliar):
+            elif ('cancelar'in texto_menu and'avançar'in texto_menu and'permiteexecutartrabalhos'in texto_menu):
                 print(f'Menu licenças...')
                 linha_separacao()
                 return 15
-            elif ('cancelar'in texto_menu and'batepapo'in texto_menu):
+            elif ('cancelar'in texto_menu and'batepapo'in texto_menu and'requisitosparâmetros'in texto_menu):
                 print(f'Menu atributo do trabalho...')
                 linha_separacao()
                 return 16
@@ -1175,12 +1180,10 @@ def retorna_menu(trabalho):
 def retorna_texto_menu_reconhecido():
     tela_inteira = retorna_atualizacao_tela()
     frame_menu = tela_inteira[187:187+450,140:140+400]
-    frame_menu_auxiliar=tela_inteira[380:380+60,140:140+400]
     frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
-    # manipula_imagem.mostra_imagem(0,frame_menu_auxiliar,'Teste')
+    # manipula_imagem.mostra_imagem(0,frame_menu,'Teste')
     texto_menu = manipula_imagem.reconhece_texto(frame_menu_tratado)
-    texto_menu_auxiliar = manipula_imagem.reconhece_texto(frame_menu_auxiliar)
-    return texto_menu.lower().replace(' ',''),texto_menu_auxiliar.lower().replace(' ','')
+    return texto_menu.lower().replace(' ','')
 
 def retorna_texto_sair():
     tela_inteira = retorna_atualizacao_tela()

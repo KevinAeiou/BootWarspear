@@ -54,6 +54,7 @@ def transforma_amarelo_preto(imagem_original):
             if (imagem_original[y,x] == (0,255,255)).all()\
                 or(imagem_original[y,x] == (139,236,255)).all()\
                 or(imagem_original[y,x] == (93,218,254)).all()\
+                or(imagem_original[y,x] == (255,255,255)).all()\
                 or(imagem_original[y,x] == (88,219,255)).all():
                 #tranforma pixel em preto
                 imagem_tratada[y,x] = (0,0,0)
