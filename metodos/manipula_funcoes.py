@@ -804,7 +804,7 @@ def prepara_personagem(id_personagem):
                         manipula_teclado.click_mouse_esquerdo(1,2,35)
                         linha_separacao()
                         menu=retorna_menu(None)
-                    if not menu:
+                    if menu!=0:
                         manipula_teclado.encerra_secao()
                         linha_separacao()
                 loga_personagem(email,senha)
@@ -1087,10 +1087,11 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'f1')
     
 def retorna_menu(trabalho):
+    id=0
     #0 MENU JOGAR
 
     #1 NOTICIAS VOLTAR/AVANÇAR
-    #4 PERSONAGEM VOLTAR
+    #3 PERSONAGEM VOLTAR
     #13 PRODUZIR/TRABALHOS DISPONIVEIS VOLTAR
     #14 TRABALHO ESPECIFICO VOLTAR/INICIAR
 
@@ -1102,22 +1103,17 @@ def retorna_menu(trabalho):
     #15 LICENÇA CANCELAR/AVANÇAR
     #16 TRABALHO ATRIBUTOS CANCELAR/BATEPAPO
 
-    #3TELA INICIAL
-    if trabalho==None:
-        licenca=''
-    else:
-        licenca=trabalho[4]
+    #false TELA INICIAL
+    licenca = configura_licenca(trabalho)
     erro=verifica_erro(licenca)
-    while erro!=0:
+    while erro!=0:#enquanto reconhecer algum erro
         if erro==3:
-            excluir_trabalho(f'{personagem_id}/Lista_desejo/{trabalho[0]}')
+            excluir_trabalho(f'{personagem_id}/Lista_desejo/{trabalho[id]}')
         erro=verifica_erro(licenca)
-        continue
     else:
         print(f'Reconhecendo menu.')
         linha_separacao()
-        texto_jogar = retorna_texto_sair()
-        if texto_jogar.replace(' ','').lower() == 'sair':
+        if retorna_texto_sair().replace(' ','').lower()=='sair':
             print(f'Menu jogar...')
             return 0
         else:
@@ -1128,22 +1124,14 @@ def retorna_menu(trabalho):
                 print(f'Menu notícias...')
                 linha_separacao()
                 return 1
-            elif ('voltar'in texto_menu and'conquistas'in texto_menu):
-                print(f'Menu personagem...')
-                linha_separacao()
-                return 4
-            elif ('voltar'in texto_menu and'profissões'in texto_menu):
-                print(f'Menu trabalhos diponíveis...')
-                linha_separacao()
-                return 13
-            elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'temponecessário'in texto_menu):
-                print(f'Menu trabalho específico...')
-                linha_separacao()
-                return 14
             elif ('fechar'in texto_menu and'jogar'in texto_menu):
                 print(f'Menu escolha de personagem...')
                 linha_separacao()
                 return 2
+            elif ('voltar'in texto_menu and'conquistas'in texto_menu):
+                print(f'Menu personagem...')
+                linha_separacao()
+                return 3
             elif ('fechar'in texto_menu and'interagir'in texto_menu):
                 print(f'Menu principal...')
                 linha_separacao()
@@ -1156,6 +1144,14 @@ def retorna_menu(trabalho):
                 print(f'Menu trabalhos atuais...')
                 linha_separacao()
                 return 12
+            elif ('voltar'in texto_menu and'profissões'in texto_menu):
+                print(f'Menu trabalhos diponíveis...')
+                linha_separacao()
+                return 13
+            elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'temponecessário'in texto_menu):
+                print(f'Menu trabalho específico...')
+                linha_separacao()
+                return 14
             elif ('cancelar'in texto_menu and'avançar'in texto_menu and'permiteexecutartrabalhos'in texto_menu):
                 print(f'Menu licenças...')
                 linha_separacao()
@@ -1176,6 +1172,12 @@ def retorna_menu(trabalho):
                 print(f'Menu não reconhecido...')
                 linha_separacao()
                 return False
+
+def configura_licenca(trabalho):
+    licenca=4
+    if trabalho==None:
+        return ''
+    return trabalho[licenca]
 
 def retorna_texto_menu_reconhecido():
     tela_inteira = retorna_atualizacao_tela()
