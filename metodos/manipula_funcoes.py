@@ -320,7 +320,7 @@ def verifica_menu_referencia():
             diferenca = cv2.subtract(frame_tela, menu_referencia)
             b, g, r = cv2.split(diferenca)
             if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-                print(f'x: {posicao[0]}, y: {posicao[1]}')
+                # print(f'x: {posicao[0]}, y: {posicao[1]}')
                 return True
         else:
             print(f'Tamanho do menu referência e frame da tela diferentes!')
@@ -842,7 +842,7 @@ def inicia_busca_trabalho():
         if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
             for profissao_necessaria in lista_profissao_necessaria:#percorre lista de profissao
                 menu=retorna_menu(None)
-                while menu!=11 or menu==41:
+                while menu!=11:
                     trata_menu(menu)
                     menu=retorna_menu(None)
                 nome_profissao = profissao_necessaria[nome]
@@ -887,7 +887,7 @@ def inicia_producao(trabalho):
     manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
     erro=verifica_erro(trabalho[4])
     if erro==0:
-        if retorna_menu(trabalho)==17:
+        if retorna_menu(trabalho)==17:#menu escolha equipamento
             manipula_teclado.click_especifico(2,'f2')
         menu=retorna_menu(trabalho)
         if menu==14:#trabalho especifico
@@ -1093,7 +1093,7 @@ def trata_menu(menu):
     elif menu==40:
         #Tela inicial do jogo
         manipula_teclado.click_especifico(1,'f1')
-    elif menu==False:
+    elif menu==41:
         #tela principal
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.click_especifico(1,'num1')
@@ -1125,11 +1125,14 @@ def retorna_menu(trabalho):
         erro=verifica_erro(licenca)
     else:
         print(f'Reconhecendo menu.')
-        linha_separacao()
         if retorna_texto_sair().replace(' ','').lower()=='sair':
             print(f'Menu jogar...')
             return 0
         else:
+            if verifica_menu_referencia():
+                print(f'Menu tela inicial...')
+                linha_separacao()
+                return 41
             texto_menu=retorna_texto_menu_reconhecido()
             print(texto_menu)
             if 'voltar' in texto_menu and'notícias' in texto_menu\
@@ -1181,10 +1184,6 @@ def retorna_menu(trabalho):
                 print(f'Menu oferta diária...')
                 linha_separacao()
                 return 40
-            elif verifica_menu_referencia():
-                print(f'Menu tela inicial...')
-                linha_separacao()
-                return 41
             else:
                 print(f'Menu não reconhecido...')
                 linha_separacao()
