@@ -671,7 +671,7 @@ def verifica_nome_personagem(nome_personagem):
     linha_separacao()
     return False
 
-def retorna_lista_profissao_verificada(personagem_id):
+def retorna_lista_profissao_verificada():
     print(f'Verificando profissões necessárias...')
     #cria lista vazia
     lista_profissao_verificada = []
@@ -793,7 +793,7 @@ def prepara_personagem(id_personagem):
             if verifica_nome_personagem(nome):#verificar qual personagem está logado
                 print('Inicia busca...')
                 linha_separacao()
-                while inicia_busca_trabalho(personagem_id):
+                while inicia_busca_trabalho():
                     continue
             else:#se o nome do personagem for diferente
                 menu=retorna_menu(None)
@@ -827,9 +827,10 @@ def loga_personagem(email, senha):
     print(f'Login efetuado com sucesso!')
     linha_separacao()
 
-def inicia_busca_trabalho(personagem_id):
-    posicao_profissao=0
-    lista_profissao_necessaria=retorna_lista_profissao_verificada(personagem_id)
+def inicia_busca_trabalho():
+    posicao=0
+    nome=1
+    lista_profissao_necessaria=retorna_lista_profissao_verificada()
     if len(lista_profissao_necessaria)>0:#verifica se a lista está vazia
         conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
         if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
@@ -838,11 +839,11 @@ def inicia_busca_trabalho(personagem_id):
                 while menu!=11:
                     trata_menu(menu)
                     menu=retorna_menu(None)
-                nome_profissao = profissao_necessaria[1]
-                manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao_profissao])
+                nome_profissao = profissao_necessaria[nome]
+                manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                 if posicao_trabalho!=0 and trabalho_lista_desejo!=None:#inicia processo de produção
-                    nome_trabalho_lista_desejo=trabalho_lista_desejo[1]
+                    nome_trabalho_lista_desejo=trabalho_lista_desejo[nome]
                     entra_trabalho_encontrado(posicao_trabalho)
                     verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo)
                     inicia_producao(trabalho_lista_desejo)
@@ -850,15 +851,8 @@ def inicia_busca_trabalho(personagem_id):
                     verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
                     inicia_producao(trabalho_lista_desejo)
                 if verifica_trabalho_concluido():
-                    tela_inteira = retorna_atualizacao_tela()
-                    frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
-                    nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
-                    manipula_teclado.click_especifico(1,'down')
-                    manipula_teclado.click_especifico(1,'f2')
-                    if verifica_erro('')==0:
-                        manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
-                    manipula_teclado.click_especifico(1,'up')
-                    manipula_teclado.click_especifico(1,'left')
+                    nome_trabalho_concluido=recupera_trabalho_concluido()
+                    muda_estado_trabalho_concluido(nome_trabalho_concluido)
                 else:
                     manipula_teclado.click_especifico(1,'left')
             return True
@@ -866,6 +860,20 @@ def inicia_busca_trabalho(personagem_id):
     print(f'Voltando.')
     linha_separacao()
     return False
+
+def muda_estado_trabalho_concluido(nome_trabalho_concluido):
+    if verifica_erro('')==0:
+        manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
+    manipula_teclado.click_especifico(1,'up')
+    manipula_teclado.click_especifico(1,'left')
+
+def recupera_trabalho_concluido():
+    tela_inteira = retorna_atualizacao_tela()
+    frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
+    nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
+    manipula_teclado.click_especifico(1,'down')
+    manipula_teclado.click_especifico(1,'f2')
+    return nome_trabalho_concluido
 
 def inicia_producao(trabalho):
     entra_licenca()
@@ -1244,7 +1252,7 @@ def funcao_teste(id_personagem):
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
     # atualiza_nova_tela()
-    # while inicia_busca_trabalho(personagem_id):
+    # while inicia_busca_trabalho():
     #     continue
     # entra_personagem_ativo('tolinda')
     # verifica_nome_personagem('Axe')
