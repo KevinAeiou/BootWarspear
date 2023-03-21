@@ -404,6 +404,7 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     time.sleep(1)
     for posicao_trabalho_reconhecido in range(4):
         nome_trabalho = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
+        print(f'Nome do trabalho disponível: {nome_trabalho}')
         #enquanto não comparar toda lista
         for trabalho_lista_desejo in conteudo_lista_desejo:
             #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
@@ -418,11 +419,10 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
                     return 0,trabalho_lista_desejo
                 if nome_trabalho == '':
                     break
-                print(f'Nome do trabalho disponível: {nome_trabalho}')
                 print(f'Nome do trabalho na lista: {nome_trabalho_lista_desejo}')
-                linha_separacao()
                 if nome_trabalho.replace(' ','').lower() in nome_trabalho_lista_desejo.replace(' ','').lower():
                     return posicao_trabalho_reconhecido,trabalho_lista_desejo
+        linha_separacao()
         yinicial_nome = yinicial_nome+70
     else:
         manipula_teclado.click_especifico(4,'up')
