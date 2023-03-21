@@ -789,11 +789,9 @@ def prepara_personagem(id_personagem):
     manipula_teclado.click_atalho_especifico('alt','tab')
     personagem_id=id_personagem
     lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)#cria uma lista de personagens ativos
-    dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
-    nome = dados_personagem[1]
-    email = dados_personagem[2]
-    senha = dados_personagem[3]
-    estado = dados_personagem[4]
+    nome, email, senha, estado = configura_atributos()
+    if estado!=1:#se o personagem estiver inativo, troca o estado
+        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
     for personagem in lista_personagem_ativo:#percorre a lista de personagens ativos
         if personagem==personagem_id:#verifica se personagem selecionado está na lista
             if verifica_nome_personagem(nome):#verificar qual personagem está logado
@@ -802,26 +800,41 @@ def prepara_personagem(id_personagem):
                 while inicia_busca_trabalho():
                     continue
             else:#se o nome do personagem for diferente
-                menu=retorna_menu(None)
-                while menu==1 or menu==2:
-                    manipula_teclado.click_especifico(1,'f1')
-                else:
-                    while menu!=41:
-                        manipula_teclado.click_mouse_esquerdo(1,2,35)
-                        linha_separacao()
-                        menu=retorna_menu(None)
-                    if menu!=0:
-                        manipula_teclado.encerra_secao()
-                        linha_separacao()
-                loga_personagem(email,senha)
-                while not entra_personagem_ativo(nome):
-                    continue
-                else:
-                    manipula_teclado.click_atalho_especifico('alt','tab')
-                    prepara_personagem(personagem_id)
+                if configura_login_personagem(email, senha):
+                    while not entra_personagem_ativo(nome):
+                        continue
+                    else:
+                        manipula_teclado.click_atalho_especifico('alt','tab')
+                        prepara_personagem(personagem_id)
             break
-    if estado!=1:#se o personagem estiver inativo, troca o estado
-        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
+
+def configura_login_personagem(email, senha):
+    menu=retorna_menu(None)
+    while menu==1 or menu==2:
+        manipula_teclado.click_especifico(1,'f1')
+        menu=retorna_menu(None)
+    if menu==0:
+        loga_personagem(email,senha)
+        return True
+    else:
+        while menu!=41:
+            manipula_teclado.click_mouse_esquerdo(1,2,35)
+            linha_separacao()
+            menu=retorna_menu(None)
+        if menu==41:
+            manipula_teclado.encerra_secao()
+            linha_separacao()
+            loga_personagem(email,senha)
+            return True
+    return False
+
+def configura_atributos():
+    dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
+    nome = dados_personagem[1]
+    email = dados_personagem[2]
+    senha = dados_personagem[3]
+    estado = dados_personagem[4]
+    return nome,email,senha,estado
     
 def loga_personagem(email, senha):
     print(f'Tentando logar conta personagem...')
