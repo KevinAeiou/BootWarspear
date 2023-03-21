@@ -308,19 +308,24 @@ def verifica_referencia_tela(referencia_anterior1):
         return False
     return True
 
-def verifica_menu_referencia(menu_referencia):
-    tela_inteira = retorna_atualizacao_tela()
+def verifica_menu_referencia():
+    posicao_menu=[[628,703],[1312,712]]#posição do menu referencia com a tela dividida ou cheia
+    menu_referencia=manipula_imagem.abre_imagem('modelos/modelo_menu_0.png')
+    tela_inteira=retorna_atualizacao_tela()
     tamanho_referencia = menu_referencia.shape[:2]
-    frame_tela = tela_inteira[712:712+menu_referencia.shape[0],1312:1312+menu_referencia.shape[1]]
-    tamanho_frame_tela = frame_tela.shape[:2]
-    if tamanho_frame_tela == tamanho_referencia:
-        diferenca = cv2.subtract(frame_tela, menu_referencia)
-        b, g, r = cv2.split(diferenca)
-        if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-            return True
-    else:
-        print(f'Tamanho do menu referência e frame da tela diferentes!')
-        linha_separacao()
+    for posicao in posicao_menu:
+        frame_tela = tela_inteira[posicao[1]:posicao[1]+tamanho_referencia[0],posicao[0]:posicao[0]+tamanho_referencia[1]]
+        tamanho_frame_tela = frame_tela.shape[:2]
+        if tamanho_frame_tela==tamanho_referencia:
+            diferenca = cv2.subtract(frame_tela, menu_referencia)
+            b, g, r = cv2.split(diferenca)
+            if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
+                print(f'x: {posicao[0]}, y: {posicao[1]}')
+                return True
+        else:
+            print(f'Tamanho do menu referência e frame da tela diferentes!')
+            linha_separacao()
+    return False
 
 def verifica_alvo():
     tela_inteira = retorna_atualizacao_tela()
@@ -349,11 +354,13 @@ def verifica_trabalho_concluido():
     string_trabalho="Trabalho concluído"
     if texto != '' and texto == string_trabalho:
         print(f'Trabalho concluído!')
+        linha_separacao()
         return True
     elif texto !='' and 'adicionarnovo' in texto.replace(' ','').lower():
         print(f'Nem um trabalho!')
     else:
         print(f'Em produção...')
+    linha_separacao()
     return False
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
@@ -754,7 +761,7 @@ def entra_personagem_ativo(nome):
                 manipula_teclado.click_especifico(1,'right')
             else:
                 manipula_teclado.click_especifico(1,'f2')
-                if not retorna_menu(None):
+                if retorna_menu(None)==41:
                     print(f'Login efetuado com sucesso!')
                     return True
                 else:
@@ -799,7 +806,7 @@ def prepara_personagem(id_personagem):
                 while menu==1 or menu==2:
                     manipula_teclado.click_especifico(1,'f1')
                 else:
-                    while menu!=False:
+                    while menu!=41:
                         manipula_teclado.click_mouse_esquerdo(1,2,35)
                         linha_separacao()
                         menu=retorna_menu(None)
@@ -835,7 +842,7 @@ def inicia_busca_trabalho():
         if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
             for profissao_necessaria in lista_profissao_necessaria:#percorre lista de profissao
                 menu=retorna_menu(None)
-                while menu!=11:
+                while menu!=11 or menu==41:
                     trata_menu(menu)
                     menu=retorna_menu(None)
                 nome_profissao = profissao_necessaria[nome]
@@ -910,7 +917,6 @@ def usa_habilidade():
     #muda p/ outra janela
     manipula_teclado.click_atalho_especifico('alt','tab')
     manipula_teclado.click_atalho_especifico('win','up')
-    modelo_menu_referencia = manipula_imagem.abre_imagem('modelos/modelo_menu_9.png')
     #cria lista com habilidades a serem usadas
     lista_habilidade = retorna_lista_habilidade_verificada()
     if len(lista_habilidade)==0:
@@ -920,7 +926,7 @@ def usa_habilidade():
         print(f'Buscando referência!')
         linha_separacao()
         while True:
-            if verifica_menu_referencia(modelo_menu_referencia):
+            if verifica_menu_referencia():
                 #verifica se está em modo de ataque
                 if verifica_modo_ataque() or verifica_alvo():
                     #percorre a lista de habilidades
@@ -933,7 +939,7 @@ def usa_habilidade():
                         tamanho_frame_habilidade = frame_habilidade.shape[:2]
                         #define o tamanho do modelo
                         tamanho_modelo = habilidade[1].shape[:2]
-                        if verifica_porcentagem_vida() and verifica_menu_referencia(modelo_menu_referencia):
+                        if verifica_porcentagem_vida() and verifica_menu_referencia():
                             manipula_teclado.click_especifico_habilidade(1,'t')
                         #compara os tamanhos das imagens
                         if tamanho_frame_habilidade == tamanho_modelo:
@@ -1057,7 +1063,16 @@ def trata_menu(menu):
     #16 TRABALHO ATRIBUTOS CANCELAR/BATEPAPO
 
     #3TELA INICIAL
-    if menu == 3:
+    if menu == 0:
+        #Tela inicial do jogo
+        manipula_teclado.click_especifico(1,'enter')
+    elif menu == 1:
+        #menu notícias
+        manipula_teclado.click_especifico(2,'f2')
+    elif menu == 2:
+        #menu seleção de perssonagem
+        manipula_teclado.click_especifico(1,'f2')
+    elif menu == 3:
         #menu principal
         manipula_teclado.click_especifico(1,'num1')
         manipula_teclado.click_especifico(1,'num7')
@@ -1075,23 +1090,14 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_especifico(3,'up')
         manipula_teclado.click_especifico(2,'left')
-    elif menu == 1:
-        #menu notícias
-        manipula_teclado.click_especifico(2,'f2')
-    elif menu == 2:
-        #menu seleção de perssonagem
-        manipula_teclado.click_especifico(1,'f2')
+    elif menu==40:
+        #Tela inicial do jogo
+        manipula_teclado.click_especifico(1,'f1')
     elif menu==False:
         #tela principal
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.click_especifico(1,'num1')
         manipula_teclado.click_especifico(1,'num7')
-    elif menu == 0:
-        #Tela inicial do jogo
-        manipula_teclado.click_especifico(1,'enter')
-    elif menu==40:
-        #Tela inicial do jogo
-        manipula_teclado.click_especifico(1,'f1')
     
 def retorna_menu(trabalho):
     id=0
@@ -1175,6 +1181,10 @@ def retorna_menu(trabalho):
                 print(f'Menu oferta diária...')
                 linha_separacao()
                 return 40
+            elif verifica_menu_referencia():
+                print(f'Menu tela inicial...')
+                linha_separacao()
+                return 41
             else:
                 print(f'Menu não reconhecido...')
                 linha_separacao()
@@ -1190,7 +1200,7 @@ def retorna_texto_menu_reconhecido():
     tela_inteira=retorna_atualizacao_tela()
     frame_menu=tela_inteira[187:187+450,165:165+330]
     frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
-    manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
+    # manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
     texto_menu = manipula_imagem.reconhece_texto(frame_menu_tratado)
     return texto_menu.lower().replace(' ','')
 
@@ -1237,10 +1247,15 @@ def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
     # retorna_menu(None)
-    retorna_texto_menu_reconhecido()
+    # retorna_texto_menu_reconhecido()
     # verifica_erro('')
-    # manipula_teclado.click_atalho_especifico('alt','tab')
+    manipula_teclado.click_atalho_especifico('alt','tab')
     # manipula_teclado.click_atalho_especifico('win','up')
+    if verifica_menu_referencia():
+        print('Achei!')
+    else:
+        print('Não achei...')
+    manipula_teclado.click_atalho_especifico('alt','tab')
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
