@@ -757,6 +757,7 @@ def entra_personagem_ativo(nome):
     while menu!=2:
         if menu==0:#se estiver no menu jogar
             manipula_teclado.click_especifico(1,'enter')
+            time.sleep(1)
             menu=retorna_menu(None)
         elif menu==1:#se estiver no menu noticias
             manipula_teclado.click_especifico(1,'f2')
@@ -1155,10 +1156,6 @@ def retorna_menu(trabalho):
             print(f'Menu jogar...')
             return 0
         else:
-            if verifica_menu_referencia():
-                print(f'Menu tela inicial...')
-                linha_separacao()
-                return 41
             texto_menu=retorna_texto_menu_reconhecido()
             print(texto_menu)
             if 'voltar' in texto_menu and'notícias' in texto_menu\
@@ -1210,6 +1207,10 @@ def retorna_menu(trabalho):
                 print(f'Menu oferta diária...')
                 linha_separacao()
                 return 40
+            elif verifica_menu_referencia():
+                print(f'Menu tela inicial...')
+                linha_separacao()
+                return 41
             else:
                 print(f'Menu não reconhecido...')
                 linha_separacao()
@@ -1272,7 +1273,6 @@ def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
     manipula_teclado.click_atalho_especifico('alt','tab')
-    # retorna_menu(None)
     # retorna_texto_menu_reconhecido()
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('win','up')
@@ -1280,6 +1280,7 @@ def funcao_teste(id_personagem):
         print('Achei!')
     else:
         print('Não achei...')
+    retorna_menu(None)
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
