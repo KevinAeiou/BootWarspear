@@ -781,7 +781,6 @@ def prepara_personagem(id_personagem):
     #e o indice 1=nome da profissão
     manipula_teclado.click_atalho_especifico('alt','tab')
     personagem_id=id_personagem
-
     lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)#cria uma lista de personagens ativos
     dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
     nome = dados_personagem[1]
@@ -1188,10 +1187,10 @@ def configura_licenca(trabalho):
     return trabalho[licenca]
 
 def retorna_texto_menu_reconhecido():
-    tela_inteira = retorna_atualizacao_tela()
-    frame_menu = tela_inteira[187:187+450,140:140+400]
+    tela_inteira=retorna_atualizacao_tela()
+    frame_menu=tela_inteira[187:187+450,165:165+330]
     frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
-    # manipula_imagem.mostra_imagem(0,frame_menu,'Teste')
+    manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
     texto_menu = manipula_imagem.reconhece_texto(frame_menu_tratado)
     return texto_menu.lower().replace(' ','')
 
@@ -1237,7 +1236,8 @@ def entra_usuario():
 def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
-    retorna_menu(None)
+    # retorna_menu(None)
+    retorna_texto_menu_reconhecido()
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('alt','tab')
     # manipula_teclado.click_atalho_especifico('win','up')
