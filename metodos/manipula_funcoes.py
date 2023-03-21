@@ -309,22 +309,29 @@ def verifica_referencia_tela(referencia_anterior1):
     return True
 
 def verifica_menu_referencia():
-    posicao_menu=[[628,703],[1312,712]]#posição do menu referencia com a tela dividida ou cheia
     menu_referencia=manipula_imagem.abre_imagem('modelos/modelo_menu_0.png')
     tela_inteira=retorna_atualizacao_tela()
+    tamanho_tela = tela_inteira.shape[:2]
     tamanho_referencia = menu_referencia.shape[:2]
-    for posicao in posicao_menu:
-        frame_tela = tela_inteira[posicao[1]:posicao[1]+tamanho_referencia[0],posicao[0]:posicao[0]+tamanho_referencia[1]]
-        tamanho_frame_tela = frame_tela.shape[:2]
-        if tamanho_frame_tela==tamanho_referencia:
-            diferenca = cv2.subtract(frame_tela, menu_referencia)
-            b, g, r = cv2.split(diferenca)
-            if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-                # print(f'x: {posicao[0]}, y: {posicao[1]}')
-                return True
+    for x in range(420,tamanho_tela[1]):
+        if x+tamanho_referencia[1]<=tamanho_tela[1]:
+            for y in range(700,tamanho_tela[0]):
+                if y+tamanho_referencia[0]<=tamanho_tela[0]:
+                    frame_tela=tela_inteira[y:y+tamanho_referencia[0],x:x+tamanho_referencia[1]]
+                    tamanho_frame_tela = frame_tela.shape[:2]
+                    if tamanho_frame_tela==tamanho_referencia:
+                        diferenca = cv2.subtract(frame_tela, menu_referencia)
+                        b, g, r = cv2.split(diferenca)
+                        if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
+                            # print(f'x: {posicao[0]}, y: {posicao[1]}')
+                            return True
+                    else:
+                        print(f'Tamanho do menu referência e frame da tela diferentes!')
+                        linha_separacao()
+                else:
+                    break
         else:
-            print(f'Tamanho do menu referência e frame da tela diferentes!')
-            linha_separacao()
+            break
     return False
 
 def verifica_alvo():
@@ -746,28 +753,34 @@ def passa_proxima_posicao():
 
 def entra_personagem_ativo(nome):
     print(f'Buscando personagem ativo...')
-    linha_separacao()
-    menu = retorna_menu(None)
-    while menu != 2:
-        if menu == 0:#se estiver no menu jogar
+    menu=retorna_menu(None)
+    while menu!=2:
+        if menu==0:#se estiver no menu jogar
             manipula_teclado.click_especifico(1,'enter')
-        elif menu == 1:#se estiver no menu noticias
+            menu=retorna_menu(None)
+        elif menu==1:#se estiver no menu noticias
             manipula_teclado.click_especifico(1,'f2')
-        menu = retorna_menu(None)
-    else:
+            menu=2
+    else:#menu seleção de personagem
         manipula_teclado.vai_inicio_fila()                
         for x in range(13):
             if not verifica_nome_personagem(nome):
                 manipula_teclado.click_especifico(1,'right')
             else:
                 manipula_teclado.click_especifico(1,'f2')
-                if retorna_menu(None)==41:
-                    print(f'Login efetuado com sucesso!')
-                    return True
-                else:
-                    print(f'Erro ao tentar entrar...')
+                time.sleep(1)
+                erro=verifica_erro('')
+                if erro==0 or erro==5:
+                    if retorna_menu(None)==41:
+                        print(f'Login efetuado com sucesso!')
+                        linha_separacao()
+                        return True
+                print(f'Erro ao tentar entrar...')
+                linha_separacao()
+                break
         else:
             print(f'Personagem não encontrado!')
+            linha_separacao()
             manipula_teclado.click_especifico(1,'f1')
     return False
 
@@ -1258,16 +1271,15 @@ def entra_usuario():
 def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
+    manipula_teclado.click_atalho_especifico('alt','tab')
     # retorna_menu(None)
     # retorna_texto_menu_reconhecido()
     # verifica_erro('')
-    manipula_teclado.click_atalho_especifico('alt','tab')
     # manipula_teclado.click_atalho_especifico('win','up')
     if verifica_menu_referencia():
         print('Achei!')
     else:
         print('Não achei...')
-    manipula_teclado.click_atalho_especifico('alt','tab')
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
@@ -1281,6 +1293,7 @@ def funcao_teste(id_personagem):
     # atualiza_nova_tela()
     # while inicia_busca_trabalho():
     #     continue
-    # entra_personagem_ativo('tolinda')
+    # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
+    manipula_teclado.click_atalho_especifico('alt','tab')
 #funcao_teste()
