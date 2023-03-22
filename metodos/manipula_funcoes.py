@@ -400,10 +400,14 @@ def retorna_licenca_reconhecida():
     licenca_reconhecida = manipula_imagem.reconhece_texto(frame_tela_equalizado)
     return licenca_reconhecida
 #modifica 16/01
-def retorna_producao_recursos(nome_trabalho_lista_desejo):
-    lista_producao_recursos = ['Grande coleção de recursos comuns','Melhoria da substância comum','Melhorar licença comum','Licença de produção do aprediz','Melhoria da substância composta','Coleta em massa de recursos avançados']
-    for x in lista_producao_recursos:
-        if nome_trabalho_lista_desejo.replace(' ','').lower() in x.replace(' ','').lower():
+def retorna_producao_recursos(nome_trabalho):
+    #Grande coleção de rec
+    lista_producao_recursos = ([
+        'Grande coleção de recursos comuns','Melhoria da substância comum',
+        'Melhorar licença comum','Licença de produção do aprediz',
+        'Melhoria da substância composta','Coleta em massa de recursos avançados'])
+    for trabalho in lista_producao_recursos:
+        if nome_trabalho.replace(' ','').lower() in trabalho.replace(' ','').lower():
             return True
     return False
 
@@ -424,24 +428,25 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     #sempre faz três verificações
     time.sleep(1)
     for posicao_trabalho_reconhecido in range(4):
-        nome_trabalho = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
-        if nome_trabalho=='':
+        nome_trabalho_reconhecido = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
+        if nome_trabalho_reconhecido=='':
             break
-        print(f'Nome do trabalho disponível: {nome_trabalho}')
+        print(f'Nome do trabalho disponível: {nome_trabalho_reconhecido}')
         #enquanto não comparar toda lista
         for trabalho_lista_desejo in conteudo_lista_desejo:
             #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
-            nome_trabalho_lista_desejo = trabalho_lista_desejo[1]
-            nome_profissao_lista_desejo = trabalho_lista_desejo[2]
-            raridade_trabalho_lista_desejo = trabalho_lista_desejo[5]
+            nome_trabalho = trabalho_lista_desejo[1]
+            profissao_trabalho = trabalho_lista_desejo[2]
+            raridade_trabalho = trabalho_lista_desejo[5]
             #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-            if profissao==nome_profissao_lista_desejo:
-                if raridade_trabalho_lista_desejo == 'Comum':
+            if profissao==profissao_trabalho:
+                if raridade_trabalho=='Comum':
                     print(f'Verificando trabalho comum...')
                     linha_separacao()
-                    return 0,trabalho_lista_desejo
-                print(f'Nome do trabalho na lista: {nome_trabalho_lista_desejo}')
-                if nome_trabalho.replace(' ','').lower() in nome_trabalho_lista_desejo.replace(' ','').lower():
+                    return -1,trabalho_lista_desejo
+                print(f'Nome do trabalho na lista: {nome_trabalho}')
+                if nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
+                    print(f'{nome_trabalho} reconhecido...')
                     return posicao_trabalho_reconhecido,trabalho_lista_desejo
         linha_separacao()
         yinicial_nome = yinicial_nome+70
@@ -449,7 +454,7 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     manipula_teclado.click_especifico(4,'up')
     manipula_teclado.click_especifico(1,'left')
     linha_separacao()
-    return 0,None
+    return -1,None
 
 def verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao_verificada):
     manipula_teclado.click_especifico(5,'down')
@@ -881,12 +886,11 @@ def inicia_busca_trabalho():
                 nome_profissao = profissao_necessaria[nome]
                 manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
-                if posicao_trabalho!=0 and trabalho_lista_desejo!=None:#inicia processo de produção
-                    nome_trabalho_lista_desejo=trabalho_lista_desejo[nome]
+                if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo de produção
                     entra_trabalho_encontrado(posicao_trabalho)
-                    verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo)
+                    verifica_producao_recursos(posicao_trabalho, trabalho_lista_desejo[nome])
                     inicia_producao(trabalho_lista_desejo)
-                elif posicao_trabalho==0 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
+                elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
                     verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
                     inicia_producao(trabalho_lista_desejo)
                 if verifica_trabalho_concluido():
@@ -937,6 +941,7 @@ def inicia_producao(trabalho):
         manipula_cliente.excluir_trabalho(caminho_trabalho)
     
 def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
+    print(nome_trabalho_lista_desejo)
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'enter')
@@ -944,6 +949,9 @@ def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
             sai_trabalho_encontrado(posicao_trabalho)
         else:
             manipula_teclado.click_especifico(1,'f1')
+    else:
+        print(f'Trabalho de produção de recursos...')
+        linha_separacao()
 
 def usa_habilidade():
     #719:752, 85:128 137:180 189:232
@@ -1289,10 +1297,11 @@ def funcao_teste(id_personagem):
     manipula_teclado.click_atalho_especifico('alt','tab')
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('win','up')
-    if verifica_menu_referencia():
-        print('Achei!')
-    else:
-        print('Não achei...')
+    # if verifica_menu_referencia():
+    #     print('Achei!')
+    # else:
+    #     print('Não achei...')
+    verifica_producao_recursos(0,'Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
     # retorna_menu(None)
     # lista_habilidade = retorna_lista_habilidade_verificada()
