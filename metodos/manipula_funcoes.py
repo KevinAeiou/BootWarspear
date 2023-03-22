@@ -1223,12 +1223,20 @@ def configura_licenca(trabalho):
     return trabalho[licenca]
 
 def retorna_texto_menu_reconhecido():
+    x=0
+    y=1
+    largura=2
+    altura=3
+    texto_concatenado=''
+    posicoes_menus=[[249,195,183,73],[287,412,108,23],[169,611,343,31]]
     tela_inteira=retorna_atualizacao_tela()
-    frame_menu=tela_inteira[187:187+450,165:165+330]
-    frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
-    # manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
-    texto_menu = manipula_imagem.reconhece_texto(frame_menu_tratado)
-    return texto_menu.lower().replace(' ','')
+    for posicao in posicoes_menus:
+        frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
+        frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
+        texto_menu=manipula_imagem.reconhece_texto(frame_menu_tratado)
+        texto_concatenado=texto_concatenado+texto_menu
+    # manipula_imagem.mostra_imagem(0,texto_concatenado,'Teste')
+    return texto_concatenado.lower().replace(' ','')
 
 def retorna_texto_sair():
     tela_inteira = retorna_atualizacao_tela()
@@ -1273,14 +1281,14 @@ def funcao_teste(id_personagem):
     global personagem_id
     personagem_id=id_personagem
     manipula_teclado.click_atalho_especifico('alt','tab')
-    # retorna_texto_menu_reconhecido()
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('win','up')
     if verifica_menu_referencia():
         print('Achei!')
     else:
         print('Não achei...')
-    retorna_menu(None)
+    print(retorna_texto_menu_reconhecido())
+    # retorna_menu(None)
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
