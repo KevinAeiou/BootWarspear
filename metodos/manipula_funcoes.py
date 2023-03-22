@@ -310,6 +310,7 @@ def verifica_referencia_tela(referencia_anterior1):
 
 def verifica_menu_referencia():
     menu_referencia=manipula_imagem.abre_imagem('modelos/modelo_menu_0.png')
+    histograma_menu_referencia=manipula_imagem.retorna_histograma(menu_referencia)
     tela_inteira=retorna_atualizacao_tela()
     tamanho_tela = tela_inteira.shape[:2]
     tamanho_referencia = menu_referencia.shape[:2]
@@ -318,12 +319,18 @@ def verifica_menu_referencia():
             for y in range(700,tamanho_tela[0]):
                 if y+tamanho_referencia[0]<=tamanho_tela[0]:
                     frame_tela=tela_inteira[y:y+tamanho_referencia[0],x:x+tamanho_referencia[1]]
+                    # histograma_frame=manipula_imagem.retorna_histograma(frame_tela)
+                    # if manipula_imagem.retorna_comparacao_histogramas(histograma_menu_referencia,histograma_frame)==0:
+                    #     print(f'x: {x}, y: {y}')
+                    #     manipula_imagem.mostra_imagem(0,frame_tela,'teste')
+                    #     return True
                     tamanho_frame_tela = frame_tela.shape[:2]
                     if tamanho_frame_tela==tamanho_referencia:
                         diferenca = cv2.subtract(frame_tela, menu_referencia)
                         b, g, r = cv2.split(diferenca)
                         if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-                            # print(f'x: {posicao[0]}, y: {posicao[1]}')
+                            # print(f'x: {x}, y: {y}')
+                            # manipula_imagem.mostra_imagem(0,frame_tela,'teste')
                             return True
                     else:
                         print(f'Tamanho do menu referência e frame da tela diferentes!')
@@ -1159,7 +1166,7 @@ def retorna_menu(trabalho):
             texto_menu=retorna_texto_menu_reconhecido()
             print(texto_menu)
             if 'voltar' in texto_menu and'notícias' in texto_menu\
-                and'avancar' in texto_menu:
+                and'avançar' in texto_menu:
                 print(f'Menu notícias...')
                 linha_separacao()
                 return 1
@@ -1228,14 +1235,14 @@ def retorna_texto_menu_reconhecido():
     largura=2
     altura=3
     texto_concatenado=''
-    posicoes_menus=[[249,195,183,73],[287,412,108,23],[169,611,343,31]]
+    posicoes_menus=[[249,195,183,73],[287,412,108,30],[169,603,343,40]]
     tela_inteira=retorna_atualizacao_tela()
     for posicao in posicoes_menus:
         frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
         frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
+        # manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
         texto_menu=manipula_imagem.reconhece_texto(frame_menu_tratado)
         texto_concatenado=texto_concatenado+texto_menu
-    # manipula_imagem.mostra_imagem(0,texto_concatenado,'Teste')
     return texto_concatenado.lower().replace(' ','')
 
 def retorna_texto_sair():
@@ -1287,7 +1294,7 @@ def funcao_teste(id_personagem):
         print('Achei!')
     else:
         print('Não achei...')
-    print(retorna_texto_menu_reconhecido())
+    # print(retorna_texto_menu_reconhecido())
     # retorna_menu(None)
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
