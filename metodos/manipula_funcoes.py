@@ -425,6 +425,8 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     time.sleep(1)
     for posicao_trabalho_reconhecido in range(4):
         nome_trabalho = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
+        if nome_trabalho=='':
+            break
         print(f'Nome do trabalho disponível: {nome_trabalho}')
         #enquanto não comparar toda lista
         for trabalho_lista_desejo in conteudo_lista_desejo:
@@ -438,19 +440,16 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
                     print(f'Verificando trabalho comum...')
                     linha_separacao()
                     return 0,trabalho_lista_desejo
-                if nome_trabalho == '':
-                    break
                 print(f'Nome do trabalho na lista: {nome_trabalho_lista_desejo}')
                 if nome_trabalho.replace(' ','').lower() in nome_trabalho_lista_desejo.replace(' ','').lower():
                     return posicao_trabalho_reconhecido,trabalho_lista_desejo
         linha_separacao()
         yinicial_nome = yinicial_nome+70
-    else:
-        manipula_teclado.click_especifico(4,'up')
-        manipula_teclado.click_especifico(1,'left')
-        print(f'Nem um trabalho disponível está na lista de desejos.')
-        linha_separacao()
-        return 0,None
+    print(f'Nem um trabalho disponível está na lista de desejos.')
+    manipula_teclado.click_especifico(4,'up')
+    manipula_teclado.click_especifico(1,'left')
+    linha_separacao()
+    return 0,None
 
 def verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao_verificada):
     manipula_teclado.click_especifico(5,'down')
