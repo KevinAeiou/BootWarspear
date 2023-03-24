@@ -941,7 +941,6 @@ def inicia_producao(trabalho):
         manipula_cliente.excluir_trabalho(caminho_trabalho)
     
 def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
-    print(nome_trabalho_lista_desejo)
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'enter')
@@ -1242,7 +1241,7 @@ def retorna_texto_menu_reconhecido():
     largura=2
     altura=3
     texto_concatenado=''
-    posicoes_menus=[[249,195,183,73],[287,412,108,30],[169,603,343,40]]
+    posicoes_menus=[[249,195,183,73],[287,412,108,30],[169,600,343,43]]
     tela_inteira=retorna_atualizacao_tela()
     for posicao in posicoes_menus:
         frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
@@ -1301,9 +1300,9 @@ def funcao_teste(id_personagem):
     #     print('Achei!')
     # else:
     #     print('Não achei...')
-    verifica_producao_recursos(0,'Grande coleção de recursos comuns')
+    # verifica_producao_recursos(0,'Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
-    # retorna_menu(None)
+    retorna_menu(None)
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
