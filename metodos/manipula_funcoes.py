@@ -955,9 +955,7 @@ def inicia_producao(trabalho):
                 continue
         elif erro==3:
             caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
-            manipula_cliente.excluir_trabalho(caminho_trabalho)
-    else:
-        
+            manipula_cliente.excluir_trabalho(caminho_trabalho)        
     
 def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
@@ -1235,7 +1233,7 @@ def retorna_menu(trabalho):
                 print(f'Menu escolha de equipamento...')
                 linha_separacao()
                 return 17
-            elif ('fechar'in texto_menu and'ofertadiária'in texto_menu):
+            elif ('ofertadiária'in texto_menu):
                 print(f'Menu oferta diária...')
                 linha_separacao()
                 return 40
@@ -1260,7 +1258,7 @@ def retorna_texto_menu_reconhecido():
     largura=2
     altura=3
     texto_concatenado=''
-    posicoes_menus=[[249,195,183,73],[287,412,108,30],[169,600,343,43]]
+    posicoes_menus=[[249,195,183,105],[287,412,108,30],[169,600,343,43]]
     tela_inteira=retorna_atualizacao_tela()
     for posicao in posicoes_menus:
         frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
