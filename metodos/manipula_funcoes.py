@@ -378,27 +378,43 @@ def verifica_trabalho_concluido():
     return False
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
-    licenca_reconhecida = retorna_licenca_reconhecida()
+    lista_ciclo=[]
     print(f"Buscando: {licenca_trabalho}")
     linha_separacao()
+    licenca_reconhecida=retorna_licenca_reconhecida()
+    if not licenca_reconhecida:
+        return False
     if 'licençasdeproduçaomaspode'in licenca_reconhecida.replace(' ','').lower():
         print(f"Parando programa...")
         exit()
     while not licenca_reconhecida.replace(' ','').lower()in licenca_trabalho.replace(' ','').lower():
         manipula_teclado.click_especifico(1,"right")
+        lista_ciclo.append(licenca_reconhecida)
         licenca_reconhecida=retorna_licenca_reconhecida()
         print(f'Licença reconhecida: {licenca_reconhecida}.')
-        if 'nenhumitem'in licenca_reconhecida.replace(' ','').lower():
-            licenca_trabalho='licençadeproduçãodoiniciante'
+        if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
+            licenca_reconhecida='licençadeproduçãodoiniciante'
     else:#se encontrou a licença buscada
         manipula_teclado.click_especifico(1,"f2")
+        return True
 
 def retorna_licenca_reconhecida():
-    tela_inteira = retorna_atualizacao_tela()
-    frame_tela = tela_inteira[275:317,169:512]
-    frame_tela_equalizado = manipula_imagem.retorna_imagem_equalizada(frame_tela)
-    licenca_reconhecida = manipula_imagem.reconhece_texto(frame_tela_equalizado)
-    return licenca_reconhecida
+    lista_licencas=['iniciante','principiante','aprendiz','mestre','nenhumitem']
+    tela_inteira=retorna_atualizacao_tela()
+    frame_tela=tela_inteira[275:317,169:512]
+    frame_tela_equalizado=manipula_imagem.retorna_imagem_equalizada(frame_tela)
+    licenca_reconhecida=manipula_imagem.reconhece_texto(frame_tela_equalizado)
+    for licenca in lista_licencas:
+        if licenca in licenca_reconhecida.replace(' ','').lower():
+            return licenca_reconhecida
+    else:
+        return False
+    
+def verifica_ciclo(lista):
+    if len(lista)>=4:
+        if lista[0]==lista[-1]:
+            return True
+    return False
 #modifica 16/01
 def retorna_producao_recursos(nome_trabalho):
     #Grande coleção de rec
@@ -919,26 +935,29 @@ def recupera_trabalho_concluido():
     return nome_trabalho_concluido
 
 def inicia_producao(trabalho):
+    licenca=4
     entra_licenca()
-    verifica_licenca(trabalho[4])#verifica tipo de licença de produção
-    manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
-    erro=verifica_erro(trabalho[4])
-    if erro==0:
-        if retorna_menu(trabalho)==17:#menu escolha equipamento
-            manipula_teclado.click_especifico(2,'f2')
-        menu=retorna_menu(trabalho)
-        if menu==14:#trabalho especifico
-            manipula_teclado.click_especifico(1,'f2')
-            manipula_teclado.click_especifico(9,'up')
-            manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
-        elif menu==12:#trabalhos atuais
-            manipula_teclado.click_especifico(9,'up')
-            manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
-        while verifica_erro(trabalho[4])!=0:
-            continue
-    elif erro==3:
-        caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
-        manipula_cliente.excluir_trabalho(caminho_trabalho)
+    if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
+        manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
+        erro=verifica_erro(trabalho[licenca])
+        if erro==0:
+            if retorna_menu(trabalho)==17:#menu escolha equipamento
+                manipula_teclado.click_especifico(2,'f2')
+            menu=retorna_menu(trabalho)
+            if menu==14:#trabalho especifico
+                manipula_teclado.click_especifico(1,'f2')
+                manipula_teclado.click_especifico(9,'up')
+                manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
+            elif menu==12:#trabalhos atuais
+                manipula_teclado.click_especifico(9,'up')
+                manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
+            while verifica_erro(trabalho[licenca])!=0:
+                continue
+        elif erro==3:
+            caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
+            manipula_cliente.excluir_trabalho(caminho_trabalho)
+    else:
+        
     
 def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
