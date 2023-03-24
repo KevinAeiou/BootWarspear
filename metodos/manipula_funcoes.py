@@ -1141,6 +1141,7 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'left')
     elif menu == 13:
         #menu trabalhos disponiveis
+        manipula_teclado.click_especifico(1,'up')
         manipula_teclado.click_especifico(2,'left')
     elif menu == 14:
         #menu trabalho específico
@@ -1178,7 +1179,8 @@ def retorna_menu(trabalho):
     erro=verifica_erro(licenca)
     while erro!=0:#enquanto reconhecer algum erro
         if erro==3:
-            excluir_trabalho(f'{personagem_id}/Lista_desejo/{trabalho[id]}')
+            if trabalho!=None:
+                excluir_trabalho(f'{personagem_id}/Lista_desejo/{trabalho[id]}')
         erro=verifica_erro(licenca)
     else:
         print(f'Reconhecendo menu.')
