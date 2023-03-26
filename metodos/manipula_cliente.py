@@ -188,14 +188,18 @@ def consulta_lista_desejo(tipo_lista):
     return lista_desejo
 
 def consulta_lista_personagem(usuario_id):
-    lista_desejo=[]
+    lista_personagem=[]
     for x in range(10):
         try:
             requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
             dicionario_requisicao = requisicao.json()
             for id in dicionario_requisicao:
                 if dicionario_requisicao[id]['estado']==1:
-                    lista_desejo.append(id)
+                    id_personagem=dicionario_requisicao[id]['id']
+                    nome_personagem=dicionario_requisicao[id]['nome']
+                    email_personagem=dicionario_requisicao[id]['email']
+                    senha_personagem=dicionario_requisicao[id]['senha']
+                    lista_personagem.append([id_personagem,nome_personagem,email_personagem,senha_personagem])
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
@@ -203,7 +207,7 @@ def consulta_lista_personagem(usuario_id):
         print(f'Limite de tentativas de conexão atingido.')
     #print(requisicao)
     #print(requisicao.text)
-    return lista_desejo
+    return lista_personagem
 
 #modificado 23/01
 def muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho,novo_estado):
@@ -237,9 +241,6 @@ def muda_estado_personagem(usuario_id,personagem_id):
                     nome = dicionario_requisicao[id]['nome']
                     requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json',data=json.dumps(dados))
                     print(f'Estado do {nome} agora é ativo.')
-                else:
-                    dados = {'estado':0}
-                    requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json',data=json.dumps(dados))
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')

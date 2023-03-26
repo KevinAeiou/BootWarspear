@@ -421,9 +421,9 @@ def retorna_producao_recursos(nome_trabalho):
     lista_producao_recursos = ([
         'Grande coleção de recursos comuns','Melhoria da substância comum',
         'Melhorar licença comum','Licença de produção do aprediz',
-        'Melhoria da substância composta','Coleta em massa de recursos avançados'])
+        'Melhoria da substância composta','de recursos avançados'])
     for trabalho in lista_producao_recursos:
-        if nome_trabalho.replace(' ','').lower() in trabalho.replace(' ','').lower():
+        if  trabalho.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
             return True
     return False
 
@@ -568,7 +568,7 @@ def verifica_erro(nome_licenca):
     elif erro == 7:
         print(f'Recuperar presente depois.')
         linha_separacao()
-        manipula_teclado.click_especifico(2,'f1')
+        manipula_teclado.click_especifico(1,'f1')
         return 7
     elif erro == 8:
         print(f'Espera trabalho ser concluido.')
@@ -803,6 +803,13 @@ def entra_personagem_ativo(nome):
                         print(f'Login efetuado com sucesso!')
                         linha_separacao()
                         return True
+                if retorna_menu(None)==40:
+                    manipula_teclado.click_especifico(1,'f1')
+                else:
+                    verifica_erro('')
+                    print(f'Login efetuado com sucesso!')
+                    linha_separacao()
+                    return True
                 print(f'Erro ao tentar entrar...')
                 linha_separacao()
                 break
@@ -833,21 +840,25 @@ def prepara_personagem(id_personagem):
     nome, email, senha, estado = configura_atributos()
     if estado!=1:#se o personagem estiver inativo, troca o estado
         manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
-    for personagem in lista_personagem_ativo:#percorre a lista de personagens ativos
-        if personagem==personagem_id:#verifica se personagem selecionado está na lista
-            if verifica_nome_personagem(nome):#verificar qual personagem está logado
-                print('Inicia busca...')
-                linha_separacao()
-                while inicia_busca_trabalho():
-                    continue
-            else:#se o nome do personagem for diferente
-                if configura_login_personagem(email, senha):
-                    while not entra_personagem_ativo(nome):
-                        continue
-                    else:
-                        manipula_teclado.click_atalho_especifico('alt','tab')
-                        prepara_personagem(personagem_id)
-            break
+    busca_lista_personagem_ativo(lista_personagem_ativo)
+
+def busca_lista_personagem_ativo(lista_personagem):
+    global personagem_id
+    personagem_id=lista_personagem[0][0]
+    if verifica_nome_personagem(lista_personagem[0][1]):
+        print('Inicia busca...')
+        linha_separacao()
+        inicia_busca_trabalho()
+        manipula_teclado.click_mouse_esquerdo(1,2,35)
+        manipula_teclado.encerra_secao()
+        del lista_personagem[0]
+        if len(lista_personagem)==0:
+            lista_personagem=manipula_cliente.consulta_lista_personagem(usuario_id)
+    else:
+        if configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
+            while not entra_personagem_ativo(lista_personagem[0][1]):
+                continue
+    busca_lista_personagem_ativo(lista_personagem)
 
 def configura_login_personagem(email, senha):
     menu=retorna_menu(None)
@@ -940,7 +951,13 @@ def inicia_producao(trabalho):
     if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
         manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
         erro=verifica_erro(trabalho[licenca])
-        if erro==0:
+        while erro!=0:
+            if erro==3:
+                caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
+                manipula_cliente.excluir_trabalho(caminho_trabalho)        
+                return
+            erro=verifica_erro(trabalho[licenca])
+        else:
             if retorna_menu(trabalho)==17:#menu escolha equipamento
                 manipula_teclado.click_especifico(2,'f2')
             menu=retorna_menu(trabalho)
@@ -953,9 +970,6 @@ def inicia_producao(trabalho):
                 manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
             while verifica_erro(trabalho[licenca])!=0:
                 continue
-        elif erro==3:
-            caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
-            manipula_cliente.excluir_trabalho(caminho_trabalho)        
     
 def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
@@ -1315,13 +1329,15 @@ def funcao_teste(id_personagem):
     manipula_teclado.click_atalho_especifico('alt','tab')
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('win','up')
+    lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
+    busca_lista_personagem_ativo(lista_personagem_ativo)
     # if verifica_menu_referencia():
     #     print('Achei!')
     # else:
     #     print('Não achei...')
     # verifica_producao_recursos(0,'Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
-    retorna_menu(None)
+    # retorna_menu(None)
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
