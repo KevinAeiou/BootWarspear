@@ -35,6 +35,7 @@ menu_trab_atributos=16
 menu_esc_equipamento=17
 menu_ofe_diaria=40
 menu_inicial=41
+lista_personagem_ativo=[]
 
 usuario_id = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
@@ -833,33 +834,34 @@ def prepara_personagem(id_personagem):
     #e o indice 1=nome da profissão
     manipula_teclado.click_atalho_especifico('alt','tab')
     personagem_id=id_personagem
-    lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)#cria uma lista de personagens ativos
     nome, email, senha, estado = configura_atributos()
     if estado!=1:#se o personagem estiver inativo, troca o estado
         manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
-    while busca_lista_personagem_ativo(lista_personagem_ativo):
-        continue
+    busca_lista_personagem_ativo()
     
 
-def busca_lista_personagem_ativo(lista_personagem):
+def busca_lista_personagem_ativo():
     global personagem_id
-    personagem_id=lista_personagem[0][0]
-    if verifica_nome_personagem(lista_personagem[0][1]):
-        print('Inicia busca...')
-        linha_separacao()
-        if inicia_busca_trabalho():
-            if verifica_erro(None)!=0:
-                return True
-            manipula_teclado.click_mouse_esquerdo(1,2,35)
-            manipula_teclado.encerra_secao()
-        del lista_personagem[0]
-        if len(lista_personagem)==0:
-            lista_personagem=manipula_cliente.consulta_lista_personagem(usuario_id)
-    else:
-        if configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
-            while not entra_personagem_ativo(lista_personagem[0][1]):
-                continue
-    return True
+    lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+    while True:
+        if len(lista_personagem_ativo)==0:
+            print(f'Lista vazia. Buscando nova lista no servidor.')
+            linha_separacao()
+            lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+        personagem_id=lista_personagem_ativo[0][0]
+        if verifica_nome_personagem(lista_personagem_ativo[0][1]):
+            print('Inicia busca...')
+            linha_separacao()
+            if inicia_busca_trabalho():
+                if verifica_erro(None)!=0:
+                    busca_lista_personagem_ativo()
+                manipula_teclado.click_mouse_esquerdo(1,2,35)
+                manipula_teclado.encerra_secao()
+            del lista_personagem_ativo[0]
+        else:
+            if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
+                while not entra_personagem_ativo(lista_personagem_ativo[0][1]):
+                    continue
 
 def configura_login_personagem(email, senha):
     menu=retorna_menu()
@@ -1331,12 +1333,14 @@ def funcao_teste(id_personagem):
     #     continue
     # verifica_producao_recursos(0,'Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
-    while True:
-        menu=retorna_menu()
-        if menu!=11:
-            trata_menu(menu)
-        break
-    print('Fim')
+    lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)#cria uma lista de personagens ativos
+    teste_busca_lista_personagem_ativo()
+    # while True:
+    #     menu=retorna_menu()
+    #     if menu!=11:
+    #         trata_menu(menu)
+    #     break
+    # print('Fim')
     # lista_habilidade = retorna_lista_habilidade_verificada()
     # lista_ativos = manipula_cliente.consulta_lista_personagem(usuario_id)
     # print(lista_ativos)
