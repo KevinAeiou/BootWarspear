@@ -447,7 +447,7 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     yinicial_nome=285
     #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
     #sempre faz três verificações
-    time.sleep(1)
+    time.sleep(2)
     for posicao_trabalho_reconhecido in range(4):
         nome_trabalho_reconhecido = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
         if nome_trabalho_reconhecido=='':
@@ -567,7 +567,7 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(9,'up')
         return 4
     elif erro == 5:
-        time.sleep(3)
+        print(f'Conectando...')
         return 5
     elif erro == 6:
         print(f'Voltando para o menu profissões.')
@@ -792,9 +792,13 @@ def passa_proxima_posicao():
 def entra_personagem_ativo(nome):
     print(f'Buscando personagem ativo...')
     manipula_teclado.click_especifico(1,'enter')
-    time.sleep(3)
-    if verifica_erro(None)!=0:
-        return False
+    time.sleep(1)
+    erro=verifica_erro(None)
+    if erro!=0:
+        if erro==5:
+            time.sleep(5)
+        else:
+            return
     manipula_teclado.click_especifico(1,'f2')
     manipula_teclado.vai_inicio_fila()                
     for x in range(13):
@@ -802,20 +806,21 @@ def entra_personagem_ativo(nome):
             manipula_teclado.click_especifico(1,'right')
         else:
             manipula_teclado.click_especifico(1,'f2')
-            time.sleep(4)
-            if verifica_erro(None)!=0:
-                break
+            time.sleep(1)
+            erro=verifica_erro(None)
+            if erro!=0:
+                if erro==5:
+                    time.sleep(5)
+                else:
+                    break
             print(f'Login efetuado com sucesso!')
             linha_separacao()
-            return True
-        print(f'Erro ao tentar entrar...')
-        linha_separacao()
-        break
+            return
     else:
         print(f'Personagem não encontrado!')
         linha_separacao()
         manipula_teclado.click_especifico(1,'f1')
-    return False
+    return
 
 def retorna_medidas_modelos():
     lista_modelos = [1,2,5,9]
@@ -860,8 +865,7 @@ def busca_lista_personagem_ativo():
             del lista_personagem_ativo[0]
         else:
             if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
-                while not entra_personagem_ativo(lista_personagem_ativo[0][1]):
-                    continue
+                entra_personagem_ativo(lista_personagem_ativo[0][1])
 
 def configura_login_personagem(email, senha):
     menu=retorna_menu()
@@ -869,9 +873,8 @@ def configura_login_personagem(email, senha):
         manipula_teclado.click_especifico(1,'f1')
         menu=retorna_menu()
     if menu==0:
-        while not loga_personagem(email,senha):
-            continue
-        return True
+        if loga_personagem(email,senha):  
+            return True
     else:
         while menu!=41:
             manipula_teclado.click_mouse_esquerdo(1,2,35)
@@ -880,9 +883,8 @@ def configura_login_personagem(email, senha):
         if menu==41:
             manipula_teclado.encerra_secao()
             linha_separacao()
-            while not loga_personagem(email,senha):
-                continue
-            return True
+            if loga_personagem(email,senha):
+                return True
     return False
 
 def configura_atributos():
@@ -1333,8 +1335,6 @@ def funcao_teste(id_personagem):
     #     continue
     # verifica_producao_recursos(0,'Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
-    lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)#cria uma lista de personagens ativos
-    teste_busca_lista_personagem_ativo()
     # while True:
     #     menu=retorna_menu()
     #     if menu!=11:
