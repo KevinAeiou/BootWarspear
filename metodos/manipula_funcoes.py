@@ -861,7 +861,8 @@ def busca_lista_personagem_ativo():
                 if verifica_erro(None)!=0:
                     busca_lista_personagem_ativo()
                 manipula_teclado.click_mouse_esquerdo(1,2,35)
-                manipula_teclado.encerra_secao()
+                if retorna_menu()==menu_inicial:
+                    manipula_teclado.encerra_secao()
             del lista_personagem_ativo[0]
         else:
             if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
