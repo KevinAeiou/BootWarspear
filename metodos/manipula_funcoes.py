@@ -947,10 +947,9 @@ def inicia_busca_trabalho():
     return False
 
 def muda_estado_trabalho_concluido(nome_trabalho_concluido):
-    if verifica_erro(None)==0:
-        manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
-    manipula_teclado.click_especifico(1,'up')
-    manipula_teclado.click_especifico(1,'left')
+    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
+    print(f'Estado do trabalho {nome_trabalho_concluido} modificado para concluído.')
+    linha_separacao()
 
 def recupera_trabalho_concluido():
     tela_inteira = retorna_atualizacao_tela()
@@ -960,6 +959,14 @@ def recupera_trabalho_concluido():
     nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
     manipula_teclado.click_especifico(1,'down')
     manipula_teclado.click_especifico(1,'f2')
+    if verifica_erro(None)==9:
+        print(f'Trabalho não está concluido!')
+        linha_separacao()
+        return False
+    print(f'{nome_trabalho_concluido} recuperado.')
+    manipula_teclado.click_especifico(1,'up')
+    manipula_teclado.click_especifico(1,'left')
+    linha_separacao()
     return nome_trabalho_concluido
 
 def inicia_producao(trabalho):
@@ -1335,6 +1342,7 @@ def funcao_teste(id_personagem):
     #     continue
     # verifica_producao_recursos(0,'Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
+    recupera_trabalho_concluido()
     # while True:
     #     menu=retorna_menu()
     #     if menu!=11:
