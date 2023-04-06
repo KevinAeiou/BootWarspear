@@ -1237,7 +1237,7 @@ def retorna_menu():
             print(f'Menu trabalhos diponíveis...')
             linha_separacao()
             return menu_trab_disponiveis
-        elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'profissãonecessári'in texto_menu):
+        elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'temponecessário'in texto_menu):
             print(f'Menu trabalho específico...')
             linha_separacao()
             return menu_trab_especifico
@@ -1245,7 +1245,7 @@ def retorna_menu():
             print(f'Menu licenças...')
             linha_separacao()
             return menu_licencas
-        elif ('cancelar'in texto_menu and'batepapo'in texto_menu):
+        elif ('cancelar'in texto_menu and'batepapo'in texto_menu and'requisitosparâmetros'in texto_menu):
             print(f'Menu atributo do trabalho...')
             linha_separacao()
             return menu_trab_atributos
@@ -1345,7 +1345,13 @@ def funcao_teste(id_personagem):
     # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido()
     # while True:
-    menu=retorna_menu()
+    while True:
+        menu=retorna_menu()
+        if menu!=menu_produzir:
+            trata_menu(menu)
+        else:
+            break
+    #     menu=retorna_menu()
     #     if menu!=11:
     #         trata_menu(menu)
     #     break
