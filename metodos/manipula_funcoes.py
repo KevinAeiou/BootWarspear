@@ -396,6 +396,8 @@ def verifica_licenca(licenca_trabalho):
         manipula_teclado.click_especifico(1,"right")
         lista_ciclo.append(licenca_reconhecida)
         licenca_reconhecida=retorna_licenca_reconhecida()
+        if not licenca_reconhecida:
+            return False
         print(f'Licença reconhecida: {licenca_reconhecida}.')
         if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
             licenca_reconhecida='licençadeproduçãodoiniciante'
