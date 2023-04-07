@@ -924,7 +924,8 @@ def inicia_busca_trabalho():
                     menu=retorna_menu()
                     if menu!=menu_produzir:
                         trata_menu(menu)
-                    break
+                    else:
+                        break
                 nome_profissao = profissao_necessaria[nome]
                 manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
