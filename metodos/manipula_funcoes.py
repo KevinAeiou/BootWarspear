@@ -987,16 +987,22 @@ def inicia_producao(trabalho):
                 return
             erro=verifica_erro(trabalho)
         else:
-            if retorna_menu()==17:#menu escolha equipamento
-                manipula_teclado.click_especifico(2,'f2')
-            menu=retorna_menu()
-            if menu==14:#trabalho especifico
-                manipula_teclado.click_especifico(1,'f2')
-                manipula_teclado.click_especifico(9,'up')
-                manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
-            elif menu==12:#trabalhos atuais
-                manipula_teclado.click_especifico(9,'up')
-                manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
+            while True:
+                menu=retorna_menu()
+                if menu==menu_trab_especifico:#trabalho especifico
+                    manipula_teclado.click_especifico(1,'f2')
+                    if verifica_erro(trabalho)==3:
+                        caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
+                        manipula_cliente.excluir_trabalho(caminho_trabalho)        
+                        return
+                if menu==menu_esc_equipamento:#menu escolha equipamento
+                    manipula_teclado.click_especifico(1,'f2')
+                    time.sleep(1)
+                    verifica_erro(trabalho)
+                if menu==menu_trab_atuais:#trabalhos atuais
+                    manipula_teclado.click_especifico(9,'up')
+                    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
+                    break
             while verifica_erro(trabalho)!=0:
                 continue
     
@@ -1240,7 +1246,7 @@ def retorna_menu():
             print(f'Menu trabalhos diponíveis...')
             linha_separacao()
             return menu_trab_disponiveis
-        elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'temponecessário'in texto_menu):
+        elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'profissãonecessário'in texto_menu):
             print(f'Menu trabalho específico...')
             linha_separacao()
             return menu_trab_especifico
@@ -1248,7 +1254,7 @@ def retorna_menu():
             print(f'Menu licenças...')
             linha_separacao()
             return menu_licencas
-        elif ('cancelar'in texto_menu and'batepapo'in texto_menu and'requisitosparâmetros'in texto_menu):
+        elif ('cancelar'in texto_menu and'batepapo'in texto_menu):
             print(f'Menu atributo do trabalho...')
             linha_separacao()
             return menu_trab_atributos
@@ -1281,7 +1287,7 @@ def retorna_texto_menu_reconhecido():
     largura=2
     altura=3
     texto_concatenado=''
-    posicoes_menus=[[249,195,183,105],[287,412,108,30],[169,600,343,43]]
+    posicoes_menus=[[249,195,190,105],[287,412,108,30],[169,600,343,43]]
     tela_inteira=retorna_atualizacao_tela()
     for posicao in posicoes_menus:
         frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
@@ -1348,12 +1354,8 @@ def funcao_teste(id_personagem):
     # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido()
     # while True:
-    while True:
-        menu=retorna_menu()
-        if menu!=menu_produzir:
-            trata_menu(menu)
-        else:
-            break
+    menu=retorna_menu()
+    print(menu)
     #     menu=retorna_menu()
     #     if menu!=11:
     #         trata_menu(menu)
