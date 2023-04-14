@@ -923,6 +923,11 @@ def inicia_busca_trabalho():
                 while True:
                     menu=retorna_menu()
                     if menu!=menu_produzir:
+                        if menu==menu_trab_atuais:
+                            if verifica_trabalho_concluido():
+                                nome_trabalho_concluido=recupera_trabalho_concluido()
+                                if nome_trabalho_concluido!=False:
+                                    muda_estado_trabalho_concluido(nome_trabalho_concluido)
                         trata_menu(menu)
                     else:
                         break
