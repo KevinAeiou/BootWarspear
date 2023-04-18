@@ -637,13 +637,15 @@ def verifica_erro(trabalho):
     return 0
 #modificado 12/01
 def retorna_tipo_erro():
-    tela_inteira = retorna_atualizacao_tela()
-    frame_erro = tela_inteira[335:335+100,150:526]
-    erro_encontrado = manipula_imagem.reconhece_texto(frame_erro)
-    tipo_erro_trabalho = ['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor','Vocênãotemosrecursosnecessáriasparaessetrabalho',
-    'Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução','Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho',
-    'GostariadeiràLojaMilagrosaparaveralistadepresentes','Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','OservidorestáemmanutençãoEstamosfazendodetudoparaconcluílaomaisrápvidopossível',
-    'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexão com o servidor foi interrompida','Você precisa de mais moedas','Login ou senha incorreta']
+    tela_inteira=retorna_atualizacao_tela()
+    frame_erro=tela_inteira[335:335+100,150:526]
+    erro_encontrado=manipula_imagem.reconhece_texto(frame_erro)
+    tipo_erro_trabalho=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
+                          'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
+                          'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
+                          'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','OservidorestáemmanutençãoEstamosfazendodetudoparaconcluílaomaisrápvidopossível',
+                          'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexão com o servidor foi interrompida',
+                          'Você precisa de mais moedas','Login ou senha incorreta']
     for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
         if tipo_erro_trabalho[tamanho_tipo_erro].replace(' ','').lower() in erro_encontrado.replace(' ','').lower():
             erro_encontrado=''
@@ -928,6 +930,10 @@ def inicia_busca_trabalho():
                                 nome_trabalho_concluido=recupera_trabalho_concluido()
                                 if nome_trabalho_concluido!=False:
                                     muda_estado_trabalho_concluido(nome_trabalho_concluido)
+                            else:
+                                print(f'Todos os espaços de produção ocupados.')
+                                linha_separacao()
+                                return False
                         trata_menu(menu)
                     else:
                         break
