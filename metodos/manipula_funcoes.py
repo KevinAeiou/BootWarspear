@@ -862,8 +862,9 @@ def busca_lista_personagem_ativo():
             print('Inicia busca...')
             linha_separacao()
             if inicia_busca_trabalho():
-                if verifica_erro(None)!=0:
-                    busca_lista_personagem_ativo()
+                lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+                if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
+                    continue
                 manipula_teclado.click_mouse_esquerdo(1,2,35)
                 if retorna_menu()==menu_inicial:
                     manipula_teclado.encerra_secao()
