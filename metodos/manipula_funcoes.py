@@ -799,8 +799,9 @@ def entra_personagem_ativo(nome):
     time.sleep(1)
     erro=verifica_erro(None)
     if erro!=0:
-        if erro==5:
-            time.sleep(5)
+        while erro==5:
+            time.sleep(1)
+            erro=verifica_erro(None)
         else:
             return
     manipula_teclado.click_especifico(1,'f2')
@@ -813,8 +814,9 @@ def entra_personagem_ativo(nome):
             time.sleep(1)
             erro=verifica_erro(None)
             if erro!=0:
-                if erro==5:
-                    time.sleep(5)
+                while erro==5:
+                    time.sleep(1)
+                    erro=verifica_erro(None)
                 else:
                     break
             print(f'Login efetuado com sucesso!')
