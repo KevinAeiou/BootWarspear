@@ -803,7 +803,8 @@ def entra_personagem_ativo(nome):
             time.sleep(1)
             erro=verifica_erro(None)
         else:
-            return
+            if erro!=0:
+                return
     manipula_teclado.click_especifico(1,'f2')
     manipula_teclado.vai_inicio_fila()                
     for x in range(13):
@@ -818,7 +819,8 @@ def entra_personagem_ativo(nome):
                     time.sleep(1)
                     erro=verifica_erro(None)
                 else:
-                    break
+                    if erro!=0:
+                        break
             print(f'Login efetuado com sucesso!')
             linha_separacao()
             return
