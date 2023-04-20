@@ -857,13 +857,15 @@ def busca_lista_personagem_ativo():
             print(f'Lista vazia. Buscando nova lista no servidor.')
             linha_separacao()
             lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+            if len(lista_personagem_ativo)==0:
+                continue
         personagem_id=lista_personagem_ativo[0][0]
         if verifica_nome_personagem(lista_personagem_ativo[0][1]):
             print('Inicia busca...')
             linha_separacao()
             if inicia_busca_trabalho():
                 lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-                if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
+                if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1 or len(lista_personagem_ativo)==0:
                     continue
                 manipula_teclado.click_mouse_esquerdo(1,2,35)
                 if retorna_menu()==menu_inicial:
