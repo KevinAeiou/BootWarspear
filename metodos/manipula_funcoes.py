@@ -453,8 +453,8 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
     #sempre faz três verificações
     time.sleep(2)
+    print(f'Buscando trabalho comum na lista...')
     for trabalho_lista_desejo in conteudo_lista_desejo:
-        print(f'Buscando trabalho comum na lista...')
         #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         nome_trabalho = trabalho_lista_desejo[1]
         profissao_trabalho = trabalho_lista_desejo[2]

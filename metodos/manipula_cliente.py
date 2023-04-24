@@ -221,9 +221,9 @@ def muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho,novo_estado):
                     requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
                     print(f'Estado do trabalho mudado para {novo_estado}.')
                     break
-                else:
-                    print(f'{nome_trabalho} não encontrado na lista.')
-            break
+            else:
+                print(f'{nome_trabalho} não encontrado na lista.')
+                break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
             time.sleep(1)
