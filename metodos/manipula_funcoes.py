@@ -17,7 +17,7 @@ yfinal_nivel = 285 + 69
 
 cont_voltas = 0
 contador_paracima=4
-personagem_id=''
+personagem_id_global=''
 altura_frame = 70
 porcentagem_vida = 25
 
@@ -366,6 +366,7 @@ def verifica_porcentagem_vida():
     return False
 #Codigo modificado 23/01 11:20
 def verifica_trabalho_concluido():
+    estado_espaco=0
     #icone do primeiro espaço de produç 181,295 228,342
     tela_inteira = retorna_atualizacao_tela()
     frame_trabalho_concluido = tela_inteira[311:311+43, 233:486]
@@ -374,13 +375,15 @@ def verifica_trabalho_concluido():
     if texto != '' and texto == string_trabalho:
         print(f'Trabalho concluído!')
         linha_separacao()
-        return True
+        estado_espaco=2
     elif texto !='' and 'adicionarnovo' in texto.replace(' ','').lower():
         print(f'Nem um trabalho!')
+        estado_espaco=0
     else:
         print(f'Em produção...')
+        estado_espaco=1
     linha_separacao()
-    return False
+    return estado_espaco
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
     lista_ciclo=[]
@@ -450,29 +453,40 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
     #sempre faz três verificações
     time.sleep(2)
-    for posicao_trabalho_reconhecido in range(4):
-        nome_trabalho_reconhecido = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
-        if nome_trabalho_reconhecido=='':
-            break
-        print(f'Nome do trabalho disponível: {nome_trabalho_reconhecido}')
-        #enquanto não comparar toda lista
-        for trabalho_lista_desejo in conteudo_lista_desejo:
-            #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
-            nome_trabalho = trabalho_lista_desejo[1]
-            profissao_trabalho = trabalho_lista_desejo[2]
-            raridade_trabalho = trabalho_lista_desejo[5]
-            #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-            if profissao==profissao_trabalho:
-                if raridade_trabalho=='Comum':
-                    print(f'Verificando trabalho comum...')
-                    linha_separacao()
-                    return -1,trabalho_lista_desejo
-                print(f'Nome do trabalho na lista: {nome_trabalho}')
-                if nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
-                    print(f'{nome_trabalho} reconhecido...')
-                    return posicao_trabalho_reconhecido,trabalho_lista_desejo
+    for trabalho_lista_desejo in conteudo_lista_desejo:
+        print(f'Buscando trabalho comum na lista...')
+        #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
+        nome_trabalho = trabalho_lista_desejo[1]
+        profissao_trabalho = trabalho_lista_desejo[2]
+        raridade_trabalho = trabalho_lista_desejo[5]
+        #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
+        if profissao==profissao_trabalho:
+            if raridade_trabalho=='Comum':
+                print(f'Trabalho comum encontado: {nome_trabalho}.')
+                linha_separacao()
+                return -1,trabalho_lista_desejo
+    else:
+        print(f'Nem um trabaho comum na lista!')
         linha_separacao()
-        yinicial_nome = yinicial_nome+70
+        for posicao_trabalho_reconhecido in range(4):
+            nome_trabalho_reconhecido = retorna_nome_trabalho_reconhecido(yinicial_nome,0)
+            if nome_trabalho_reconhecido=='':
+                break
+            print(f'Nome do trabalho disponível: {nome_trabalho_reconhecido}')
+            #enquanto não comparar toda lista
+            for trabalho_lista_desejo in conteudo_lista_desejo:
+                #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
+                nome_trabalho = trabalho_lista_desejo[1]
+                profissao_trabalho = trabalho_lista_desejo[2]
+                raridade_trabalho = trabalho_lista_desejo[5]
+                #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
+                if profissao==profissao_trabalho:
+                    print(f'Nome do trabalho na lista: {nome_trabalho}')
+                    if nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
+                        print(f'{nome_trabalho} reconhecido...')
+                        return posicao_trabalho_reconhecido,trabalho_lista_desejo
+            linha_separacao()
+            yinicial_nome = yinicial_nome+70
     print(f'Nem um trabalho disponível está na lista de desejos.')
     manipula_teclado.click_especifico(4,'up')
     manipula_teclado.click_especifico(1,'left')
@@ -593,7 +607,7 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(1,'left')
         print(f'Esperando trabalho ser concluído...')
         linha_separacao()
-        while not verifica_trabalho_concluido():
+        while verifica_trabalho_concluido()!=2:
             continue
         return 8
     elif erro == 9:
@@ -732,9 +746,9 @@ def retorna_lista_profissao_verificada():
     #cria lista vazia
     lista_profissao_verificada = []
     #abre o arquivo lista de profissoes
-    conteudo_lista_profissoes = manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_profissoes')
+    conteudo_lista_profissoes = manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_profissoes')
     #abre o arquivo lista de desejos
-    conteudo_lista_desejo = manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+    conteudo_lista_desejo = manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
     #percorre todas as linha do aquivo profissoes
     for linhaProfissao in range(len(conteudo_lista_profissoes)):
         nome_profissao = conteudo_lista_profissoes[linhaProfissao]
@@ -842,42 +856,48 @@ def retorna_medidas_modelos():
     return lista_medidas
 #modificado 16/01
 def prepara_personagem(id_personagem):
-    global personagem_id
+    global personagem_id_global
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
     #e o indice 1=nome da profissão
     manipula_teclado.click_atalho_especifico('alt','tab')
-    personagem_id=id_personagem
+    personagem_id_global=id_personagem
     nome, email, senha, estado = configura_atributos()
     if estado!=1:#se o personagem estiver inativo, troca o estado
-        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id)
+        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id_global)
     busca_lista_personagem_ativo()
     
 
 def busca_lista_personagem_ativo():
-    global personagem_id
+    global personagem_id_global
     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+    cont_personagem_ativo=len(lista_personagem_ativo)
     while True:
         if len(lista_personagem_ativo)==0:
             print(f'Lista vazia. Buscando nova lista no servidor.')
             linha_separacao()
             lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-            if len(lista_personagem_ativo)==0:
-                continue
-        personagem_id=lista_personagem_ativo[0][0]
-        if verifica_nome_personagem(lista_personagem_ativo[0][1]):
-            print('Inicia busca...')
-            linha_separacao()
-            if inicia_busca_trabalho():
-                lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-                if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1 or len(lista_personagem_ativo)==0:
-                    continue
-                manipula_teclado.click_mouse_esquerdo(1,2,35)
-                if retorna_menu()==menu_inicial:
-                    manipula_teclado.encerra_secao()
-            del lista_personagem_ativo[0]
-        else:
-            if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
-                entra_personagem_ativo(lista_personagem_ativo[0][1])
+            cont_personagem_ativo=len(lista_personagem_ativo)
+            continue
+        else:#se houver pelo menos um personagem ativo
+            personagem_id_global=lista_personagem_ativo[0][0]
+            if verifica_nome_personagem(lista_personagem_ativo[0][1]):
+                print('Inicia busca...')
+                linha_separacao()
+                if inicia_busca_trabalho():
+                    if verifica_erro(None)!=0 or cont_personagem_ativo==1:
+                        lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+                        cont_personagem_ativo=len(lista_personagem_ativo)
+                        continue
+                    manipula_teclado.click_mouse_esquerdo(1,2,35)
+                    if retorna_menu()==menu_inicial:
+                        manipula_teclado.encerra_secao()
+                personagem_retirado=lista_personagem_ativo[0][1]
+                del lista_personagem_ativo[0]
+                print(f'{personagem_retirado} foi retirado da lista!')
+                linha_separacao()
+            else:
+                if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
+                    entra_personagem_ativo(lista_personagem_ativo[0][1])
 
 def configura_login_personagem(email, senha):
     menu=retorna_menu()
@@ -900,7 +920,7 @@ def configura_login_personagem(email, senha):
     return False
 
 def configura_atributos():
-    dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id)
+    dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id_global)
     nome = dados_personagem[1]
     email = dados_personagem[2]
     senha = dados_personagem[3]
@@ -924,7 +944,7 @@ def inicia_busca_trabalho():
     nome=1
     lista_profissao_necessaria=retorna_lista_profissao_verificada()
     if len(lista_profissao_necessaria)>0:#verifica se a lista está vazia
-        conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo')
+        conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
         if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
             for profissao_necessaria in lista_profissao_necessaria:#percorre lista de profissao
                 if verifica_erro(None)!=0:
@@ -933,11 +953,12 @@ def inicia_busca_trabalho():
                     menu=retorna_menu()
                     if menu!=menu_produzir:
                         if menu==menu_trab_atuais:
-                            if verifica_trabalho_concluido():
+                            estado_trabalho=verifica_trabalho_concluido()
+                            if estado_trabalho==2:
                                 nome_trabalho_concluido=recupera_trabalho_concluido()
                                 if nome_trabalho_concluido!=False:
                                     muda_estado_trabalho_concluido(nome_trabalho_concluido)
-                            else:
+                            elif estado_trabalho==1:
                                 print(f'Todos os espaços de produção ocupados.')
                                 linha_separacao()
                                 return False
@@ -957,7 +978,7 @@ def inicia_busca_trabalho():
                 elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
                     verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
                     inicia_producao(trabalho_lista_desejo)
-                if verifica_trabalho_concluido():
+                if verifica_trabalho_concluido()==2:
                     nome_trabalho_concluido=recupera_trabalho_concluido()
                     if nome_trabalho_concluido!=False:
                         muda_estado_trabalho_concluido(nome_trabalho_concluido)
@@ -969,7 +990,7 @@ def inicia_busca_trabalho():
     return False
 
 def muda_estado_trabalho_concluido(nome_trabalho_concluido):
-    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho_concluido,2)
+    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,nome_trabalho_concluido,2)
     print(f'Estado do trabalho {nome_trabalho_concluido} modificado para concluído.')
     linha_separacao()
 
@@ -1000,7 +1021,7 @@ def inicia_producao(trabalho):
         erro=verifica_erro(trabalho)
         while erro!=0:
             if erro==3:
-                caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
+                caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[0]}'
                 manipula_cliente.excluir_trabalho(caminho_trabalho)        
                 return
             erro=verifica_erro(trabalho)
@@ -1010,7 +1031,7 @@ def inicia_producao(trabalho):
                 if menu==menu_trab_especifico:#trabalho especifico
                     manipula_teclado.click_especifico(1,'f2')
                     if verifica_erro(trabalho)==3:
-                        caminho_trabalho=f'{personagem_id}/Lista_desejo/{trabalho[0]}'
+                        caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[0]}'
                         manipula_cliente.excluir_trabalho(caminho_trabalho)        
                         return
                 if menu==menu_esc_equipamento:#menu escolha equipamento
@@ -1019,7 +1040,7 @@ def inicia_producao(trabalho):
                     verifica_erro(trabalho)
                 if menu==menu_trab_atuais:#trabalhos atuais
                     manipula_teclado.click_especifico(9,'up')
-                    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id,trabalho[1],1)
+                    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho[1],1)
                     break
             while verifica_erro(trabalho)!=0:
                 continue
@@ -1355,8 +1376,8 @@ def entra_usuario():
     return False
 
 def funcao_teste(id_personagem):
-    global personagem_id
-    personagem_id=id_personagem
+    global personagem_id_global
+    personagem_id_global=id_personagem
     manipula_teclado.click_atalho_especifico('alt','tab')
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('win','up')
