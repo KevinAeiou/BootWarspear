@@ -258,6 +258,9 @@ def mostra_video(caminho_video):
     cap.release() 
     cv2.destroyAllWindows() 
 
+def retorna_fundo_branco():
+    return np.ones((200,200,3))*255
+
 def temporario():
     caminho = 'modelos/modelo_nivel_5_0.png'
     imagem_teste = abre_imagem(caminho)

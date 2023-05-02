@@ -860,6 +860,7 @@ def prepara_personagem(id_personagem):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
     #e o indice 1=nome da profissão
     manipula_teclado.click_atalho_especifico('alt','tab')
+    manipula_teclado.click_atalho_especifico('win','left')
     personagem_id_global=id_personagem
     nome, email, senha, estado = configura_atributos()
     if estado!=1:#se o personagem estiver inativo, troca o estado
@@ -1343,6 +1344,34 @@ def retorna_texto_sair():
     # manipula_imagem.mostra_imagem(0,frame_jogar_tratado,'teste')
     return manipula_imagem.reconhece_texto(frame_jogar_tratado)
 
+def retorna_lista_pixel_minimap():
+    lista_pixel=[]
+    xMapa=568
+    yMapa=179
+    somaX=1
+    somaY=0
+    fundo=manipula_imagem.retorna_fundo_branco()
+    telaInteira=retorna_atualizacao_tela()
+    for x in range(444):
+        lista_pixel.append(telaInteira[yMapa,xMapa])
+        if (telaInteira[yMapa,xMapa]==(0,221,255)).all():
+            fundo[yMapa-150,xMapa-500]=(0,221,255)
+        else:
+            fundo[yMapa-150,xMapa-500]=(0,0,0)
+        if x>=110 and x<221:
+            somaX=0
+            somaY=1
+        elif x>=221 and x<332:
+            somaX=-1
+            somaY=0
+        elif x>=332:
+            somaX=0
+            somaY=-1
+        xMapa=xMapa+somaX
+        yMapa=yMapa+somaY
+    manipula_imagem.mostra_imagem(0,fundo,'Minimapa')
+    return lista_pixel
+
 def retorna_texto_produzir():
     tela_inteira = retorna_atualizacao_tela()
     frame_produzir = tela_inteira[240:240+30,250:250+180]
@@ -1393,8 +1422,7 @@ def funcao_teste(id_personagem):
     # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido()
     # while True:
-    menu=retorna_menu()
-    print(menu)
+    retorna_lista_pixel_minimap()
     #     menu=retorna_menu()
     #     if menu!=11:
     #         trata_menu(menu)
