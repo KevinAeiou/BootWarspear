@@ -45,7 +45,7 @@ def reconhece_texto(imagem):
         texto_reconhecido = texto_reconhecido.replace(lista_caracteres_especiais[x],'')
     return texto_reconhecido
 #inefienente
-def transforma_amarelo_preto(imagem_original):
+def transforma_caracteres_preto(imagem_original):
     #marrom1 = 48,87,164
     imagem_tratada = imagem_original
     for y in range(0,imagem_original.shape[0]):
@@ -55,6 +55,7 @@ def transforma_amarelo_preto(imagem_original):
                 or(imagem_original[y,x] == (139,236,255)).all()\
                 or(imagem_original[y,x] == (93,218,254)).all()\
                 or(imagem_original[y,x] == (255,255,255)).all()\
+                or(imagem_original[y,x] == (255,102,255)).all()\
                 or(imagem_original[y,x] == (88,219,255)).all():
                 #tranforma pixel em preto
                 imagem_tratada[y,x] = (0,0,0)

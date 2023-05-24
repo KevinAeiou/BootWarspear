@@ -37,6 +37,14 @@ menu_ofe_diaria=40
 menu_inicial=41
 lista_personagem_ativo=[]
 
+id=0
+nome=1
+profissao=2
+nivel=3
+licenca=4
+raridade=5
+recorrencia=6
+
 usuario_id = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
 
@@ -47,7 +55,7 @@ def atualiza_nova_tela():
     linha_separacao()
 
 def adiciona_trabalho(personagem_id,trabalho,licenca):
-    manipula_cliente.adiciona_trabalho(personagem_id,trabalho,licenca)
+    manipula_cliente.adiciona_trabalho(personagem_id,trabalho,licenca,0)
     linha_separacao()
 #modificado16/01
 def atualiza_lista_profissao(personagem_id):
@@ -141,7 +149,7 @@ def cadastra_nome_trabalho(tipo_raridade_trabalho,nome_profissao):
             else:
                 confirma_cadastro = str(confirma_cadastro).lower().replace('\n','')
                 if confirma_cadastro == 's':
-                    atributos_trabalho = f'{nome_trabalho_reconhecido},{tipo_raridade_trabalho},{nivel_trabalho},{nome_profissao},'
+                    atributos_trabalho=[nome_trabalho_reconhecido,tipo_raridade_trabalho,nivel_trabalho,nome_profissao]
                     manipula_cliente.cadastrar_trabalho(atributos_trabalho)
                     #manipula_arquivo.inclui_linha(linha,tipo_raridade_trabalho)
                     print(f'{nome_trabalho_reconhecido} foi cadastrado!')
@@ -387,6 +395,7 @@ def verifica_trabalho_concluido():
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
     lista_ciclo=[]
+    primeira_busca=True
     print(f"Buscando: {licenca_trabalho}")
     linha_separacao()
     licenca_reconhecida=retorna_licenca_reconhecida()
@@ -396,6 +405,7 @@ def verifica_licenca(licenca_trabalho):
         print(f"Parando programa...")
         exit()
     while not licenca_reconhecida.replace(' ','').lower()in licenca_trabalho.replace(' ','').lower():
+        primeira_busca=False
         manipula_teclado.click_especifico(1,"right")
         lista_ciclo.append(licenca_reconhecida)
         licenca_reconhecida=retorna_licenca_reconhecida()
@@ -405,7 +415,10 @@ def verifica_licenca(licenca_trabalho):
         if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
             licenca_reconhecida='licençadeproduçãodoiniciante'
     else:#se encontrou a licença buscada
-        manipula_teclado.click_especifico(1,"f2")
+        if primeira_busca:
+            manipula_teclado.click_especifico(1,"f1")
+        else:
+            manipula_teclado.click_especifico(1,"f2")
         return True
 
 def retorna_licenca_reconhecida():
@@ -429,23 +442,37 @@ def verifica_ciclo(lista):
 def retorna_producao_recursos(nome_trabalho):
     #Grande coleção de rec
     lista_producao_recursos = ([
-        'Grande coleção de recursos comuns','Melhoria da substância comum',
-        'Melhorar licença comum','Licença de produção do aprediz',
-        'Melhoria da substância composta','de recursos avançados'])
+        'Grande coleção de recursos comuns','de recursos avançados',
+        'Melhoria da substância comum','Melhoria do catalisador comum','Melhoria da essência comum',
+        'Melhoria da substância composta','Melhoria do catalisador amplificado','Melhoria da essência composta',
+        'Melhorar licença comum','Licença de produção do aprediz'])
     for trabalho in lista_producao_recursos:
         if  trabalho.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
             return True
     return False
 
-def confirma_nome_trabalho(nome_trabalho_lista):
-    #tira novo print da tela
-    imagem_inteira = retorna_atualizacao_tela()
-    frame_nome_trabalho = imagem_inteira[280:280+33,169:169+303]
-    nome_trabalho = manipula_imagem.reconhece_texto(frame_nome_trabalho)
-    if nome_trabalho.replace(' ','')[1:len(nome_trabalho)-1] in nome_trabalho_lista.replace(' ',''):
-        print(f'Trabalho confirmado! {nome_trabalho}')
-        return True
+def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
+    print(f'Confirmando nome do trabalho...')
+    x=0
+    y=1
+    largura=2
+    altura=3
+    lista_frames=[[169,280,303,33],[169,195,343,31]]
+    posicao=lista_frames[tipo_trabalho]
+    imagem_inteira=retorna_atualizacao_tela()#tira novo print da tela
+    frame_nome_trabalho=imagem_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
+    frame_nome_trabalho_tratado=manipula_imagem.transforma_caracteres_preto(frame_nome_trabalho)
+    nome_trabalho=manipula_imagem.reconhece_texto(frame_nome_trabalho_tratado)
+    # manipula_imagem.mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
+    if len(nome_trabalho)!=0:
+        nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:len(nome_trabalho)-1].lower()
+        print(f'Nome reconhecido: {nome_trabalho_tratado}.')
+        if nome_trabalho_tratado in nome_trabalho_lista.replace(' ','').lower():
+            print(f'Trabalho confirmado! {nome_trabalho}')
+            linha_separacao()
+            return True
     print(f'Trabalho negado! {nome_trabalho}')
+    linha_separacao()
     return False
 #modificado 16/01
 def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
@@ -533,8 +560,9 @@ def retorna_nome_trabalho_reconhecido(yinicial_nome,identificador):
     #retorna texto encontrado
     return manipula_imagem.reconhece_texto(frame_nome_trabalho_tratado)
 
-def sai_trabalho_encontrado(x):
-    manipula_teclado.click_especifico(2,'f1')
+def sai_trabalho_encontrado(x,tipo_trabalho):
+    clicks=[2,1]
+    manipula_teclado.click_especifico(clicks[tipo_trabalho],'f1')
     manipula_teclado.click_especifico(x+1,'up')
 
 def entra_licenca():
@@ -607,8 +635,6 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(1,'left')
         print(f'Esperando trabalho ser concluído...')
         linha_separacao()
-        while verifica_trabalho_concluido()!=2:
-            continue
         return 8
     elif erro == 9:
         manipula_teclado.click_especifico(1,'f1')
@@ -726,7 +752,7 @@ def verifica_nome_personagem(nome_personagem):
     tela_inteira = retorna_atualizacao_tela()
     for indice in range(len(posicao_nome)):
         frame_nome_personagem = tela_inteira[posicao_nome[indice][1]:posicao_nome[indice][1]+posicao_nome[indice][3],posicao_nome[indice][0]:posicao_nome[indice][0]+posicao_nome[indice][2]]
-        frame_nome_personagem_tratado = manipula_imagem.transforma_amarelo_preto(frame_nome_personagem)
+        frame_nome_personagem_tratado = manipula_imagem.transforma_caracteres_preto(frame_nome_personagem)
         nome_personagem_reconhecido = manipula_imagem.reconhece_texto(frame_nome_personagem_tratado)
         nome_personagem_reconhecido_tratado = unidecode(nome_personagem_reconhecido)
         # concatenado = manipula_imagem.retorna_imagem_concatenada(frame_nome_personagem,frame_nome_personagem_tratado)
@@ -972,10 +998,23 @@ def inicia_busca_trabalho():
                 if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo de produção
                     if not entra_trabalho_encontrado(posicao_trabalho):
                         return False
-                    if not verifica_producao_recursos(posicao_trabalho, trabalho_lista_desejo[nome]):
-                        return False
-                    if not inicia_producao(trabalho_lista_desejo):
-                        return False
+                    if not verifica_producao_recursos(trabalho_lista_desejo[nome]):
+                        if verifica_erro(None)!=0:
+                            return False
+                        manipula_teclado.click_especifico(1,'down')
+                        manipula_teclado.click_especifico(1,'enter')
+                        if not confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
+                            sai_trabalho_encontrado(posicao_trabalho,0)
+                        else:
+                            manipula_teclado.click_especifico(1,'f1')
+                            if not inicia_producao(trabalho_lista_desejo):
+                                manipula_teclado.click_especifico(1,'left')
+                    else:
+                        if not confirma_nome_trabalho(trabalho_lista_desejo[nome],1):
+                            sai_trabalho_encontrado(posicao_trabalho,1)
+                        else:
+                            if not inicia_producao(trabalho_lista_desejo):
+                                manipula_teclado.click_especifico(1,'left')
                 elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
                     verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
                     inicia_producao(trabalho_lista_desejo)
@@ -990,12 +1029,13 @@ def inicia_busca_trabalho():
     linha_separacao()
     return False
 
-def muda_estado_trabalho_concluido(nome_trabalho_concluido):
-    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,nome_trabalho_concluido,2)
-    print(f'Estado do trabalho {nome_trabalho_concluido} modificado para concluído.')
+def muda_estado_trabalho_concluido(trabalho_concluido):
+    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
+    print(f'Estado do trabalho {trabalho_concluido} modificado para concluído.')
     linha_separacao()
 
 def recupera_trabalho_concluido():
+    trabalho_concluido=['','','','','']
     tela_inteira = retorna_atualizacao_tela()
     frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)!=0:
@@ -1007,55 +1047,59 @@ def recupera_trabalho_concluido():
         print(f'Trabalho não está concluido!')
         linha_separacao()
         return False
-    print(f'{nome_trabalho_concluido} recuperado.')
+    print(f'{trabalho_concluido} recuperado.')
     manipula_teclado.click_especifico(1,'up')
     manipula_teclado.click_especifico(1,'left')
     linha_separacao()
-    return nome_trabalho_concluido
+    trabalho_concluido['',nome_trabalho_concluido,'','','']
+    return trabalho_concluido
 
 def inicia_producao(trabalho):
+    id=0
+    nome=1
     licenca=4
-    if not entra_licenca():
-        return False
-    if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
-        manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
-        erro=verifica_erro(trabalho)
-        while erro!=0:
-            if erro==3:
-                caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[0]}'
-                manipula_cliente.excluir_trabalho(caminho_trabalho)        
-                return
+    recorrencia=6
+    if entra_licenca():
+        if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
+            manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
             erro=verifica_erro(trabalho)
-        else:
-            while True:
-                menu=retorna_menu()
-                if menu==menu_trab_especifico:#trabalho especifico
-                    manipula_teclado.click_especifico(1,'f2')
-                    if verifica_erro(trabalho)==3:
-                        caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[0]}'
-                        manipula_cliente.excluir_trabalho(caminho_trabalho)        
-                        return
-                if menu==menu_esc_equipamento:#menu escolha equipamento
-                    manipula_teclado.click_especifico(1,'f2')
-                    time.sleep(1)
-                    verifica_erro(trabalho)
-                if menu==menu_trab_atuais:#trabalhos atuais
-                    manipula_teclado.click_especifico(9,'up')
-                    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho[1],1)
-                    break
-            while verifica_erro(trabalho)!=0:
-                continue
+            while erro!=0:
+                if erro==3:
+                    caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
+                    manipula_cliente.excluir_trabalho(caminho_trabalho)        
+                    return True
+                erro=verifica_erro(trabalho)
+            else:
+                while True:
+                    menu=retorna_menu()
+                    if menu==menu_trab_especifico:#trabalho especifico
+                        manipula_teclado.click_especifico(1,'f2')
+                        if verifica_erro(trabalho)==3:
+                            caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
+                            manipula_cliente.excluir_trabalho(caminho_trabalho)        
+                            return
+                    if menu==menu_esc_equipamento:#menu escolha equipamento
+                        manipula_teclado.click_especifico(1,'f2')
+                        time.sleep(1)
+                        verifica_erro(trabalho)
+                    if menu==menu_trab_atuais:#trabalhos atuais
+                        clone_trabalho=trabalho
+                        if trabalho[recorrencia]==1:
+                            clone_trabalho=manipula_cliente.adiciona_trabalho(personagem_id_global,trabalho,trabalho[licenca],1)
+                            print(f'Clone: {clone_trabalho}.')
+                        # manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,clone_trabalho,1)
+                        manipula_teclado.click_especifico(9,'up')
+                        break
+                while verifica_erro(trabalho)!=0:
+                    continue
+                return True
+    return False
     
-def verifica_producao_recursos(posicao_trabalho, nome_trabalho_lista_desejo):
+def verifica_producao_recursos(nome_trabalho_lista_desejo):
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
-        if verifica_erro(None)!=0:
-            return False
-        manipula_teclado.click_especifico(1,'down')
-        manipula_teclado.click_especifico(1,'enter')
-        if not confirma_nome_trabalho(nome_trabalho_lista_desejo):
-            sai_trabalho_encontrado(posicao_trabalho)
-        else:
-            manipula_teclado.click_especifico(1,'f1')
+        print(f'Trabalho de produção de equipamentos...')
+        linha_separacao()
+        return False
     else:
         print(f'Trabalho de produção de recursos...')
         linha_separacao()
@@ -1313,6 +1357,7 @@ def retorna_menu():
         else:
             print(f'Menu não reconhecido...')
             linha_separacao()
+            manipula_teclado.click_atalho_especifico('win','left')
             return False
 
 def configura_licenca(trabalho):
@@ -1331,7 +1376,7 @@ def retorna_texto_menu_reconhecido():
     tela_inteira=retorna_atualizacao_tela()
     for posicao in posicoes_menus:
         frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
-        frame_menu_tratado=manipula_imagem.transforma_amarelo_preto(frame_menu)
+        frame_menu_tratado=manipula_imagem.transforma_caracteres_preto(frame_menu)
         # manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
         texto_menu=manipula_imagem.reconhece_texto(frame_menu_tratado)
         texto_concatenado=texto_concatenado+texto_menu
@@ -1375,7 +1420,7 @@ def retorna_lista_pixel_minimap():
 def retorna_texto_produzir():
     tela_inteira = retorna_atualizacao_tela()
     frame_produzir = tela_inteira[240:240+30,250:250+180]
-    frame_produzir_tratado = manipula_imagem.transforma_amarelo_preto(frame_produzir)
+    frame_produzir_tratado = manipula_imagem.transforma_caracteres_preto(frame_produzir)
     return manipula_imagem.reconhece_texto(frame_produzir_tratado)
 
 def salva_imagem_envia_servidor():
@@ -1418,11 +1463,12 @@ def funcao_teste(id_personagem):
     #     print('Não achei...')
     # while not loga_personagem('caah.rm15@gmail.com','aeioukel'):
     #     continue
-    # verifica_producao_recursos(0,'Grande coleção de recursos comuns')
+    # verifica_producao_recursos('Grande coleção de recursos comuns')
     # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido()
     # while True:
-    retorna_lista_pixel_minimap()
+    # atualiza_nova_tela()
+    confirma_nome_trabalho('Melhorar licença comum',1)
     #     menu=retorna_menu()
     #     if menu!=11:
     #         trata_menu(menu)
@@ -1438,10 +1484,9 @@ def funcao_teste(id_personagem):
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
-    # atualiza_nova_tela()
     # while inicia_busca_trabalho():
     #     continue
     # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
-#funcao_teste()
+# funcao_teste('')

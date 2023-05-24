@@ -35,8 +35,15 @@ def envia_dados_servidor(coordenadas):
     cliente.send(coordenadas.encode())
     print(f'Enviado!')
 #modificado 16/01
-def adiciona_trabalho(personagem_id,trabalho,licenca):
-    dados = {'nome':trabalho[0],'profissao':trabalho[1],'nivel':int(trabalho[3]),'tipo_licenca':licenca,'raridade':trabalho[2],'estado':0}
+def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
+    trabalho_adicionado=[]
+    dados = ({'nome':trabalho[1],
+              'profissao':trabalho[2],
+              'raridade':trabalho[5],
+              'nivel':int(trabalho[3]),
+              'tipo_licenca':licenca,
+              'estado':estado,
+              'recorrencia':0})
     for x in range(10):
         try:
             requisicao = requests.post(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/.json',data=json.dumps(dados))
@@ -45,11 +52,29 @@ def adiciona_trabalho(personagem_id,trabalho,licenca):
             dados = {'id':id}
             requisicao = requests.patch(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
             print(f'{trabalho[0]} foi adicionado!')
+            requisicao = requests.get(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json')
+            dicionario_requisicao = requisicao.json()
+            id_trabalho = dicionario_requisicao['id']
+            nome_trabalho = dicionario_requisicao['nome']
+            profissao_trabalho = dicionario_requisicao['profissao']
+            nivel_trabalho = dicionario_requisicao['nivel']
+            licenca_trabalho = dicionario_requisicao['tipo_licenca']
+            raridade_trabalho = dicionario_requisicao['raridade']
+            recorrencia_trabalho=dicionario_requisicao['recorrencia']
+
+            trabalho_adicionado.append([id_trabalho,
+                                nome_trabalho,
+                                profissao_trabalho,
+                                nivel_trabalho,
+                                licenca_trabalho,
+                                raridade_trabalho,
+                                recorrencia_trabalho])
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
     else:
         print(f'Limite de tentativas de conexão atingido.')
+    return trabalho_adicionado
 #modificado 16/01
 def adicionar_profissao(personagem_id,profissao):
     dados = {'nome':profissao}
@@ -74,8 +99,7 @@ def cadastrar_imagem_trabalho():
     print(requisicao.text)
 #modificado 12/01
 def cadastrar_trabalho(trabalho):
-    atributos = trabalho.split(',')
-    dados = {'nome':atributos[0],'profissao':atributos[1],'nivel':int(atributos[2]),'raridade':atributos[3],'estado':0}
+    dados = {'nome':trabalho[0],'profissao':trabalho[1],'nivel':trabalho[2],'raridade':trabalho[3],'estado':0,'recorrencia':0}
     for x in range(10):
         try:
             requisicao = requests.post(f'{link_database}/Lista_trabalhos/.json',data=json.dumps(dados))
@@ -177,7 +201,14 @@ def consulta_lista_desejo(tipo_lista):
                     nivel_trabalho = dicionario_requisicao[id]['nivel']
                     licenca_trabalho = dicionario_requisicao[id]['tipo_licenca']
                     raridade_trabalho = dicionario_requisicao[id]['raridade']
-                    lista_desejo.append([id_trabalho,nome_trabalho, profissao_trabalho, nivel_trabalho, licenca_trabalho,raridade_trabalho])
+                    recorrencia_trabalho=dicionario_requisicao[id]['recorrencia']
+                    lista_desejo.append([id_trabalho,
+                                        nome_trabalho,
+                                        profissao_trabalho,
+                                        nivel_trabalho,
+                                        licenca_trabalho,
+                                        raridade_trabalho,
+                                        recorrencia_trabalho])
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
@@ -210,19 +241,22 @@ def consulta_lista_personagem(usuario_id):
     return lista_personagem
 
 #modificado 23/01
-def muda_estado_trabalho(usuario_id,personagem_id,nome_trabalho,novo_estado):
+def muda_estado_trabalho(usuario_id,personagem_id,trabalho,novo_estado):
     dados = {'estado':novo_estado}
     for x in range(10):
         try:
             requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/.json')
             dicionario_requisicao = requisicao.json()
             for id in dicionario_requisicao:
-                if nome_trabalho in dicionario_requisicao[id]['nome'] and dicionario_requisicao[id]['estado']==novo_estado-1:
+                if ((trabalho[1] in dicionario_requisicao[id]['nome'])and
+                    (novo_estado-1==dicionario_requisicao[id]['estado'])and
+                    (trabalho[2]in dicionario_requisicao[id]['profissao'])and
+                    (trabalho[6]!=1)):
                     requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
-                    print(f'Estado do trabalho mudado para {novo_estado}.')
-                    break
+                    print(f'Estado do trabalho modificado para {novo_estado}.')
+                    return
             else:
-                print(f'{nome_trabalho} não encontrado na lista.')
+                print(f'{trabalho[1]} não encontrado na lista.')
                 break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
@@ -283,4 +317,25 @@ def excluir_lista_profissoes(personagem_id):
     else:
         print(f'Limite de tentativas de conexão atingido.')
 
-# cadastrar_trabalho('ChapéuinigualáveldeRagnar,Armaduraleve,14,Especial,')
+def adicionaAtributoRecorrencia():
+    dados = {'recorrencia':0}
+    for x in range(10):
+        try:
+            requisicao = requests.get(f'{link_database}/Lista_trabalhos/.json')
+            dicionario_requisicao = requisicao.json()
+            for id in dicionario_requisicao:
+                    nome = dicionario_requisicao[id]['nome']
+                    requisicao = requests.patch(f'{link_database}/Lista_trabalhos/{id}/.json',data=json.dumps(dados))
+                    print(f'Atributo recorrencia atribuido a: {nome}.')
+                    print('____________________________________________')
+                    time.sleep(1)
+            else:
+                print(f'Fim da lista.')
+                break
+        except requests.exceptions.ConnectionError:
+            print(f'Conecção recusada!')
+            time.sleep(1)
+    else:
+        print(f'Limite de tentativas de conexão atingido.')
+
+# adicionaAtributoRecorrencia()
