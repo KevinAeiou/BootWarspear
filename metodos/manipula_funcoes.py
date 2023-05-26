@@ -44,6 +44,7 @@ nivel=3
 licenca=4
 raridade=5
 recorrencia=6
+estado=7
 
 usuario_id = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
@@ -438,14 +439,14 @@ def verifica_ciclo(lista):
         if lista[0]==lista[-1]:
             return True
     return False
-#modifica 16/01
+
 def retorna_producao_recursos(nome_trabalho):
     #Grande coleção de rec
-    lista_producao_recursos = ([
+    lista_producao_recursos=([
         'Grande coleção de recursos comuns','de recursos avançados',
         'Melhoria da substância comum','Melhoria do catalisador comum','Melhoria da essência comum',
         'Melhoria da substância composta','Melhoria do catalisador amplificado','Melhoria da essência composta',
-        'Melhorar licença comum','Licença de produção do aprediz'])
+        'Melhorar licença comum','Licença de produção do aprendiz'])
     for trabalho in lista_producao_recursos:
         if  trabalho.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
             return True
@@ -575,7 +576,7 @@ def entra_licenca():
 def entra_trabalho_encontrado(x):
     if verifica_erro(None)!=0:
         return False
-    manipula_teclado.click_especifico(3,'up')
+    manipula_teclado.click_continuo(3,'up')
     manipula_teclado.click_especifico(x+1,'down')
     manipula_teclado.click_especifico(1,'enter')
     return True
@@ -608,7 +609,7 @@ def verifica_erro(trabalho):
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(2,'f2')
-        manipula_teclado.click_especifico(9,'up')
+        manipula_teclado.click_continuo(9,'up')
         return 4
     elif erro == 5:
         print(f'Conectando...')
@@ -618,7 +619,7 @@ def verifica_erro(trabalho):
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_especifico(4,'up')
+        manipula_teclado.click_continuo(4,'up')
         manipula_teclado.click_especifico(1,'left')
         return 6
     elif erro == 7:
@@ -627,18 +628,17 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(1,'f1')
         return 7
     elif erro == 8:
-        print(f'Espera trabalho ser concluido.')
+        print(f'Sem espaços livres para produção....')
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_especifico(4,'up')
+        manipula_teclado.click_continuo(4,'up')
         manipula_teclado.click_especifico(1,'left')
-        print(f'Esperando trabalho ser concluído...')
         linha_separacao()
         return 8
     elif erro == 9:
         manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_especifico(8,'up')
+        manipula_teclado.click_continuo(8,'up')
         return 9
     elif erro == 10:
         manipula_teclado.click_especifico(2,'enter')
@@ -1031,11 +1031,11 @@ def inicia_busca_trabalho():
 
 def muda_estado_trabalho_concluido(trabalho_concluido):
     manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
-    print(f'Estado do trabalho {trabalho_concluido} modificado para concluído.')
+    print(f'Estado do trabalho {trabalho_concluido[nome]} modificado para concluído.')
     linha_separacao()
 
 def recupera_trabalho_concluido():
-    trabalho_concluido=['','','','','']
+    trabalho_concluido=['','','',0,'','',0,0]
     tela_inteira = retorna_atualizacao_tela()
     frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)!=0:
@@ -1051,7 +1051,7 @@ def recupera_trabalho_concluido():
     manipula_teclado.click_especifico(1,'up')
     manipula_teclado.click_especifico(1,'left')
     linha_separacao()
-    trabalho_concluido['',nome_trabalho_concluido,'','','']
+    trabalho_concluido['',nome_trabalho_concluido,'',0,'','',0,0]
     return trabalho_concluido
 
 def inicia_producao(trabalho):
@@ -1068,6 +1068,8 @@ def inicia_producao(trabalho):
                     caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
                     manipula_cliente.excluir_trabalho(caminho_trabalho)        
                     return True
+                elif erro==8:
+                    return False
                 erro=verifica_erro(trabalho)
             else:
                 while True:
@@ -1084,11 +1086,17 @@ def inicia_producao(trabalho):
                         verifica_erro(trabalho)
                     if menu==menu_trab_atuais:#trabalhos atuais
                         clone_trabalho=trabalho
+                        # print(f'Trabalho: {trabalho}')
                         if trabalho[recorrencia]==1:
+                            print(f'Recorrencia está ligada.')
+                            linha_separacao()
                             clone_trabalho=manipula_cliente.adiciona_trabalho(personagem_id_global,trabalho,trabalho[licenca],1)
-                            print(f'Clone: {clone_trabalho}.')
-                        # manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,clone_trabalho,1)
-                        manipula_teclado.click_especifico(9,'up')
+                            # print(f'O id é: {clone_trabalho[0]}')
+                        elif trabalho[recorrencia]==0:
+                            print(f'Recorrencia está desligada.')
+                            linha_separacao()
+                            manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,clone_trabalho,1)
+                        manipula_teclado.click_continuo(9,'up')
                         break
                 while verifica_erro(trabalho)!=0:
                     continue
@@ -1463,12 +1471,13 @@ def funcao_teste(id_personagem):
     #     print('Não achei...')
     # while not loga_personagem('caah.rm15@gmail.com','aeioukel'):
     #     continue
-    # verifica_producao_recursos('Grande coleção de recursos comuns')
+    # verifica_producao_recursos('Licença de produção do aprendiz')
+    manipula_teclado.click_continuo(9,'up')
     # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido()
     # while True:
     # atualiza_nova_tela()
-    confirma_nome_trabalho('Melhorar licença comum',1)
+    # confirma_nome_trabalho('Melhorar licença comum',1)
     #     menu=retorna_menu()
     #     if menu!=11:
     #         trata_menu(menu)

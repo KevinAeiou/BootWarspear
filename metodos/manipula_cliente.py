@@ -51,7 +51,6 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
             id = id[1].replace('"','').replace('}','')
             dados = {'id':id}
             requisicao = requests.patch(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
-            print(f'{trabalho[0]} foi adicionado!')
             requisicao = requests.get(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json')
             dicionario_requisicao = requisicao.json()
             id_trabalho = dicionario_requisicao['id']
@@ -61,6 +60,7 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
             licenca_trabalho = dicionario_requisicao['tipo_licenca']
             raridade_trabalho = dicionario_requisicao['raridade']
             recorrencia_trabalho=dicionario_requisicao['recorrencia']
+            estado_trabalho=dicionario_requisicao['estado']
 
             trabalho_adicionado.append([id_trabalho,
                                 nome_trabalho,
@@ -68,7 +68,9 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
                                 nivel_trabalho,
                                 licenca_trabalho,
                                 raridade_trabalho,
-                                recorrencia_trabalho])
+                                recorrencia_trabalho,
+                                estado_trabalho])
+            print(f'{nome_trabalho} foi adicionado!')
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
@@ -202,13 +204,15 @@ def consulta_lista_desejo(tipo_lista):
                     licenca_trabalho = dicionario_requisicao[id]['tipo_licenca']
                     raridade_trabalho = dicionario_requisicao[id]['raridade']
                     recorrencia_trabalho=dicionario_requisicao[id]['recorrencia']
+                    estado_trabalho=dicionario_requisicao[id]['estado']
                     lista_desejo.append([id_trabalho,
                                         nome_trabalho,
                                         profissao_trabalho,
                                         nivel_trabalho,
                                         licenca_trabalho,
                                         raridade_trabalho,
-                                        recorrencia_trabalho])
+                                        recorrencia_trabalho,
+                                        estado_trabalho])
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
@@ -248,13 +252,20 @@ def muda_estado_trabalho(usuario_id,personagem_id,trabalho,novo_estado):
             requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/.json')
             dicionario_requisicao = requisicao.json()
             for id in dicionario_requisicao:
-                if ((trabalho[1] in dicionario_requisicao[id]['nome'])and
-                    (novo_estado-1==dicionario_requisicao[id]['estado'])and
-                    (trabalho[2]in dicionario_requisicao[id]['profissao'])and
-                    (trabalho[6]!=1)):
-                    requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
-                    print(f'Estado do trabalho modificado para {novo_estado}.')
-                    return
+                if novo_estado==1:
+                    if ((trabalho[1] in dicionario_requisicao[id]['nome'])and
+                        (novo_estado-1==dicionario_requisicao[id]['estado'])and
+                        (trabalho[2]in dicionario_requisicao[id]['profissao'])and
+                        (trabalho[6]!=1)):
+                        requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
+                        print(f'Estado do trabalho modificado para "Produzindo".')
+                        return
+                elif novo_estado==2:
+                    if ((trabalho[1] in dicionario_requisicao[id]['nome'])and
+                        (novo_estado-1==dicionario_requisicao[id]['estado'])):
+                        requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
+                        print(f'Estado do trabalho modificado para "Concluído".')
+                        return
             else:
                 print(f'{trabalho[1]} não encontrado na lista.')
                 break

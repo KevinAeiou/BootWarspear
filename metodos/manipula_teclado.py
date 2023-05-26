@@ -157,8 +157,7 @@ def entra_secao(email,senha):
     click_especifico(1,0)
     click_especifico(1,'f2')
     click_especifico(1,'down')
-    for x in range(30):
-        tecla.press('backspace')
+    click_continuo(30,'backspace')
     tecla.write(email)
     click_especifico(1,'down')
     tecla.write(senha)
@@ -175,6 +174,10 @@ def encerra_secao():
     click_especifico(1,8)
     click_especifico(1,5)
     click_especifico(1,'f2')
+
+def click_continuo(tempo,tecla_esp):
+    for x in range(tempo):
+        tecla.press(tecla_esp)
 
 def click_especifico(clicks,tecla_esp):
     time.sleep(0.5)
