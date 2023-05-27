@@ -1015,6 +1015,8 @@ def inicia_busca_trabalho():
                         else:
                             if not inicia_producao(trabalho_lista_desejo):
                                 manipula_teclado.click_especifico(1,'left')
+                            else:
+                                break
                 elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
                     verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
                     inicia_producao(trabalho_lista_desejo)
@@ -1035,7 +1037,6 @@ def muda_estado_trabalho_concluido(trabalho_concluido):
     linha_separacao()
 
 def recupera_trabalho_concluido():
-    trabalho_concluido=['','','',0,'','',0,0]
     tela_inteira = retorna_atualizacao_tela()
     frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)!=0:
@@ -1047,11 +1048,11 @@ def recupera_trabalho_concluido():
         print(f'Trabalho não está concluido!')
         linha_separacao()
         return False
-    print(f'{trabalho_concluido} recuperado.')
+    trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
+    print(f'{trabalho_concluido[nome]} recuperado.')
     manipula_teclado.click_especifico(1,'up')
     manipula_teclado.click_especifico(1,'left')
     linha_separacao()
-    trabalho_concluido['',nome_trabalho_concluido,'',0,'','',0,0]
     return trabalho_concluido
 
 def inicia_producao(trabalho):
