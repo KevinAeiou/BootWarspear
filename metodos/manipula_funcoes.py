@@ -906,6 +906,7 @@ def busca_lista_personagem_ativo():
             cont_personagem_ativo=len(lista_personagem_ativo)
             continue
         else:#se houver pelo menos um personagem ativo
+            posicao_personagem=0
             for personagem_lista in lista_personagem_ativo:
                 if verifica_nome_personagem(personagem_lista[nome]):
                     personagem_id_global=personagem_lista[id]
@@ -919,10 +920,11 @@ def busca_lista_personagem_ativo():
                         manipula_teclado.click_mouse_esquerdo(1,2,35)
                         if retorna_menu()==menu_inicial:
                             manipula_teclado.encerra_secao()
-                    personagem_retirado=lista_personagem_ativo[0][1]
-                    del lista_personagem_ativo[0]
+                    personagem_retirado=personagem_lista[1]
+                    del lista_personagem_ativo[posicao_personagem]
                     print(f'{personagem_retirado} foi retirado da lista!')
                     linha_separacao()
+                posicao_personagem+=1
             else:
                 if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
                     entra_personagem_ativo(lista_personagem_ativo[0][1])
@@ -1010,13 +1012,13 @@ def inicia_busca_trabalho():
                             manipula_teclado.click_especifico(1,'f1')
                             if not inicia_producao(trabalho_lista_desejo):
                                 manipula_teclado.click_especifico(1,'left')
+                                break
                     else:
                         if not confirma_nome_trabalho(trabalho_lista_desejo[nome],1):
                             sai_trabalho_encontrado(posicao_trabalho,1)
                         else:
                             if not inicia_producao(trabalho_lista_desejo):
                                 manipula_teclado.click_especifico(1,'left')
-                            else:
                                 break
                 elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
                     verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
@@ -1057,10 +1059,6 @@ def recupera_trabalho_concluido():
     return trabalho_concluido
 
 def inicia_producao(trabalho):
-    id=0
-    nome=1
-    licenca=4
-    recorrencia=6
     if entra_licenca():
         if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
             manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
@@ -1458,11 +1456,19 @@ def entra_usuario():
     if manipula_cliente.autenticar_usuario(email,senha):
         return True
     return False
+    
+def deleta_item_lista():
+    lista=['a','b','c']
+    print(f'{lista}')
+    item=int(input(f'Deletar: '))
+    del lista[item]
+    print(f'{lista}')
 
 def funcao_teste(id_personagem):
     global personagem_id_global
     personagem_id_global=id_personagem
     manipula_teclado.click_atalho_especifico('alt','tab')
+    # deleta_item_lista()
     # verifica_erro('')
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
@@ -1474,7 +1480,7 @@ def funcao_teste(id_personagem):
     # while not loga_personagem('caah.rm15@gmail.com','aeioukel'):
     #     continue
     # verifica_producao_recursos('Licença de produção do aprendiz')
-    manipula_teclado.click_continuo(9,'up')
+    # manipula_teclado.click_continuo(9,'up')
     # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido()
     # while True:
