@@ -906,22 +906,23 @@ def busca_lista_personagem_ativo():
             cont_personagem_ativo=len(lista_personagem_ativo)
             continue
         else:#se houver pelo menos um personagem ativo
-            personagem_id_global=lista_personagem_ativo[0][0]
-            if verifica_nome_personagem(lista_personagem_ativo[0][1]):
-                print('Inicia busca...')
-                linha_separacao()
-                if inicia_busca_trabalho():
-                    if verifica_erro(None)!=0 or cont_personagem_ativo==1:
-                        lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-                        cont_personagem_ativo=len(lista_personagem_ativo)
-                        continue
-                    manipula_teclado.click_mouse_esquerdo(1,2,35)
-                    if retorna_menu()==menu_inicial:
-                        manipula_teclado.encerra_secao()
-                personagem_retirado=lista_personagem_ativo[0][1]
-                del lista_personagem_ativo[0]
-                print(f'{personagem_retirado} foi retirado da lista!')
-                linha_separacao()
+            for personagem_lista in lista_personagem_ativo:
+                if verifica_nome_personagem(personagem_lista[nome]):
+                    personagem_id_global=personagem_lista[id]
+                    print('Inicia busca...')
+                    linha_separacao()
+                    if inicia_busca_trabalho():
+                        if verifica_erro(None)!=0 or cont_personagem_ativo==1:
+                            lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+                            cont_personagem_ativo=len(lista_personagem_ativo)
+                            continue
+                        manipula_teclado.click_mouse_esquerdo(1,2,35)
+                        if retorna_menu()==menu_inicial:
+                            manipula_teclado.encerra_secao()
+                    personagem_retirado=lista_personagem_ativo[0][1]
+                    del lista_personagem_ativo[0]
+                    print(f'{personagem_retirado} foi retirado da lista!')
+                    linha_separacao()
             else:
                 if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
                     entra_personagem_ativo(lista_personagem_ativo[0][1])
