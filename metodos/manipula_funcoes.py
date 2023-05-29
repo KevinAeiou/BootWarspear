@@ -637,8 +637,10 @@ def verifica_erro(trabalho):
         linha_separacao()
         return 8
     elif erro == 9:
+        print(f'Trabalho não está concluido!')
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(8,'up')
+        linha_separacao()
         return 9
     elif erro == 10:
         manipula_teclado.click_especifico(2,'enter')
@@ -897,37 +899,46 @@ def prepara_personagem(id_personagem):
 def busca_lista_personagem_ativo():
     global personagem_id_global
     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-    cont_personagem_ativo=len(lista_personagem_ativo)
     while True:
-        if len(lista_personagem_ativo)==0:
-            print(f'Lista vazia. Buscando nova lista no servidor.')
-            linha_separacao()
+        if verifica_lista_vazia(lista_personagem_ativo):
             lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-            cont_personagem_ativo=len(lista_personagem_ativo)
             continue
         else:#se houver pelo menos um personagem ativo
-            posicao_personagem=0
-            for personagem_lista in lista_personagem_ativo:
-                if verifica_nome_personagem(personagem_lista[nome]):
-                    personagem_id_global=personagem_lista[id]
-                    print('Inicia busca...')
-                    linha_separacao()
-                    if inicia_busca_trabalho():
-                        if verifica_erro(None)!=0 or cont_personagem_ativo==1:
-                            lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-                            cont_personagem_ativo=len(lista_personagem_ativo)
-                            continue
-                        manipula_teclado.click_mouse_esquerdo(1,2,35)
-                        if retorna_menu()==menu_inicial:
-                            manipula_teclado.encerra_secao()
-                    personagem_retirado=personagem_lista[1]
-                    del lista_personagem_ativo[posicao_personagem]
-                    print(f'{personagem_retirado} foi retirado da lista!')
-                    linha_separacao()
-                posicao_personagem+=1
+            posicao_personagem=verifica_nome_reconhecido_na_lista(lista_personagem_ativo)
+            if posicao_personagem!=-1:
+                personagem_id_global=lista_personagem_ativo[posicao_personagem][id]
+                print('Inicia busca...')
+                linha_separacao()
+                if inicia_busca_trabalho():
+                    if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
+                        lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+                        continue
+                    manipula_teclado.click_mouse_esquerdo(1,2,35)
+                    if retorna_menu()==menu_inicial:
+                        manipula_teclado.encerra_secao()
+                personagem_retirado=lista_personagem_ativo[posicao_personagem][nome]
+                del lista_personagem_ativo[posicao_personagem]
+                print(f'{personagem_retirado} foi retirado da lista!')
+                linha_separacao()
             else:
                 if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
                     entra_personagem_ativo(lista_personagem_ativo[0][1])
+
+def verifica_lista_vazia(lista_personagem_ativo):
+    if len(lista_personagem_ativo)==0:
+        print(f'Lista vazia. Buscando nova lista no servidor.')
+        linha_separacao()
+        return True
+    return False
+
+def verifica_nome_reconhecido_na_lista(lista_personagem_ativo):
+    posicao_personagem=0
+    for personagem_lista in lista_personagem_ativo:
+        if verifica_nome_personagem(personagem_lista[nome]):
+            return posicao_personagem
+        posicao_personagem+=1
+    else:
+        return -1
 
 def configura_login_personagem(email, senha):
     menu=retorna_menu()
@@ -1040,23 +1051,21 @@ def muda_estado_trabalho_concluido(trabalho_concluido):
     linha_separacao()
 
 def recupera_trabalho_concluido():
+    trabalho=False
     tela_inteira = retorna_atualizacao_tela()
     frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
-    if verifica_erro(None)!=0:
-        return False
-    nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
-    manipula_teclado.click_especifico(1,'down')
-    manipula_teclado.click_especifico(1,'f2')
-    if verifica_erro(None)==9:
-        print(f'Trabalho não está concluido!')
-        linha_separacao()
-        return False
-    trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
-    print(f'{trabalho_concluido[nome]} recuperado.')
-    manipula_teclado.click_especifico(1,'up')
-    manipula_teclado.click_especifico(1,'left')
-    linha_separacao()
-    return trabalho_concluido
+    if verifica_erro(None)==0:
+        nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
+        manipula_teclado.click_especifico(1,'down')
+        manipula_teclado.click_especifico(1,'f2')
+        if verifica_erro(None)==0:
+            trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
+            print(f'{trabalho_concluido[nome]} recuperado.')
+            manipula_teclado.click_especifico(1,'up')
+            manipula_teclado.click_especifico(1,'left')
+            linha_separacao()
+            trabalho=trabalho_concluido
+    return trabalho
 
 def inicia_producao(trabalho):
     if entra_licenca():
