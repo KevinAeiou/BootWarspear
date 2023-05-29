@@ -522,6 +522,7 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
     return -1,None
 
 def verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao_verificada):
+    confirmacao=False
     manipula_teclado.click_especifico(5,'down')
     global contador_paracima
     contador_paracima=5
@@ -535,16 +536,18 @@ def verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao_verificada):
         if nome_profissao_verificada==nome_profissao:
             if nome_trabalho_reconhecido=='':
                 manipula_teclado.click_especifico(1,'f1')
-                manipula_teclado.click_especifico(contador_paracima,'up')
+                manipula_teclado.click_continuo(contador_paracima,'up')
                 manipula_teclado.click_especifico(1,'left')
                 break
             elif nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
                 manipula_teclado.click_especifico(1,'enter')
                 contador_paracima+=1
+                confirmacao=True
                 break
         manipula_teclado.click_especifico(1,'down')
         contador_paracima+=1
         # print(f'Teste de contador: {contador_paracima}')
+    return confirmacao
 
 def retorna_nome_trabalho_reconhecido(yinicial_nome,identificador):
     #tira novo print da tela
@@ -601,7 +604,7 @@ def verifica_erro(trabalho):
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_especifico(contador_paracima,'up')
+        manipula_teclado.click_continuo(contador_paracima,'up')
         manipula_teclado.click_especifico(1,'left')
         return 3
     elif erro == 4:
@@ -1009,41 +1012,53 @@ def inicia_busca_trabalho():
                 nome_profissao = profissao_necessaria[nome]
                 manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
-                if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo de produção
-                    if not entra_trabalho_encontrado(posicao_trabalho):
-                        return False
-                    if not verifica_producao_recursos(trabalho_lista_desejo[nome]):
-                        if verifica_erro(None)!=0:
-                            return False
-                        manipula_teclado.click_especifico(1,'down')
-                        manipula_teclado.click_especifico(1,'enter')
-                        if not confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
-                            sai_trabalho_encontrado(posicao_trabalho,0)
-                        else:
-                            manipula_teclado.click_especifico(1,'f1')
-                            if not inicia_producao(trabalho_lista_desejo):
-                                manipula_teclado.click_especifico(1,'left')
-                                break
-                    else:
-                        if not confirma_nome_trabalho(trabalho_lista_desejo[nome],1):
-                            sai_trabalho_encontrado(posicao_trabalho,1)
-                        else:
-                            if not inicia_producao(trabalho_lista_desejo):
-                                manipula_teclado.click_especifico(1,'left')
-                                break
-                elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
-                    verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao)
-                    inicia_producao(trabalho_lista_desejo)
-                if verifica_trabalho_concluido()==2:
-                    nome_trabalho_concluido=recupera_trabalho_concluido()
-                    if nome_trabalho_concluido!=False:
-                        muda_estado_trabalho_concluido(nome_trabalho_concluido)
-                manipula_teclado.click_especifico(1,'left')
+                if inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
+                    verifica_trabalho()
+                    manipula_teclado.click_especifico(1,'left')
+                    break
+                else:
+                    return False
             return True
     print(f'Lista de trabalhos desejados vazia.')
     print(f'Voltando.')
     linha_separacao()
     return False
+
+def inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
+    processo=False
+    if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho raro/especial
+        if entra_trabalho_encontrado(posicao_trabalho):
+            if not verifica_producao_recursos(trabalho_lista_desejo[nome]):
+                if verifica_erro(None)!=0:
+                    processo=False
+                manipula_teclado.click_especifico(1,'down')
+                manipula_teclado.click_especifico(1,'enter')
+                if confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
+                    manipula_teclado.click_especifico(1,'f1')
+                    if not inicia_producao(trabalho_lista_desejo):
+                        manipula_teclado.click_especifico(1,'left')
+                        processo=True
+                else:
+                    sai_trabalho_encontrado(posicao_trabalho,0)
+            else:
+                if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):
+                    if not inicia_producao(trabalho_lista_desejo):
+                        manipula_teclado.click_especifico(1,'left')
+                        processo=True
+                else:
+                    sai_trabalho_encontrado(posicao_trabalho,1)
+        elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
+            if verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao):
+                if not inicia_producao(trabalho_lista_desejo):
+                    manipula_teclado.click_especifico(1,'left')
+                    processo=True
+    return processo
+
+def verifica_trabalho():
+    if verifica_trabalho_concluido()==2:
+        nome_trabalho_concluido=recupera_trabalho_concluido()
+        if nome_trabalho_concluido!=False:
+            muda_estado_trabalho_concluido(nome_trabalho_concluido)
 
 def muda_estado_trabalho_concluido(trabalho_concluido):
     manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
@@ -1068,6 +1083,7 @@ def recupera_trabalho_concluido():
     return trabalho
 
 def inicia_producao(trabalho):
+    producao=False
     if entra_licenca():
         if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
             manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
@@ -1076,9 +1092,9 @@ def inicia_producao(trabalho):
                 if erro==3:
                     caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
                     manipula_cliente.excluir_trabalho(caminho_trabalho)        
-                    return True
+                    producao=True
                 elif erro==8:
-                    return False
+                    break
                 erro=verifica_erro(trabalho)
             else:
                 while True:
@@ -1088,12 +1104,12 @@ def inicia_producao(trabalho):
                         if verifica_erro(trabalho)==3:
                             caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
                             manipula_cliente.excluir_trabalho(caminho_trabalho)        
-                            return
-                    if menu==menu_esc_equipamento:#menu escolha equipamento
+                            producao=True
+                    elif menu==menu_esc_equipamento:#menu escolha equipamento
                         manipula_teclado.click_especifico(1,'f2')
                         time.sleep(1)
                         verifica_erro(trabalho)
-                    if menu==menu_trab_atuais:#trabalhos atuais
+                    elif menu==menu_trab_atuais:#trabalhos atuais
                         clone_trabalho=trabalho
                         # print(f'Trabalho: {trabalho}')
                         if trabalho[recorrencia]==1:
@@ -1109,8 +1125,8 @@ def inicia_producao(trabalho):
                         break
                 while verifica_erro(trabalho)!=0:
                     continue
-                return True
-    return False
+                producao=True
+    return producao
     
 def verifica_producao_recursos(nome_trabalho_lista_desejo):
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
