@@ -592,94 +592,73 @@ def verifica_erro(trabalho):
     if erro == 1:
         manipula_teclado.click_especifico(2,"enter")
         verifica_licenca(licenca)
-        return 1
+        erro_retornado=1
     elif erro == 2:
         print(f'Erro na conexão...')
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
-        return 2
-    elif erro == 3:
-        print(f'Retirando trabalho da lista.')
-        print(f'Voltando para o menu profissões.')
+        erro_retornado=2
+    elif erro==3 or erro==16 or erro==6 or erro==8:
+        if erro==3:
+            print(f'Retirrando trabalho da lista.')
+        elif erro==6:
+            print(f'Voltando para o menu profissões.')
+        elif erro==8:
+            print(f'Sem espaços livres para produção....')
+        elif erro==16:
+            print(f'O trabalho não está disponível.')
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(contador_paracima,'up')
         manipula_teclado.click_especifico(1,'left')
-        return 3
     elif erro == 4:
         print(f'Escolhendo item.')
         linha_separacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(2,'f2')
         manipula_teclado.click_continuo(9,'up')
-        return 4
     elif erro == 5:
         print(f'Conectando...')
-        return 5
-    elif erro == 6:
-        print(f'Voltando para o menu profissões.')
-        linha_separacao()
-        manipula_teclado.click_especifico(1,'enter')
-        manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_continuo(4,'up')
-        manipula_teclado.click_especifico(1,'left')
-        return 6
     elif erro == 7:
         print(f'Recuperar presente depois.')
         linha_separacao()
         manipula_teclado.click_especifico(1,'f1')
-        return 7
-    elif erro == 8:
-        print(f'Sem espaços livres para produção....')
-        linha_separacao()
-        manipula_teclado.click_especifico(1,'enter')
-        manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_continuo(4,'up')
-        manipula_teclado.click_especifico(1,'left')
-        linha_separacao()
-        return 8
     elif erro == 9:
         print(f'Trabalho não está concluido!')
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(8,'up')
         linha_separacao()
-        return 9
     elif erro == 10:
         manipula_teclado.click_especifico(2,'enter')
         print(f'Voltando para a tela inicial.')
         linha_separacao()
-        return 10
     elif erro == 11:
         manipula_teclado.click_especifico(1, 'enter')
         print(f'Voltando para a tela inicial.')
         linha_separacao()
-        return 11
     elif erro == 12:
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_especifico(1,'up')
         manipula_teclado.click_especifico(1,'left')
         print(f'Ignorando trabalho concluído!')
         linha_separacao()
-        return 12
     elif erro == 13:
         manipula_teclado.click_especifico(1,'enter')
         print(f'Erro ao conectar...')
         linha_separacao()
-        return 13
     elif erro == 14:
         manipula_teclado.click_especifico(1,'f1')
         linha_separacao()
-        return 14
     elif erro == 15:
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
         print(f'Login ou senha incorreta...')
         linha_separacao()
-        return 15
-    print(f'Nem um erro encontrado!')
-    linha_separacao()
-    return 0
+    else:
+        print(f'Nem um erro encontrado!')
+        linha_separacao()
+    return erro
 #modificado 12/01
 def retorna_tipo_erro():
     tela_inteira=retorna_atualizacao_tela()
@@ -690,7 +669,7 @@ def retorna_tipo_erro():
                           'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
                           'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','OservidorestáemmanutençãoEstamosfazendodetudoparaconcluílaomaisrápvidopossível',
                           'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexão com o servidor foi interrompida',
-                          'Você precisa de mais moedas','Login ou senha incorreta']
+                          'Você precisa de mais moedas','Login ou senha incorreta','o tempo de vida da tarefa de produção expirou.']
     for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
         if tipo_erro_trabalho[tamanho_tipo_erro].replace(' ','').lower() in erro_encontrado.replace(' ','').lower():
             erro_encontrado=''
