@@ -468,7 +468,7 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
     if len(nome_trabalho)!=0:
         nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:-1].lower()
         print(f'Nome reconhecido: {nome_trabalho_tratado}.')
-        if  nome_trabalho_lista.replace(' ','').lower()in nome_trabalho_tratado:
+        if  nome_trabalho_tratado in nome_trabalho_lista.replace(' ','').lower():
             print(f'Trabalho confirmado! {nome_trabalho}')
             linha_separacao()
             return True
@@ -970,9 +970,6 @@ def inicia_busca_trabalho():
         conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
         if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
             for profissao_necessaria in lista_profissao_necessaria:#percorre lista de profissao
-                nome_profissao=profissao_necessaria[nome]
-                print(f'Verificando profissão: {nome_profissao}')
-                linha_separacao()
                 if verifica_erro(None)!=0:
                     return False
                 while True:
@@ -991,6 +988,9 @@ def inicia_busca_trabalho():
                         trata_menu(menu)
                     else:
                         break
+                nome_profissao=profissao_necessaria[nome]
+                print(f'Verificando profissão: {nome_profissao}')
+                linha_separacao()
                 manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                 inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao)
@@ -1003,10 +1003,16 @@ def inicia_busca_trabalho():
     return False
 
 def inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
-    processo=False
+    processo=True
     if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho raro/especial
         if entra_trabalho_encontrado(posicao_trabalho):
-            if not verifica_producao_recursos(trabalho_lista_desejo[nome]):
+            if verifica_producao_recursos(trabalho_lista_desejo[nome]):#verifica se o trabalho encontrado é do tipo produção de recursos
+                if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
+                    if not inicia_producao(trabalho_lista_desejo):
+                        manipula_teclado.click_especifico(1,'left')
+                else:
+                    sai_trabalho_encontrado(posicao_trabalho,1)
+            else:#o trabalho é do tipo produção de equipamento
                 if verifica_erro(None)==0:
                     manipula_teclado.click_especifico(1,'down')
                     manipula_teclado.click_especifico(1,'enter')
@@ -1018,18 +1024,14 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
                     else:
                         sai_trabalho_encontrado(posicao_trabalho,0)
                         processo=True
-            else:
-                if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):
-                    if not inicia_producao(trabalho_lista_desejo):
-                        manipula_teclado.click_especifico(1,'left')
-                        processo=True
-                else:
-                    sai_trabalho_encontrado(posicao_trabalho,1)
-        elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
-            if verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao):
-                if not inicia_producao(trabalho_lista_desejo):
-                    manipula_teclado.click_especifico(1,'left')
-                    processo=True
+        else:
+            print(f'Erro ao entrar no trabalho encontrado...')
+            linha_separacao()
+    elif posicao_trabalho==-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho comum
+        if verifica_trabalho_comum(trabalho_lista_desejo,nome_profissao):
+            if not inicia_producao(trabalho_lista_desejo):
+                manipula_teclado.click_especifico(1,'left')
+                processo=True
     return processo
 
 def verifica_trabalho():
@@ -1106,14 +1108,15 @@ def inicia_producao(trabalho):
     return producao
     
 def verifica_producao_recursos(nome_trabalho_lista_desejo):
+    producao_recurso=True
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
         print(f'Trabalho de produção de equipamentos...')
         linha_separacao()
-        return False
+        producao_recurso=False
     else:
         print(f'Trabalho de produção de recursos...')
         linha_separacao()
-    return True
+    return producao_recurso
 
 def usa_habilidade():
     #719:752, 85:128 137:180 189:232
