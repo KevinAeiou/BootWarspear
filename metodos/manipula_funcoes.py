@@ -993,10 +993,7 @@ def inicia_busca_trabalho():
                         break
                 manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
-                if inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
-                    verifica_trabalho()
-                    manipula_teclado.click_especifico(1,'left')
-                    break
+                inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao)
                 verifica_trabalho()
                 manipula_teclado.click_especifico(1,'left')
             return True
@@ -1010,17 +1007,17 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
     if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho raro/especial
         if entra_trabalho_encontrado(posicao_trabalho):
             if not verifica_producao_recursos(trabalho_lista_desejo[nome]):
-                if verifica_erro(None)!=0:
-                    processo=False
-                manipula_teclado.click_especifico(1,'down')
-                manipula_teclado.click_especifico(1,'enter')
-                if confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
-                    manipula_teclado.click_especifico(1,'f1')
-                    if not inicia_producao(trabalho_lista_desejo):
-                        manipula_teclado.click_especifico(1,'left')
+                if verifica_erro(None)==0:
+                    manipula_teclado.click_especifico(1,'down')
+                    manipula_teclado.click_especifico(1,'enter')
+                    if confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
+                        manipula_teclado.click_especifico(1,'f1')
+                        if not inicia_producao(trabalho_lista_desejo):
+                            manipula_teclado.click_especifico(1,'left')
+                            processo=True
+                    else:
+                        sai_trabalho_encontrado(posicao_trabalho,0)
                         processo=True
-                else:
-                    sai_trabalho_encontrado(posicao_trabalho,0)
             else:
                 if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):
                     if not inicia_producao(trabalho_lista_desejo):
@@ -1058,7 +1055,6 @@ def recupera_trabalho_concluido():
             trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
             print(f'{trabalho_concluido[nome]} recuperado.')
             manipula_teclado.click_especifico(1,'up')
-            manipula_teclado.click_especifico(1,'left')
             linha_separacao()
             trabalho=trabalho_concluido
     return trabalho
