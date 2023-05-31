@@ -516,7 +516,7 @@ def verifica_posicoes_trabalhos(profissao,conteudo_lista_desejo):
             linha_separacao()
             yinicial_nome = yinicial_nome+70
     print(f'Nem um trabalho disponível está na lista de desejos.')
-    manipula_teclado.click_especifico(4,'up')
+    manipula_teclado.click_continuo(4,'up')
     manipula_teclado.click_especifico(1,'left')
     linha_separacao()
     return -1,None
@@ -970,6 +970,9 @@ def inicia_busca_trabalho():
         conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
         if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
             for profissao_necessaria in lista_profissao_necessaria:#percorre lista de profissao
+                nome_profissao=profissao_necessaria[nome]
+                print(f'Verificando profissão: {nome_profissao}')
+                linha_separacao()
                 if verifica_erro(None)!=0:
                     return False
                 while True:
@@ -988,15 +991,14 @@ def inicia_busca_trabalho():
                         trata_menu(menu)
                     else:
                         break
-                nome_profissao = profissao_necessaria[nome]
                 manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                 posicao_trabalho,trabalho_lista_desejo = verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                 if inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):
                     verifica_trabalho()
                     manipula_teclado.click_especifico(1,'left')
                     break
-                else:
-                    return False
+                verifica_trabalho()
+                manipula_teclado.click_especifico(1,'left')
             return True
     print(f'Lista de trabalhos desejados vazia.')
     print(f'Voltando.')
@@ -1510,4 +1512,4 @@ def funcao_teste(id_personagem):
     # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
-funcao_teste('')
+# funcao_teste('')
