@@ -466,7 +466,7 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
     nome_trabalho=manipula_imagem.reconhece_texto(frame_nome_trabalho_tratado)
     # manipula_imagem.mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
     if len(nome_trabalho)!=0:
-        nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:len(nome_trabalho)-1].lower()
+        nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:-1].lower()
         print(f'Nome reconhecido: {nome_trabalho_tratado}.')
         if nome_trabalho_tratado in nome_trabalho_lista.replace(' ','').lower():
             print(f'Trabalho confirmado! {nome_trabalho}')
@@ -1477,6 +1477,9 @@ def funcao_teste(id_personagem):
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
+    nome_trabalho='Grande coleção de recursos avançados'
+    nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:-1].lower()
+    print(f'{nome_trabalho_tratado}')
     # if verifica_menu_referencia():
     #     print('Achei!')
     # else:
@@ -1510,4 +1513,4 @@ def funcao_teste(id_personagem):
     # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
-# funcao_teste('')
+funcao_teste('')
