@@ -887,6 +887,8 @@ def busca_lista_personagem_ativo():
     while True:
         if verifica_lista_vazia(lista_personagem_ativo):
             lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+            print(f'Lista de personagens ativos atualizada...')
+            linha_separacao()
             continue
         else:#se houver pelo menos um personagem ativo
             posicao_personagem=verifica_nome_reconhecido_na_lista(lista_personagem_ativo)
@@ -897,6 +899,8 @@ def busca_lista_personagem_ativo():
                 if inicia_busca_trabalho():
                     if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
                         lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+                        print(f'Lista de personagens ativos atualizada...')
+                        linha_separacao()
                         continue
                     manipula_teclado.click_mouse_esquerdo(1,2,35)
                     if retorna_menu()==menu_inicial:
@@ -909,6 +913,8 @@ def busca_lista_personagem_ativo():
 def remove_personagem_lista(lista_personagem_ativo, posicao_personagem):
     personagem_retirado=lista_personagem_ativo[posicao_personagem][nome]
     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+    print(f'Lista de personagens ativos atualizada...')
+    linha_separacao()
     posicao=0
     for personagem_lista in lista_personagem_ativo:
         if personagem_lista[nome] in personagem_retirado:
