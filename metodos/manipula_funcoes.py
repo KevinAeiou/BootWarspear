@@ -479,15 +479,16 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
 #modificado 16/01
 def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
     yinicial_nome=285
+    posicao_trabalho_reconhecido=0
     posicao_trabalho=-1
     trabalho_lista=None
     #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
     #sempre faz três verificações
     time.sleep(2)
-    if not retorna_trabalho_comum():
-        for posicao_trabalho_reconhecido in range(4):
+    if not retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
+        while posicao_trabalho_reconhecido<4 and trabalho_lista==None:
             nome_trabalho_reconhecido=retorna_nome_trabalho_reconhecido(yinicial_nome,0)
-            if nome_trabalho_reconhecido!=''or trabalho_lista==None:
+            if nome_trabalho_reconhecido!='' and trabalho_lista==None:
                 print(f'Nome do trabalho disponível: {nome_trabalho_reconhecido}')
                 #enquanto não comparar toda lista
                 for trabalho_lista_desejo in conteudo_lista_desejo:
@@ -497,22 +498,27 @@ def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
                     #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
                     if profissao_verificada==profissao_trabalho:
                         print(f'Nome do trabalho na lista: {nome_trabalho}')
-                        linha_separacao()
                         if nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
+                            linha_separacao()
                             print(f'{nome_trabalho} reconhecido...')
                             linha_separacao()
                             posicao_trabalho=posicao_trabalho_reconhecido
                             trabalho_lista=trabalho_lista_desejo
                             break
+                else:
+                    linha_separacao()
             else:
-                break
+                posicao_trabalho_reconhecido=3
             yinicial_nome = yinicial_nome+70
+            posicao_trabalho_reconhecido+=1
         else:
-            trabalho_lista=''
-            print(f'Nem um trabalho disponível está na lista de desejos.')
-            manipula_teclado.click_continuo(4,'up')
-            manipula_teclado.click_especifico(1,'left')
-            linha_separacao()
+            if posicao_trabalho_reconhecido==4:
+                trabalho_lista=''
+                print(f'Nem um trabalho disponível está na lista de desejos.')
+                manipula_teclado.click_continuo(4,'up')
+                manipula_teclado.click_especifico(1,'left')
+                linha_separacao()
+    print(f'Teste: {posicao_trabalho}, {trabalho_lista}.')
     return posicao_trabalho,trabalho_lista
 
 def retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
@@ -586,7 +592,8 @@ def retorna_nome_trabalho_reconhecido(yinicial_nome,identificador):
 def sai_trabalho_encontrado(x,tipo_trabalho):
     clicks=[2,1]
     manipula_teclado.click_especifico(clicks[tipo_trabalho],'f1')
-    manipula_teclado.click_especifico(x+1,'up')
+    manipula_teclado.click_continuo(x+1,'up')
+    manipula_teclado.click_especifico(2,'left')
 
 def entra_licenca():
     if verifica_erro(None)!=0:
@@ -1014,6 +1021,8 @@ def inicia_busca_trabalho():
                             print(f'Todos os espaços de produção ocupados.')
                             linha_separacao()
                             break
+                        elif estado_trabalho==0:
+                            manipula_teclado.click_especifico(1,'left')
                     else:
                         trata_menu(menu)
                     menu=retorna_menu()
@@ -1025,6 +1034,7 @@ def inicia_busca_trabalho():
                         manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                         if not inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):#só quebra o laço quando retornar falso
+                            print(f'Teste: Quebra laço.')
                             break
                     #ate aqui
                     verifica_trabalho()
@@ -1049,21 +1059,24 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
         if entra_trabalho_encontrado(posicao_trabalho):
             if verifica_producao_recursos(trabalho_lista_desejo[nome]):#verifica se o trabalho encontrado é do tipo produção de recursos
                 if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
-                    if not inicia_producao(trabalho_lista_desejo):
-                        manipula_teclado.click_especifico(1,'left')
-                else:
+                    if inicia_producao(trabalho_lista_desejo):
+                        processo=True
+                    manipula_teclado.click_especifico(1,'left')
+                else:    
                     sai_trabalho_encontrado(posicao_trabalho,1)
+                    # processo=True
             else:#o trabalho é do tipo produção de equipamento
                 if verifica_erro(None)==0:
                     manipula_teclado.click_especifico(1,'down')
                     manipula_teclado.click_especifico(1,'enter')
                     if confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
                         manipula_teclado.click_especifico(1,'f1')
-                        if not inicia_producao(trabalho_lista_desejo):
-                            manipula_teclado.click_especifico(1,'left')
+                        if inicia_producao(trabalho_lista_desejo):
+                            processo=True
+                        manipula_teclado.click_especifico(1,'left')
                     else:
                         sai_trabalho_encontrado(posicao_trabalho,0)
-                        processo=True
+                        # processo=True
         else:
             print(f'Erro ao entrar no trabalho encontrado...')
             linha_separacao()
@@ -1562,4 +1575,4 @@ def funcao_teste(id_personagem):
     # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
-funcao_teste('')
+# funcao_teste('')
