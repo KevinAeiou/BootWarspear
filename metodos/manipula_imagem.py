@@ -3,6 +3,7 @@ import numpy as np
 import pytesseract
 from PIL import Image
 import mahotas
+import time
 
 tela = 'atualizacao_tela.png'
 
@@ -32,6 +33,7 @@ def recorta_frame(frame):
     return fatia_imagem
 
 def reconhece_texto(imagem):
+    inicio = time.time()
     #carrega print das produções
     caminho = r"C:\Program Files\Tesseract-OCR"
     pytesseract.pytesseract.tesseract_cmd = caminho +r"\tesseract.exe"
@@ -43,9 +45,13 @@ def reconhece_texto(imagem):
         texto_reconhecido = texto_reconhecido.replace(lista_caracteres_numericos[x],'')
     for x in range(len(lista_caracteres_especiais)):
         texto_reconhecido = texto_reconhecido.replace(lista_caracteres_especiais[x],'')
+        fim = time.time()
+    print(f'Tempo de reconhece_texto: {fim - inicio}')
+    print(f'____________________________________________________')
     return texto_reconhecido
 #inefienente
 def transforma_caracteres_preto(imagem_original):
+    inicio = time.time()
     #marrom1 = 48,87,164
     imagem_tratada = imagem_original
     for y in range(0,imagem_original.shape[0]):
@@ -61,6 +67,9 @@ def transforma_caracteres_preto(imagem_original):
                 imagem_tratada[y,x] = (0,0,0)
             else:
                 imagem_tratada[y,x] = (255,255,255)
+    fim = time.time()
+    print(f'Tempo de transforma_caracteres_preto: {fim - inicio}')
+    print(f'____________________________________________________')
     return imagem_tratada
 
 def transforma_menu_preto(imagem_original):

@@ -468,12 +468,11 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
     # manipula_imagem.mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
     if len(nome_trabalho)!=0:
         nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:-1].lower()
-        print(f'Nome reconhecido: {nome_trabalho_tratado}.')
         if  nome_trabalho_tratado in nome_trabalho_lista.replace(' ','').lower():
             print(f'Trabalho confirmado: {nome_trabalho}!')
             linha_separacao()
             return True
-    print(f'Trabalho negado! {nome_trabalho}')
+    print(f'Trabalho negado: {nome_trabalho}!')
     linha_separacao()
     return False
 #modificado 16/01
@@ -518,7 +517,6 @@ def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
                 manipula_teclado.click_continuo(4,'up')
                 manipula_teclado.click_especifico(1,'left')
                 linha_separacao()
-    print(f'Teste: {posicao_trabalho}, {trabalho_lista}.')
     return posicao_trabalho,trabalho_lista
 
 def retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
@@ -554,7 +552,7 @@ def verifica_trabalho_comum(profissao_verificada):
                 raridade_trabalho=trabalho_lista[raridade]
                 if raridade_trabalho=='Comum' and profissao_trabalho==profissao_verificada:
                     print(f'Trabalho na lista: {nome_trabalho}')
-                    if nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
+                    if nome_trabalho_reconhecido.replace(' ','').lower()==nome_trabalho.replace(' ','').lower():
                         linha_separacao()
                         manipula_teclado.click_especifico(1,'enter')
                         contador_paracima+=1
@@ -929,16 +927,23 @@ def busca_lista_personagem_ativo():
                     linha_separacao()
                     continue
                 manipula_teclado.click_mouse_esquerdo(1,2,35)
-                if retorna_menu()==menu_inicial:
-                    manipula_teclado.encerra_secao()
+                menu=retorna_menu()
+                while menu!=menu_jogar:
+                    if menu==menu_inicial:
+                        manipula_teclado.encerra_secao()
+                        break
+                    menu=retorna_menu()
                 lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
-                if configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
+                linha_separacao()
+                if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][2]==lista_personagem[0][2]:
+                    entra_personagem_ativo(lista_personagem[0][nome])
+                elif configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
                     entra_personagem_ativo(lista_personagem[0][nome])
 
 def remove_personagem_lista(lista_personagem_retirado,personagem):
     personagem_retirado=personagem[nome]
-    lista_personagem_retirado.append(personagem_retirado)
+    lista_personagem_retirado.append(personagem)
     print(f'{personagem_retirado} adicionado a lista de retirados.')
     linha_separacao()
     lista_personagem=manipula_cliente.consulta_lista_personagem(usuario_id)
@@ -948,7 +953,7 @@ def remove_personagem_lista(lista_personagem_retirado,personagem):
     posicao=0
     for personagem_retirado in lista_personagem_retirado:#percorre lista de personagem retirado
         for personagem_lista in lista_personagem:#percorre lista de personagem ativo
-            if personagem_lista[nome] in personagem_retirado:#compara nome na lista de ativo com nome na lista de retirado
+            if personagem_lista[nome] in personagem_retirado[nome]:#compara nome na lista de ativo com nome na lista de retirado
                 print(f'{nova_lista_personagem_ativo[posicao][nome]} foi retirado da lista de ativos!')
                 linha_separacao()
                 del nova_lista_personagem_ativo[posicao]
@@ -972,13 +977,14 @@ def verifica_nome_reconhecido_na_lista(lista_personagem_ativo):
         return None
 
 def configura_login_personagem(email, senha):
+    login=False
     menu=retorna_menu()
     while menu==1 or menu==2:
         manipula_teclado.click_especifico(1,'f1')
         menu=retorna_menu()
     if menu==0:
         if loga_personagem(email,senha):  
-            return True
+            login=True
     else:
         while menu!=41:
             manipula_teclado.click_mouse_esquerdo(1,2,35)
@@ -988,8 +994,8 @@ def configura_login_personagem(email, senha):
             manipula_teclado.encerra_secao()
             linha_separacao()
             if loga_personagem(email,senha):
-                return True
-    return False
+                login=True
+    return login
 
 def configura_atributos():
     dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id_global)
@@ -1045,7 +1051,6 @@ def inicia_busca_trabalho():
                         manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                         if not inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):#só quebra o laço quando retornar falso
-                            print(f'Teste: Quebra laço.')
                             break
                     #ate aqui
                     verifica_trabalho()
@@ -1563,7 +1568,7 @@ def funcao_teste(id_personagem):
     # recupera_trabalho_concluido()
     # while True:
     # atualiza_nova_tela()
-    manipula_teclado.click_continuo(8,'up')
+    # manipula_teclado.click_continuo(8,'up')
     # confirma_nome_trabalho('Melhorar licença comum',1)
     #     menu=retorna_menu()
     #     if menu!=11:
