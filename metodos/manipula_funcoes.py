@@ -531,7 +531,7 @@ def retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
             print(f'Trabalho comum encontado: {nome_trabalho}.')
             linha_separacao()
             trabalho_comum=True
-    else:
+    if not trabalho_comum:
         print(f'Nem um trabaho comum na lista!')
         linha_separacao()
     return trabalho_comum
