@@ -470,7 +470,7 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
         nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:-1].lower()
         print(f'Nome reconhecido: {nome_trabalho_tratado}.')
         if  nome_trabalho_tratado in nome_trabalho_lista.replace(' ','').lower():
-            print(f'Trabalho confirmado! {nome_trabalho}')
+            print(f'Trabalho confirmado: {nome_trabalho}!')
             linha_separacao()
             return True
     print(f'Trabalho negado! {nome_trabalho}')
@@ -753,19 +753,6 @@ def verifica_arquivo_existe(caminho_arquivo):
     if(os.path.exists(caminho_arquivo)):
           return True
     return False
-#modificado 23/01
-def verifica_nome_personagem_teste(nome_personagem):
-    print(f'Verificando nome personagem...')
-    nome_personagem_reconhecido_tratado=input(f'Nome: ')
-    if nome_personagem_reconhecido_tratado!='' and nome_personagem_reconhecido_tratado.replace(' ','').lower()\
-        in nome_personagem.replace(' ','').lower():
-        print(f'Personagem reconhecido: {nome_personagem_reconhecido_tratado}')
-        print(f'Nome personagem confirmado!')
-        linha_separacao()
-        return True
-    print(f'Nome personagem diferente!')
-    linha_separacao()
-    return False
 
 def verifica_nome_personagem(nome_personagem):
     print(f'Verificando nome personagem...')
@@ -1041,6 +1028,7 @@ def inicia_busca_trabalho():
                             if nome_trabalho_concluido!=False:
                                 muda_estado_trabalho_concluido(nome_trabalho_concluido)
                         elif estado_trabalho==produzindo:
+                            lista_profissao.clear()
                             print(f'Todos os espaços de produção ocupados.')
                             linha_separacao()
                             break
@@ -1087,7 +1075,6 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
                     manipula_teclado.click_especifico(1,'left')
                 else:    
                     sai_trabalho_encontrado(posicao_trabalho,1)
-                    # processo=True
             else:#o trabalho é do tipo produção de equipamento
                 if verifica_erro(None)==0:
                     manipula_teclado.click_especifico(1,'down')
@@ -1099,7 +1086,6 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
                         manipula_teclado.click_especifico(1,'left')
                     else:
                         sai_trabalho_encontrado(posicao_trabalho,0)
-                        # processo=True
         else:
             print(f'Erro ao entrar no trabalho encontrado...')
             linha_separacao()
