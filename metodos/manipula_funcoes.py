@@ -405,7 +405,7 @@ def verifica_licenca(licenca_trabalho):
     print(f"Buscando: {licenca_trabalho}")
     linha_separacao()
     licenca_reconhecida=retorna_licenca_reconhecida()
-    if licenca_reconhecida!=None and 'licençasdeproduçaomaspode' not in licenca_reconhecida.replace(' ','').lower():
+    if licenca_reconhecida!=None and licenca_trabalho!=None and 'licençasdeproduçaomaspode' not in licenca_reconhecida.replace(' ','').lower():
         while not licenca_reconhecida.replace(' ','').lower()in licenca_trabalho.replace(' ','').lower():
             primeira_busca=False
             manipula_teclado.click_especifico(1,"right")
@@ -754,6 +754,19 @@ def verifica_arquivo_existe(caminho_arquivo):
           return True
     return False
 #modificado 23/01
+def verifica_nome_personagem_teste(nome_personagem):
+    print(f'Verificando nome personagem...')
+    nome_personagem_reconhecido_tratado=input(f'Nome: ')
+    if nome_personagem_reconhecido_tratado!='' and nome_personagem_reconhecido_tratado.replace(' ','').lower()\
+        in nome_personagem.replace(' ','').lower():
+        print(f'Personagem reconhecido: {nome_personagem_reconhecido_tratado}')
+        print(f'Nome personagem confirmado!')
+        linha_separacao()
+        return True
+    print(f'Nome personagem diferente!')
+    linha_separacao()
+    return False
+
 def verifica_nome_personagem(nome_personagem):
     print(f'Verificando nome personagem...')
     posicao_nome = [[197,354,170,27],[2,33,169,21]]
@@ -904,46 +917,58 @@ def prepara_personagem(id_personagem):
 
 def busca_lista_personagem_ativo():
     global personagem_id_global
+    lista_personagem_retirado=[]
     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+    lista_personagem=lista_personagem_ativo
     while True:
-        if verifica_lista_vazia(lista_personagem_ativo):
+        if verifica_lista_vazia(lista_personagem):
+            lista_personagem_retirado=[]
             lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+            lista_personagem=lista_personagem_ativo
             print(f'Lista de personagens ativos atualizada...')
             linha_separacao()
             continue
         else:#se houver pelo menos um personagem ativo
-            posicao_personagem=verifica_nome_reconhecido_na_lista(lista_personagem_ativo)
-            if posicao_personagem!=-1:
-                personagem_id_global=lista_personagem_ativo[posicao_personagem][id]
+            personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
+            if personagem!=None:
+                personagem_id_global=personagem[id]
                 print('Inicia busca...')
                 linha_separacao()
-                if inicia_busca_trabalho():
-                    if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
-                        lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-                        print(f'Lista de personagens ativos atualizada...')
-                        linha_separacao()
-                        continue
-                    manipula_teclado.click_mouse_esquerdo(1,2,35)
-                    if retorna_menu()==menu_inicial:
-                        manipula_teclado.encerra_secao()
-                lista_personagem_ativo=remove_personagem_lista(lista_personagem_ativo, posicao_personagem)
-            else:
-                if configura_login_personagem(lista_personagem_ativo[0][2], lista_personagem_ativo[0][3]):
-                    entra_personagem_ativo(lista_personagem_ativo[0][nome])
+                inicia_busca_trabalho()
+                if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
+                    lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
+                    lista_personagem=lista_personagem_ativo
+                    print(f'Lista de personagens ativos atualizada...')
+                    linha_separacao()
+                    continue
+                manipula_teclado.click_mouse_esquerdo(1,2,35)
+                if retorna_menu()==menu_inicial:
+                    manipula_teclado.encerra_secao()
+                lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
+            else:#se o nome reconhecido não estiver na lista de ativos
+                if configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
+                    entra_personagem_ativo(lista_personagem[0][nome])
 
-def remove_personagem_lista(lista_personagem_ativo, posicao_personagem):
-    personagem_retirado=lista_personagem_ativo[posicao_personagem][nome]
-    lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
-    print(f'Lista de personagens ativos atualizada...')
+def remove_personagem_lista(lista_personagem_retirado,personagem):
+    personagem_retirado=personagem[nome]
+    lista_personagem_retirado.append(personagem_retirado)
+    print(f'{personagem_retirado} adicionado a lista de retirados.')
+    linha_separacao()
+    lista_personagem=manipula_cliente.consulta_lista_personagem(usuario_id)
+    nova_lista_personagem_ativo=lista_personagem
+    print(f'Lista de personagens ativos atualizada!')
     linha_separacao()
     posicao=0
-    for personagem_lista in lista_personagem_ativo:
-        if personagem_lista[nome] in personagem_retirado:
-            del lista_personagem_ativo[posicao]
-            print(f'{personagem_retirado} foi retirado da lista!')
-            linha_separacao()
-        posicao+=1
-    return lista_personagem_ativo
+    for personagem_retirado in lista_personagem_retirado:#percorre lista de personagem retirado
+        for personagem_lista in lista_personagem:#percorre lista de personagem ativo
+            if personagem_lista[nome] in personagem_retirado:#compara nome na lista de ativo com nome na lista de retirado
+                print(f'{nova_lista_personagem_ativo[posicao][nome]} foi retirado da lista de ativos!')
+                linha_separacao()
+                del nova_lista_personagem_ativo[posicao]
+                posicao-=1
+            else:
+                posicao+=1
+    return lista_personagem_retirado,nova_lista_personagem_ativo
 
 def verifica_lista_vazia(lista_personagem_ativo):
     if len(lista_personagem_ativo)==0:
@@ -953,13 +978,11 @@ def verifica_lista_vazia(lista_personagem_ativo):
     return False
 
 def verifica_nome_reconhecido_na_lista(lista_personagem_ativo):
-    posicao_personagem=0
     for personagem_lista in lista_personagem_ativo:
         if verifica_nome_personagem(personagem_lista[nome]):
-            return posicao_personagem
-        posicao_personagem+=1
+            return personagem_lista
     else:
-        return -1
+        return None
 
 def configura_login_personagem(email, senha):
     menu=retorna_menu()
@@ -1434,6 +1457,7 @@ def retorna_menu():
             print(f'Menu não reconhecido...')
             linha_separacao()
             manipula_teclado.click_atalho_especifico('win','left')
+            manipula_teclado.click_atalho_especifico('win','left')
             return False
 
 def configura_licenca(trabalho):
@@ -1576,3 +1600,4 @@ def funcao_teste(id_personagem):
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
+# busca_lista_personagem_ativo_teste()
