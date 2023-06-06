@@ -1554,6 +1554,26 @@ def funcao_teste(id_personagem):
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
     # verifica_erro('')
+    tela=retorna_atualizacao_tela()
+    largura=tela.shape[1]
+    altura=tela.shape[0]
+    metadeLargura=largura//2
+    print(f'Metade da largura: {metadeLargura}.')
+    centroMetade=metadeLargura//2
+    print(f'Centro da metade: {centroMetade}.')
+    centroAltura=altura//2
+    print(f'Centro da altura: {centroAltura}.')
+    larguraFrame=350
+    alturaFrame=580
+    xLarguraFrame=centroMetade-larguraFrame//2
+    yAlturaFrame=centroAltura-alturaFrame//2
+    # print(f'Altura: {altura}.')
+    # frame=manipula_imagem.abre_imagem('imagem_trabalho.png')
+    frame=tela[yAlturaFrame:yAlturaFrame+alturaFrame,xLarguraFrame:xLarguraFrame+larguraFrame]
+    # frameInvertido=manipula_imagem.retornaImagemCoresInvertidas(manipula_imagem.abre_imagem('imagem_trabalho.png'))
+    digito=manipula_imagem.reconhece_digito(frame)
+    print(f'Digitos: {digito}.')
+    manipula_imagem.mostra_imagem(0,frame,None)
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
@@ -1591,5 +1611,5 @@ def funcao_teste(id_personagem):
     # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
-# funcao_teste('')
+funcao_teste('')
 # busca_lista_personagem_ativo_teste()

@@ -4,8 +4,10 @@ import pytesseract
 from PIL import Image
 import mahotas
 import time
+from PIL import ImageChops
 
 tela = 'atualizacao_tela.png'
+testeDigitos='testeDigitos.png'
 
 #cor letras voltar, avançar, fechar, jogar (93,218,254)
 
@@ -32,9 +34,22 @@ def recorta_frame(frame):
     cv2.imwrite(nome_arquivo, fatia_imagem)
     return fatia_imagem
 
+def reconhece_digito(imagem):
+    # inicio = time.time()
+    # tesseract image.png output --oem 3 --psm 11 -c tessedit_char_whitelist=0123456789
+    caminho = r"C:\Program Files\Tesseract-OCR"
+    pytesseract.pytesseract.tesseract_cmd = caminho +r"\tesseract.exe"
+    #busca texto das produções
+    # texto_reconhecido = pytesseract.image_to_string(imagem, lang="por")
+    digitoReconhecido=pytesseract.image_to_string(imagem, config='outputbase digits')
+    # fim = time.time()
+    # print(f'Tempo de reconhece_texto: {fim - inicio}')
+    # print(f'____________________________________________________')
+    return digitoReconhecido
+
 def reconhece_texto(imagem):
     # inicio = time.time()
-    #carrega print das produções
+    # tesseract image.png output --oem 3 --psm 11 -c tessedit_char_whitelist=0123456789
     caminho = r"C:\Program Files\Tesseract-OCR"
     pytesseract.pytesseract.tesseract_cmd = caminho +r"\tesseract.exe"
     #busca texto das produções
@@ -211,8 +226,8 @@ def retorna_modelo_nivel_tratado(modelo_original):
 
 def retorna_imagem_redimensionada(imagem_original,porcentagem):
     imagem_original = cv2.cvtColor(np.array(imagem_original), cv2.COLOR_RGB2BGR)
-    largura = imagem_original[1]
-    altura = imagem_original[0]
+    largura = imagem_original.shape[1]
+    altura = imagem_original.shape[0]
     nova_largura = int(largura*porcentagem)
     nova_altura = int(altura*porcentagem)
     novo_tamanho = (nova_largura,nova_altura)
@@ -253,6 +268,9 @@ def retorna_imagem_contorno():
                 print(area)
     return imgC2
 
+def retornaImagemCoresInvertidas(imagem):
+    return cv2.bitwise_not(imagem)
+
 def mostra_video(caminho_video):
     cap = cv2.VideoCapture(caminho_video)
     if (cap.isOpened() == False):
@@ -272,9 +290,8 @@ def retorna_fundo_branco():
     return np.ones((200,200,3))*255
 
 def temporario():
-    caminho = 'modelos/modelo_nivel_5_0.png'
-    imagem_teste = abre_imagem(caminho)
-    retorna_modelo_nivel_tratado(imagem_teste)
-    cv2.imwrite(caminho, imagem_teste)
+    imagem_teste = abre_imagem(testeDigitos)
+    digitos=reconhece_digito(imagem_teste)
+    print(f'Digitos reconhecidos: {digitos}')
 
-#temporario()
+# temporario()
