@@ -1476,9 +1476,10 @@ def retorna_texto_menu_reconhecido():
 
 def retorna_texto_sair():
     tela_inteira = retorna_atualizacao_tela()
-    frame_jogar = tela_inteira[768-70:768,0:0+160]
+    alturaTela=tela_inteira.shape[0]
+    frame_jogar = tela_inteira[alturaTela-50:alturaTela-25,50:50+60]
     frame_jogar_tratado = manipula_imagem.transforma_menu_preto(frame_jogar)
-    # manipula_imagem.mostra_imagem(0,frame_jogar_tratado,'teste')
+    manipula_imagem.mostra_imagem(0,frame_jogar_tratado,None)
     return manipula_imagem.reconhece_texto(frame_jogar_tratado)
 
 def retorna_lista_pixel_minimap():
@@ -1611,5 +1612,5 @@ def funcao_teste(id_personagem):
     # entra_personagem_ativo('mrninguem')
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
-funcao_teste('')
+# funcao_teste('')
 # busca_lista_personagem_ativo_teste()
