@@ -1369,88 +1369,89 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'num7')
     
 def retorna_menu():
-    #0 MENU JOGAR
-
-    #1 NOTICIAS VOLTAR/AVANÇAR
-    #3 PERSONAGEM VOLTAR
-    #13 PRODUZIR/TRABALHOS DISPONIVEIS VOLTAR
-    #14 TRABALHO ESPECIFICO VOLTAR/INICIAR
-
-    #2 ESCOLHA DE PERSONAGEM FECHAR/JOGAR
-    #4 PRINCIPAL FECHAR
-    #11 PRODUZIR/PROFISSÕES FECHAR
-    #12 PRODUZIR/TRABALHOS ATUAIS FECHAR
-
-    #15 LICENÇA CANCELAR/AVANÇAR
-    #16 TRABALHO ATRIBUTOS CANCELAR/BATEPAPO
-
-    #false TELA INICIAL
+    menu=False
+    inicio = time.time()
     print(f'Reconhecendo menu.')
-    if retorna_texto_sair().replace(' ','').lower()=='sair':
-        print(f'Menu jogar...')
-        return menu_jogar
-    else:
-        texto_menu=retorna_texto_menu_reconhecido()
-        print(texto_menu)
-        if 'voltar' in texto_menu and'notícias' in texto_menu\
-            and'avançar' in texto_menu:
-            print(f'Menu notícias...')
-            linha_separacao()
-            return menu_noticias
-        elif ('fechar'in texto_menu and'jogar'in texto_menu):
-            print(f'Menu escolha de personagem...')
-            linha_separacao()
-            return menu_escolha_p
-        elif ('voltar'in texto_menu and'conquistas'in texto_menu):
-            print(f'Menu personagem...')
-            linha_separacao()
-            return menu_personagem
-        elif ('fechar'in texto_menu and'interagir'in texto_menu):
-            print(f'Menu principal...')
-            linha_separacao()
-            return menu_principal
-        elif ('fechar'in texto_menu and'profissões'in texto_menu):
-            print(f'Menu produzir...')
-            linha_separacao()
-            return menu_produzir
-        elif ('fechar'in texto_menu and'trabalhosatuais'in texto_menu) or ('fechar'in texto_menu and'produzir'in texto_menu and'concluir'in texto_menu):
+    texto_menu=retorna_texto_menu_reconhecido(-125,-190,350)
+    if ('notícias'in texto_menu):
+        print(f'Menu notícias...')
+        linha_separacao()
+        menu=menu_noticias
+    elif ('seleçãodepersonagem'in texto_menu):
+        print(f'Menu escolha de personagem...')
+        linha_separacao()
+        menu=menu_escolha_p
+    elif ('produzir'in texto_menu):
+        texto_menu=retorna_texto_menu_reconhecido(-75,-140,150)
+        if ('profissões'in texto_menu):
+            texto_menu=retorna_texto_menu_reconhecido(-150,225,100)
+            if('fechar'in texto_menu):
+                print(f'Menu produzir...')
+                linha_separacao()
+                menu=menu_produzir
+            elif ('voltar' in texto_menu):
+                print(f'Menu trabalhos diponíveis...')
+                linha_separacao()
+                menu=menu_trab_disponiveis
+        elif ('trabalhosatuais'in texto_menu):
             print(f'Menu trabalhos atuais...')
             linha_separacao()
-            return menu_trab_atuais
-        elif ('voltar'in texto_menu and'profissões'in texto_menu):
-            print(f'Menu trabalhos diponíveis...')
-            linha_separacao()
-            return menu_trab_disponiveis
-        elif ('voltar'in texto_menu and'iniciar'in texto_menu and 'profissãonecessário'in texto_menu):
-            print(f'Menu trabalho específico...')
-            linha_separacao()
-            return menu_trab_especifico
-        elif ('cancelar'in texto_menu and'avançar'in texto_menu and'permiteexecutartrabalhos'in texto_menu):
-            print(f'Menu licenças...')
-            linha_separacao()
-            return menu_licencas
-        elif ('cancelar'in texto_menu and'batepapo'in texto_menu):
-            print(f'Menu atributo do trabalho...')
-            linha_separacao()
-            return menu_trab_atributos
-        elif ('cancelar'in texto_menu and'avançar'in texto_menu):
-            print(f'Menu escolha de equipamento...')
-            linha_separacao()
-            return menu_esc_equipamento
-        elif ('ofertadiária'in texto_menu):
-            print(f'Menu oferta diária...')
-            linha_separacao()
-            return menu_ofe_diaria
+            menu=menu_trab_atuais
+    else:
+        if retorna_texto_sair().replace(' ','').lower()=='sair':
+            print(f'Menu jogar...')
+            menu=menu_jogar
         elif verifica_menu_referencia():
             print(f'Menu tela inicial...')
             linha_separacao()
-            return menu_inicial
+            menu=menu_inicial
         else:
-            print(f'Menu não reconhecido...')
-            linha_separacao()
-            manipula_teclado.click_atalho_especifico('win','left')
-            manipula_teclado.click_atalho_especifico('win','left')
-            return False
+            texto_menu=retorna_texto_menu_reconhecido(-50,25,100)
+            if ('conquistas'in texto_menu):
+                print(f'Menu personagem...')
+                linha_separacao()
+                menu=menu_personagem
+            elif ('interagir'in texto_menu):
+                print(f'Menu principal...')
+                linha_separacao()
+                menu=menu_principal
+            else:
+                texto_menu=retorna_texto_menu_reconhecido(-150,-65,300)
+                if('parâmetros'in texto_menu):
+                    if('requisitos'in texto_menu):
+                        print(f'Menu atributo do trabalho...')
+                        linha_separacao()
+                        menu=menu_trab_atributos
+                    else:
+                        print(f'Menu licenças...')
+                        linha_separacao()
+                        menu=menu_licencas
+                else:
+                    texto_menu=retorna_texto_menu_reconhecido(-60,45,120)
+                    if('profissional'in texto_menu):
+                        print(f'Menu trabalho específico...')
+                        linha_separacao()
+                        menu=menu_trab_especifico
+                    else:
+                        texto_menu=retorna_texto_menu_reconhecido(-75,-115,150)
+                        if ('ofertadiária'in texto_menu):
+                            print(f'Menu oferta diária...')
+                            linha_separacao()
+                            menu=menu_ofe_diaria
+                        else:
+                            print(f'Menu não reconhecido...')
+                            linha_separacao()
+                            manipula_teclado.click_atalho_especifico('win','left')
+                            manipula_teclado.click_atalho_especifico('win','left')
+        
+        # elif ('cancelar'in texto_menu and'avançar'in texto_menu):
+        #     print(f'Menu escolha de equipamento...')
+        #     linha_separacao()
+        #     return menu_esc_equipamento
+    fim = time.time()
+    print(f'Tempo de reconhece_texto: {fim - inicio}')
+    linha_separacao()
+    return menu
 
 def configura_licenca(trabalho):
     licenca=4
@@ -1458,28 +1459,65 @@ def configura_licenca(trabalho):
         return ''
     return trabalho[licenca]
 
-def retorna_texto_menu_reconhecido():
-    x=0
-    y=1
-    largura=2
-    altura=3
-    texto_concatenado=''
-    posicoes_menus=[[249,195,190,105],[287,412,108,30],[169,600,343,43]]
+def descobreFrames():
     tela_inteira=retorna_atualizacao_tela()
-    for posicao in posicoes_menus:
-        frame_menu=tela_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
-        frame_menu_tratado=manipula_imagem.transforma_caracteres_preto(frame_menu)
+    alturaTela=tela_inteira.shape[0]
+    larguraTela=tela_inteira.shape[1]
+
+    centroAltura=alturaTela//2
+    centroMetade=larguraTela//4
+
+    frameMenuNoticias=[30,350]
+    frameMenuNoticias=tela_inteira[centroAltura-190:centroAltura-190+frameMenuNoticias[0],centroMetade-(frameMenuNoticias[1]//2):centroMetade+(frameMenuNoticias[1]//2)]
+    frameMenuVoltar=[30,100]
+    frameMenuVoltar=tela_inteira[centroAltura+225:centroAltura+225+frameMenuVoltar[0],centroMetade-150:centroMetade-150+frameMenuVoltar[1]]
+    frameMenuAvancar=[30,130]
+    frameMenuAvancar=tela_inteira[centroAltura+225:centroAltura+225+frameMenuAvancar[0],centroMetade+30:centroMetade+30+frameMenuAvancar[1]]
+    frameMenuProfissoes=[20,150]
+    frameMenuProfissoes=tela_inteira[centroAltura-140:centroAltura-140+frameMenuProfissoes[0],centroMetade-(frameMenuProfissoes[1]//2):centroMetade+(frameMenuProfissoes[1]//2)]
+    frameMenuParametros=[30,300]
+    frameMenuParametros=tela_inteira[centroAltura-65:centroAltura-65+frameMenuParametros[0],centroMetade-(frameMenuParametros[1]//2):centroMetade+(frameMenuParametros[1]//2)]
+    frameMenuProfissional=[30,120]
+    frameMenuProfissional=tela_inteira[centroAltura+45:centroAltura+45+frameMenuProfissional[0],centroMetade-(frameMenuProfissional[1]//2):centroMetade+(frameMenuProfissional[1]//2)]
+    frameMenuOferta=[30,150]
+    frameMenuOferta=tela_inteira[centroAltura-115:centroAltura-115+frameMenuOferta[0],centroMetade-(frameMenuOferta[1]//2):centroMetade+(frameMenuOferta[1]//2)]
+    frameMenuInteragir=[30,100]
+    frameMenuInteragir=tela_inteira[centroAltura+25:centroAltura+25+frameMenuInteragir[0],centroMetade-(frameMenuInteragir[1]//2):centroMetade+(frameMenuInteragir[1]//2)]
+    
+    frame_menu_tratado=manipula_imagem.transforma_caracteres_preto(frameMenuOferta)
+    print(manipula_imagem.reconhece_texto(frame_menu_tratado))
+    manipula_imagem.mostra_imagem(0,frameMenuOferta,None)
+    # manipula_imagem.mostra_imagem(0,frameMenuProfissoes,None)
+    # manipula_imagem.mostra_imagem(0,frameMenuVoltar,None)
+    # manipula_imagem.mostra_imagem(0,frameMenuNoticias,None)
+    # manipula_imagem.mostra_imagem(0,frameMenuAvancar,None)
+# descobreFrames()
+
+def retorna_texto_menu_reconhecido(x,y,largura):
+    tela_inteira=retorna_atualizacao_tela()
+    centroAltura=tela_inteira.shape[0]//2
+    centroMetade=tela_inteira.shape[1]//4
+    alturaFrame=30
+    texto=''
+    # texto_concatenado=''
+    # posicoes_menus=[[249,195,190,105],[287,412,108,30],[169,600,343,43]]
+    # for posicao in posicoes_menus:
+    frame_menu=tela_inteira[centroAltura+y:centroAltura+y+alturaFrame,centroMetade+x:centroMetade+x+largura]
+    frame_menu_tratado=manipula_imagem.transforma_caracteres_preto(frame_menu)
         # manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
-        texto_menu=manipula_imagem.reconhece_texto(frame_menu_tratado)
-        texto_concatenado=texto_concatenado+texto_menu
-    return texto_concatenado.lower().replace(' ','')
+        # texto_menu=manipula_imagem.reconhece_texto(frame_menu_tratado)
+        # texto_concatenado=texto_concatenado+texto_menu
+    # return texto_concatenado.lower().replace(' ','')
+    if np.sum(frame_menu_tratado==255)!=0:
+        texto=manipula_imagem.reconhece_texto(frame_menu_tratado).lower().replace(' ','')
+    return texto
 
 def retorna_texto_sair():
     tela_inteira = retorna_atualizacao_tela()
     alturaTela=tela_inteira.shape[0]
     frame_jogar = tela_inteira[alturaTela-50:alturaTela-25,50:50+60]
     frame_jogar_tratado = manipula_imagem.transforma_menu_preto(frame_jogar)
-    manipula_imagem.mostra_imagem(0,frame_jogar_tratado,None)
+    # manipula_imagem.mostra_imagem(0,frame_jogar_tratado,None)
     return manipula_imagem.reconhece_texto(frame_jogar_tratado)
 
 def retorna_lista_pixel_minimap():
@@ -1614,3 +1652,5 @@ def funcao_teste(id_personagem):
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
 # busca_lista_personagem_ativo_teste()
+# while input(f'Continuar?')!='n':
+#     retorna_menu()

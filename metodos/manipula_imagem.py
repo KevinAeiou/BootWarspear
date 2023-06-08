@@ -64,7 +64,7 @@ def reconhece_texto(imagem):
     # print(f'Tempo de reconhece_texto: {fim - inicio}')
     # print(f'____________________________________________________')
     return texto_reconhecido
-#inefienente
+
 def transforma_caracteres_preto(imagem_original):
     # inicio = time.time()
     #marrom1 = 48,87,164
