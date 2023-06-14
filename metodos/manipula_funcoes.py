@@ -927,12 +927,7 @@ def busca_lista_personagem_ativo():
                     linha_separacao()
                     continue
                 manipula_teclado.click_mouse_esquerdo(1,2,35)
-                menu=retorna_menu()
-                while menu!=menu_jogar:
-                    if menu==menu_inicial:
-                        manipula_teclado.encerra_secao()
-                        break
-                    menu=retorna_menu()
+                deslogaPersonagem()
                 lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
                 linha_separacao()
@@ -940,6 +935,14 @@ def busca_lista_personagem_ativo():
                     entra_personagem_ativo(lista_personagem[0][nome])
                 elif configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
                     entra_personagem_ativo(lista_personagem[0][nome])
+
+def deslogaPersonagem():
+    menu=retorna_menu()
+    while menu!=menu_jogar:
+        if menu==menu_inicial:
+            manipula_teclado.encerra_secao()
+            break
+        menu=retorna_menu()
 
 def remove_personagem_lista(lista_personagem_retirado,personagem):
     personagem_retirado=personagem[nome]
@@ -1040,6 +1043,7 @@ def inicia_busca_trabalho():
                             break
                         elif estado_trabalho==0:
                             manipula_teclado.click_especifico(1,'left')
+                    # elif menu==menu_ofe_diaria:
                     else:
                         trata_menu(menu)
                     menu=retorna_menu()
@@ -1073,24 +1077,24 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
     processo=False
     if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho raro/especial
         if entra_trabalho_encontrado(posicao_trabalho):
-            if verifica_producao_recursos(trabalho_lista_desejo[nome]):#verifica se o trabalho encontrado é do tipo produção de recursos
-                if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
-                    if inicia_producao(trabalho_lista_desejo):
-                        processo=True
-                    manipula_teclado.click_especifico(1,'left')
-                else:    
-                    sai_trabalho_encontrado(posicao_trabalho,1)
-            else:#o trabalho é do tipo produção de equipamento
-                if verifica_erro(None)==0:
-                    manipula_teclado.click_especifico(1,'down')
-                    manipula_teclado.click_especifico(1,'enter')
-                    if confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
-                        manipula_teclado.click_especifico(1,'f1')
-                        if inicia_producao(trabalho_lista_desejo):
-                            processo=True
-                        manipula_teclado.click_especifico(1,'left')
-                    else:
-                        sai_trabalho_encontrado(posicao_trabalho,0)
+            # if verifica_producao_recursos(trabalho_lista_desejo[nome]):#verifica se o trabalho encontrado é do tipo produção de recursos
+            if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
+                if inicia_producao(trabalho_lista_desejo):
+                    processo=True
+                manipula_teclado.click_especifico(1,'left')
+            else:    
+                sai_trabalho_encontrado(posicao_trabalho,1)
+            # else:#o trabalho é do tipo produção de equipamento
+                # if verifica_erro(None)==0:
+                #     manipula_teclado.click_especifico(1,'down')
+                #     manipula_teclado.click_especifico(1,'enter')
+                #     if confirma_nome_trabalho(trabalho_lista_desejo[nome],0):
+                #         manipula_teclado.click_especifico(1,'f1')
+                #         if inicia_producao(trabalho_lista_desejo):
+                #             processo=True
+                #         manipula_teclado.click_especifico(1,'left')
+                #     else:
+                #         sai_trabalho_encontrado(posicao_trabalho,0)
         else:
             print(f'Erro ao entrar no trabalho encontrado...')
             linha_separacao()
@@ -1121,7 +1125,7 @@ def recupera_trabalho_concluido():
     tela_inteira = retorna_atualizacao_tela()
     frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)==0:
-        nome_trabalho_concluido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
+        nome_trabalho_concluido=manipula_imagem.reconhece_texto(frame_nome_trabalho)
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'f2')
         if verifica_erro(None)==0:
@@ -1129,7 +1133,7 @@ def recupera_trabalho_concluido():
             print(f'{trabalho_concluido[nome]} recuperado.')
             manipula_teclado.click_especifico(1,'up')
             linha_separacao()
-            trabalho=trabalho_concluido
+            trabalho=trabalho_concluido[1:-1]
     return trabalho
 
 def inicia_producao(trabalho):
@@ -1196,6 +1200,103 @@ def verifica_producao_recursos(nome_trabalho_lista_desejo):
         linha_separacao()
     return producao_recurso
 
+def recuperaPresente(listaPersonagemPresenteRecuperado):
+    manipula_teclado.click_especifico(1,'f2')
+    for y in range(2):
+        telaInteira=retorna_atualizacao_tela()
+        metadeAltura=telaInteira.shape[0]//2
+        metadeLargura=telaInteira.shape[1]//4
+        alturaFrame=80
+        y=-261
+        larguraFrame=150
+        for x in range(8):
+            frameTela=telaInteira[metadeAltura+y:metadeAltura+y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
+            # frameTratado=manipula_imagem.retornaImagemCoresInvertidas(frameTela)
+            frameTratado=manipula_imagem.transforma_caracteres_preto(frameTela)
+            textoReconhecido=manipula_imagem.reconhece_texto(frameTratado)
+            # manipula_imagem.mostra_imagem(0,frameTratado,None)
+            print(f'Texto reconhecido: {textoReconhecido}.')
+            if textoReconhecido!='':
+                if textoReconhecido.replace(' ','').lower()=='pegar':
+                    centroX=metadeLargura+larguraFrame//2
+                    centroY=metadeAltura+y+alturaFrame//2
+                    manipula_teclado.click_mouse_esquerdo(1,centroX,centroY)
+                    manipula_teclado.click_especifico(1,'f2')
+                    manipula_teclado.click_continuo(8,'up')
+                    manipula_teclado.click_especifico(1,'left')
+                    break
+                elif 'pegarem'in textoReconhecido.replace(' ','').lower():
+                    manipula_teclado.click_continuo(8,'up')
+                    manipula_teclado.click_especifico(1,'left')
+                    break
+            else:
+                y+=80
+    else:
+        nomePersonagemReconhecido=retornaNomePersonagem(0)
+        if nomePersonagemReconhecido!=None:
+            listaPersonagemPresenteRecuperado.append(nomePersonagemReconhecido)
+        else:#ocorreu algum erro
+            print(f'Erro ao reconhecer nome...')
+            linha_separacao()
+        manipula_teclado.click_especifico(1,'f1')
+        deslogaPersonagem()
+        entraPersonagem(listaPersonagemPresenteRecuperado)
+
+def retornaNomePersonagem(posicao):
+    nome=None
+    print(f'Verificando nome personagem...')
+    posicaoNome=[[2,33,169,21],[197,354,170,27]]
+    telaInteira=retorna_atualizacao_tela()
+    frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
+    frameNomePersonagemTratado=manipula_imagem.transforma_caracteres_preto(frameNomePersonagem)
+    manipula_imagem.mostra_imagem(0,frameNomePersonagemTratado,None)
+    nomePersonagemReconhecido=manipula_imagem.reconhece_texto(frameNomePersonagemTratado)
+    nomePersonagemReconhecidoTratado=unidecode(nomePersonagemReconhecido)
+    if nomePersonagemReconhecidoTratado!='':
+        nome=nomePersonagemReconhecidoTratado
+        print(f'Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
+        linha_separacao()
+    return nome
+
+def entraPersonagem(listaPersonagemPresenteRecuperado):
+    print(f'Buscando personagem ativo...')
+    manipula_teclado.click_especifico(1,'enter')
+    time.sleep(1)
+    erro=verifica_erro(None)
+    if erro!=0:
+        while erro==5:
+            time.sleep(1)
+            erro=verifica_erro(None)
+        else:
+            if erro!=0:
+                return
+    manipula_teclado.click_especifico(1,'f2')
+    manipula_teclado.vai_inicio_fila()
+    nomePersonagem=retornaNomePersonagem(1)               
+    while nomePersonagem!=None:
+        for nomeLista in listaPersonagemPresenteRecuperado:
+            if nomePersonagem!=nomeLista:
+                manipula_teclado.click_especifico(1,'right')
+        else:
+            manipula_teclado.click_especifico(1,'f2')
+            time.sleep(1)
+            erro=verifica_erro(None)
+            if erro!=0:
+                while erro==5:
+                    time.sleep(1)
+                    erro=verifica_erro(None)
+                else:
+                    if erro!=0:
+                        break
+            print(f'Login efetuado com sucesso!')
+            linha_separacao()
+            return
+    else:
+        print(f'Personagem não encontrado!')
+        linha_separacao()
+        manipula_teclado.click_especifico(1,'f1')
+    return
+    
 def usa_habilidade():
     #719:752, 85:128 137:180 189:232
     #muda p/ outra janela
@@ -1548,6 +1649,8 @@ def retorna_lista_pixel_minimap():
     manipula_imagem.mostra_imagem(0,fundo,'Minimapa')
     return lista_pixel
 
+# retorna_lista_pixel_minimap()
+
 def retorna_texto_produzir():
     tela_inteira = retorna_atualizacao_tela()
     frame_produzir = tela_inteira[240:240+30,250:250+180]
@@ -1654,3 +1757,4 @@ def funcao_teste(id_personagem):
 # busca_lista_personagem_ativo_teste()
 # while input(f'Continuar?')!='n':
 #     retorna_menu()
+# retornaNomePersonagem(1)
