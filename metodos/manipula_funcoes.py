@@ -33,6 +33,7 @@ menu_trab_especifico=14
 menu_licencas=15
 menu_trab_atributos=16
 menu_esc_equipamento=17
+menu_rec_diarias=39
 menu_ofe_diaria=40
 menu_inicial=41
 lista_personagem_ativo=[]
@@ -57,11 +58,11 @@ def atualiza_nova_tela():
     imagem = manipula_teclado.tira_screenshot()
     manipula_imagem.salva_nova_tela(imagem)
     print(f'Atualizou a tela.')
-    linha_separacao()
+    linhaSeparacao()
 
 def adiciona_trabalho(personagem_id,trabalho,licenca):
     manipula_cliente.adiciona_trabalho(personagem_id,trabalho,licenca,0)
-    linha_separacao()
+    linhaSeparacao()
 #modificado16/01
 def atualiza_lista_profissao(personagem_id):
     #285,355
@@ -70,10 +71,10 @@ def atualiza_lista_profissao(personagem_id):
     #altura frame: 35 pixel
     #altura entre os frames: 70 pixel
     print(f'Atualizando lista de profissões...')
-    linha_separacao()
+    linhaSeparacao()
     #limpa o arquivo lista_profissoes
     manipula_cliente.excluir_lista_profissoes(personagem_id)
-    linha_separacao()
+    linhaSeparacao()
     for x in range(8):
         #print(f'Teste: {x}')
         #se x==4
@@ -102,7 +103,7 @@ def atualiza_lista_profissao(personagem_id):
         #incrementa o yinicial_profissao
         yinicial_profissao+=70
     print(f'Processo concluído!')
-    linha_separacao()
+    linhaSeparacao()
     manipula_teclado.click_especifico(8,'up')
     return
 
@@ -129,16 +130,16 @@ def pega_centro(x, y, largura, altura):
 #modificado 16/01
 def cadastra_nome_trabalho(tipo_raridade_trabalho,nome_profissao):
     nivel_trabalho = input(f'Nivel do trabalho: ')
-    linha_separacao()
+    linhaSeparacao()
     while not nivel_trabalho.isdigit() or int(nivel_trabalho)<0 or int(nivel_trabalho)>32:
         print(f'Opção inválida! Selecione uma das opções.')
         nivel_trabalho = input(f'Sua escolha: ')
-        linha_separacao()
+        linhaSeparacao()
     else:
         nivel_trabalho = int(nivel_trabalho)
         if nivel_trabalho==0:
             print(f'Voltar...')
-            linha_separacao()
+            linhaSeparacao()
             return
         while True:
             tela_inteira = retorna_atualizacao_tela()
@@ -146,11 +147,11 @@ def cadastra_nome_trabalho(tipo_raridade_trabalho,nome_profissao):
             # frame_nome_trabalho = tela_inteira[273:273+311,167:167+347]
             nome_trabalho_reconhecido = manipula_imagem.reconhece_texto(frame_nome_trabalho)
             confirma_cadastro = input(f'Cadastrar {nome_trabalho_reconhecido}? Sim ou não(S/N): ')
-            linha_separacao()
+            linhaSeparacao()
             while not confirma_cadastro.isalpha() or (str(confirma_cadastro).lower().replace('\n','')!='s' and str(confirma_cadastro).lower().replace('\n','')!='n'):
                 print(f'Opção inválida! Cadastrar {nome_trabalho_reconhecido}?')
                 confirma_cadastro = input(f'Sim ou não(S/N): ')
-                linha_separacao()
+                linhaSeparacao()
             else:
                 confirma_cadastro = str(confirma_cadastro).lower().replace('\n','')
                 if confirma_cadastro == 's':
@@ -158,18 +159,18 @@ def cadastra_nome_trabalho(tipo_raridade_trabalho,nome_profissao):
                     manipula_cliente.cadastrar_trabalho(atributos_trabalho)
                     #manipula_arquivo.inclui_linha(linha,tipo_raridade_trabalho)
                     print(f'{nome_trabalho_reconhecido} foi cadastrado!')
-                    linha_separacao()
+                    linhaSeparacao()
                 novo_cadastro = str(input(f'Deseja cadastrar novo trabalho? Sim ou não(S/N): '))
-                linha_separacao()
+                linhaSeparacao()
                 while not novo_cadastro.isalpha() or (str(novo_cadastro).lower().replace('\n','')!='s' and str(novo_cadastro).lower().replace('\n','')!='n'):
                     print(f'Opção inválida! Cadastrar novo trabalho?')
                     novo_cadastro = input(f'Sim ou não(S/N): ')
-                    linha_separacao()
+                    linhaSeparacao()
                 else:
                     novo_cadastro = str(novo_cadastro).lower().replace('\n','')
                     if novo_cadastro == 'n':
                         print(f'Voltar.')
-                        linha_separacao()
+                        linhaSeparacao()
                         break
 
 def detecta_movimento():
@@ -283,7 +284,7 @@ def mostra_lista(tipo_lista):
         print(f'0 - Voltar.')
     else:
         print(f'A lista está vazia.')
-        linha_separacao()
+        linhaSeparacao()
         lista = 0
     return lista
 
@@ -293,10 +294,10 @@ def mostra_lista_desejo(tipo_lista):
     if tamanho_lista>0:
         for x in range(tamanho_lista):
             print(f'{lista_desejo[x][1]}')
-        linha_separacao()
+        linhaSeparacao()
     else:
         print(f'A lista está vazia.')
-        linha_separacao()
+        linhaSeparacao()
         lista_desejo = 0
     return lista_desejo
 
@@ -310,7 +311,7 @@ def mostra_lista_trabalho(nome_profissao,raridade_trabalho):
         print(f'0 - Voltar.')
     else:
         print(f'A lista está vazia.')
-        linha_separacao()
+        linhaSeparacao()
         lista = 0
     return lista
 
@@ -356,7 +357,7 @@ def verifica_menu_referencia():
                 return True
         else:
             print(f'Tamanho do menu referência e frame da tela diferentes!')
-            linha_separacao()
+            linhaSeparacao()
     return False
 
 def verifica_alvo():
@@ -387,7 +388,7 @@ def verifica_trabalho_concluido():
     string_trabalho="Trabalho concluído"
     if texto != '' and texto == string_trabalho:
         print(f'Trabalho concluído!')
-        linha_separacao()
+        linhaSeparacao()
         estado_espaco=2
     elif texto !='' and 'adicionarnovo' in texto.replace(' ','').lower():
         print(f'Nem um trabalho!')
@@ -395,7 +396,7 @@ def verifica_trabalho_concluido():
     else:
         print(f'Em produção...')
         estado_espaco=1
-    linha_separacao()
+    linhaSeparacao()
     return estado_espaco
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
@@ -403,7 +404,7 @@ def verifica_licenca(licenca_trabalho):
     lista_ciclo=[]
     primeira_busca=True
     print(f"Buscando: {licenca_trabalho}")
-    linha_separacao()
+    linhaSeparacao()
     licenca_reconhecida=retorna_licenca_reconhecida()
     if licenca_reconhecida!=None and licenca_trabalho!=None and 'licençasdeproduçaomaspode' not in licenca_reconhecida.replace(' ','').lower():
         while not licenca_reconhecida.replace(' ','').lower()in licenca_trabalho.replace(' ','').lower():
@@ -470,10 +471,10 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
         nome_trabalho_tratado=nome_trabalho.replace(' ','')[1:-1].lower()
         if  nome_trabalho_tratado in nome_trabalho_lista.replace(' ','').lower():
             print(f'Trabalho confirmado: {nome_trabalho}!')
-            linha_separacao()
+            linhaSeparacao()
             return True
     print(f'Trabalho negado: {nome_trabalho}!')
-    linha_separacao()
+    linhaSeparacao()
     return False
 #modificado 16/01
 def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
@@ -498,14 +499,14 @@ def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
                     if profissao_verificada==profissao_trabalho:
                         print(f'Nome do trabalho na lista: {nome_trabalho}')
                         if nome_trabalho_reconhecido.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
-                            linha_separacao()
+                            linhaSeparacao()
                             print(f'{nome_trabalho} reconhecido...')
-                            linha_separacao()
+                            linhaSeparacao()
                             posicao_trabalho=posicao_trabalho_reconhecido
                             trabalho_lista=trabalho_lista_desejo
                             break
                 else:
-                    linha_separacao()
+                    linhaSeparacao()
             else:
                 posicao_trabalho_reconhecido=3
             yinicial_nome = yinicial_nome+70
@@ -516,7 +517,7 @@ def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
                 print(f'Nem um trabalho disponível está na lista de desejos.')
                 manipula_teclado.click_continuo(4,'up')
                 manipula_teclado.click_especifico(1,'left')
-                linha_separacao()
+                linhaSeparacao()
     return posicao_trabalho,trabalho_lista
 
 def retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
@@ -529,11 +530,11 @@ def retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
         if profissao_verificada==profissao_trabalho and raridade_trabalho=='Comum':
             print(f'Trabalho comum encontado: {nome_trabalho}.')
-            linha_separacao()
+            linhaSeparacao()
             trabalho_comum=True
     if not trabalho_comum:
         print(f'Nem um trabaho comum na lista!')
-        linha_separacao()
+        linhaSeparacao()
     return trabalho_comum
 
 def verifica_trabalho_comum(profissao_verificada):
@@ -553,13 +554,13 @@ def verifica_trabalho_comum(profissao_verificada):
                 if raridade_trabalho=='Comum' and profissao_trabalho==profissao_verificada:
                     print(f'Trabalho na lista: {nome_trabalho}')
                     if nome_trabalho_reconhecido.replace(' ','').lower()==nome_trabalho.replace(' ','').replace('-','').lower():
-                        linha_separacao()
+                        linhaSeparacao()
                         manipula_teclado.click_especifico(1,'enter')
                         contador_paracima+=1
                         trabalho=trabalho_lista
                         break
             else:
-                linha_separacao()
+                linhaSeparacao()
                 manipula_teclado.click_especifico(1,'down')
                 contador_paracima+=1
         else:
@@ -567,7 +568,7 @@ def verifica_trabalho_comum(profissao_verificada):
             manipula_teclado.click_continuo(9,'up')
             manipula_teclado.click_especifico(1,'left')
             print(f'Trabalho comum não reconhecido!')
-            linha_separacao()
+            linhaSeparacao()
             break
         # print(f'Teste de contador: {contador_paracima}')
     return trabalho
@@ -618,7 +619,7 @@ def verifica_erro(trabalho):
         verifica_licenca(licenca)
     elif erro == 2:
         print(f'Erro na conexão...')
-        linha_separacao()
+        linhaSeparacao()
         manipula_teclado.click_especifico(1,'enter')
     elif erro==3 or erro==16 or erro==6 or erro==8:
         if erro==3:
@@ -629,57 +630,57 @@ def verifica_erro(trabalho):
             print(f'Sem espaços livres para produção....')
         elif erro==16:
             print(f'O trabalho não está disponível.')
-        linha_separacao()
+        linhaSeparacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(contador_paracima,'up')
         manipula_teclado.click_especifico(1,'left')
     elif erro == 4:
         print(f'Escolhendo item.')
-        linha_separacao()
+        linhaSeparacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(2,'f2')
         manipula_teclado.click_continuo(9,'up')
     elif erro == 5:
         print(f'Conectando...')
     elif erro == 7:
-        print(f'Recuperar presente depois.')
-        linha_separacao()
-        manipula_teclado.click_especifico(1,'f1')
+        print(f'Recuperar presente.')
+        linhaSeparacao()
+        manipula_teclado.click_especifico(1,'f2')
     elif erro == 9:
         print(f'Trabalho não está concluido!')
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(8,'up')
-        linha_separacao()
+        linhaSeparacao()
     elif erro == 10:
         manipula_teclado.click_especifico(2,'enter')
         print(f'Voltando para a tela inicial.')
-        linha_separacao()
+        linhaSeparacao()
     elif erro == 11:
         manipula_teclado.click_especifico(1, 'enter')
         print(f'Voltando para a tela inicial.')
-        linha_separacao()
+        linhaSeparacao()
     elif erro == 12:
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_especifico(1,'up')
         manipula_teclado.click_especifico(1,'left')
         print(f'Ignorando trabalho concluído!')
-        linha_separacao()
+        linhaSeparacao()
     elif erro == 13:
         manipula_teclado.click_especifico(1,'enter')
         print(f'Erro ao conectar...')
-        linha_separacao()
+        linhaSeparacao()
     elif erro == 14:
         manipula_teclado.click_especifico(1,'f1')
-        linha_separacao()
+        linhaSeparacao()
     elif erro == 15:
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
         print(f'Login ou senha incorreta...')
-        linha_separacao()
+        linhaSeparacao()
     else:
         print(f'Nem um erro encontrado!')
-        linha_separacao()
+        linhaSeparacao()
     return erro
 #modificado 12/01
 def retorna_tipo_erro():
@@ -708,7 +709,7 @@ def retorna_nome_inimigo(tela_inteira):
 def retorna_lista_histograma_menu():
     lista_histograma = []
     print(f'Reconhecendo histograma dos menus.')
-    linha_separacao()
+    linhaSeparacao()
     for x in range(10):
         #abre a imagem do modelo
         modelo = manipula_imagem.abre_imagem(f'modelos/modelo_menu_{x}.png')
@@ -767,10 +768,10 @@ def verifica_nome_personagem(nome_personagem):
             in nome_personagem.replace(' ','').lower():
             print(f'Personagem reconhecido: {nome_personagem_reconhecido_tratado}')
             print(f'Nome personagem confirmado!')
-            linha_separacao()
+            linhaSeparacao()
             return True
     print(f'Nome personagem diferente!')
-    linha_separacao()
+    linhaSeparacao()
     return False
 
 def retorna_lista_profissao_verificada():
@@ -801,7 +802,7 @@ def mostra_profissoes_necessarias(lista_profissao_verificada):
     for x in range(len(lista_profissao_verificada)):
         nome_profissao_necessaria = lista_profissao_verificada[x]
         print(f'Profissão necessária: {nome_profissao_necessaria[1]}')
-    linha_separacao()
+    linhaSeparacao()
 
 def retorna_lista_habilidade_verificada():
     print(f'Criando lista de habilidades...')
@@ -826,11 +827,11 @@ def retorna_lista_habilidade_verificada():
                         break
                 else:
                     print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}:{tamanho_modelo}')
-                    linha_separacao()
+                    linhaSeparacao()
                     break
     else:
         print(f'Processo concluído!')
-        linha_separacao()
+        linhaSeparacao()
     return lista_habilidade_encontrada
 
 def passa_proxima_posicao():
@@ -844,13 +845,13 @@ def entra_personagem_ativo(nome):
     manipula_teclado.click_especifico(1,'enter')
     time.sleep(1)
     erro=verifica_erro(None)
-    if erro!=0:
-        while erro==5:
+    while erro!=0:
+        if erro==5:
             time.sleep(1)
-            erro=verifica_erro(None)
         else:
             if erro!=0:
                 return
+        erro=verifica_erro(None)
     manipula_teclado.click_especifico(1,'f2')
     manipula_teclado.vai_inicio_fila()                
     for x in range(13):
@@ -860,19 +861,19 @@ def entra_personagem_ativo(nome):
             manipula_teclado.click_especifico(1,'f2')
             time.sleep(1)
             erro=verifica_erro(None)
-            if erro!=0:
-                while erro==5:
+            while erro!=0:
+                if erro==5:
                     time.sleep(1)
-                    erro=verifica_erro(None)
                 else:
                     if erro!=0:
                         break
+                erro=verifica_erro(None)
             print(f'Login efetuado com sucesso!')
-            linha_separacao()
+            linhaSeparacao()
             return
     else:
         print(f'Personagem não encontrado!')
-        linha_separacao()
+        linhaSeparacao()
         manipula_teclado.click_especifico(1,'f1')
     return
 
@@ -880,7 +881,7 @@ def retorna_medidas_modelos():
     lista_modelos = [1,2,5,9]
     lista_medidas = []
     print(f'Reconhecendo medidas dos tipos de menus.')
-    linha_separacao()
+    linhaSeparacao()
     for x in range(len(lista_modelos)):
         nome_modelo = f'modelos/modelo_menu_{lista_modelos[x]}.png'
         modelo = manipula_imagem.abre_imagem(nome_modelo)
@@ -911,26 +912,26 @@ def busca_lista_personagem_ativo():
             lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
             lista_personagem=lista_personagem_ativo
             print(f'Lista de personagens ativos atualizada...')
-            linha_separacao()
+            linhaSeparacao()
             continue
         else:#se houver pelo menos um personagem ativo
             personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
             if personagem!=None:
                 personagem_id_global=personagem[id]
                 print('Inicia busca...')
-                linha_separacao()
+                linhaSeparacao()
                 inicia_busca_trabalho()
                 if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
                     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
                     lista_personagem=lista_personagem_ativo
                     print(f'Lista de personagens ativos atualizada...')
-                    linha_separacao()
+                    linhaSeparacao()
                     continue
                 manipula_teclado.click_mouse_esquerdo(1,2,35)
                 deslogaPersonagem()
                 lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
-                linha_separacao()
+                linhaSeparacao()
                 if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][2]==lista_personagem[0][2]:
                     entra_personagem_ativo(lista_personagem[0][nome])
                 elif configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
@@ -948,17 +949,17 @@ def remove_personagem_lista(lista_personagem_retirado,personagem):
     personagem_retirado=personagem[nome]
     lista_personagem_retirado.append(personagem)
     print(f'{personagem_retirado} adicionado a lista de retirados.')
-    linha_separacao()
+    linhaSeparacao()
     lista_personagem=manipula_cliente.consulta_lista_personagem(usuario_id)
     nova_lista_personagem_ativo=lista_personagem
     print(f'Lista de personagens ativos atualizada!')
-    linha_separacao()
+    linhaSeparacao()
     posicao=0
     for personagem_retirado in lista_personagem_retirado:#percorre lista de personagem retirado
         for personagem_lista in lista_personagem:#percorre lista de personagem ativo
             if personagem_lista[nome] in personagem_retirado[nome]:#compara nome na lista de ativo com nome na lista de retirado
                 print(f'{nova_lista_personagem_ativo[posicao][nome]} foi retirado da lista de ativos!')
-                linha_separacao()
+                linhaSeparacao()
                 del nova_lista_personagem_ativo[posicao]
                 posicao-=1
             else:
@@ -968,7 +969,7 @@ def remove_personagem_lista(lista_personagem_retirado,personagem):
 def verifica_lista_vazia(lista_personagem_ativo):
     if len(lista_personagem_ativo)==0:
         print(f'Lista vazia. Buscando nova lista no servidor.')
-        linha_separacao()
+        linhaSeparacao()
         return True
     return False
 
@@ -991,11 +992,11 @@ def configura_login_personagem(email, senha):
     else:
         while menu!=41:
             manipula_teclado.click_mouse_esquerdo(1,2,35)
-            linha_separacao()
+            linhaSeparacao()
             menu=retorna_menu()
         if menu==41:
             manipula_teclado.encerra_secao()
-            linha_separacao()
+            linhaSeparacao()
             if loga_personagem(email,senha):
                 login=True
     return login
@@ -1011,13 +1012,13 @@ def configura_atributos():
 def loga_personagem(email, senha):
     print(f'Tentando logar conta personagem...')
     manipula_teclado.entra_secao(email,senha)
-    linha_separacao()
+    linhaSeparacao()
     if verifica_erro(None)!=0:
         print('Erro ao tentar logar...')
-        linha_separacao()
+        linhaSeparacao()
         return False
     print(f'Login efetuado com sucesso!')
-    linha_separacao()
+    linhaSeparacao()
     return True
 
 def inicia_busca_trabalho():
@@ -1039,7 +1040,7 @@ def inicia_busca_trabalho():
                         elif estado_trabalho==produzindo:
                             lista_profissao.clear()
                             print(f'Todos os espaços de produção ocupados.')
-                            linha_separacao()
+                            linhaSeparacao()
                             break
                         elif estado_trabalho==0:
                             manipula_teclado.click_especifico(1,'left')
@@ -1050,7 +1051,7 @@ def inicia_busca_trabalho():
                 else:
                     nome_profissao=profissao_necessaria[nome]
                     print(f'Verificando profissão: {nome_profissao}')
-                    linha_separacao()
+                    linhaSeparacao()
                     while True:#loop aqui
                         manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
@@ -1061,16 +1062,16 @@ def inicia_busca_trabalho():
                     manipula_teclado.click_especifico(1,'left')
             else:
                 print(f'Erro ao percorrer lista de profissões...')
-                linha_separacao()
+                linhaSeparacao()
                 break
         else:
             print(f'Fim da lista de profissões...')
-            linha_separacao()
+            linhaSeparacao()
             trabalho_ok=True
     else:
         print(f'Lista de trabalhos desejados vazia.')
         print(f'Voltando.')
-        linha_separacao()
+        linhaSeparacao()
     return trabalho_ok
 
 def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada):
@@ -1097,7 +1098,7 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
                 #         sai_trabalho_encontrado(posicao_trabalho,0)
         else:
             print(f'Erro ao entrar no trabalho encontrado...')
-            linha_separacao()
+            linhaSeparacao()
     elif posicao_trabalho==-1 and trabalho_lista_desejo==None:#inicia processo busca por trabalho comum
         trabalho_comum_reconhecido=verifica_trabalho_comum(profissao_verificada)
         if trabalho_comum_reconhecido!=None:
@@ -1106,7 +1107,7 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
             manipula_teclado.click_especifico(1,'left')
         else:
             print(f'Erro ao buscar trabalho comum!')
-            linha_separacao()
+            linhaSeparacao()
     return processo
 
 def verifica_trabalho():
@@ -1118,7 +1119,7 @@ def verifica_trabalho():
 def muda_estado_trabalho_concluido(trabalho_concluido):
     manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
     print(f'Estado do trabalho {trabalho_concluido[nome]} modificado para concluído.')
-    linha_separacao()
+    linhaSeparacao()
 
 def recupera_trabalho_concluido():
     trabalho=False
@@ -1132,7 +1133,7 @@ def recupera_trabalho_concluido():
             trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
             print(f'{trabalho_concluido[nome]} recuperado.')
             manipula_teclado.click_especifico(1,'up')
-            linha_separacao()
+            linhaSeparacao()
             trabalho=trabalho_concluido[1:-1]
     return trabalho
 
@@ -1168,12 +1169,12 @@ def inicia_producao(trabalho):
                         # print(f'Trabalho: {trabalho}')
                         if trabalho[recorrencia]==1:
                             print(f'Recorrencia está ligada.')
-                            linha_separacao()
+                            linhaSeparacao()
                             clone_trabalho=manipula_cliente.adiciona_trabalho(personagem_id_global,trabalho,trabalho[licenca],1)
                             # print(f'O id é: {clone_trabalho[0]}')
                         elif trabalho[recorrencia]==0:
                             print(f'Recorrencia está desligada.')
-                            linha_separacao()
+                            linhaSeparacao()
                             manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,clone_trabalho,1)
                         manipula_teclado.click_continuo(9,'up')
                         break
@@ -1183,64 +1184,87 @@ def inicia_producao(trabalho):
                     producao=True
         else:
             print(f'Erro ao busca licença...')
-            linha_separacao()
+            linhaSeparacao()
     else:
         print(f'Erro ao entrar na licença...')
-        linha_separacao()
+        linhaSeparacao()
     return producao
     
 def verifica_producao_recursos(nome_trabalho_lista_desejo):
     producao_recurso=True
     if not retorna_producao_recursos(nome_trabalho_lista_desejo):
         print(f'Trabalho de produção de equipamentos...')
-        linha_separacao()
+        linhaSeparacao()
         producao_recurso=False
     else:
         print(f'Trabalho de produção de recursos...')
-        linha_separacao()
+        linhaSeparacao()
     return producao_recurso
 
-def recuperaPresente(listaPersonagemPresenteRecuperado):
-    manipula_teclado.click_especifico(1,'f2')
-    for y in range(2):
-        telaInteira=retorna_atualizacao_tela()
-        metadeAltura=telaInteira.shape[0]//2
-        metadeLargura=telaInteira.shape[1]//4
-        alturaFrame=80
-        y=-261
-        larguraFrame=150
-        for x in range(8):
-            frameTela=telaInteira[metadeAltura+y:metadeAltura+y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
-            # frameTratado=manipula_imagem.retornaImagemCoresInvertidas(frameTela)
-            frameTratado=manipula_imagem.transforma_caracteres_preto(frameTela)
-            textoReconhecido=manipula_imagem.reconhece_texto(frameTratado)
-            # manipula_imagem.mostra_imagem(0,frameTratado,None)
-            print(f'Texto reconhecido: {textoReconhecido}.')
-            if textoReconhecido!='':
-                if textoReconhecido.replace(' ','').lower()=='pegar':
-                    centroX=metadeLargura+larguraFrame//2
-                    centroY=metadeAltura+y+alturaFrame//2
-                    manipula_teclado.click_mouse_esquerdo(1,centroX,centroY)
-                    manipula_teclado.click_especifico(1,'f2')
-                    manipula_teclado.click_continuo(8,'up')
-                    manipula_teclado.click_especifico(1,'left')
-                    break
-                elif 'pegarem'in textoReconhecido.replace(' ','').lower():
-                    manipula_teclado.click_continuo(8,'up')
-                    manipula_teclado.click_especifico(1,'left')
-                    break
-            else:
-                y+=80
-    else:
-        nomePersonagemReconhecido=retornaNomePersonagem(0)
-        if nomePersonagemReconhecido!=None:
-            listaPersonagemPresenteRecuperado.append(nomePersonagemReconhecido)
-        else:#ocorreu algum erro
-            print(f'Erro ao reconhecer nome...')
-            linha_separacao()
-        manipula_teclado.click_especifico(1,'f1')
+def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
+    if listaPersonagemPresenteRecuperado==None:
+        listaPersonagemPresenteRecuperado=[]
+    nomePersonagemReconhecido=retornaNomePersonagem(0)
+    if nomePersonagemReconhecido!=None:
+        listaPersonagemPresenteRecuperado.append(nomePersonagemReconhecido)
+    else:#ocorreu algum erro
+        print(f'Erro ao reconhecer nome...')
+        linhaSeparacao()
+    return listaPersonagemPresenteRecuperado
+
+def recebeTodasRecompensas():
+    listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
+    while True:
+        recuperaPresente()
+        listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado)
+        print(f'Lista: {listaPersonagemPresenteRecuperado}.')
+        linhaSeparacao()
         deslogaPersonagem()
-        entraPersonagem(listaPersonagemPresenteRecuperado)
+        if entraPersonagem(listaPersonagemPresenteRecuperado):
+            print(f'Continua verificando personagens...')
+            linhaSeparacao()
+        else:
+            print(f'Todos os personagens foram verificados!')
+            linhaSeparacao()
+            break
+
+def recuperaPresente():
+    print(f'Entrou em recuperaPresente.')
+    linhaSeparacao()
+    if retorna_menu()==menu_rec_diarias:
+        for y in range(2):
+            telaInteira=retorna_atualizacao_tela()
+            metadeAltura=telaInteira.shape[0]//2
+            metadeLargura=telaInteira.shape[1]//4
+            alturaFrame=80
+            y=-261
+            larguraFrame=150
+            for x in range(8):
+                frameTela=telaInteira[metadeAltura+y:metadeAltura+y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
+                # frameTratado=manipula_imagem.retornaImagemCoresInvertidas(frameTela)
+                frameTratado=manipula_imagem.transforma_caracteres_preto(frameTela)
+                textoReconhecido=manipula_imagem.reconhece_texto(frameTratado)
+                # manipula_imagem.mostra_imagem(0,frameTratado,None)
+                if textoReconhecido!='':
+                    print(f'Texto reconhecido: {textoReconhecido}.')
+                    if textoReconhecido.replace(' ','').lower()=='pegar':
+                        centroX=metadeLargura+larguraFrame//2
+                        centroY=metadeAltura+y+alturaFrame//2
+                        manipula_teclado.click_mouse_esquerdo(1,centroX,centroY)
+                        manipula_teclado.posiciona_mouse_esquerdo(telaInteira.shape[1]//2,metadeAltura)
+                        manipula_teclado.click_especifico(1,'f2')
+                        manipula_teclado.click_continuo(8,'up')
+                        manipula_teclado.click_especifico(1,'left')
+                        break
+                    elif 'pegarem'in textoReconhecido.replace(' ','').lower():
+                        manipula_teclado.click_continuo(8,'up')
+                        manipula_teclado.click_especifico(1,'left')
+                        break
+                y+=80
+        manipula_teclado.click_especifico(2,'f1')#sai do menu recupera recompensas
+    else:
+        print(f'Recompensa diária já recebida!')
+        linhaSeparacao()
 
 def retornaNomePersonagem(posicao):
     nome=None
@@ -1249,53 +1273,61 @@ def retornaNomePersonagem(posicao):
     telaInteira=retorna_atualizacao_tela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
     frameNomePersonagemTratado=manipula_imagem.transforma_caracteres_preto(frameNomePersonagem)
-    manipula_imagem.mostra_imagem(0,frameNomePersonagemTratado,None)
+    # manipula_imagem.mostra_imagem(0,frameNomePersonagemTratado,None)
     nomePersonagemReconhecido=manipula_imagem.reconhece_texto(frameNomePersonagemTratado)
     nomePersonagemReconhecidoTratado=unidecode(nomePersonagemReconhecido)
     if nomePersonagemReconhecidoTratado!='':
         nome=nomePersonagemReconhecidoTratado
         print(f'Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
-        linha_separacao()
+        linhaSeparacao()
     return nome
 
 def entraPersonagem(listaPersonagemPresenteRecuperado):
-    print(f'Buscando personagem ativo...')
+    confirmacao=False
+    print(f'Buscando próximo personagem...')
     manipula_teclado.click_especifico(1,'enter')
     time.sleep(1)
     erro=verifica_erro(None)
-    if erro!=0:
-        while erro==5:
+    while erro!=0:
+        if erro==5:
             time.sleep(1)
-            erro=verifica_erro(None)
-        else:
-            if erro!=0:
-                return
-    manipula_teclado.click_especifico(1,'f2')
-    manipula_teclado.vai_inicio_fila()
-    nomePersonagem=retornaNomePersonagem(1)               
-    while nomePersonagem!=None:
-        for nomeLista in listaPersonagemPresenteRecuperado:
-            if nomePersonagem!=nomeLista:
-                manipula_teclado.click_especifico(1,'right')
-        else:
-            manipula_teclado.click_especifico(1,'f2')
-            time.sleep(1)
-            erro=verifica_erro(None)
-            if erro!=0:
-                while erro==5:
-                    time.sleep(1)
-                    erro=verifica_erro(None)
-                else:
-                    if erro!=0:
-                        break
-            print(f'Login efetuado com sucesso!')
-            linha_separacao()
-            return
+        erro=verifica_erro(None)
     else:
-        print(f'Personagem não encontrado!')
-        linha_separacao()
-        manipula_teclado.click_especifico(1,'f1')
-    return
+        manipula_teclado.click_especifico(1,'f2')
+        if len(listaPersonagemPresenteRecuperado)<=2:
+            manipula_teclado.vai_inicio_fila()
+        else:
+            manipula_teclado.click_especifico(1,'right')
+        nomePersonagem=retornaNomePersonagem(1)               
+        while True:
+            nomePersonagemPresenteado=None
+            for nomeLista in listaPersonagemPresenteRecuperado:
+                if nomePersonagem==nomeLista and nomePersonagem!=None:
+                    nomePersonagemPresenteado=nomeLista
+                    break
+            if nomePersonagemPresenteado!=None:
+                manipula_teclado.click_especifico(1,'right')
+                nomePersonagem=retornaNomePersonagem(1)
+            if nomePersonagem==None:
+                print(f'Fim da lista de personagens!')
+                linhaSeparacao()
+                manipula_teclado.click_especifico(1,'f1')
+                break
+            else:
+                manipula_teclado.click_especifico(1,'f2')
+                time.sleep(1)
+                erro=verifica_erro(None)
+                while erro!=0:
+                    if erro==5:
+                        time.sleep(1)
+                    elif erro==7:
+                        break
+                    erro=verifica_erro(None)
+                confirmacao=True
+                print(f'Login efetuado com sucesso!')
+                linhaSeparacao()
+                break
+    return confirmacao
     
 def usa_habilidade():
     #719:752, 85:128 137:180 189:232
@@ -1306,10 +1338,10 @@ def usa_habilidade():
     lista_habilidade = retorna_lista_habilidade_verificada()
     if len(lista_habilidade)==0:
         print(f'Erro!')
-        linha_separacao()
+        linhaSeparacao()
     else:
         print(f'Buscando referência!')
-        linha_separacao()
+        linhaSeparacao()
         while True:
             if verifica_menu_referencia():
                 #verifica se está em modo de ataque
@@ -1338,20 +1370,20 @@ def usa_habilidade():
                                 lista_habilidade_clicada = []
                                 posicao_habilidade = retorna_posicao_habilidade(habilidade[0])
                                 manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
-                                linha_separacao()
+                                linhaSeparacao()
                                 #verica se a habilidade clicada precisa de click do mouse
                                 lista_habilidade_clicada.append(habilidade)
                                 if verifica_habilidade_central(lista_habilidade_clicada)!=0:
                                     x,y = manipula_teclado.retorna_posicao_mouse()
                                     manipula_teclado.click_mouse_esquerdo(1,x,y)
-                                    linha_separacao()
+                                    linhaSeparacao()
                         else:
                             print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}-{tamanho_modelo}')
-                            linha_separacao()
+                            linhaSeparacao()
                 posicao_habilidade=verifica_habilidade_central(lista_habilidade)
                 if posicao_habilidade!=0:
                     manipula_teclado.click_especifico_habilidade(1,posicao_habilidade)
-                    linha_separacao()
+                    linhaSeparacao()
 
 def verifica_habilidade_central(lista_habilidade):
     tela_inteira = retorna_atualizacao_tela()
@@ -1368,22 +1400,22 @@ def verifica_habilidade_central(lista_habilidade):
                     if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
                         print(f'Habilidade central encontrada!')
                         # print(f'x: {x}, y: {y}')
-                        linha_separacao()
+                        linhaSeparacao()
                         return retorna_posicao_habilidade(habilidade[0])
                 else:
                     print(f'Tamanho do frame diferente do modelo!')
-                    linha_separacao()
+                    linhaSeparacao()
     return 0
 
 def recorta_novo_modelo_habilidade():
     lista_imagem_habilidade = retorna_lista_imagem_habilidade()
     indice = len(lista_imagem_habilidade)
     opcao = input(f'Recortar modelo: nº{indice}? Sim ou não. S/N: ')
-    linha_separacao()
+    linhaSeparacao()
     while not opcao.isalpha() or (str(opcao).lower().replace('\n','')!='s' and str(opcao).lower().replace('\n','')!='n'):
         print(f'Opção inválida! Recortar modelo: nº {indice}?')
         opcao = input(f'Sim ou não. S/N: ')
-        linha_separacao()
+        linhaSeparacao()
     else:
         opcao = str(opcao).lower().replace('\n','')
         while opcao!='n':
@@ -1392,26 +1424,26 @@ def recorta_novo_modelo_habilidade():
             lista_imagem_habilidade = retorna_lista_imagem_habilidade()
             indice = len(lista_imagem_habilidade)
             opcao = input(f'Recortar modelo: nº{indice}? Sim ou não. S/N: ')
-            linha_separacao()
+            linhaSeparacao()
             while not opcao.isalpha() or (str(opcao).lower().replace('\n','')!='s' and str(opcao).lower().replace('\n','')!='n'):
                 print(f'Opção inválida! Recortar modelo: nº {indice}?')
                 opcao = input(f'Sim ou não. S/N: ')
-                linha_separacao()
+                linhaSeparacao()
         else:
             print(f'Voltar.')
-            linha_separacao()
+            linhaSeparacao()
 
 def modifica_quantidade_personagem_ativo():
     nova_quantidade = input(f'Digite a nova quantidade: ')
-    linha_separacao()
+    linhaSeparacao()
     while not nova_quantidade.isdigit() or int(nova_quantidade)<=0:
         print(f'Quantidade inválida! Tente novamente...')
         nova_quantidade = input(f'Sua escolha: ')
-        linha_separacao()
+        linhaSeparacao()
     else:
         if (manipula_cliente.muda_quantidade_personagem(usuario_id,nova_quantidade)):
             print(f'Quantidade de personagens ativos modificada com sucesso!')
-            linha_separacao()
+            linhaSeparacao()
 def retorna_lista_menus_reconhecidos():
     x=0
     y=1
@@ -1476,11 +1508,11 @@ def retorna_menu():
     texto_menu=retorna_texto_menu_reconhecido(-125,-190,350)
     if ('notícias'in texto_menu):
         print(f'Menu notícias...')
-        linha_separacao()
+        linhaSeparacao()
         menu=menu_noticias
     elif ('seleçãodepersonagem'in texto_menu):
         print(f'Menu escolha de personagem...')
-        linha_separacao()
+        linhaSeparacao()
         menu=menu_escolha_p
     elif ('produzir'in texto_menu):
         texto_menu=retorna_texto_menu_reconhecido(-75,-140,150)
@@ -1488,15 +1520,15 @@ def retorna_menu():
             texto_menu=retorna_texto_menu_reconhecido(-150,225,100)
             if('fechar'in texto_menu):
                 print(f'Menu produzir...')
-                linha_separacao()
+                linhaSeparacao()
                 menu=menu_produzir
             elif ('voltar' in texto_menu):
                 print(f'Menu trabalhos diponíveis...')
-                linha_separacao()
+                linhaSeparacao()
                 menu=menu_trab_disponiveis
         elif ('trabalhosatuais'in texto_menu):
             print(f'Menu trabalhos atuais...')
-            linha_separacao()
+            linhaSeparacao()
             menu=menu_trab_atuais
     else:
         if retorna_texto_sair().replace(' ','').lower()=='sair':
@@ -1504,54 +1536,55 @@ def retorna_menu():
             menu=menu_jogar
         elif verifica_menu_referencia():
             print(f'Menu tela inicial...')
-            linha_separacao()
+            linhaSeparacao()
             menu=menu_inicial
         else:
             texto_menu=retorna_texto_menu_reconhecido(-50,25,100)
             if ('conquistas'in texto_menu):
                 print(f'Menu personagem...')
-                linha_separacao()
+                linhaSeparacao()
                 menu=menu_personagem
             elif ('interagir'in texto_menu):
                 print(f'Menu principal...')
-                linha_separacao()
+                linhaSeparacao()
                 menu=menu_principal
             else:
                 texto_menu=retorna_texto_menu_reconhecido(-150,-65,300)
                 if('parâmetros'in texto_menu):
                     if('requisitos'in texto_menu):
                         print(f'Menu atributo do trabalho...')
-                        linha_separacao()
+                        linhaSeparacao()
                         menu=menu_trab_atributos
                     else:
                         print(f'Menu licenças...')
-                        linha_separacao()
+                        linhaSeparacao()
                         menu=menu_licencas
                 else:
                     texto_menu=retorna_texto_menu_reconhecido(-60,45,120)
                     if('profissional'in texto_menu):
                         print(f'Menu trabalho específico...')
-                        linha_separacao()
+                        linhaSeparacao()
                         menu=menu_trab_especifico
                     else:
                         texto_menu=retorna_texto_menu_reconhecido(-75,-115,150)
                         if ('ofertadiária'in texto_menu):
                             print(f'Menu oferta diária...')
-                            linha_separacao()
+                            linhaSeparacao()
                             menu=menu_ofe_diaria
                         else:
-                            print(f'Menu não reconhecido...')
-                            linha_separacao()
-                            manipula_teclado.click_atalho_especifico('win','left')
-                            manipula_teclado.click_atalho_especifico('win','left')
-        
-        # elif ('cancelar'in texto_menu and'avançar'in texto_menu):
-        #     print(f'Menu escolha de equipamento...')
-        #     linha_separacao()
-        #     return menu_esc_equipamento
+                            texto_menu=retorna_texto_menu_reconhecido(-161,-344,300)
+                            if('recompensasdiárias'in texto_menu):
+                                print(f'Menu recompensas diárias...')
+                                linhaSeparacao()
+                                menu=menu_rec_diarias
+                            else:
+                                print(f'Menu não reconhecido...')
+                                linhaSeparacao()
+                                manipula_teclado.click_atalho_especifico('win','left')
+                                manipula_teclado.click_atalho_especifico('win','left')
     fim = time.time()
     print(f'Tempo de reconhece_texto: {fim - inicio}')
-    linha_separacao()
+    linhaSeparacao()
     return menu
 
 def configura_licenca(trabalho):
@@ -1673,7 +1706,7 @@ def verifica_valor_numerico(valor):
 def verifica_valor_alfabetico(valor):
     return valor.isalpha()
 
-def linha_separacao():
+def linhaSeparacao():
     print(f'____________________________________________________')
 
 def entra_usuario():
@@ -1754,7 +1787,10 @@ def funcao_teste(id_personagem):
     # verifica_nome_personagem('Axe')
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
+# recebeTodasRecompensas()
+entraPersonagem(['tobraba','gunsa','totiste'])
+# entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
 # while input(f'Continuar?')!='n':
 #     retorna_menu()
-# retornaNomePersonagem(1)
+# print(retornaNomePersonagem(1))

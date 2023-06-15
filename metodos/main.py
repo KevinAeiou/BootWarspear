@@ -11,16 +11,16 @@ def mostra_menu_lista_desejo(personagem_id):
     print(f'2 - Excluir trabalho da lista.')
     print(f'0 - Voltar.')
     opcao_lista = input(f'Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not opcao_lista.isdigit() or int(opcao_lista)<0 or int(opcao_lista)>2:
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_lista = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         opcao_lista = int(opcao_lista)
         if opcao_lista==0:
             print(f'Voltar...')
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
             return 0
     return opcao_lista
 
@@ -32,11 +32,11 @@ def define_licenca():
     print(f'4 - Licença do principiante.')
     print(f'0 - Voltar.')
     tipo_licenca = input('Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not tipo_licenca.isdigit() or int(tipo_licenca)<0 or int(tipo_licenca)>4:
         print(f'Opção inválida! Selecione uma das opções.')
         tipo_licenca = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         tipo_licenca = int(tipo_licenca)
         if tipo_licenca==0:
@@ -58,11 +58,11 @@ def define_raridade():
     print(f'3 - Especial.')
     print(f'0 - Voltar.')
     raridade = input('Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not raridade.isdigit() or int(raridade)<0 or int(raridade)>3:
         print(f'Opção inválida! Selecione uma das opções.')
         raridade = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         raridade = int(raridade)
         if raridade==0:
@@ -81,11 +81,11 @@ def mostra_menu_habilidade():
     print(f'2 - Cadastra nova habilidade.')
     print(f'0 - Voltar.')
     opcao_habilidade = input('Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not opcao_habilidade.isdigit() or int(opcao_habilidade)<0 or int(opcao_habilidade)>2:
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_habilidade = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         opcao_habilidade = int(opcao_habilidade)
         if opcao_habilidade==0:
@@ -98,11 +98,11 @@ def mostra_menu_cadastrar():
     print(f'2 - Cadastrar habilidade.')
     print(f'0 - Voltar.')
     opcao_cadastro = input(f'Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not opcao_cadastro.isdigit() or int(opcao_cadastro)<0 or int(opcao_cadastro)>2:
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_cadastro = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         opcao_cadastro = int(opcao_cadastro)
         if opcao_cadastro==0:
@@ -115,16 +115,16 @@ def define_profissao(personagem_id):
     #conteudo_arquivo_profissao = manipula_funcoes.mostra_lista_arquivo(nome_arquivo_lista_profissoes)
     if conteudo_lista_profissao == 0:
         print(f'Erro!')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
         menu(personagem_id)
         return ''
     else:
         opcao_profissao = input('Profissão escolhida: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
         while not opcao_profissao.isdigit() or int(opcao_profissao)<0 or int(opcao_profissao)>len(conteudo_lista_profissao):
             print(f'Opção inválida! Selecione uma das opções.')
             opcao_profissao = input(f'Sua escolha: ')
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
         else:
             opcao_profissao = int(opcao_profissao)
             if opcao_profissao==0:
@@ -138,15 +138,15 @@ def mostra_menu_trabalho(nome_profissao,tipo_raridade):
     conteudo_lista_trabalho = manipula_funcoes.mostra_lista_trabalho(nome_profissao,tipo_raridade)
     if conteudo_lista_trabalho == 0:
         print(f'Erro!')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
         return ''
     else:
         opcao_trabalho = input(f'Trabalho escolhido: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
         while not opcao_trabalho.isdigit() or int(opcao_trabalho)<0 or int(opcao_trabalho)>len(conteudo_lista_trabalho):
             print(f'Opção inválida! Selecione uma das opções.')
             opcao_trabalho = input(f'Sua escolha: ')
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
         else:
             opcao_trabalho = int(opcao_trabalho)
             if opcao_trabalho==0:
@@ -158,11 +158,11 @@ def mostra_menu_confiuracao():
     print(f'1 - Quantidade de personagens ativos.')
     print(f'0 - Voltar.')
     opcao_configuracao = input(f'Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not opcao_configuracao.isdigit() or int(opcao_configuracao)<0 or int(opcao_configuracao)>1:
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_configuracao = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         opcao_configuracao = int(opcao_configuracao)
         if opcao_configuracao==0:
@@ -181,16 +181,16 @@ def menu(personagem_id):
     print(f'7 - Temporario.')
     print(f'0 - Voltar.')
     escolha = input('Sua escolha: ')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not escolha.isdigit() or int(escolha)<0 or int(escolha)>7:
         print(f'Opção inválida! Selecione uma das opções.')
         escolha = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         escolha = int(escolha)
         if escolha==0:#Volta ao menu anterior
             print(f'Voltar...')
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
             menu_personagem()
             return
         elif escolha==1:#Menu adicionar novo trabalho a lista
@@ -204,23 +204,23 @@ def menu(personagem_id):
                         if trabalho != '':
                             manipula_funcoes.adiciona_trabalho(personagem_id,trabalho,licenca)
             print(f'Voltando.')
-            manipula_funcoes.linha_separacao() 
+            manipula_funcoes.linhaSeparacao() 
         elif escolha==2:#Menu lista de desejo
             opcao_lista = mostra_menu_lista_desejo(personagem_id)
             if opcao_lista == 0:#Volta ao menu anterior
                 print(f'Voltar.')
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
             elif opcao_lista == 1:#Inicia busca
                 manipula_funcoes.prepara_personagem(personagem_id)
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
             elif opcao_lista == 2:#Exclui trabalho da lista
                 excluir_trabalho(personagem_id)
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
         elif escolha==3:#Menu habilidade
             opcao_habilidade = mostra_menu_habilidade()
             if opcao_habilidade == 0:#Volta ao menu anterior
                 print(f'Voltar.')
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
             elif opcao_habilidade == 1:#Usa habilidades
                 #exec(open('metodos/manipula_tela.py').read())
                 manipula_funcoes.usa_habilidade()
@@ -232,7 +232,7 @@ def menu(personagem_id):
             opcao_cadastro = mostra_menu_cadastrar()
             if opcao_cadastro == 0:#Volta ao menu anterior
                 print(f'Voltar.')
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
             elif opcao_cadastro == 1:#Cadastra novo trabalho
                 raridade = define_raridade() 
                 if raridade != '':
@@ -241,33 +241,33 @@ def menu(personagem_id):
                         manipula_funcoes.cadastra_nome_trabalho(profissao,raridade)
             elif opcao_cadastro == 2:#Cadastra novo modelo de habilidade
                 print(f'Em desenvolvimento...')
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
         elif escolha==6:#Menu configurações
             opcao_configuracao = mostra_menu_confiuracao()
             if opcao_configuracao == 0:#Volta ao menu anterior
                 print(f'Voltar.')
-                manipula_funcoes.linha_separacao()
+                manipula_funcoes.linhaSeparacao()
             elif opcao_configuracao==1:
                 manipula_funcoes.modifica_quantidade_personagem_ativo()
         elif escolha==7:#Menu teste
             manipula_funcoes.funcao_teste(personagem_id)
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
         menu(personagem_id)
     return
 
 def excluir_trabalho(personagem_id):
     lista_desejo = manipula_funcoes.mostra_lista(f'eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo')
     opcao_exclui_trabalho = input(f'Qual trabalho deseja exluir?')
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while not opcao_exclui_trabalho.isdigit() or int(opcao_exclui_trabalho)<0 or int(opcao_exclui_trabalho)>len(lista_desejo):
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_exclui_trabalho = input(f'Sua escolha: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         opcao_exclui_trabalho = int(opcao_exclui_trabalho)
         if opcao_exclui_trabalho==0:
             print(f'Voltar...')
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
             return
         else:
             trabalho = lista_desejo[opcao_exclui_trabalho-1]
@@ -279,14 +279,14 @@ def menu_personagem():
     conteudo_lista_personagem = manipula_funcoes.mostra_lista("eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem")
     if conteudo_lista_personagem == 0:
         print(f'Erro!')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
     else:
         opcao_personagem = input('Personagem escolhido: ')
-        manipula_funcoes.linha_separacao()
+        manipula_funcoes.linhaSeparacao()
         while not opcao_personagem.isdigit() or int(opcao_personagem)<0 or int(opcao_personagem)>len(conteudo_lista_personagem):
             print(f'Opção inválida! Selecione um personagem.')
             opcao_personagem = input(f'Sua escolha: ')
-            manipula_funcoes.linha_separacao()
+            manipula_funcoes.linhaSeparacao()
         else:
             opcao_personagem = int(opcao_personagem)
             if opcao_personagem==0:
@@ -306,7 +306,7 @@ def usuario():
     print(f'2 - Cadastrar.')
     print(f'0 - Sair.')
     escolha_usuario = int(input(f'Sua escolha: '))
-    manipula_funcoes.linha_separacao()
+    manipula_funcoes.linhaSeparacao()
     while escolha_usuario<0 or escolha_usuario>3:
         print(f'Opção inválida! Selecione uma das opções.')
         escolha_usuario = int(input(f'Sua escolha: '))
