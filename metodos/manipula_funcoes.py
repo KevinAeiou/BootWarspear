@@ -647,6 +647,7 @@ def verifica_erro(trabalho):
         print(f'Recuperar presente.')
         linhaSeparacao()
         manipula_teclado.click_especifico(1,'f2')
+        recebeTodasRecompensas()
     elif erro == 9:
         print(f'Trabalho não está concluido!')
         manipula_teclado.click_especifico(1,'f1')
