@@ -219,7 +219,7 @@ def click_mouse_esquerdo(clicks,x_tela,y_tela):
         time.sleep(1)
 
 def posiciona_mouse_esquerdo(x_tela,y_tela):
-    tecla.position(x_tela,y_tela)
+    tecla.moveTo(x_tela,y_tela)
     print(f'Posicionado em {x_tela}:{y_tela}.')
 
 def retorna_posicao_mouse():
