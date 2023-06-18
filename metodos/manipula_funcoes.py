@@ -909,7 +909,6 @@ def busca_lista_personagem_ativo():
             lista_personagem=lista_personagem_ativo
             print(f'Lista de personagens ativos atualizada...')
             linhaSeparacao()
-            continue
         else:#se houver pelo menos um personagem ativo
             personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
             if personagem!=None:
@@ -918,15 +917,16 @@ def busca_lista_personagem_ativo():
                 linhaSeparacao()
                 if not inicia_busca_trabalho():
                     continue
-                if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
+                elif verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
                     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
                     lista_personagem=lista_personagem_ativo
                     print(f'Lista de personagens ativos atualizada...')
                     linhaSeparacao()
                     continue
-                manipula_teclado.click_mouse_esquerdo(1,2,35)
-                deslogaPersonagem()
-                lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
+                else:
+                    manipula_teclado.click_mouse_esquerdo(1,2,35)
+                    deslogaPersonagem()
+                    lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
                 linhaSeparacao()
                 if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][2]==lista_personagem[0][2]:
@@ -951,8 +951,8 @@ def remove_personagem_lista(lista_personagem_retirado,personagem):
     nova_lista_personagem_ativo=lista_personagem
     print(f'Lista de personagens ativos atualizada!')
     linhaSeparacao()
-    posicao=0
     for personagem_retirado in lista_personagem_retirado:#percorre lista de personagem retirado
+        posicao=0
         for personagem_lista in lista_personagem:#percorre lista de personagem ativo
             if personagem_lista[nome] in personagem_retirado[nome]:#compara nome na lista de ativo com nome na lista de retirado
                 print(f'{nova_lista_personagem_ativo[posicao][nome]} foi retirado da lista de ativos!')
