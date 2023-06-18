@@ -1236,6 +1236,7 @@ def recebeTodasRecompensas():
 
 def recuperaPresente():
     evento=0
+    print(f'Buscando recompensa diária...')
     while evento<2:
         telaInteira=retorna_atualizacao_tela()
         metadeAltura=telaInteira.shape[0]//2
@@ -1262,10 +1263,12 @@ def recuperaPresente():
                     manipula_teclado.click_especifico(1,'f2')
                     manipula_teclado.click_continuo(8,'up')
                     manipula_teclado.click_especifico(1,'left')
+                    linhaSeparacao()
                     break
                 elif 'pegarem'in textoReconhecido.replace(' ','').lower():
                     manipula_teclado.click_continuo(8,'up')
                     manipula_teclado.click_especifico(1,'left')
+                    linhaSeparacao()
                     break
             y+=80
         evento+=1
@@ -1337,10 +1340,9 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
                 time.sleep(1)
                 erro=verifica_erro(None)
                 while erro!=0:
-                    if erro==5:
-                        time.sleep(1)
-                    elif erro==7:
+                    if erro==7:
                         break
+                    time.sleep(1)
                     erro=verifica_erro(None)
                 confirmacao=True
                 print(f'Login efetuado com sucesso!')
@@ -1519,6 +1521,7 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.click_especifico(1,'num1')
         manipula_teclado.click_especifico(1,'num7')
+    verifica_erro(None)
     
 def retorna_menu():
     menu=False
@@ -1607,6 +1610,7 @@ def retorna_menu():
                                     linhaSeparacao()
                                     manipula_teclado.click_atalho_especifico('win','left')
                                     manipula_teclado.click_atalho_especifico('win','left')
+                                    verifica_erro(None)
     fim = time.time()
     print(f'Tempo de reconhece_texto: {fim - inicio}')
     linhaSeparacao()
@@ -1795,7 +1799,7 @@ def funcao_teste(id_personagem):
 # verifica_erro(None)
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas()
-recuperaPresente()
+# recuperaPresente()
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
