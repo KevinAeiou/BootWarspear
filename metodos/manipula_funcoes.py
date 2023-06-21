@@ -832,8 +832,11 @@ def passa_proxima_posicao():
     yinicial = yfinal+23
     yfinal = yfinal+altura_frame
 
-def entra_personagem_ativo(nome):
+def entra_personagem_ativo(primeiroPersonagem):
     print(f'Buscando personagem ativo...')
+    estado={'uso':1}
+    listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,primeiroPersonagem[2])
+    manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
     manipula_teclado.click_especifico(1,'enter')
     time.sleep(1)
     erro=verifica_erro(None)
@@ -848,7 +851,7 @@ def entra_personagem_ativo(nome):
     manipula_teclado.vai_inicio_fila()   
     personagemReconhecido=retornaNomePersonagem(1)
     while personagemReconhecido!=None:         
-        if personagemReconhecido.replace(' ','').lower() in nome.replace(' ','').lower():
+        if personagemReconhecido.replace(' ','').lower() in primeiroPersonagem[nome].replace(' ','').lower():
             print(f'Personagem {personagemReconhecido} confirmado!')
             linhaSeparacao()
             manipula_teclado.click_especifico(1,'f2')
@@ -893,7 +896,9 @@ def prepara_personagem(id_personagem):
     personagem_id_global=id_personagem
     nome, email, senha, estado = configura_atributos()
     if estado!=1:#se o personagem estiver inativo, troca o estado
-        manipula_cliente.muda_estado_personagem(usuario_id,personagem_id_global)
+        estado={'estado':1}
+        listaPersonagemId=[personagem_id_global]
+        manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
     busca_lista_personagem_ativo()
     
 
@@ -925,22 +930,26 @@ def busca_lista_personagem_ativo():
                     continue
                 else:
                     manipula_teclado.click_mouse_esquerdo(1,2,35)
-                    deslogaPersonagem()
+                    deslogaPersonagem(personagem[2])
                     lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
                 linhaSeparacao()
                 if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][2]==lista_personagem[0][2]:
-                    entra_personagem_ativo(lista_personagem[0][nome])
+                    entra_personagem_ativo(lista_personagem[0])
                 elif configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
-                    entra_personagem_ativo(lista_personagem[0][nome])
+                    entra_personagem_ativo(lista_personagem[0])
 
-def deslogaPersonagem():
+def deslogaPersonagem(email):
     menu=retorna_menu()
     while menu!=menu_jogar:
         if menu==menu_inicial:
             manipula_teclado.encerra_secao()
             break
         menu=retorna_menu()
+    if email!=None:
+        estado={'uso':0}
+        listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,email)
+        manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
 
 def remove_personagem_lista(lista_personagem_retirado,personagem):
     personagem_retirado=personagem[nome]
@@ -1224,7 +1233,7 @@ def recebeTodasRecompensas():
         reconheceMenuRecompensa()
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
-        deslogaPersonagem()
+        deslogaPersonagem(None)
         if entraPersonagem(listaPersonagemPresenteRecuperado):
             listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado)
             print(f'Continua verificando personagens...')
@@ -1793,7 +1802,9 @@ def funcao_teste(id_personagem):
     # while inicia_busca_trabalho():
     #     continue
     # entra_personagem_ativo('mrninguem')
-    inicia_busca_trabalho()
+    # inicia_busca_trabalho()
+    estado={'uso':1}
+    manipula_cliente.muda_estado_personagem(usuario_id,personagem_id_global,estado)
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
 # verifica_erro(None)

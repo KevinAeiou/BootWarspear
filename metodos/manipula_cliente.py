@@ -244,7 +244,6 @@ def consulta_lista_personagem(usuario_id):
     #print(requisicao.text)
     return lista_personagem
 
-#modificado 23/01
 def muda_estado_trabalho(usuario_id,personagem_id,trabalho,novo_estado):
     dados = {'estado':novo_estado}
     for x in range(10):
@@ -275,23 +274,41 @@ def muda_estado_trabalho(usuario_id,personagem_id,trabalho,novo_estado):
     else:
         print(f'Limite de tentativas de conexão atingido.')
 
-def muda_estado_personagem(usuario_id,personagem_id):
+def muda_estado_personagem(usuario_id,listaPersonagemId,dados):
     for x in range(10):
         try:
-            requisicao = requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
-            dicionario_requisicao = requisicao.json()
-            for id in dicionario_requisicao:
-                if personagem_id == id:
-                    dados = {'estado':1}
-                    nome = dicionario_requisicao[id]['nome']
-                    requisicao = requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json',data=json.dumps(dados))
-                    print(f'Estado do {nome} agora é ativo.')
+            for personagem_id in listaPersonagemId:
+                requisicao=requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
+                dicionario_requisicao=requisicao.json()
+                for id in dicionario_requisicao:
+                    if personagem_id==id:
+                        nome=dicionario_requisicao[id]['nome']
+                        requisicao=requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json',data=json.dumps(dados))
+                        print(f'Estado do {nome} agora é ativo.')
+                        break
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
             time.sleep(1)
     else:
         print(f'Limite de tentativas de conexão atingido.')
+
+def retornaListaPersonagemId(usuario_id,personagemEmail):
+    listaPersonagemId=[]
+    for x in range(10):
+        try:
+            requisicao=requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
+            dicionario_requisicao=requisicao.json()
+            for id in dicionario_requisicao:
+                if personagemEmail==dicionario_requisicao[id]['email']:
+                    listaPersonagemId.append(id)
+            break
+        except requests.exceptions.ConnectionError:
+            print(f'Conecção recusada!')
+            time.sleep(1)
+    else:
+        print(f'Limite de tentativas de conexão atingido.')
+    return listaPersonagemId
 
 def muda_quantidade_personagem(usuario_id,nova_quantidade):
     for x in range(10):
@@ -350,3 +367,4 @@ def adicionaAtributoRecorrencia():
         print(f'Limite de tentativas de conexão atingido.')
 
 # adicionaAtributoRecorrencia()
+# print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))
