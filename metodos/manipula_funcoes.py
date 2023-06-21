@@ -945,6 +945,8 @@ def deslogaPersonagem(email):
         if menu==menu_inicial:
             manipula_teclado.encerra_secao()
             break
+        else:
+            manipula_teclado.click_mouse_esquerdo(1,2,35)
         menu=retorna_menu()
     if email!=None:
         estado={'uso':0}
@@ -1236,8 +1238,6 @@ def recebeTodasRecompensas():
         deslogaPersonagem(None)
         if entraPersonagem(listaPersonagemPresenteRecuperado):
             listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado)
-            print(f'Continua verificando personagens...')
-            linhaSeparacao()
         else:
             print(f'Todos os personagens foram verificados!')
             linhaSeparacao()
@@ -1351,7 +1351,7 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
                 while erro!=0:
                     if erro==7:
                         break
-                    time.sleep(1)
+                    time.sleep(1.5)
                     erro=verifica_erro(None)
                 confirmacao=True
                 print(f'Login efetuado com sucesso!')
