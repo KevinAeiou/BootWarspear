@@ -401,41 +401,49 @@ def verifica_trabalho_concluido():
     return estado_espaco
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
-    confirma_licenca=False
+    confirmacao=False
     lista_ciclo=[]
     primeira_busca=True
     print(f"Buscando: {licenca_trabalho}")
     linhaSeparacao()
     licenca_reconhecida=retorna_licenca_reconhecida()
-    if licenca_reconhecida!=None and licenca_trabalho!=None and 'licençasdeproduçaomaspode' not in licenca_reconhecida.replace(' ','').lower():
-        while not licenca_reconhecida.replace(' ','').lower()in licenca_trabalho.replace(' ','').lower():
+    print(f'Licença reconhecida: {licenca_reconhecida}.')
+    linhaSeparacao()
+    if licenca_reconhecida!=None and licenca_trabalho!=None and 'licençasdeproduçaomaspode' not in licenca_reconhecida:
+        while not licenca_reconhecida in licenca_trabalho.replace(' ','').lower():
             primeira_busca=False
             manipula_teclado.click_especifico(1,"right")
             lista_ciclo.append(licenca_reconhecida)
             licenca_reconhecida=retorna_licenca_reconhecida()
+            print(f'Licença reconhecida: {licenca_reconhecida}.')
+            linhaSeparacao()
             if licenca_reconhecida!=None:
                 print(f'Licença reconhecida: {licenca_reconhecida}.')
                 if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
-                    licenca_reconhecida='licençadeproduçãodoiniciante'
+                    licenca_trabalho='licençadeproduçãodoiniciante'
+                    print(f'Licença para trabalho agora é: {licenca_trabalho}.')
         else:#se encontrou a licença buscada
             if primeira_busca:
                 manipula_teclado.click_especifico(1,"f1")
             else:
                 manipula_teclado.click_especifico(1,"f2")
-            confirma_licenca=True
-    return confirma_licenca
+            confirmacao=True
+    return confirmacao
 
 def retorna_licenca_reconhecida():
-    lista_licencas=['iniciante','principiante','aprendiz','mestre','nenhumitem']
+    lista_licencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
     tela_inteira=retorna_atualizacao_tela()
     frame_tela=tela_inteira[275:317,169:512]
     frame_tela_equalizado=manipula_imagem.retorna_imagem_equalizada(frame_tela)
     licenca_reconhecida=manipula_imagem.reconhece_texto(frame_tela_equalizado)
-    for licenca in lista_licencas:
-        if licenca in licenca_reconhecida.replace(' ','').lower():
-            return licenca_reconhecida
-    else:
-        return None
+    if licenca_reconhecida!=None:
+        licenca_reconhecida=licenca_reconhecida.replace(' ','').lower()
+        for licenca in lista_licencas:
+            if licenca in licenca_reconhecida:
+                break
+        else:
+            licenca_reconhecida=None
+    return licenca_reconhecida
     
 def verifica_ciclo(lista):
     if len(lista)>=4:
@@ -1795,7 +1803,9 @@ def funcao_teste(id_personagem):
     # modifica_quantidade_personagem_ativo()
     # while True:
     #     verifica_habilidade_central(lista_habilidade)
-    # verifica_licenca('Licença de produção do principiante')
+    # print(retorna_licenca_reconhecida())
+    print(verifica_licenca('principiante'))
+    linhaSeparacao()
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
@@ -1803,8 +1813,8 @@ def funcao_teste(id_personagem):
     #     continue
     # entra_personagem_ativo('mrninguem')
     # inicia_busca_trabalho()
-    estado={'uso':1}
-    manipula_cliente.muda_estado_personagem(usuario_id,personagem_id_global,estado)
+    # estado={'uso':1}
+    # manipula_cliente.muda_estado_personagem(usuario_id,personagem_id_global,estado)
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
 # verifica_erro(None)

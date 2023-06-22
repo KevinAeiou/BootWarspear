@@ -50,20 +50,23 @@ def reconhece_digito(imagem):
 def reconhece_texto(imagem):
     # inicio = time.time()
     # tesseract image.png output --oem 3 --psm 11 -c tessedit_char_whitelist=0123456789
+    texto=None
     caminho = r"C:\Program Files\Tesseract-OCR"
     pytesseract.pytesseract.tesseract_cmd = caminho +r"\tesseract.exe"
     #busca texto das produções
-    texto_reconhecido = pytesseract.image_to_string(imagem, lang="por")
-    lista_caracteres_especiais = ['"','',',','.','|','!','@','$','%','¨','&','*','(',')','_','-','+','=','§','[',']','{','}','ª','º','^','~','?','/','°',':',';','>','<','\'','\n']
-    lista_caracteres_numericos = ['0','1','2','3','4','5','6','7','8','9']
-    for x in range(len(lista_caracteres_numericos)):
-        texto_reconhecido = texto_reconhecido.replace(lista_caracteres_numericos[x],'')
-    for x in range(len(lista_caracteres_especiais)):
-        texto_reconhecido = texto_reconhecido.replace(lista_caracteres_especiais[x],'')
-    # fim = time.time()
+    texto_reconhecido=pytesseract.image_to_string(imagem, lang="por")
+    if len(texto_reconhecido)!=0:
+        lista_caracteres_especiais = ['"','',',','.','|','!','@','$','%','¨','&','*','(',')','_','-','+','=','§','[',']','{','}','ª','º','^','~','?','/','°',':',';','>','<','\'','\n']
+        lista_caracteres_numericos = ['0','1','2','3','4','5','6','7','8','9']
+        for numero in lista_caracteres_numericos:
+            texto_reconhecido = texto_reconhecido.replace(numero,'')
+        for especial in lista_caracteres_especiais:
+            texto_reconhecido = texto_reconhecido.replace(especial,'')
+        texto=texto_reconhecido
+        # fim = time.time()
     # print(f'Tempo de reconhece_texto: {fim - inicio}')
     # print(f'____________________________________________________')
-    return texto_reconhecido
+    return texto
 
 def transforma_caracteres_preto(imagem_original):
     # inicio = time.time()

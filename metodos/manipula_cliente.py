@@ -6,6 +6,8 @@ import time
 link_database = 'https://bootwarspear-default-rtdb.firebaseio.com/'
 link_storage = 'gs://bootwarspear.appspot.com'
 nome_imagem_trabalho = 'imagem_trabalho.png'
+tempoConeccao=5
+tempoLeitura=1.5
 
 firebaseConfig = {
     'apiKey': "AIzaSyCrQz9bYczFvF5S-HNlha48hXD7Mmiq6R8",
@@ -278,14 +280,18 @@ def muda_estado_personagem(usuario_id,listaPersonagemId,dados):
     for x in range(10):
         try:
             for personagem_id in listaPersonagemId:
-                requisicao=requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json')
+                requisicao=requests.get(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json',timeout=(tempoConeccao,tempoLeitura))
                 dicionario_requisicao=requisicao.json()
-                for id in dicionario_requisicao:
-                    if personagem_id==id:
-                        nome=dicionario_requisicao[id]['nome']
-                        requisicao=requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json',data=json.dumps(dados))
-                        print(f'Estado do {nome} agora é ativo.')
-                        break
+                try:
+                    for id in dicionario_requisicao:
+                        if personagem_id==id:
+                            nome=dicionario_requisicao[id]['nome']
+                            requisicao=requests.patch(f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json',data=json.dumps(dados),timeout=(tempoConeccao,tempoLeitura))
+                            print(f'Estado do {nome} agora é ativo.')
+                            break
+                except requests.exceptions.ConnectionError:
+                    print(f'Conecção recusada!')
+                    time.sleep(1)
             break
         except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
