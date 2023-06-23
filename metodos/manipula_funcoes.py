@@ -603,21 +603,6 @@ def sai_trabalho_encontrado(x,tipo_trabalho):
     manipula_teclado.click_continuo(x+1,'up')
     manipula_teclado.click_especifico(2,'left')
 
-def entra_licenca():
-    if verifica_erro(None)!=0:
-        return False
-    manipula_teclado.click_especifico(1,'up')
-    manipula_teclado.click_especifico(1,'enter')
-    return True
-
-def entra_trabalho_encontrado(x):
-    if verifica_erro(None)!=0:
-        return False
-    manipula_teclado.click_continuo(3,'up')
-    manipula_teclado.click_especifico(x+1,'down')
-    manipula_teclado.click_especifico(1,'enter')
-    return True
-
 def verifica_erro(trabalho):
     licenca = configura_licenca(trabalho)
     print(f'Verificando erro...')
@@ -631,19 +616,21 @@ def verifica_erro(trabalho):
         linhaSeparacao()
         manipula_teclado.click_especifico(1,'enter')
     elif erro==3 or erro==16 or erro==6 or erro==8:
-        if erro==3:
-            print(f'Retirrando trabalho da lista.')
-        elif erro==6:
-            print(f'Voltando para o menu profissões.')
-        elif erro==8:
-            print(f'Sem espaços livres para produção....')
-        elif erro==16:
-            print(f'O trabalho não está disponível.')
-        linhaSeparacao()
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(contador_paracima,'up')
-        manipula_teclado.click_especifico(1,'left')
+        if erro==3:
+            print(f'Retirrando trabalho da lista.')
+        elif erro==6:
+            manipula_teclado.click_especifico(1,'left')
+            print(f'Voltando para o menu profissões.')
+        elif erro==8:
+            manipula_teclado.click_especifico(1,'left')
+            print(f'Sem espaços livres para produção....')
+        elif erro==16:
+            manipula_teclado.click_especifico(1,'left')
+            print(f'O trabalho não está disponível.')
+        linhaSeparacao()
     elif erro == 4:
         print(f'Escolhendo item.')
         linhaSeparacao()
@@ -689,6 +676,22 @@ def verifica_erro(trabalho):
         print(f'Nem um erro encontrado!')
         linhaSeparacao()
     return erro
+
+def entra_licenca():
+    if verifica_erro(None)!=0:
+        return False
+    manipula_teclado.click_especifico(1,'up')
+    manipula_teclado.click_especifico(1,'enter')
+    return True
+
+def entra_trabalho_encontrado(x):
+    if verifica_erro(None)!=0:
+        return False
+    manipula_teclado.click_continuo(3,'up')
+    manipula_teclado.click_especifico(x+1,'down')
+    manipula_teclado.click_especifico(1,'enter')
+    return True
+
 #modificado 12/01
 def retorna_tipo_erro():
     tela_inteira=retorna_atualizacao_tela()
@@ -763,13 +766,12 @@ def verifica_arquivo_existe(caminho_arquivo):
 
 def verifica_nome_personagem(nome_personagem,posicao):
     confirmacao=False
-    print(f'Verificando nome personagem...')
     nome_personagem_reconhecido_tratado=retornaNomePersonagem(posicao)
-    if nome_personagem_reconhecido_tratado!=None and nome_personagem_reconhecido_tratado.replace(' ','').lower()\
-        in nome_personagem.replace(' ','').lower():
-        print(f'Personagem {nome_personagem_reconhecido_tratado} confirmado!')
-        linhaSeparacao()
-        confirmacao=True
+    if nome_personagem_reconhecido_tratado!=None:
+        if nome_personagem_reconhecido_tratado.replace(' ','').lower()in nome_personagem.replace(' ','').lower():
+            print(f'Personagem {nome_personagem_reconhecido_tratado} confirmado!')
+            linhaSeparacao()
+            confirmacao=True
     else:
         print(f'Nome personagem diferente!')
         linhaSeparacao()
@@ -950,6 +952,166 @@ def busca_lista_personagem_ativo():
                 elif configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
                     entra_personagem_ativo(lista_personagem[0])
 
+def retorna_texto_menu_reconhecido(x,y,largura):
+    tela_inteira=retorna_atualizacao_tela()
+    centroAltura=tela_inteira.shape[0]//2
+    centroMetade=tela_inteira.shape[1]//4
+    alturaFrame=30
+    texto=None
+    frame_menu=tela_inteira[centroAltura+y:centroAltura+y+alturaFrame,centroMetade+x:centroMetade+x+largura]
+    frame_menu_tratado=manipula_imagem.transforma_caracteres_preto(frame_menu)
+    # manipula_imagem.mostra_imagem(0,frame_menu_tratado,None)
+    # print(f'Quantidade de pixels pretos: {np.sum(frame_menu_tratado==0)}')
+    contadorPixelPreto=np.sum(frame_menu_tratado==0)
+    if contadorPixelPreto>1000 and contadorPixelPreto<3010:
+        texto=manipula_imagem.reconhece_texto(frame_menu_tratado)
+        if texto!=None:
+            texto=texto.lower().replace(' ','')
+    return texto
+
+def retorna_menu():
+    # 1050,1077,3006,1035,1251,1092,1215,1854,1863,1617,1377,2637,1344,
+    # 1947,2721
+    inicio = time.time()
+    print(f'Reconhecendo menu.')
+    texto_menu=retorna_texto_menu_reconhecido(-125,-190,350)
+    if texto_menu!=None:
+        if ('notícias'in texto_menu):
+            print(f'Menu notícias...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_noticias
+        elif ('seleçãodepersonagem'in texto_menu):
+            print(f'Menu escolha de personagem...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_escolha_p
+        elif ('produzir'in texto_menu):
+            texto_menu=retorna_texto_menu_reconhecido(-75,-140,150)
+            if texto_menu!=None:
+                if ('profissões'in texto_menu):
+                    texto_menu=retorna_texto_menu_reconhecido(-150,225,100)
+                    if texto_menu!=None:
+                        if('fechar'in texto_menu):
+                            print(f'Menu produzir...')
+                            linhaSeparacao()
+                            fim = time.time()
+                            print(f'Tempo de reconhece_texto: {fim - inicio}')
+                            linhaSeparacao()
+                            return menu_produzir
+                        elif ('voltar' in texto_menu):
+                            print(f'Menu trabalhos diponíveis...')
+                            linhaSeparacao()
+                            fim = time.time()
+                            print(f'Tempo de reconhece_texto: {fim - inicio}')
+                            linhaSeparacao()
+                            return menu_trab_disponiveis
+                elif ('trabalhosatuais'in texto_menu):
+                    print(f'Menu trabalhos atuais...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_trab_atuais
+    texto_menu=retorna_texto_sair()
+    if texto_menu!=None:
+        if texto_menu.lower()=='sair':
+            print(f'Menu jogar...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_jogar
+    if verifica_menu_referencia():
+        print(f'Menu tela inicial...')
+        linhaSeparacao()
+        fim = time.time()
+        print(f'Tempo de reconhece_texto: {fim - inicio}')
+        linhaSeparacao()
+        return menu_inicial
+    texto_menu=retorna_texto_menu_reconhecido(-50,25,100)
+    if texto_menu!=None:
+        if ('conquistas'in texto_menu):
+            print(f'Menu personagem...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_personagem
+        elif ('interagir'in texto_menu):
+            print(f'Menu principal...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_principal
+    texto_menu=retorna_texto_menu_reconhecido(-150,-65,300)
+    if texto_menu!=None:
+        if('parâmetros'in texto_menu):
+            if('requisitos'in texto_menu):
+                print(f'Menu atributo do trabalho...')
+                linhaSeparacao()
+                fim = time.time()
+                print(f'Tempo de reconhece_texto: {fim - inicio}')
+                linhaSeparacao()
+                return menu_trab_atributos
+            else:
+                print(f'Menu licenças...')
+                linhaSeparacao()
+                fim = time.time()
+                print(f'Tempo de reconhece_texto: {fim - inicio}')
+                linhaSeparacao()
+                return menu_licencas
+    texto_menu=retorna_texto_menu_reconhecido(-60,45,120)
+    if texto_menu!=None:
+        if('profissional'in texto_menu):
+            print(f'Menu trabalho específico...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_trab_especifico
+    texto_menu=retorna_texto_menu_reconhecido(-75,-115,150)
+    if texto_menu!=None:
+        if ('ofertadiária'in texto_menu):
+            print(f'Menu oferta diária...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_ofe_diaria
+    texto_menu=retorna_texto_menu_reconhecido(-161,-314,300)
+    if texto_menu!=None:
+        if 'lojamilagrosa'in texto_menu:
+            print(f'Menu loja milagrosa...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_loja_milagrosa
+    texto_menu=retorna_texto_menu_reconhecido(-161,-344,300)
+    if texto_menu!=None:
+        if('recompensasdiárias'in texto_menu):
+            print(f'Menu recompensas diárias...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_rec_diarias
+    print(f'Menu não reconhecido...')
+    linhaSeparacao()
+    fim = time.time()
+    print(f'Tempo de reconhece_texto: {fim - inicio}')
+    linhaSeparacao()
+    manipula_teclado.click_atalho_especifico('win','left')
+    manipula_teclado.click_atalho_especifico('win','left')
+    verifica_erro(None)
+    return None
+
 def deslogaPersonagem(email):
     menu=retorna_menu()
     while menu!=menu_jogar:
@@ -993,6 +1155,7 @@ def verifica_lista_vazia(lista_personagem_ativo):
     return False
 
 def verifica_nome_reconhecido_na_lista(lista_personagem_ativo):
+    print(f'Verificando nome personagem...')
     for personagem_lista in lista_personagem_ativo:
         if verifica_nome_personagem(personagem_lista[nome],0):
             return personagem_lista
@@ -1170,7 +1333,7 @@ def inicia_producao(trabalho):
             while erro!=0:
                 if erro==3:
                     caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
-                    manipula_cliente.excluir_trabalho(caminho_trabalho)  
+                    excluir_trabalho(caminho_trabalho)  
                     break    
                 elif erro==8:#sem espaços livres
                     break
@@ -1182,7 +1345,7 @@ def inicia_producao(trabalho):
                         manipula_teclado.click_especifico(1,'f2')
                         if verifica_erro(trabalho)==3:
                             caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
-                            manipula_cliente.excluir_trabalho(caminho_trabalho)
+                            excluir_trabalho(caminho_trabalho)
                             break
                     elif menu==menu_esc_equipamento:#menu escolha equipamento
                         manipula_teclado.click_especifico(1,'f2')
@@ -1530,100 +1693,6 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'num7')
     verifica_erro(None)
     
-def retorna_menu():
-    inicio = time.time()
-    print(f'Reconhecendo menu.')
-    texto_menu=retorna_texto_menu_reconhecido(-125,-190,350)
-    if texto_menu!=None:
-        if ('notícias'in texto_menu):
-            print(f'Menu notícias...')
-            linhaSeparacao()
-            return menu_noticias
-        elif ('seleçãodepersonagem'in texto_menu):
-            print(f'Menu escolha de personagem...')
-            linhaSeparacao()
-            return menu_escolha_p
-        elif ('produzir'in texto_menu):
-            texto_menu=retorna_texto_menu_reconhecido(-75,-140,150)
-            if texto_menu!=None:
-                if ('profissões'in texto_menu):
-                    texto_menu=retorna_texto_menu_reconhecido(-150,225,100)
-                    if texto_menu!=None:
-                        if('fechar'in texto_menu):
-                            print(f'Menu produzir...')
-                            linhaSeparacao()
-                            return menu_produzir
-                        elif ('voltar' in texto_menu):
-                            print(f'Menu trabalhos diponíveis...')
-                            linhaSeparacao()
-                            return menu_trab_disponiveis
-                elif ('trabalhosatuais'in texto_menu):
-                    print(f'Menu trabalhos atuais...')
-                    linhaSeparacao()
-                    return menu_trab_atuais
-    texto_menu=retorna_texto_sair()
-    if texto_menu!=None:
-        if texto_menu.lower()=='sair':
-            print(f'Menu jogar...')
-            return menu_jogar
-    if verifica_menu_referencia():
-        print(f'Menu tela inicial...')
-        linhaSeparacao()
-        return menu_inicial
-    texto_menu=retorna_texto_menu_reconhecido(-50,25,100)
-    if texto_menu!=None:
-        if ('conquistas'in texto_menu):
-            print(f'Menu personagem...')
-            linhaSeparacao()
-            return menu_personagem
-        elif ('interagir'in texto_menu):
-            print(f'Menu principal...')
-            linhaSeparacao()
-            return menu_principal
-    texto_menu=retorna_texto_menu_reconhecido(-150,-65,300)
-    if texto_menu!=None:
-        if('parâmetros'in texto_menu):
-            if('requisitos'in texto_menu):
-                print(f'Menu atributo do trabalho...')
-                linhaSeparacao()
-                return menu_trab_atributos
-            else:
-                print(f'Menu licenças...')
-                linhaSeparacao()
-                return menu_licencas
-    texto_menu=retorna_texto_menu_reconhecido(-60,45,120)
-    if texto_menu!=None:
-        if('profissional'in texto_menu):
-            print(f'Menu trabalho específico...')
-            linhaSeparacao()
-            return menu_trab_especifico
-    texto_menu=retorna_texto_menu_reconhecido(-75,-115,150)
-    if texto_menu!=None:
-        if ('ofertadiária'in texto_menu):
-            print(f'Menu oferta diária...')
-            linhaSeparacao()
-            return menu_ofe_diaria
-    texto_menu=retorna_texto_menu_reconhecido(-161,-314,300)
-    if texto_menu!=None:
-        if 'lojamilagrosa'in texto_menu:
-            print(f'Menu loja milagrosa...')
-            linhaSeparacao()
-            return menu_loja_milagrosa
-    texto_menu=retorna_texto_menu_reconhecido(-161,-344,300)
-    if texto_menu!=None:
-        if('recompensasdiárias'in texto_menu):
-            print(f'Menu recompensas diárias...')
-            linhaSeparacao()
-            return menu_rec_diarias
-    print(f'Menu não reconhecido...')
-    linhaSeparacao()
-    fim = time.time()
-    print(f'Tempo de reconhece_texto: {fim - inicio}')
-    linhaSeparacao()
-    manipula_teclado.click_atalho_especifico('win','left')
-    manipula_teclado.click_atalho_especifico('win','left')
-    verifica_erro(None)
-    return None
 
 def configura_licenca(trabalho):
     licenca=4
@@ -1665,34 +1734,20 @@ def descobreFrames():
     # manipula_imagem.mostra_imagem(0,frameMenuAvancar,None)
 # descobreFrames()
 
-def retorna_texto_menu_reconhecido(x,y,largura):
-    tela_inteira=retorna_atualizacao_tela()
-    centroAltura=tela_inteira.shape[0]//2
-    centroMetade=tela_inteira.shape[1]//4
-    alturaFrame=30
-    texto=''
-    # texto_concatenado=''
-    # posicoes_menus=[[249,195,190,105],[287,412,108,30],[169,600,343,43]]
-    # for posicao in posicoes_menus:
-    frame_menu=tela_inteira[centroAltura+y:centroAltura+y+alturaFrame,centroMetade+x:centroMetade+x+largura]
-    frame_menu_tratado=manipula_imagem.transforma_caracteres_preto(frame_menu)
-        # manipula_imagem.mostra_imagem(0,frame_menu_tratado,'Teste')
-        # texto_menu=manipula_imagem.reconhece_texto(frame_menu_tratado)
-        # texto_concatenado=texto_concatenado+texto_menu
-    # return texto_concatenado.lower().replace(' ','')
-    if np.sum(frame_menu_tratado==255)!=0:
-        texto=manipula_imagem.reconhece_texto(frame_menu_tratado)
-        if texto!=None:
-            texto=texto.lower().replace(' ','')
-    return texto
-
 def retorna_texto_sair():
+    texto=None
     tela_inteira = retorna_atualizacao_tela()
     alturaTela=tela_inteira.shape[0]
     frame_jogar = tela_inteira[alturaTela-50:alturaTela-25,50:50+60]
     frame_jogar_tratado = manipula_imagem.transforma_menu_preto(frame_jogar)
     # manipula_imagem.mostra_imagem(0,frame_jogar_tratado,None)
-    return manipula_imagem.reconhece_texto(frame_jogar_tratado)
+    # print(f'Quantidade de pixels pretos: {np.sum(frame_jogar_tratado==0)}')
+    contadorPixelPreto=np.sum(frame_jogar_tratado==0)
+    if contadorPixelPreto>1000 and contadorPixelPreto<1100:
+        texto=manipula_imagem.reconhece_texto(frame_jogar_tratado)
+        if texto!=None:
+            texto=texto.lower().replace(' ','')
+    return texto
 
 def retorna_lista_pixel_minimap():
     lista_pixel=[]
@@ -1818,6 +1873,6 @@ def funcao_teste(id_personagem):
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
-# while input(f'Continuar?')!='n':
-#     retorna_menu()
+while input(f'Continuar?')!='n':
+    retorna_menu()
 # print(retornaNomePersonagem(1))
