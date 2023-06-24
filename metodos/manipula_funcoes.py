@@ -96,7 +96,7 @@ def atualiza_lista_profissao(personagem_id):
         frame_nome_profissao = tela_inteira[yinicial_profissao:yinicial_profissao+35,233:456]
         #reconhece a profissao do frame
         nome_reconhecido = manipula_imagem.reconhece_texto(frame_nome_profissao)
-        if nome_reconhecido == '':
+        if nome_reconhecido==None:
             nome_reconhecido = 'Desconhecido'
         #grava o nome na lista de profissoes
         manipula_cliente.adicionar_profissao(personagem_id,unidecode(nome_reconhecido))
@@ -385,18 +385,20 @@ def verifica_trabalho_concluido():
     #icone do primeiro espaço de produç 181,295 228,342
     tela_inteira = retorna_atualizacao_tela()
     frame_trabalho_concluido = tela_inteira[311:311+43, 233:486]
-    texto = manipula_imagem.reconhece_texto(frame_trabalho_concluido)
-    string_trabalho="Trabalho concluído"
-    if texto != '' and texto == string_trabalho:
-        print(f'Trabalho concluído!')
-        linhaSeparacao()
-        estado_espaco=2
-    elif texto !='' and 'adicionarnovo' in texto.replace(' ','').lower():
-        print(f'Nem um trabalho!')
-        estado_espaco=0
+    texto=manipula_imagem.reconhece_texto(frame_trabalho_concluido)
+    if texto!=None:
+        texto=texto.replace(' ','').lower()
+        if "trabalhoconcluído"==texto:
+            print(f'Trabalho concluído!')
+            estado_espaco=2
+        elif 'adicionarnovo' in texto:
+            print(f'Nem um trabalho!')
+            estado_espaco=0
+        else:
+            print(f'Em produção...')
+            estado_espaco=1
     else:
-        print(f'Em produção...')
-        estado_espaco=1
+        print(f'Ocorreu algum erro ao verificar o espaço de produção!')
     linhaSeparacao()
     return estado_espaco
 #modificado 10/01
@@ -583,19 +585,23 @@ def verifica_trabalho_comum(profissao_verificada):
     return trabalho
 
 def retorna_nome_trabalho_reconhecido(yinicial_nome,identificador):
-    #tira novo print da tela
-    imagem_inteira = retorna_atualizacao_tela()
     #recorta frame para reconhecimento de texto
-    if identificador == 0:
-        altura = 39
-    elif identificador == 1:
-        altura = 68
-    frame_nome_trabalho = imagem_inteira[yinicial_nome:yinicial_nome+altura,233:478]
+    if identificador==0:
+        altura=39
+    elif identificador==1:
+        altura=68
+    #tira novo print da tela
+    imagem_inteira=retorna_atualizacao_tela()
+    frame_nome_trabalho=imagem_inteira[yinicial_nome:yinicial_nome+altura,233:478]
     #teste trata frame trabalho comum
-    frame_nome_trabalho_tratado = manipula_imagem.transforma_branco_preto(frame_nome_trabalho)
-    # manipula_imagem.mostra_imagem(0,frame_nome_trabalho_tratado,'teste')
-    #retorna texto encontrado
-    return manipula_imagem.reconhece_texto(frame_nome_trabalho_tratado)
+    frame_nome_trabalho_tratado=manipula_imagem.transforma_branco_preto(frame_nome_trabalho)
+    nomeTrabalhoReconhecido=manipula_imagem.reconhece_texto(frame_nome_trabalho_tratado)
+    if nomeTrabalhoReconhecido!=None:
+        nomeTrabalhoReconhecido=nomeTrabalhoReconhecido.replace(' ','').lower()
+    else:
+        print(f'Ocorreu algum erro ao reconhecer nome do trabalho!')
+        linhaSeparacao()
+    return nomeTrabalhoReconhecido
 
 def sai_trabalho_encontrado(x,tipo_trabalho):
     clicks=[2,1]
@@ -708,6 +714,9 @@ def retorna_tipo_erro():
             if tipo_erro_trabalho[tamanho_tipo_erro].replace(' ','').lower() in erro_encontrado.replace(' ','').lower():
                 erro_encontrado=''
                 return tamanho_tipo_erro+1
+    else:
+        print(f'Ocorreu algum erro ao reconhecer o tipo de erro! Kkkk...')
+        linhaSeparacao()
     return 0
 
 def retorna_nome_inimigo(tela_inteira):
@@ -715,7 +724,13 @@ def retorna_nome_inimigo(tela_inteira):
     frame_tela = tela_inteira[0:altura_tela,0:674]
     frame_nome_objeto = frame_tela[32:32+30,frame_tela.shape[1]-164:frame_tela.shape[1]]
     frame_nome_objeto_tratado = manipula_imagem.trata_frame_nome_inimigo(frame_nome_objeto)
-    return manipula_imagem.reconhece_texto(frame_nome_objeto_tratado)
+    nomeInimigo=manipula_imagem.reconhece_texto(frame_nome_objeto_tratado)
+    if nomeInimigo!=None:
+        nomeInimigo=nomeInimigo.replace(' ','').lower()
+    else:
+        print(f'Ocorreu algumm erro ao verificar o nome do inimigo!')
+        linhaSeparacao()
+    return nomeInimigo
 
 def retorna_lista_histograma_menu():
     lista_histograma = []
@@ -1302,26 +1317,25 @@ def verifica_trabalho():
 
 def muda_estado_trabalho_concluido(trabalho_concluido):
     manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
-    print(f'Estado do trabalho {trabalho_concluido[nome]} modificado para concluído.')
-    linhaSeparacao()
 
 def recupera_trabalho_concluido():
     trabalho=False
-    tela_inteira = retorna_atualizacao_tela()
-    frame_nome_trabalho = tela_inteira[285:285+37, 233:486]
+    tela_inteira=retorna_atualizacao_tela()
+    frame_nome_trabalho=tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)==0:
         nome_trabalho_concluido=manipula_imagem.reconhece_texto(frame_nome_trabalho)
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'f2')
-        if verifica_erro(None)==0:
-            trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
-            print(f'{trabalho_concluido[nome]} recuperado.')
-            manipula_teclado.click_especifico(1,'up')
-            linhaSeparacao()
-            trabalho=trabalho_concluido[1:-1]
-        else:
-            manipula_teclado.click_especifico(1,'up')
-            manipula_teclado.click_especifico(1,'left')
+        if nome_trabalho_concluido!=None:
+            if verifica_erro(None)==0:
+                trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
+                print(f'{trabalho_concluido[nome]} recuperado.')
+                manipula_teclado.click_especifico(1,'up')
+                linhaSeparacao()
+                trabalho=trabalho_concluido[1:-1]
+            else:
+                manipula_teclado.click_especifico(1,'up')
+                manipula_teclado.click_especifico(1,'left')
     return trabalho
 
 def inicia_producao(trabalho):
@@ -1453,6 +1467,9 @@ def recuperaPresente():
                     manipula_teclado.click_especifico(1,'left')
                     linhaSeparacao()
                     break
+            else:
+                print(f'Ocorreu algum erro ao reconhecer presente!')
+                linhaSeparacao()
             y+=80
         evento+=1
     manipula_teclado.click_especifico(2,'f1')#sai do menu recupera recompensas
@@ -1776,14 +1793,6 @@ def retorna_lista_pixel_minimap():
         yMapa=yMapa+somaY
     manipula_imagem.mostra_imagem(0,fundo,'Minimapa')
     return lista_pixel
-
-# retorna_lista_pixel_minimap()
-
-def retorna_texto_produzir():
-    tela_inteira = retorna_atualizacao_tela()
-    frame_produzir = tela_inteira[240:240+30,250:250+180]
-    frame_produzir_tratado = manipula_imagem.transforma_caracteres_preto(frame_produzir)
-    return manipula_imagem.reconhece_texto(frame_produzir_tratado)
 
 def salva_imagem_envia_servidor():
     tela_inteira = retorna_atualizacao_tela()
