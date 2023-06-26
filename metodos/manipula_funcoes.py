@@ -922,13 +922,16 @@ def prepara_personagem(id_personagem):
     manipula_teclado.click_atalho_especifico('alt','tab')
     manipula_teclado.click_atalho_especifico('win','left')
     personagem_id_global=id_personagem
-    nome, email, senha, estado = configura_atributos()
-    if estado!=1:#se o personagem estiver inativo, troca o estado
-        estado={'estado':1}
-        listaPersonagemId=[personagem_id_global]
-        manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
-    busca_lista_personagem_ativo()
-    
+    atributosPersonagem=configura_atributos()
+    if len(atributosPersonagem)!=0:
+        if atributosPersonagem[4]!=1:#se o personagem estiver inativo, troca o estado
+            estado={'estado':1}
+            listaPersonagemId=[personagem_id_global]
+            manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
+        busca_lista_personagem_ativo()
+    else:
+        print(f'Erro ao configurar atributos do personagem!')
+        linhaSeparacao()
 
 def busca_lista_personagem_ativo():
     global personagem_id_global
@@ -1199,12 +1202,7 @@ def configura_login_personagem(email, senha):
     return login
 
 def configura_atributos():
-    dados_personagem = manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id_global)
-    nome = dados_personagem[1]
-    email = dados_personagem[2]
-    senha = dados_personagem[3]
-    estado = dados_personagem[4]
-    return nome,email,senha,estado
+    return manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id_global)
     
 def loga_personagem(email, senha):
     print(f'Tentando logar conta personagem...')
@@ -1445,31 +1443,33 @@ def recuperaPresente():
             frameTela=telaInteira[metadeAltura+y:metadeAltura+y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
             # frameTratado=manipula_imagem.retornaImagemCoresInvertidas(frameTela)
             frameTratado=manipula_imagem.transforma_caracteres_preto(frameTela)
-            textoReconhecido=manipula_imagem.reconhece_texto(frameTratado)
-            # manipula_imagem.mostra_imagem(0,frameTratado,None)
-            if textoReconhecido!=None:
-                print(f'Texto reconhecido: {textoReconhecido}.')
-                if textoReconhecido.replace(' ','').lower()=='pegar':
-                    centroX=metadeLargura+larguraFrame//2
-                    centroY=metadeAltura+y+alturaFrame//2
-                    manipula_teclado.click_mouse_esquerdo(1,centroX,centroY)
-                    manipula_teclado.posiciona_mouse_esquerdo(telaInteira.shape[1]//2,metadeAltura)
-                    if verifica_erro(None)!=0:
-                        evento=2
+            contadorPixelPreto=np.sum(frameTratado==0)
+            if contadorPixelPreto>800 and contadorPixelPreto<2200:
+                textoReconhecido=manipula_imagem.reconhece_texto(frameTratado)
+                # manipula_imagem.mostra_imagem(0,frameTratado,None)
+                if textoReconhecido!=None:
+                    print(f'Texto reconhecido: {textoReconhecido}.')
+                    if textoReconhecido.replace(' ','').lower()=='pegar':
+                        centroX=metadeLargura+larguraFrame//2
+                        centroY=metadeAltura+y+alturaFrame//2
+                        manipula_teclado.click_mouse_esquerdo(1,centroX,centroY)
+                        manipula_teclado.posiciona_mouse_esquerdo(telaInteira.shape[1]//2,metadeAltura)
+                        if verifica_erro(None)!=0:
+                            evento=2
+                            break
+                        manipula_teclado.click_especifico(1,'f2')
+                        manipula_teclado.click_continuo(8,'up')
+                        manipula_teclado.click_especifico(1,'left')
+                        linhaSeparacao()
                         break
-                    manipula_teclado.click_especifico(1,'f2')
-                    manipula_teclado.click_continuo(8,'up')
-                    manipula_teclado.click_especifico(1,'left')
+                    elif 'pegarem'in textoReconhecido.replace(' ','').lower():
+                        manipula_teclado.click_continuo(8,'up')
+                        manipula_teclado.click_especifico(1,'left')
+                        linhaSeparacao()
+                        break
+                else:
+                    print(f'Ocorreu algum erro ao reconhecer presente!')
                     linhaSeparacao()
-                    break
-                elif 'pegarem'in textoReconhecido.replace(' ','').lower():
-                    manipula_teclado.click_continuo(8,'up')
-                    manipula_teclado.click_especifico(1,'left')
-                    linhaSeparacao()
-                    break
-            else:
-                print(f'Ocorreu algum erro ao reconhecer presente!')
-                linhaSeparacao()
             y+=80
         evento+=1
     manipula_teclado.click_especifico(2,'f1')#sai do menu recupera recompensas
@@ -1862,8 +1862,17 @@ def funcao_teste(id_personagem):
     # while True:
     #     verifica_habilidade_central(lista_habilidade)
     # print(retorna_licenca_reconhecida())
-    print(verifica_licenca('principiante'))
-    linhaSeparacao()
+    # print(verifica_licenca('principiante'))
+    # linhaSeparacao()
+    ativo=True
+    while input(f'Continuar?')=='s':
+        if ativo:
+            uso={'uso':1}
+            ativo=False
+        else:
+            uso={'uso':0}
+            ativo=True
+        manipula_cliente.muda_estado_personagem(usuario_id,[personagem_id_global],uso)
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
@@ -1871,17 +1880,15 @@ def funcao_teste(id_personagem):
     #     continue
     # entra_personagem_ativo('mrninguem')
     # inicia_busca_trabalho()
-    # estado={'uso':1}
-    # manipula_cliente.muda_estado_personagem(usuario_id,personagem_id_global,estado)
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
 # verifica_erro(None)
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas()
-# recuperaPresente()
+recuperaPresente()
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
-while input(f'Continuar?')!='n':
-    retorna_menu()
+# while input(f'Continuar?')!='n':
+#     retorna_menu()
 # print(retornaNomePersonagem(1))
