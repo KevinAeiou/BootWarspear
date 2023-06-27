@@ -6,7 +6,7 @@ import time
 link_database = 'https://bootwarspear-default-rtdb.firebaseio.com/'
 link_storage = 'gs://bootwarspear.appspot.com'
 nome_imagem_trabalho = 'imagem_trabalho.png'
-tempoConeccao=5
+tempoConeccao=1
 tempoLeitura=1.5
 
 GET='get'
@@ -60,11 +60,15 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
                 requisicao=requests.delete(caminhoRequisicao,timeout=(tempoConeccao,tempoLeitura))
             requisicaoRetorno=requisicao
             break
-        except requests.exceptions.ConnectionError or requests.exceptions.ConnectTimeout:
+        except requests.exceptions.ConnectionError:
             print(f'Conecção recusada!')
+            time.sleep(1)
+        except requests.exceptions.ReadTimeout:
+            print(f'Erro ReadTimeout!')
             time.sleep(1)
     else:
         print(f'Limite de tentativas de conexão atingido.')
+    
     return requisicaoRetorno
 
 def adiciona_trabalho(personagem_id,trabalho,licenca,estado):

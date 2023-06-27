@@ -1885,7 +1885,7 @@ def funcao_teste(id_personagem):
 # verifica_erro(None)
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas()
-recuperaPresente()
+# recuperaPresente()
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
