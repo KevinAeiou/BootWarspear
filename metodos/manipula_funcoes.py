@@ -610,17 +610,26 @@ def sai_trabalho_encontrado(x,tipo_trabalho):
     manipula_teclado.click_especifico(2,'left')
 
 def verifica_erro(trabalho):
-    licenca = configura_licenca(trabalho)
+    licenca=configura_licenca(trabalho)
     print(f'Verificando erro...')
     erro = retorna_tipo_erro()
+    # print(erro)
     #erros processo de inicio de produção: 1,3,4,6,8
-    if erro == 1:
+    if erro==1 or erro==2 or erro==13 or erro==10:
         manipula_teclado.click_especifico(2,"enter")
-        verifica_licenca(licenca)
-    elif erro == 2:
-        print(f'Erro na conexão...')
+        if erro==1:
+            verifica_licenca(licenca)
+        elif erro==2:
+            print(f'Erro na conexão...')
+        elif erro==13:
+            print(f'Erro ao conectar...')
+        elif erro==10:
+            print(f'Servidor em manutenção!')
         linhaSeparacao()
+    elif erro==11:
         manipula_teclado.click_especifico(1,'enter')
+        print(f'Voltando para a tela inicial.')
+        linhaSeparacao()
     elif erro==3 or erro==16 or erro==6 or erro==8:
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(1,'f1')
@@ -643,8 +652,10 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(2,'f2')
         manipula_teclado.click_continuo(9,'up')
-    elif erro == 5:
+    elif erro==5:
         print(f'Conectando...')
+        linhaSeparacao()
+        time.sleep(1)
     elif erro == 7:
         print(f'Recuperar presente.')
         linhaSeparacao()
@@ -654,21 +665,9 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(1,'f1')
         manipula_teclado.click_continuo(8,'up')
         linhaSeparacao()
-    elif erro == 10:
-        manipula_teclado.click_especifico(2,'enter')
-        print(f'Voltando para a tela inicial.')
-        linhaSeparacao()
-    elif erro == 11:
-        manipula_teclado.click_especifico(1, 'enter')
-        print(f'Voltando para a tela inicial.')
-        linhaSeparacao()
     elif erro == 12:
         manipula_teclado.click_especifico(1,'f1')
         print(f'Ignorando trabalho concluído!')
-        linhaSeparacao()
-    elif erro == 13:
-        manipula_teclado.click_especifico(1,'enter')
-        print(f'Erro ao conectar...')
         linhaSeparacao()
     elif erro == 14:
         manipula_teclado.click_especifico(1,'f1')
@@ -700,24 +699,22 @@ def entra_trabalho_encontrado(x):
 
 #modificado 12/01
 def retorna_tipo_erro():
+    erro=0
     tela_inteira=retorna_atualizacao_tela()
     frame_erro=tela_inteira[335:335+100,150:526]
     erro_encontrado=manipula_imagem.reconhece_texto(frame_erro)
+    # print(erro_encontrado)
     if erro_encontrado!=None:
         tipo_erro_trabalho=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
                             'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
                             'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
-                            'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','OservidorestáemmanutençãoEstamosfazendodetudoparaconcluílaomaisrápvidopossível',
-                            'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexão com o servidor foi interrompida',
-                            'Você precisa de mais moedas','Login ou senha incorreta','o tempo de vida da tarefa de produção expirou.']
+                            'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
+                            'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
+                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidadatarefadeproduçãoexpirou.']
         for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
-            if tipo_erro_trabalho[tamanho_tipo_erro].replace(' ','').lower() in erro_encontrado.replace(' ','').lower():
-                erro_encontrado=''
-                return tamanho_tipo_erro+1
-    else:
-        print(f'Ocorreu algum erro ao reconhecer o tipo de erro! Kkkk...')
-        linhaSeparacao()
-    return 0
+            if tipo_erro_trabalho[tamanho_tipo_erro].lower() in erro_encontrado.replace(' ','').lower():
+                erro=tamanho_tipo_erro+1
+    return erro
 
 def retorna_nome_inimigo(tela_inteira):
     altura_tela = tela_inteira.shape[0]
@@ -859,50 +856,47 @@ def passa_proxima_posicao():
     yfinal = yfinal+altura_frame
 
 def entra_personagem_ativo(primeiroPersonagem):
+    confirmacao=False
     print(f'Buscando personagem ativo...')
+    ativaAtributoUso(primeiroPersonagem)
+    manipula_teclado.click_especifico(1,'enter')
+    time.sleep(1)
+    while verifica_erro(None)!=0:
+        continue
+    else:
+        manipula_teclado.click_especifico(1,'f2')
+        manipula_teclado.vai_inicio_fila()   
+        personagemReconhecido=retornaNomePersonagem(1)
+        while personagemReconhecido!=None:
+            if personagemReconhecido.replace(' ','').lower() in primeiroPersonagem[nome].replace(' ','').lower():
+                print(f'Personagem {personagemReconhecido} confirmado!')
+                linhaSeparacao()
+                manipula_teclado.click_especifico(1,'f2')
+                time.sleep(1)
+                erro=verifica_erro(None)
+                while erro!=0:
+                    if erro==11:
+                        break
+                    erro=verifica_erro(None)
+                else:
+                    print(f'Login efetuado com sucesso!')
+                    linhaSeparacao()
+                    confirmacao=True
+                    break
+                break
+            else:
+                manipula_teclado.click_especifico(1,'right')
+                personagemReconhecido=retornaNomePersonagem(1)
+        else:
+            print(f'Personagem não encontrado!')
+            linhaSeparacao()
+            manipula_teclado.click_especifico(1,'f1')
+    return confirmacao
+
+def ativaAtributoUso(primeiroPersonagem):
     estado={'uso':1}
     listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,primeiroPersonagem[2])
     manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
-    manipula_teclado.click_especifico(1,'enter')
-    time.sleep(1)
-    erro=verifica_erro(None)
-    while erro!=0:
-        if erro==5:
-            time.sleep(1)
-        else:
-            if erro!=0:
-                return
-        erro=verifica_erro(None)
-    manipula_teclado.click_especifico(1,'f2')
-    manipula_teclado.vai_inicio_fila()   
-    personagemReconhecido=retornaNomePersonagem(1)
-    contador=0
-    while personagemReconhecido!=None or contador<14:         
-        if personagemReconhecido.replace(' ','').lower() in primeiroPersonagem[nome].replace(' ','').lower():
-            print(f'Personagem {personagemReconhecido} confirmado!')
-            linhaSeparacao()
-            manipula_teclado.click_especifico(1,'f2')
-            time.sleep(1)
-            erro=verifica_erro(None)
-            while erro!=0:
-                if erro==5:
-                    time.sleep(1)
-                else:
-                    if erro!=0:
-                        break
-                erro=verifica_erro(None)
-            print(f'Login efetuado com sucesso!')
-            linhaSeparacao()
-            return
-        else:
-            manipula_teclado.click_especifico(1,'right')
-            personagemReconhecido=retornaNomePersonagem(1)
-        contador+=1
-    else:
-        print(f'Personagem não encontrado!')
-        linhaSeparacao()
-        manipula_teclado.click_especifico(1,'f1')
-    return
 
 def retorna_medidas_modelos():
     lista_modelos = [1,2,5,9]
@@ -1717,6 +1711,20 @@ def configura_licenca(trabalho):
         return ''
     return trabalho[licenca]
 
+# def recebeCorrespondencia():
+
+def verificaPixelCorrespondencia():
+    confirmacao=False
+    tela=retorna_atualizacao_tela()
+    print(tela[667,658])
+    if (tela[667,658] ==(181,239,255)).all():
+        print(f'Há correspondencia!')
+        confirmacao=True
+    else:
+        print(f'Há correspondencia!')
+    linhaSeparacao()
+    return confirmacao
+
 def descobreFrames():
     tela_inteira=retorna_atualizacao_tela()
     alturaTela=tela_inteira.shape[0]
@@ -1882,7 +1890,9 @@ def funcao_teste(id_personagem):
     # inicia_busca_trabalho()
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
+# retorna_tipo_erro()
 # verifica_erro(None)
+# verificaPixelCorrespondencia()
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas()
 # recuperaPresente()
