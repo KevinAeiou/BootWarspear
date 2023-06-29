@@ -404,35 +404,45 @@ def verifica_trabalho_concluido():
 #modificado 10/01
 def verifica_licenca(licenca_trabalho):
     confirmacao=False
-    lista_ciclo=[]
-    primeira_busca=True
     print(f"Buscando: {licenca_trabalho}")
     linhaSeparacao()
     licenca_reconhecida=retorna_licenca_reconhecida()
-    print(f'Licença reconhecida: {licenca_reconhecida}.')
-    linhaSeparacao()
-    if licenca_reconhecida!=None and licenca_trabalho!=None and 'licençasdeproduçaomaspode' not in licenca_reconhecida:
-        while not licenca_reconhecida in licenca_trabalho.replace(' ','').lower():
-            primeira_busca=False
-            manipula_teclado.click_especifico(1,"right")
-            lista_ciclo.append(licenca_reconhecida)
-            licenca_reconhecida=retorna_licenca_reconhecida()
-            print(f'Licença reconhecida: {licenca_reconhecida}.')
-            linhaSeparacao()
-            if licenca_reconhecida!=None:
-                print(f'Licença reconhecida: {licenca_reconhecida}.')
-                if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
-                    licenca_trabalho='licençadeproduçãodoiniciante'
-                    print(f'Licença para trabalho agora é: {licenca_trabalho}.')
-        else:#se encontrou a licença buscada
-            if primeira_busca:
-                manipula_teclado.click_especifico(1,"f1")
-            else:
-                manipula_teclado.click_especifico(1,"f2")
-            confirmacao=True
+    if licenca_reconhecida!=None and licenca_trabalho!=None:
+        licenca_trabalho=licenca_trabalho.replace(' ','').lower()
+        print(f'Licença reconhecida: {licenca_reconhecida}.')
+        linhaSeparacao()
+        if 'licençasdeproduçaomaspode' not in licenca_reconhecida:
+            primeira_busca=True
+            lista_ciclo=[]
+            while not licenca_reconhecida in licenca_trabalho:
+                primeira_busca=False
+                manipula_teclado.click_especifico(1,"right")
+                lista_ciclo.append(licenca_reconhecida)
+                licenca_reconhecida=retorna_licenca_reconhecida()
+                if licenca_reconhecida!=None:
+                    print(f'Licença reconhecida: {licenca_reconhecida}.')
+                    linhaSeparacao()
+                    print(f'Licença reconhecida: {licenca_reconhecida}.')
+                    if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
+                        licenca_trabalho='licençadeproduçãodoiniciante'
+                        print(f'Licença para trabalho agora é: {licenca_trabalho}.')
+                else:
+                    print(f'Erro ao reconhecer licença!')
+                    linhaSeparacao()
+                    break
+            else:#se encontrou a licença buscada
+                if primeira_busca:
+                    manipula_teclado.click_especifico(1,"f1")
+                else:
+                    manipula_teclado.click_especifico(1,"f2")
+                confirmacao=True
+    else:
+        print(f'Erro ao reconhecer licença!')
+        linhaSeparacao()
     return confirmacao
 
 def retorna_licenca_reconhecida():
+    licencaRetornada=None
     lista_licencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
     tela_inteira=retorna_atualizacao_tela()
     frame_tela=tela_inteira[275:317,169:512]
@@ -442,10 +452,9 @@ def retorna_licenca_reconhecida():
         licenca_reconhecida=licenca_reconhecida.replace(' ','').lower()
         for licenca in lista_licencas:
             if licenca in licenca_reconhecida:
-                break
-        else:
-            licenca_reconhecida=None
-    return licenca_reconhecida
+                licencaRetornada=licenca_reconhecida
+                break            
+    return licencaRetornada
     
 def verifica_ciclo(lista):
     if len(lista)>=4:
@@ -1129,6 +1138,8 @@ def deslogaPersonagem(email):
     while menu!=menu_jogar:
         if menu==menu_inicial:
             manipula_teclado.encerra_secao()
+            break
+        elif menu==menu_jogar:
             break
         else:
             manipula_teclado.click_mouse_esquerdo(1,2,35)
