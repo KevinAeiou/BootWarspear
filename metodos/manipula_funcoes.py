@@ -1245,7 +1245,7 @@ def inicia_busca_trabalho():
                         elif estado_trabalho==0:
                             manipula_teclado.click_especifico(1,'left')
                     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
-                        recebeTodasRecompensas()
+                        recebeTodasRecompensas(menu)
                         return confirmacao
                     else:
                         trata_menu(menu)
@@ -1420,10 +1420,10 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
-def recebeTodasRecompensas():
+def recebeTodasRecompensas(menu):
     listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
     while True:
-        reconheceMenuRecompensa()
+        reconheceMenuRecompensa(menu)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
         deslogaPersonagem(None)
@@ -1479,10 +1479,9 @@ def recuperaPresente():
         evento+=1
     manipula_teclado.click_especifico(2,'f1')#sai do menu recupera recompensas
 
-def reconheceMenuRecompensa():
+def reconheceMenuRecompensa(menu):
     print(f'Entrou em recuperaPresente.')
     linhaSeparacao()
-    menu=retorna_menu()
     if menu==menu_loja_milagrosa:
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'enter')
