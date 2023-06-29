@@ -864,10 +864,10 @@ def passa_proxima_posicao():
     yinicial = yfinal+23
     yfinal = yfinal+altura_frame
 
-def entra_personagem_ativo(primeiroPersonagem):
+def entra_personagem_ativo(listaPersonagem):
     confirmacao=False
     print(f'Buscando personagem ativo...')
-    ativaAtributoUso(primeiroPersonagem)
+    ativaAtributoUso(listaPersonagem)
     manipula_teclado.click_especifico(1,'enter')
     time.sleep(1)
     while verifica_erro(None)!=0:
@@ -875,36 +875,38 @@ def entra_personagem_ativo(primeiroPersonagem):
     else:
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.vai_inicio_fila()   
-        personagemReconhecido=retornaNomePersonagem(1)
-        while personagemReconhecido!=None:
-            if personagemReconhecido.replace(' ','').lower() in primeiroPersonagem[nome].replace(' ','').lower():
-                print(f'Personagem {personagemReconhecido} confirmado!')
-                linhaSeparacao()
-                manipula_teclado.click_especifico(1,'f2')
-                time.sleep(1)
-                erro=verifica_erro(None)
-                while erro!=0:
-                    if erro==11:
-                        break
-                    erro=verifica_erro(None)
-                else:
-                    print(f'Login efetuado com sucesso!')
+        for personagem in listaPersonagem:
+            personagemReconhecido=retornaNomePersonagem(1)
+            while personagemReconhecido!=None:
+                print(f'{personagemReconhecido} e {personagem[nome]}.')
+                if personagemReconhecido.replace(' ','').lower() in personagem[nome].replace(' ','').lower():
+                    print(f'Personagem {personagemReconhecido} confirmado!')
                     linhaSeparacao()
-                    confirmacao=True
+                    manipula_teclado.click_especifico(1,'f2')
+                    time.sleep(1)
+                    erro=verifica_erro(None)
+                    while erro!=0:
+                        if erro==11:
+                            break
+                        erro=verifica_erro(None)
+                    else:
+                        print(f'Login efetuado com sucesso!')
+                        linhaSeparacao()
+                        confirmacao=True
+                        break
                     break
-                break
+                else:
+                    manipula_teclado.click_especifico(1,'right')
+                    personagemReconhecido=retornaNomePersonagem(1)
             else:
-                manipula_teclado.click_especifico(1,'right')
-                personagemReconhecido=retornaNomePersonagem(1)
-        else:
-            print(f'Personagem não encontrado!')
-            linhaSeparacao()
-            manipula_teclado.click_especifico(1,'f1')
+                print(f'Personagem não encontrado!')
+                linhaSeparacao()
+                manipula_teclado.click_especifico(1,'f1')
     return confirmacao
 
 def ativaAtributoUso(primeiroPersonagem):
     estado={'uso':1}
-    listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,primeiroPersonagem[2])
+    listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,primeiroPersonagem[0][2])
     manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
 
 def retorna_medidas_modelos():
@@ -941,6 +943,8 @@ def busca_lista_personagem_ativo():
     lista_personagem_retirado=[]
     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
     lista_personagem=lista_personagem_ativo
+    email=2
+    senha=3
     while True:
         if verifica_lista_vazia(lista_personagem):
             lista_personagem_retirado=[]
@@ -955,6 +959,7 @@ def busca_lista_personagem_ativo():
                 print('Inicia busca...')
                 linhaSeparacao()
                 if not inicia_busca_trabalho():
+                    lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
                     continue
                 elif verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
                     lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
@@ -964,14 +969,13 @@ def busca_lista_personagem_ativo():
                     continue
                 else:
                     manipula_teclado.click_mouse_esquerdo(1,2,35)
-                    deslogaPersonagem(personagem[2])
+                    deslogaPersonagem(personagem[email])
                     lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
-                linhaSeparacao()
-                if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][2]==lista_personagem[0][2]:
-                    entra_personagem_ativo(lista_personagem[0])
-                elif configura_login_personagem(lista_personagem[0][2], lista_personagem[0][3]):
-                    entra_personagem_ativo(lista_personagem[0])
+                if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][email]==lista_personagem[0][email]:
+                    entra_personagem_ativo(lista_personagem)
+                elif configura_login_personagem(lista_personagem[0][email],lista_personagem[0][senha]):
+                    entra_personagem_ativo(lista_personagem)
 
 def retorna_texto_menu_reconhecido(x,y,largura):
     tela_inteira=retorna_atualizacao_tela()
@@ -1218,7 +1222,6 @@ def loga_personagem(email, senha):
 
 def inicia_busca_trabalho():
     confirmacao=False
-    posicao=0
     conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         lista_profissao=retorna_lista_profissao_verificada()
@@ -1226,31 +1229,15 @@ def inicia_busca_trabalho():
             if verifica_erro(None)==0:
                 menu=retorna_menu()
                 while menu!=menu_produzir:
-                    if menu==menu_trab_atuais:
-                        estado_trabalho=verifica_trabalho_concluido()
-                        if estado_trabalho==concluido:
-                            nome_trabalho_concluido=recupera_trabalho_concluido()
-                            if nome_trabalho_concluido!=False:
-                                muda_estado_trabalho_concluido(nome_trabalho_concluido)
-                        elif estado_trabalho==produzindo:
-                            lista_profissao.clear()
-                            print(f'Todos os espaços de produção ocupados.')
-                            linhaSeparacao()
-                            break
-                        elif estado_trabalho==0:
-                            manipula_teclado.click_especifico(1,'left')
-                    elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
-                        recebeTodasRecompensas(menu)
+                    if not trata_menu(menu):
                         return confirmacao
-                    else:
-                        trata_menu(menu)
                     menu=retorna_menu()
                 else:
                     nome_profissao=profissao_necessaria[nome]
                     print(f'Verificando profissão: {nome_profissao}')
                     linhaSeparacao()
                     while True:#loop aqui
-                        manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[posicao])
+                        manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[0])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                         if not inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):#só quebra o laço quando retornar falso
                             break
@@ -1671,7 +1658,24 @@ def retorna_atualizacao_tela():
     return manipula_imagem.retorna_imagem_colorida(screenshot)
 
 def trata_menu(menu):
-    if menu==menu_jogar:
+    confirmacao=True
+    if menu==menu_trab_atuais:
+        estado_trabalho=verifica_trabalho_concluido()
+        if estado_trabalho==concluido:
+            nome_trabalho_concluido=recupera_trabalho_concluido()
+            if nome_trabalho_concluido!=False:
+                muda_estado_trabalho_concluido(nome_trabalho_concluido)
+        elif estado_trabalho==produzindo:
+            # lista_profissao.clear()
+            print(f'Todos os espaços de produção ocupados.')
+            linhaSeparacao()
+            confirmacao=False
+        elif estado_trabalho==0:
+            manipula_teclado.click_especifico(1,'left')
+    elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
+        recebeTodasRecompensas(menu)
+        confirmacao=False
+    elif menu==menu_jogar:
         #Tela inicial do jogo
         manipula_teclado.click_especifico(1,'enter')
     elif menu==menu_noticias:
@@ -1708,6 +1712,7 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'num1')
         manipula_teclado.click_especifico(1,'num7')
     verifica_erro(None)
+    return confirmacao
     
 
 def configura_licenca(trabalho):
