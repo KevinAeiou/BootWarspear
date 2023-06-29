@@ -1188,38 +1188,33 @@ def verifica_nome_reconhecido_na_lista(lista_personagem_ativo):
 def configura_login_personagem(email, senha):
     login=False
     menu=retorna_menu()
-    while menu==1 or menu==2:
-        manipula_teclado.click_especifico(1,'f1')
-        menu=retorna_menu()
-    if menu==0:
-        if loga_personagem(email,senha):  
-            login=True
-    else:
-        while menu!=41:
+    while menu!=menu_jogar:
+        if menu==menu_noticias or menu==menu_escolha_p:
+            manipula_teclado.click_especifico(1,'f1')
+        elif menu!=menu_inicial:
             manipula_teclado.click_mouse_esquerdo(1,2,35)
-            linhaSeparacao()
-            menu=retorna_menu()
-        if menu==41:
+        else:
             manipula_teclado.encerra_secao()
-            linhaSeparacao()
-            if loga_personagem(email,senha):
-                login=True
+        linhaSeparacao()
+        menu=retorna_menu()
+    else:
+        login=loga_personagem(email,senha)
     return login
 
 def configura_atributos():
     return manipula_cliente.consulta_dados_personagem(usuario_id,personagem_id_global)
     
 def loga_personagem(email, senha):
+    confirmacao=False
     print(f'Tentando logar conta personagem...')
     manipula_teclado.entra_secao(email,senha)
-    linhaSeparacao()
     if verifica_erro(None)!=0:
         print('Erro ao tentar logar...')
-        linhaSeparacao()
-        return False
-    print(f'Login efetuado com sucesso!')
+    else:
+        print(f'Login efetuado com sucesso!')
+        confirmacao=True
     linhaSeparacao()
-    return True
+    return confirmacao
 
 def inicia_busca_trabalho():
     confirmacao=False
