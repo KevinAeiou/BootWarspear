@@ -876,32 +876,39 @@ def entra_personagem_ativo(listaPersonagem):
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.vai_inicio_fila()   
         for personagem in listaPersonagem:
-            personagemReconhecido=retornaNomePersonagem(1)
-            while personagemReconhecido!=None:
-                print(f'{personagemReconhecido} e {personagem[nome]}.')
-                if personagemReconhecido.replace(' ','').lower() in personagem[nome].replace(' ','').lower():
-                    print(f'Personagem {personagemReconhecido} confirmado!')
-                    linhaSeparacao()
-                    manipula_teclado.click_especifico(1,'f2')
-                    time.sleep(1)
-                    erro=verifica_erro(None)
-                    while erro!=0:
-                        if erro==11:
-                            break
-                        erro=verifica_erro(None)
-                    else:
-                        print(f'Login efetuado com sucesso!')
-                        linhaSeparacao()
-                        confirmacao=True
-                        break
+            confirmacao=confirmaPersonagem(personagem)
+            if confirmacao:
+                break
+    return confirmacao
+
+def confirmaPersonagem(personagem):
+    confirmacao=False
+    personagemReconhecido=retornaNomePersonagem(1)
+    while personagemReconhecido!=None:
+        print(f'{personagemReconhecido} e {personagem[nome]}.')
+        if personagemReconhecido.replace(' ','').lower() in personagem[nome].replace(' ','').lower():
+            print(f'Personagem {personagemReconhecido} confirmado!')
+            linhaSeparacao()
+            manipula_teclado.click_especifico(1,'f2')
+            time.sleep(1)
+            erro=verifica_erro(None)
+            while erro!=0:
+                if erro==11:
                     break
-                else:
-                    manipula_teclado.click_especifico(1,'right')
-                    personagemReconhecido=retornaNomePersonagem(1)
+                erro=verifica_erro(None)
             else:
-                print(f'Personagem não encontrado!')
+                print(f'Login efetuado com sucesso!')
                 linhaSeparacao()
-                manipula_teclado.click_especifico(1,'f1')
+                confirmacao=True
+                break
+            break
+        else:
+            manipula_teclado.click_especifico(1,'right')
+            personagemReconhecido=retornaNomePersonagem(1)
+    else:
+        print(f'Personagem não encontrado!')
+        linhaSeparacao()
+        manipula_teclado.click_especifico(1,'f1')
     return confirmacao
 
 def ativaAtributoUso(primeiroPersonagem):
