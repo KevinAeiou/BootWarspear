@@ -864,7 +864,6 @@ def passa_proxima_posicao():
     yfinal = yfinal+altura_frame
 
 def entra_personagem_ativo(listaPersonagem):
-    confirmacao=False
     personagem=None
     print(f'Buscando personagem ativo...')
     ativaAtributoUso(listaPersonagem)
@@ -890,7 +889,6 @@ def entra_personagem_ativo(listaPersonagem):
                 else:
                     print(f'Login efetuado com sucesso!')
                     linhaSeparacao()
-                    confirmacao=True
                     break
             else:
                 manipula_teclado.click_especifico(1,'right')
@@ -899,7 +897,7 @@ def entra_personagem_ativo(listaPersonagem):
             print(f'Personagem não encontrado!')
             linhaSeparacao()
             manipula_teclado.click_especifico(1,'f1')
-    return confirmacao,personagem
+    return personagem
 
 def confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
     confirmacao=False
@@ -980,10 +978,10 @@ def busca_lista_personagem_ativo():
                     lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
                 if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][email]==lista_personagem[0][email]:
-                    confirmacao,nome=entra_personagem_ativo(lista_personagem)
+                    nome=entra_personagem_ativo(lista_personagem)
                 elif configura_login_personagem(lista_personagem[0][email],lista_personagem[0][senha]):
-                    confirmacao,nome=entra_personagem_ativo(lista_personagem)
-                    if not confirmacao:
+                    nome=entra_personagem_ativo(lista_personagem)
+                    if nome!=None:
                         lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,nome)
 
 def retorna_texto_menu_reconhecido(x,y,largura):
@@ -1246,7 +1244,7 @@ def inicia_busca_trabalho():
                 menu=retorna_menu()
                 while menu!=menu_produzir:
                     if not trata_menu(menu):
-                        return confirmacao
+                        return True
                     menu=retorna_menu()
                 else:
                     nome_profissao=profissao_necessaria[nome]
