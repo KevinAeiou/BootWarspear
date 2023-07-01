@@ -11,7 +11,6 @@ xinicial=181
 xfinal = 228
 yinicial = 295
 yfinal = 342
-
 yinicial_nivel = 285
 yfinal_nivel = 285 + 69
 
@@ -866,6 +865,7 @@ def passa_proxima_posicao():
 
 def entra_personagem_ativo(listaPersonagem):
     confirmacao=False
+    personagem=None
     print(f'Buscando personagem ativo...')
     ativaAtributoUso(listaPersonagem)
     manipula_teclado.click_especifico(1,'enter')
@@ -875,40 +875,40 @@ def entra_personagem_ativo(listaPersonagem):
     else:
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.vai_inicio_fila()   
-        for personagem in listaPersonagem:
-            confirmacao=confirmaPersonagem(personagem)
-            if confirmacao:
-                break
-    return confirmacao
+        personagemReconhecido=retornaNomePersonagem(1)
+        while personagemReconhecido!=None:
+            if confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
+                manipula_teclado.click_especifico(1,'f2')
+                time.sleep(1)
+                erro=verifica_erro(None)
+                while erro!=0:
+                    if erro==11:
+                        personagem=personagemReconhecido
+                        personagemReconhecido=None
+                        break
+                    erro=verifica_erro(None)
+                else:
+                    print(f'Login efetuado com sucesso!')
+                    linhaSeparacao()
+                    confirmacao=True
+                    break
+            else:
+                manipula_teclado.click_especifico(1,'right')
+                personagemReconhecido=retornaNomePersonagem(1)
+        else:
+            print(f'Personagem não encontrado!')
+            linhaSeparacao()
+            manipula_teclado.click_especifico(1,'f1')
+    return confirmacao,personagem
 
-def confirmaPersonagem(personagem):
+def confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
     confirmacao=False
-    personagemReconhecido=retornaNomePersonagem(1)
-    while personagemReconhecido!=None:
+    for personagem in listaPersonagem:
         print(f'{personagemReconhecido} e {personagem[nome]}.')
         if personagemReconhecido.replace(' ','').lower() in personagem[nome].replace(' ','').lower():
             print(f'Personagem {personagemReconhecido} confirmado!')
             linhaSeparacao()
-            manipula_teclado.click_especifico(1,'f2')
-            time.sleep(1)
-            erro=verifica_erro(None)
-            while erro!=0:
-                if erro==11:
-                    break
-                erro=verifica_erro(None)
-            else:
-                print(f'Login efetuado com sucesso!')
-                linhaSeparacao()
-                confirmacao=True
-                break
-            break
-        else:
-            manipula_teclado.click_especifico(1,'right')
-            personagemReconhecido=retornaNomePersonagem(1)
-    else:
-        print(f'Personagem não encontrado!')
-        linhaSeparacao()
-        manipula_teclado.click_especifico(1,'f1')
+            confirmacao=True
     return confirmacao
 
 def ativaAtributoUso(primeiroPersonagem):
@@ -980,9 +980,11 @@ def busca_lista_personagem_ativo():
                     lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,personagem)
             else:#se o nome reconhecido não estiver na lista de ativos
                 if len(lista_personagem_retirado)!=0 and lista_personagem_retirado[-1][email]==lista_personagem[0][email]:
-                    entra_personagem_ativo(lista_personagem)
+                    confirmacao,nome=entra_personagem_ativo(lista_personagem)
                 elif configura_login_personagem(lista_personagem[0][email],lista_personagem[0][senha]):
-                    entra_personagem_ativo(lista_personagem)
+                    confirmacao,nome=entra_personagem_ativo(lista_personagem)
+                    if not confirmacao:
+                        lista_personagem_retirado,lista_personagem=remove_personagem_lista(lista_personagem_retirado,nome)
 
 def retorna_texto_menu_reconhecido(x,y,largura):
     tela_inteira=retorna_atualizacao_tela()
@@ -1189,12 +1191,19 @@ def verifica_lista_vazia(lista_personagem_ativo):
     return False
 
 def verifica_nome_reconhecido_na_lista(lista_personagem_ativo):
+    confirmacao=None
     print(f'Verificando nome personagem...')
-    for personagem_lista in lista_personagem_ativo:
-        if verifica_nome_personagem(personagem_lista[nome],0):
-            return personagem_lista
+    nome_personagem_reconhecido_tratado=retornaNomePersonagem(0)
+    if nome_personagem_reconhecido_tratado!=None:
+        for personagem_lista in lista_personagem_ativo:
+            if nome_personagem_reconhecido_tratado.replace(' ','').lower()in personagem_lista[nome].replace(' ','').lower():
+                print(f'Personagem {nome_personagem_reconhecido_tratado} confirmado!')
+                linhaSeparacao()
+                confirmacao=personagem_lista
     else:
-        return None
+        print(f'Nome personagem diferente!')
+        linhaSeparacao()
+    return confirmacao
 
 def configura_login_personagem(email, senha):
     login=False
