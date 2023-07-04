@@ -1440,8 +1440,9 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
-def recebeTodasRecompensas(menu):
+def recebeTodasRecompensas():
     listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
+    menu=verifica_menu()
     while True:
         reconheceMenuRecompensa(menu)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
@@ -1711,7 +1712,7 @@ def trata_menu(menu):
         elif estado_trabalho==0:
             manipula_teclado.click_especifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
-        recebeTodasRecompensas(menu)
+        recebeTodasRecompensas()
         confirmacao=False
     elif menu==menu_jogar:
         #Tela inicial do jogo
