@@ -1442,7 +1442,7 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
 
 def recebeTodasRecompensas():
     listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
-    menu=verifica_menu()
+    menu=retorna_menu()
     while True:
         reconheceMenuRecompensa(menu)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
