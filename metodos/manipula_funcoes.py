@@ -1263,11 +1263,12 @@ def inicia_busca_trabalho():
         for profissao_necessaria in lista_profissao:#percorre lista de profissao
             if not confirmacao:
                 continue
-            if verifica_erro(None)==0:
+            erro=verifica_erro(None)
+            if erro==0:
                 menu=retorna_menu()
                 while menu!=menu_produzir:
                     if not trata_menu(menu):
-                        return False
+                        return True
                     menu=retorna_menu()
                 else:
                     nome_profissao=profissao_necessaria[nome]
@@ -1277,11 +1278,12 @@ def inicia_busca_trabalho():
                         manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[0])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                         if not inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):#só quebra o laço quando retornar falso
-                            confirmacao=False
+                            # confirmacao=False
                             break
                     verifica_trabalho()
-                    
                     manipula_teclado.click_especifico(1,'left')
+            elif erro==erroOutraConexao:
+                confirmacao=False
             else:
                 print(f'Erro ao percorrer lista de profissões...')
                 linhaSeparacao()
