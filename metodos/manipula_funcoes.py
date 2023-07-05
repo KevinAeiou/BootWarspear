@@ -1927,10 +1927,11 @@ def funcao_teste(id_personagem):
     #         uso={'uso':0}
     #         ativo=True
     #     manipula_cliente.muda_estado_personagem(usuario_id,[personagem_id_global],uso)
-    if verifica_menu_referencia():
-        print('Achei!')
-    else:
-        print('Não achei...')
+    # if verifica_menu_referencia():
+    #     print('Achei!')
+    # else:
+    #     print('Não achei...')
+    manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho)
     # verifica_trabalho_comum(trabalho,'profissaoteste')

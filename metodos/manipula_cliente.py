@@ -83,8 +83,8 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
     for x in range(10):
         try:
             requisicao = requests.post(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/.json',data=json.dumps(dados))
-            id = requisicao.text.split(':')
-            id = id[1].replace('"','').replace('}','')
+            dicionarioId=requisicao.json()
+            id=dicionarioId['name']
             dados = {'id':id}
             requisicao = requests.patch(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json',data=json.dumps(dados))
             requisicao = requests.get(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/{id}/.json')
@@ -119,8 +119,8 @@ def adicionar_profissao(personagem_id,profissao):
     caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_profissoes/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dados)
     if requisicao!=None:
-        id=requisicao.text.split(':')
-        id=id[1].replace('"','').replace('}','')
+        dicionarioId=requisicao.json()
+        id=dicionarioId['name']
         dados={'id':id}
         caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_profissoes/{id}/.json'
         requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
@@ -146,8 +146,8 @@ def cadastrar_trabalho(trabalho):
     caminhoRequisicao=f'{link_database}/Lista_trabalhos/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dados)
     if requisicao!=None:
-        id=requisicao.text.split(':')
-        id=id[1].replace('"','').replace('}','')
+        dicionarioId=requisicao.json()
+        id=dicionarioId['name']
         dados = {'id':id}
         caminhoRequisicao=f'{link_database}/Lista_trabalhos/{id}/.json'
         retornaRequisicao(PATCH,caminhoRequisicao,dados)
