@@ -1316,6 +1316,8 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
         if entra_trabalho_encontrado(posicao_trabalho):
             if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
                 dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
+                if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
+                    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
                 manipula_teclado.click_especifico(1,'left')
             else:    
                 sai_trabalho_encontrado(posicao_trabalho,1)
@@ -1326,6 +1328,8 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
         trabalho_comum_reconhecido=verifica_trabalho_comum(profissao_verificada)
         if trabalho_comum_reconhecido!=None:
             dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
+            if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
+                dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
             manipula_teclado.click_especifico(1,'left')
         else:
             print(f'Erro ao buscar trabalho comum!')
