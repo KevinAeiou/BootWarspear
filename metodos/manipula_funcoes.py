@@ -36,6 +36,7 @@ menu_loja_milagrosa=38
 menu_rec_diarias=39
 menu_ofe_diaria=40
 menu_inicial=41
+menu_desconhecido=None
 
 erroPrecisaLicenca=1
 erroFalhaConectar=2
@@ -68,6 +69,13 @@ estado=7
 para_produzir=0
 produzindo=1
 concluido=2
+
+CHAVE_ID_PERSONAGEM='idPersonagem'
+CHAVE_ESPACO_PRODUCAO='espacoProducao'
+CHAVE_UNICA_CONEXAO='unicaConexao'
+CHAVE_LISTA_DESEJO='listaDesejo'
+CHAVE_LISTA_PROFISSAO='listaProfissao'
+CHAVE_CONFIRMACAO='confirmacao'
 
 usuario_id = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
@@ -710,12 +718,13 @@ def verifica_erro(trabalho):
         linhaSeparacao()
     return erro
 
-def entra_licenca():
-    if verifica_erro(None)!=0:
-        return False
-    manipula_teclado.click_especifico(1,'up')
-    manipula_teclado.click_especifico(1,'enter')
-    return True
+def entra_licenca(dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+    if verifica_erro(None)==0:
+        dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
+        manipula_teclado.click_especifico(1,'up')
+        manipula_teclado.click_especifico(1,'enter')
+    return dicionarioPersonagem
 
 def entra_trabalho_encontrado(x):
     if verifica_erro(None)!=0:
@@ -981,9 +990,11 @@ def busca_lista_personagem_ativo():
             personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
             if personagem!=None:
                 personagem_id_global=personagem[id]
+                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
                 print('Inicia busca...')
                 linhaSeparacao()
-                if inicia_busca_trabalho():
+                dicionarioPersonagem=inicia_busca_trabalho(dicionarioPersonagem)
+                if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                     if verifica_erro(None)!=0 or len(lista_personagem_ativo)==1:
                         lista_personagem_ativo=manipula_cliente.consulta_lista_personagem(usuario_id)
                         lista_personagem=lista_personagem_ativo
@@ -1163,7 +1174,7 @@ def retorna_menu():
     manipula_teclado.click_atalho_especifico('win','left')
     manipula_teclado.click_atalho_especifico('win','left')
     verifica_erro(None)
-    return None
+    return menu_desconhecido
 
 def deslogaPersonagem(email):
     menu=retorna_menu()
@@ -1255,20 +1266,22 @@ def loga_personagem(email, senha):
     linhaSeparacao()
     return confirmacao
 
-def inicia_busca_trabalho():
-    confirmacao=True
+def inicia_busca_trabalho(dicionarioPersonagem):
     conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
+    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         lista_profissao=retorna_lista_profissao_verificada()
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=lista_profissao
         for profissao_necessaria in lista_profissao:#percorre lista de profissao
-            if not confirmacao:
+            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                 continue
             erro=verifica_erro(None)
             if erro==0:
                 menu=retorna_menu()
                 while menu!=menu_produzir:
-                    if not trata_menu(menu):
-                        return True
+                    dicionarioPersonagem=trata_menu(menu,dicionarioPersonagem)
+                    if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:
+                        return dicionarioPersonagem
                     menu=retorna_menu()
                 else:
                     nome_profissao=profissao_necessaria[nome]
@@ -1277,13 +1290,14 @@ def inicia_busca_trabalho():
                     while True:
                         manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[0])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
-                        if not inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao):#só quebra o laço quando retornar falso
-                            # confirmacao=False
+                        dicionarioPersonagem=inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao,dicionarioPersonagem)
+                        if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
                             break
-                    verifica_trabalho()
-                    manipula_teclado.click_especifico(1,'left')
+                    if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
+                        verifica_trabalho()
+                        manipula_teclado.click_especifico(1,'left')
             elif erro==erroOutraConexao:
-                confirmacao=False
+                dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
             else:
                 print(f'Erro ao percorrer lista de profissões...')
                 linhaSeparacao()
@@ -1295,15 +1309,13 @@ def inicia_busca_trabalho():
         print(f'Lista de trabalhos desejados vazia.')
         print(f'Voltando.')
         linhaSeparacao()
-    return confirmacao
+    return dicionarioPersonagem
 
-def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada):
-    confirmacao=False
+def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,dicionarioPersonagem):
     if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho raro/especial
         if entra_trabalho_encontrado(posicao_trabalho):
             if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
-                if inicia_producao(trabalho_lista_desejo):
-                    confirmacao=True
+                dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
                 manipula_teclado.click_especifico(1,'left')
             else:    
                 sai_trabalho_encontrado(posicao_trabalho,1)
@@ -1313,13 +1325,12 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada)
     elif posicao_trabalho==-1 and trabalho_lista_desejo==None:#inicia processo busca por trabalho comum
         trabalho_comum_reconhecido=verifica_trabalho_comum(profissao_verificada)
         if trabalho_comum_reconhecido!=None:
-            if inicia_producao(trabalho_comum_reconhecido):
-                confirmacao=True
+            dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
             manipula_teclado.click_especifico(1,'left')
         else:
             print(f'Erro ao buscar trabalho comum!')
             linhaSeparacao()
-    return confirmacao
+    return dicionarioPersonagem
 
 def verifica_trabalho():
     if verifica_trabalho_concluido()==2:
@@ -1350,24 +1361,28 @@ def recupera_trabalho_concluido():
                 manipula_teclado.click_especifico(1,'left')
     return trabalho
 
-def trataErros(trabalho):
-    confirmacao=True
+def trataErros(trabalho,dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
     erro=verifica_erro(trabalho)
     while erro!=0:
         if erro==erroSemRecursos:
             caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
             excluir_trabalho(caminho_trabalho)  
-            confirmacao=False
+            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroSemEspacosProducao:#sem espaços de produção livres
-            confirmacao=False
+            dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
+            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+        elif erro==erroOutraConexao:
+            dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
+            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         erro=verifica_erro(trabalho)
-    return confirmacao
+    return dicionarioPersonagem
 
-def trataMenus(trabalho):
-    confirmacao=False
+def trataMenus(trabalho,dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     while True:
         menu=retorna_menu()
-        if menu==None:
+        if menu==menu_desconhecido:
             continue
         elif menu==menu_trab_especifico:#trabalho especifico
             manipula_teclado.click_especifico(1,'f2')
@@ -1390,28 +1405,32 @@ def trataMenus(trabalho):
                 linhaSeparacao()
                 manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,clone_trabalho,1)
             manipula_teclado.click_continuo(9,'up')
-            confirmacao=True
+            dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
             break
-    return confirmacao
+        else:
+            break
+    return dicionarioPersonagem
 
-def inicia_producao(trabalho):
-    producao=False
-    if entra_licenca():
+def inicia_producao(trabalho,dicionarioPersonagem):
+    dicionarioPersonagem=entra_licenca(dicionarioPersonagem)
+    if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
         if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
             manipula_teclado.click_especifico(1,'f2')#click que definitivamente começa a produção
-            if trataErros(trabalho):
-                if trataMenus(trabalho):
+            dicionarioPersonagem=trataErros(trabalho,dicionarioPersonagem)
+            if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
+                dicionarioPersonagem=trataMenus(trabalho,dicionarioPersonagem)
+                if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                     while verifica_erro(trabalho)!=0:
                         continue
                     else:
-                        producao=True
+                        dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
         else:
             print(f'Erro ao busca licença...')
             linhaSeparacao()
     else:
         print(f'Erro ao entrar na licença...')
         linhaSeparacao()
-    return producao
+    return dicionarioPersonagem
 
     
 def verifica_producao_recursos(nome_trabalho_lista_desejo):
@@ -1696,9 +1715,11 @@ def retorna_atualizacao_tela():
     screenshot = manipula_teclado.tira_screenshot()
     return manipula_imagem.retorna_imagem_colorida(screenshot)
 
-def trata_menu(menu):
-    confirmacao=True
-    if menu==menu_trab_atuais:
+def trata_menu(menu,dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
+    if menu==menu_desconhecido:
+        pass
+    elif menu==menu_trab_atuais:
         estado_trabalho=verifica_trabalho_concluido()
         if estado_trabalho==concluido:
             nome_trabalho_concluido=recupera_trabalho_concluido()
@@ -1708,21 +1729,14 @@ def trata_menu(menu):
             # lista_profissao.clear()
             print(f'Todos os espaços de produção ocupados.')
             linhaSeparacao()
-            confirmacao=False
+            dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
+            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif estado_trabalho==0:
             manipula_teclado.click_especifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
         recebeTodasRecompensas()
-        confirmacao=False
-    elif menu==menu_jogar:
-        #Tela inicial do jogo
-        manipula_teclado.click_especifico(1,'enter')
-    elif menu==menu_noticias:
-        #menu notícias
-        manipula_teclado.click_especifico(2,'f2')
-    elif menu==menu_escolha_p:
-        #menu seleção de perssonagem
-        manipula_teclado.click_especifico(1,'f2')
+        dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
+        dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     elif menu==menu_principal:
         #menu principal
         manipula_teclado.click_especifico(1,'num1')
@@ -1730,9 +1744,6 @@ def trata_menu(menu):
     elif menu==menu_personagem:
         #menu personagem
         manipula_teclado.click_especifico(1,'num7')
-    elif menu==menu_trab_atuais:
-        #menu trabalhos atuais
-        manipula_teclado.click_especifico(1,'left')
     elif menu==menu_trab_disponiveis:
         #menu trabalhos disponiveis
         manipula_teclado.click_especifico(1,'up')
@@ -1740,7 +1751,7 @@ def trata_menu(menu):
     elif menu==menu_trab_especifico:
         #menu trabalho específico
         manipula_teclado.click_especifico(1,'f1')
-        manipula_teclado.click_especifico(3,'up')
+        manipula_teclado.click_continuo(3,'up')
         manipula_teclado.click_especifico(2,'left')
     elif menu==menu_ofe_diaria:
         #menu oferta diária
@@ -1750,10 +1761,13 @@ def trata_menu(menu):
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.click_especifico(1,'num1')
         manipula_teclado.click_especifico(1,'num7')
+    else:
+        dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     erro=verifica_erro(None)
     if erro==erroOutraConexao:
-        confirmacao=False
-    return confirmacao
+        dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+        dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
+    return dicionarioPersonagem
     
 def configura_licenca(trabalho):
     licenca=4
@@ -1906,7 +1920,7 @@ def funcao_teste(id_personagem):
     # confirma_nome_trabalho('Melhorar licença comum',1)
     #     menu=retorna_menu()
     #     if menu!=11:
-    #         trata_menu(menu)
+    #         trata_menu(menu,dicionarioPersonagem)
     #     break
     # print('Fim')
     # lista_habilidade = retorna_lista_habilidade_verificada()
@@ -1931,9 +1945,11 @@ def funcao_teste(id_personagem):
     #     print('Achei!')
     # else:
     #     print('Não achei...')
-    manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')
+    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
+    print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
+    # manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
-    # inicia_producao(trabalho)
+    # inicia_producao(trabalho,dicionarioPersonagem)
     # verifica_trabalho_comum(trabalho,'profissaoteste')
     # while inicia_busca_trabalho():
     #     continue
