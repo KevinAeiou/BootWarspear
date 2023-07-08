@@ -1465,9 +1465,8 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
 
 def recebeTodasRecompensas():
     listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
-    menu=retorna_menu()
     while True:
-        reconheceMenuRecompensa(menu)
+        reconheceMenuRecompensa()
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
         deslogaPersonagem(None)
@@ -1523,9 +1522,10 @@ def recuperaPresente():
         evento+=1
     manipula_teclado.click_especifico(2,'f1')#sai do menu recupera recompensas
 
-def reconheceMenuRecompensa(menu):
+def reconheceMenuRecompensa():
     print(f'Entrou em recuperaPresente.')
     linhaSeparacao()
+    menu=retorna_menu()
     if menu==menu_loja_milagrosa:
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'enter')
