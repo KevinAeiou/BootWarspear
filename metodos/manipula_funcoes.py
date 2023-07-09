@@ -720,10 +720,13 @@ def verifica_erro(trabalho):
 
 def entra_licenca(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
-    if verifica_erro(None)==0:
+    erro=verifica_erro(None)
+    if erro==0:
         dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
         manipula_teclado.click_especifico(1,'up')
         manipula_teclado.click_especifico(1,'enter')
+    elif erro==erroOutraConexao:
+        dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
     return dicionarioPersonagem
 
 def entra_trabalho_encontrado(x):
@@ -1312,12 +1315,11 @@ def inicia_busca_trabalho(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     if posicao_trabalho!=-1 and trabalho_lista_desejo!=None:#inicia processo busca por trabalho raro/especial
         if entra_trabalho_encontrado(posicao_trabalho):
             if confirma_nome_trabalho(trabalho_lista_desejo[nome],1):#confirma o nome do trabalho
                 dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
-                if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
-                    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
                 manipula_teclado.click_especifico(1,'left')
             else:    
                 sai_trabalho_encontrado(posicao_trabalho,1)
@@ -1328,8 +1330,6 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
         trabalho_comum_reconhecido=verifica_trabalho_comum(profissao_verificada)
         if trabalho_comum_reconhecido!=None:
             dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
-            if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
-                dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
             manipula_teclado.click_especifico(1,'left')
         else:
             print(f'Erro ao buscar trabalho comum!')
@@ -1426,8 +1426,6 @@ def inicia_producao(trabalho,dicionarioPersonagem):
                 if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                     while verifica_erro(trabalho)!=0:
                         continue
-                    else:
-                        dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
         else:
             print(f'Erro ao busca licença...')
             linhaSeparacao()
@@ -1435,7 +1433,6 @@ def inicia_producao(trabalho,dicionarioPersonagem):
         print(f'Erro ao entrar na licença...')
         linhaSeparacao()
     return dicionarioPersonagem
-
     
 def verifica_producao_recursos(nome_trabalho_lista_desejo):
     producao_recurso=True
@@ -1463,10 +1460,10 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
-def recebeTodasRecompensas():
+def recebeTodasRecompensas(menu):
     listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
     while True:
-        reconheceMenuRecompensa()
+        reconheceMenuRecompensa(menu)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
         deslogaPersonagem(None)
@@ -1476,6 +1473,7 @@ def recebeTodasRecompensas():
             print(f'Todos os personagens foram verificados!')
             linhaSeparacao()
             break
+        menu=retorna_menu()
 
 def recuperaPresente():
     evento=0
@@ -1522,10 +1520,9 @@ def recuperaPresente():
         evento+=1
     manipula_teclado.click_especifico(2,'f1')#sai do menu recupera recompensas
 
-def reconheceMenuRecompensa():
+def reconheceMenuRecompensa(menu):
     print(f'Entrou em recuperaPresente.')
     linhaSeparacao()
-    menu=retorna_menu()
     if menu==menu_loja_milagrosa:
         manipula_teclado.click_especifico(1,'down')
         manipula_teclado.click_especifico(1,'enter')
@@ -1738,7 +1735,7 @@ def trata_menu(menu,dicionarioPersonagem):
         elif estado_trabalho==0:
             manipula_teclado.click_especifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
-        recebeTodasRecompensas()
+        recebeTodasRecompensas(menu)
         dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
         dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     elif menu==menu_principal:
@@ -1965,7 +1962,7 @@ def funcao_teste(id_personagem):
 # verifica_erro(None)
 # verificaPixelCorrespondencia()
 # entra_personagem_ativo('Raulssauro')
-# recebeTodasRecompensas()
+# recebeTodasRecompensas(menu)
 # recuperaPresente()
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
