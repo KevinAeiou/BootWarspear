@@ -1276,7 +1276,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
         lista_profissao=retorna_lista_profissao_verificada()
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=lista_profissao
         for profissao_necessaria in lista_profissao:#percorre lista de profissao
-            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
+            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO] or not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
                 continue
             erro=verifica_erro(None)
             if erro==0:
@@ -1329,7 +1329,7 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
     elif posicao_trabalho==-1 and trabalho_lista_desejo==None:#inicia processo busca por trabalho comum
         trabalho_comum_reconhecido=verifica_trabalho_comum(profissao_verificada)
         if trabalho_comum_reconhecido!=None:
-            dicionarioPersonagem=inicia_producao(trabalho_lista_desejo,dicionarioPersonagem)
+            dicionarioPersonagem=inicia_producao(trabalho_comum_reconhecido,dicionarioPersonagem)
             manipula_teclado.click_especifico(1,'left')
         else:
             print(f'Erro ao buscar trabalho comum!')
