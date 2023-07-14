@@ -54,6 +54,7 @@ erroConexaoInterrompida=13
 erroSemMoedas=14
 erroEmailSenhaIncorreta=15
 erroTempoProducaoExpirou=16
+erroReinoIndisponivel=17
 
 lista_personagem_ativo=[]
 
@@ -72,10 +73,12 @@ concluido=2
 
 CHAVE_ID_PERSONAGEM='idPersonagem'
 CHAVE_ESPACO_PRODUCAO='espacoProducao'
+CHAVE_ESPACO_BOLSA='espacoBolsa'
 CHAVE_UNICA_CONEXAO='unicaConexao'
 CHAVE_LISTA_DESEJO='listaDesejo'
 CHAVE_LISTA_PROFISSAO='listaProfissao'
 CHAVE_CONFIRMACAO='confirmacao'
+CHAVE_TRABALHO_CONCLUIDO='trabalhoConcluido'
 
 usuario_id = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
@@ -395,7 +398,7 @@ def verifica_porcentagem_vida():
         return True
     return False
 #Codigo modificado 23/01 11:20
-def verifica_trabalho_concluido():
+def retornaEstadoTrabalho():
     estado_espaco=0
     #icone do primeiro espaço de produç 181,295 228,342
     tela_inteira = retorna_atualizacao_tela()
@@ -653,7 +656,8 @@ def verifica_erro(trabalho):
 # erroSemMoedas=14
 # erroEmailSenhaIncorreta=15
 # erroTempoProducaoExpirou=16
-    if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor:
+# erroReinoIndisponivel=17
+    if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
         manipula_teclado.click_especifico(2,"enter")
         if erro==erroPrecisaLicenca:
             verifica_licenca(licenca)
@@ -663,6 +667,8 @@ def verifica_erro(trabalho):
             print(f'Erro ao conectar...')
         elif erro==erroManutencaoServidor:
             print(f'Servidor em manutenção!')
+        elif erro==erroReinoIndisponivel:
+            print(f'Reino de jogo indisponível!')
         linhaSeparacao()
     elif erro==erroOutraConexao:
         manipula_teclado.click_especifico(1,'enter')
@@ -743,14 +749,14 @@ def retorna_tipo_erro():
     tela_inteira=retorna_atualizacao_tela()
     frame_erro=tela_inteira[335:335+100,150:526]
     erro_encontrado=manipula_imagem.reconhece_texto(frame_erro)
-    # print(erro_encontrado)
+    print(erro_encontrado)
     if erro_encontrado!=None:
         tipo_erro_trabalho=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
                             'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
                             'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
                             'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                             'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidadatarefadeproduçãoexpirou.']
+                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidadatarefadeproduçãoexpirou.','reinodejogoselecionado']
         for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
             if tipo_erro_trabalho[tamanho_tipo_erro].lower() in erro_encontrado.replace(' ','').lower():
                 erro=tamanho_tipo_erro+1
@@ -993,7 +999,7 @@ def busca_lista_personagem_ativo():
             personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
             if personagem!=None:
                 personagem_id_global=personagem[id]
-                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
+                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True,CHAVE_ESPACO_BOLSA:True}
                 print('Inicia busca...')
                 linhaSeparacao()
                 dicionarioPersonagem=inicia_busca_trabalho(dicionarioPersonagem)
@@ -1297,7 +1303,9 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                         if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
                             break
                     if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
-                        verifica_trabalho()
+                        if dicionarioPersonagem[CHAVE_ESPACO_BOLSA]:
+                            if retornaEstadoTrabalho()==concluido:
+                                dicionarioPersonagem=verificaTrabalhoConcluido(dicionarioPersonagem)
                         manipula_teclado.click_especifico(1,'left')
             elif erro==erroOutraConexao:
                 dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
@@ -1336,17 +1344,17 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
             linhaSeparacao()
     return dicionarioPersonagem
 
-def verifica_trabalho():
-    if verifica_trabalho_concluido()==2:
-        nome_trabalho_concluido=recupera_trabalho_concluido()
-        if nome_trabalho_concluido!=False:
-            muda_estado_trabalho_concluido(nome_trabalho_concluido)
+def verificaTrabalhoConcluido(dicionarioPersonagem):
+    dicionarioPersonagem=recupera_trabalho_concluido(dicionarioPersonagem)
+    if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
+        muda_estado_trabalho_concluido(dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO])
+    return dicionarioPersonagem
 
 def muda_estado_trabalho_concluido(trabalho_concluido):
     manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
 
-def recupera_trabalho_concluido():
-    trabalho=False
+def recupera_trabalho_concluido(dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=False
     tela_inteira=retorna_atualizacao_tela()
     frame_nome_trabalho=tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)==0:
@@ -1359,11 +1367,12 @@ def recupera_trabalho_concluido():
                 print(f'{trabalho_concluido[nome]} recuperado.')
                 manipula_teclado.click_especifico(1,'up')
                 linhaSeparacao()
-                trabalho=trabalho_concluido[1:-1]
+                dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalho_concluido[1:-1]
             else:
+                dicionarioPersonagem[CHAVE_ESPACO_BOLSA]=False
                 manipula_teclado.click_especifico(1,'up')
                 manipula_teclado.click_especifico(1,'left')
-    return trabalho
+    return dicionarioPersonagem
 
 def trataErros(trabalho,dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
@@ -1721,11 +1730,9 @@ def trata_menu(menu,dicionarioPersonagem):
     if menu==menu_desconhecido:
         pass
     elif menu==menu_trab_atuais:
-        estado_trabalho=verifica_trabalho_concluido()
+        estado_trabalho=retornaEstadoTrabalho()
         if estado_trabalho==concluido:
-            nome_trabalho_concluido=recupera_trabalho_concluido()
-            if nome_trabalho_concluido!=False:
-                muda_estado_trabalho_concluido(nome_trabalho_concluido)
+            dicionarioPersonagem=verificaTrabalhoConcluido(dicionarioPersonagem)
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
             print(f'Todos os espaços de produção ocupados.')
@@ -1946,8 +1953,9 @@ def funcao_teste(id_personagem):
     #     print('Achei!')
     # else:
     #     print('Não achei...')
-    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
-    print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
+    retorna_tipo_erro()
+    # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
+    # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
     # manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')
     # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
     # inicia_producao(trabalho,dicionarioPersonagem)
