@@ -79,6 +79,7 @@ CHAVE_LISTA_DESEJO='listaDesejo'
 CHAVE_LISTA_PROFISSAO='listaProfissao'
 CHAVE_CONFIRMACAO='confirmacao'
 CHAVE_TRABALHO_CONCLUIDO='trabalhoConcluido'
+CHAVE_LISTA_PROFISSAO_MODIFICADA='listaProfissoesAtualizada'
 
 usuario_id = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
@@ -92,49 +93,51 @@ def atualiza_nova_tela():
 def adiciona_trabalho(personagem_id,trabalho,licenca):
     manipula_cliente.adiciona_trabalho(personagem_id,trabalho,licenca,0)
     linhaSeparacao()
+
+def profissaoExiste(profissaoReconhecida,listaProfissao):
+    confirmacao=False
+    for profissao in listaProfissao:
+        if profissao[nome]in profissaoReconhecida:
+            confirmacao=True
+            break
+    return confirmacao
 #modificado16/01
-def atualiza_lista_profissao(personagem_id):
+def atualiza_lista_profissao(dicionarioPersonagem):
     #285,355
-    manipula_teclado.click_atalho_especifico('alt','tab')
-    yinicial_profissao = 285
+    yinicial_profissao=285
+    listaProfissaoAtual=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]
     #altura frame: 35 pixel
     #altura entre os frames: 70 pixel
     print(f'Atualizando lista de profissões...')
     linhaSeparacao()
-    #limpa o arquivo lista_profissoes
-    manipula_cliente.excluir_lista_profissoes(personagem_id)
-    linhaSeparacao()
-    for x in range(8):
-        #print(f'Teste: {x}')
-        #se x==4
-        if x == 4:
-            #clica 5x para baixo
+    for x in range(len(listaProfissaoAtual)):
+        if x==4:
             manipula_teclado.click_especifico(5,'down')
             #yinicial_profissao recebe valor fixo=529
             yinicial_profissao = 529
-        #se x>4
-        elif x > 4:
-            #clica 1x para baixo
+        elif x>4:
             manipula_teclado.click_especifico(1,'down')
-            #yinicial_profissao recebe valor fixo=529
-            yinicial_profissao = 529
-        #atualiza tela
-        tela_inteira = retorna_atualizacao_tela()
-        #recorta frame do nome da profissao
-        frame_nome_profissao = tela_inteira[yinicial_profissao:yinicial_profissao+35,233:456]
+            yinicial_profissao=529
+        tela_inteira=retorna_atualizacao_tela()
+        frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,233:456]
         #reconhece a profissao do frame
-        nome_reconhecido = manipula_imagem.reconhece_texto(frame_nome_profissao)
-        if nome_reconhecido==None:
-            nome_reconhecido = 'Desconhecido'
-        #grava o nome na lista de profissoes
-        manipula_cliente.adicionar_profissao(personagem_id,unidecode(nome_reconhecido))
-        #manipula_arquivo.inclui_linha(f'{unidecode(nome_reconhecido)},',caminho_arquivo_lista_profissoes)
-        #incrementa o yinicial_profissao
-        yinicial_profissao+=70
-    print(f'Processo concluído!')
+        profissaoReconhecida=manipula_imagem.reconhece_texto(frame_nome_profissao)
+        if profissaoReconhecida!=None:
+            profissaoReconhecida=unidecode(profissaoReconhecida)
+            if profissaoExiste(profissaoReconhecida,listaProfissaoAtual):
+                if listaProfissaoAtual[x][nome]!=profissaoReconhecida:
+                    manipula_cliente.modificarProfissao(dicionarioPersonagem[CHAVE_ID_PERSONAGEM],listaProfissaoAtual[x][id],profissaoReconhecida)
+                yinicial_profissao+=70
+            else:
+                print(f'Profissão não existe!')
+                break
+        else:
+            print(f'Processo interrompido!')
+            break
+    else:
+        print(f'Processo concluído!')
     linhaSeparacao()
-    manipula_teclado.click_especifico(8,'up')
-    return
+    manipula_teclado.click_continuo(8,'up')
 
 def atualiza_referencias():
     tela_inteira = retorna_atualizacao_tela()
@@ -835,34 +838,33 @@ def verifica_nome_personagem(nome_personagem,posicao):
         linhaSeparacao()
     return confirmacao
 
-def retorna_lista_profissao_verificada():
+def retorna_lista_profissao_verificada(dicionarioPersonagem):
     print(f'Verificando profissões necessárias...')
     #cria lista vazia
-    lista_profissao_verificada = []
+    lista_profissao_verificada=[]
     #abre o arquivo lista de profissoes
-    conteudo_lista_profissoes = manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_profissoes')
+    conteudo_lista_profissoes=manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes')
     #abre o arquivo lista de desejos
-    conteudo_lista_desejo = manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
+    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo')
     #percorre todas as linha do aquivo profissoes
     for linhaProfissao in range(len(conteudo_lista_profissoes)):
-        nome_profissao = conteudo_lista_profissoes[linhaProfissao]
-        nome_profissao = nome_profissao[1]
+        profissao=conteudo_lista_profissoes[linhaProfissao]
         #percorre todas as linhas do aquivo lista de desejos
         for linhaDesejo in range(len(conteudo_lista_desejo)):
-            atributos = conteudo_lista_desejo[linhaDesejo]
-            nome_profissao_desejo = atributos[2]
-            if(nome_profissao.lower()==nome_profissao_desejo.lower()):
+            atributos=conteudo_lista_desejo[linhaDesejo]
+            nome_profissao_desejo=atributos[2]
+            if(profissao[nome].lower()==nome_profissao_desejo.lower()):
                 #verifca se o indice já está na lista
-                lista_profissao_verificada.append([linhaProfissao+1,nome_profissao_desejo])
+                lista_profissao_verificada.append([profissao[id],profissao[nome],linhaProfissao+1])
                 break
     else:
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=lista_profissao_verificada
         mostra_profissoes_necessarias(lista_profissao_verificada)
-    return lista_profissao_verificada
+    return dicionarioPersonagem
 
 def mostra_profissoes_necessarias(lista_profissao_verificada):
-    for x in range(len(lista_profissao_verificada)):
-        nome_profissao_necessaria = lista_profissao_verificada[x]
-        print(f'Profissão necessária: {nome_profissao_necessaria[1]}')
+    for profissao in lista_profissao_verificada:
+        print(f'Profissão necessária: {profissao[nome]}')
     linhaSeparacao()
 
 def retorna_lista_habilidade_verificada():
@@ -911,7 +913,7 @@ def entra_personagem_ativo(listaPersonagem):
         continue
     else:
         manipula_teclado.click_especifico(1,'f2')
-        manipula_teclado.vai_inicio_fila()   
+        manipula_teclado.click_continuo(8,'left')   
         personagemReconhecido=retornaNomePersonagem(1)
         while personagemReconhecido!=None:
             if confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
@@ -999,7 +1001,11 @@ def busca_lista_personagem_ativo():
             personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
             if personagem!=None:
                 personagem_id_global=personagem[id]
-                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True,CHAVE_ESPACO_BOLSA:True}
+                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,
+                                      CHAVE_ESPACO_PRODUCAO:True,
+                                      CHAVE_UNICA_CONEXAO:True,
+                                      CHAVE_ESPACO_BOLSA:True,
+                                      CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
                 print('Inicia busca...')
                 linhaSeparacao()
                 dicionarioPersonagem=inicia_busca_trabalho(dicionarioPersonagem)
@@ -1279,9 +1285,8 @@ def inicia_busca_trabalho(dicionarioPersonagem):
     conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
     dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
-        lista_profissao=retorna_lista_profissao_verificada()
-        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=lista_profissao
-        for profissao_necessaria in lista_profissao:#percorre lista de profissao
+        dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+        for profissao_necessaria in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:#percorre lista de profissao
             if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO] or not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
                 continue
             erro=verifica_erro(None)
@@ -1293,11 +1298,13 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                         return dicionarioPersonagem
                     menu=retorna_menu()
                 else:
+                    if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
+                        atualiza_lista_profissao(dicionarioPersonagem)
                     nome_profissao=profissao_necessaria[nome]
                     print(f'Verificando profissão: {nome_profissao}')
                     linhaSeparacao()
                     while True:
-                        manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[0])
+                        manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[2])
                         posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
                         dicionarioPersonagem=inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao,dicionarioPersonagem)
                         if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
@@ -1347,6 +1354,7 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem=recupera_trabalho_concluido(dicionarioPersonagem)
     if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
         muda_estado_trabalho_concluido(dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO])
     return dicionarioPersonagem
 
@@ -1572,7 +1580,7 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
     else:
         manipula_teclado.click_especifico(1,'f2')
         if len(listaPersonagemPresenteRecuperado)==1:
-            manipula_teclado.vai_inicio_fila()
+            manipula_teclado.click_continuo(8,'left')
         else:
             manipula_teclado.click_especifico(1,'right')
         nomePersonagem=retornaNomePersonagem(1)               
@@ -1910,6 +1918,7 @@ def deleta_item_lista():
 def funcao_teste(id_personagem):
     global personagem_id_global
     personagem_id_global=id_personagem
+    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:id_personagem}
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
     # verifica_erro('')
@@ -1953,7 +1962,9 @@ def funcao_teste(id_personagem):
     #     print('Achei!')
     # else:
     #     print('Não achei...')
-    retorna_tipo_erro()
+    # retorna_tipo_erro()
+    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    atualiza_lista_profissao(dicionarioPersonagem)
     # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
     # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
     # manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')

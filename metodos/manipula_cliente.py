@@ -68,7 +68,6 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
             time.sleep(1)
     else:
         print(f'Limite de tentativas de conexão atingido.')
-    
     return requisicaoRetorno
 
 def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
@@ -114,18 +113,12 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
         print(f'Limite de tentativas de conexão atingido.')
     return trabalho_adicionado
 #modificado 16/01
-def adicionar_profissao(personagem_id,profissao):
-    dados = {'nome':profissao}
-    caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_profissoes/.json'
-    requisicao=retornaRequisicao(POST,caminhoRequisicao,dados)
+def modificarProfissao(personagemId,profissaoId,profissao):
+    dados={'nome':profissao}
+    caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagemId}/Lista_profissoes/{profissaoId}/.json'
+    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
     if requisicao!=None:
-        dicionarioId=requisicao.json()
-        id=dicionarioId['name']
-        dados={'id':id}
-        caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_profissoes/{id}/.json'
-        requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-        if requisicao!=None:
-            print(f'{profissao} foi adicionado!')
+        print(f'{profissao} foi modificado!')
 
 def cadastrar_imagem_trabalho():
     dados={'nome':nome_imagem_trabalho}
@@ -175,7 +168,7 @@ def consulta_dados_personagem(usuario_id,personagem_id):
     return dados_personagem
 #modificado 12/01
 def consutar_lista(tipo_lista):
-    lista = []
+    lista=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{tipo_lista}/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao!=None:

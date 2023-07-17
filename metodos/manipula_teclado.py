@@ -148,10 +148,6 @@ def retorna_menu_profissao_especifica(indice):
     time.sleep(0.5)
     print('____________________________________')
 
-def vai_inicio_fila():
-    for posicao_personagem in range(10):
-        tecla.press('left')
-
 def entra_secao(email,senha):
     click_especifico(1,'f2')
     click_especifico(1,0)
