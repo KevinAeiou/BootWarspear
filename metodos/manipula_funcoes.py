@@ -36,6 +36,7 @@ menu_loja_milagrosa=38
 menu_rec_diarias=39
 menu_ofe_diaria=40
 menu_inicial=41
+menu_meu_perfil=42
 menu_desconhecido=None
 
 erroPrecisaLicenca=1
@@ -55,6 +56,7 @@ erroSemMoedas=14
 erroEmailSenhaIncorreta=15
 erroTempoProducaoExpirou=16
 erroReinoIndisponivel=17
+erroAtualizaJogo=18
 
 lista_personagem_ativo=[]
 
@@ -660,6 +662,7 @@ def verifica_erro(trabalho):
 # erroEmailSenhaIncorreta=15
 # erroTempoProducaoExpirou=16
 # erroReinoIndisponivel=17
+# erroAtualizaJogo=18
     if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
         manipula_teclado.click_especifico(2,"enter")
         if erro==erroPrecisaLicenca:
@@ -701,10 +704,15 @@ def verifica_erro(trabalho):
         print(f'Conectando...')
         linhaSeparacao()
         time.sleep(1)
-    elif erro==erroReceberRecompensas:
-        print(f'Recuperar presente.')
-        linhaSeparacao()
+    elif erro==erroReceberRecompensas or erro==erroAtualizaJogo:
         manipula_teclado.click_especifico(1,'f2')
+        if erro==erroReceberRecompensas:
+            print(f'Recuperar presente.')
+        elif erro==erroAtualizaJogo:
+            print(f'Atualizando jogo...')
+            manipula_teclado.click_especifico(1,'f1')
+            exit()
+        linhaSeparacao()
     elif erro==erroConcluirTrabalho:
         print(f'Trabalho não está concluido!')
         manipula_teclado.click_especifico(1,'f1')
@@ -752,14 +760,15 @@ def retorna_tipo_erro():
     tela_inteira=retorna_atualizacao_tela()
     frame_erro=tela_inteira[335:335+100,150:526]
     erro_encontrado=manipula_imagem.reconhece_texto(frame_erro)
-    print(erro_encontrado)
+    # print(erro_encontrado)
     if erro_encontrado!=None:
         tipo_erro_trabalho=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
                             'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
                             'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
                             'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                             'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidadatarefadeproduçãoexpirou.','reinodejogoselecionado']
+                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidadatarefadeproduçãoexpirou.',
+                            'reinodejogoselecionado','jogoestadesatualizada']
         for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
             if tipo_erro_trabalho[tamanho_tipo_erro].lower() in erro_encontrado.replace(' ','').lower():
                 erro=tamanho_tipo_erro+1
@@ -905,6 +914,7 @@ def passa_proxima_posicao():
 
 def entra_personagem_ativo(listaPersonagem):
     personagem=None
+    contadorPersonagem=0
     print(f'Buscando personagem ativo...')
     ativaAtributoUso(listaPersonagem)
     manipula_teclado.click_especifico(1,'enter')
@@ -915,7 +925,7 @@ def entra_personagem_ativo(listaPersonagem):
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.click_continuo(8,'left')   
         personagemReconhecido=retornaNomePersonagem(1)
-        while personagemReconhecido!=None:
+        while personagemReconhecido!=None or contadorPersonagem<13:
             if confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
                 manipula_teclado.click_especifico(1,'f2')
                 time.sleep(1)
@@ -933,6 +943,7 @@ def entra_personagem_ativo(listaPersonagem):
             else:
                 manipula_teclado.click_especifico(1,'right')
                 personagemReconhecido=retornaNomePersonagem(1)
+            contadorPersonagem+=1
         else:
             print(f'Personagem não encontrado!')
             linhaSeparacao()
@@ -1035,6 +1046,7 @@ def retorna_texto_menu_reconhecido(x,y,largura):
     tela_inteira=retorna_atualizacao_tela()
     centroAltura=tela_inteira.shape[0]//2
     centroMetade=tela_inteira.shape[1]//4
+    # print(centroAltura)
     alturaFrame=30
     texto=None
     frame_menu=tela_inteira[centroAltura+y:centroAltura+y+alturaFrame,centroMetade+x:centroMetade+x+largura]
@@ -1046,6 +1058,7 @@ def retorna_texto_menu_reconhecido(x,y,largura):
         texto=manipula_imagem.reconhece_texto(frame_menu_tratado)
         if texto!=None:
             texto=texto.lower().replace(' ','')
+            print(f'Texto reconhecimento de menus: {texto}.')
     return texto
 
 def retorna_menu():
@@ -1181,6 +1194,16 @@ def retorna_menu():
             print(f'Tempo de reconhece_texto: {fim - inicio}')
             linhaSeparacao()
             return menu_rec_diarias
+    texto_menu=retorna_texto_menu_reconhecido(-31,-46,57)
+    if texto_menu!=None:
+        if 'meuperfil'in texto_menu:
+            print(f'Menu meu perfil...')
+            linhaSeparacao()
+            fim=time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_meu_perfil
+
     print(f'Menu não reconhecido...')
     linhaSeparacao()
     fim = time.time()
@@ -1963,8 +1986,10 @@ def funcao_teste(id_personagem):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    atualiza_lista_profissao(dicionarioPersonagem)
+    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    # atualiza_lista_profissao(dicionarioPersonagem)
+    while input(f'Continuar?')!='n':
+        retorna_menu()
     # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
     # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
     # manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')
@@ -1986,6 +2011,4 @@ def funcao_teste(id_personagem):
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
-# while input(f'Continuar?')!='n':
-#     retorna_menu()
 # print(retornaNomePersonagem(1))
