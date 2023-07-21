@@ -1307,7 +1307,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
         for profissao_necessaria in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:#percorre lista de profissao
-            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO] or not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
+            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                 continue
             erro=verifica_erro(None)
             if erro==0:
