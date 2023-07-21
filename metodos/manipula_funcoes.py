@@ -1768,10 +1768,12 @@ def trata_menu(menu,dicionarioPersonagem):
             dicionarioPersonagem=verificaTrabalhoConcluido(dicionarioPersonagem)
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
-            print(f'Todos os espaços de produção ocupados.')
-            linhaSeparacao()
-            dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
-            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+            if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
+                print(f'Todos os espaços de produção ocupados.')
+                linhaSeparacao()
+                dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+            else:
+               manipula_teclado.click_especifico(1,'left')
         elif estado_trabalho==0:
             manipula_teclado.click_especifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
