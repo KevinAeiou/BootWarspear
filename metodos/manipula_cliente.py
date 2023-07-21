@@ -232,7 +232,8 @@ def consulta_lista_personagem(usuario_id):
                 nome_personagem=dicionario_requisicao[id]['nome']
                 email_personagem=dicionario_requisicao[id]['email']
                 senha_personagem=dicionario_requisicao[id]['senha']
-                lista_personagem.append([id_personagem,nome_personagem,email_personagem,senha_personagem])
+                espacoProducaoPersonagem=dicionario_requisicao[id]['espacoProducao']
+                lista_personagem.append([id_personagem,nome_personagem,email_personagem,senha_personagem,espacoProducaoPersonagem])
     return lista_personagem
 
 def muda_estado_trabalho(usuario_id,personagem_id,trabalho,novo_estado):
@@ -260,7 +261,8 @@ def muda_estado_trabalho(usuario_id,personagem_id,trabalho,novo_estado):
         else:
             print(f'{trabalho[1]} não encontrado na lista.')
 
-def muda_estado_personagem(usuario_id,listaPersonagemId,dados):
+def mudaAtributoPersonagem(usuario_id,listaPersonagemId,atributo,valor):
+    dados={atributo:valor}
     for personagem_id in listaPersonagemId:
         caminhoRequisicao=f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/.json'
         requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
@@ -271,7 +273,7 @@ def muda_estado_personagem(usuario_id,listaPersonagemId,dados):
                     nome=dicionarioRequisicao[id]['nome']
                     caminhoRequisicao=f'{link_database}/Usuarios/{usuario_id}/Lista_personagem/{id}/.json'
                     retornaRequisicao(PATCH,caminhoRequisicao,dados)
-                    print(f'Estado do {nome} agora é ativo.')
+                    print(f'Atributo {atributo} do personagem {nome} agora é {valor}.')
                     break
         else:
             break  

@@ -961,9 +961,8 @@ def confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
     return confirmacao
 
 def ativaAtributoUso(primeiroPersonagem):
-    estado={'uso':1}
     listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,primeiroPersonagem[0][2])
-    manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
+    manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagemId,'uso',1)
 
 def retorna_medidas_modelos():
     lista_modelos = [1,2,5,9]
@@ -986,9 +985,8 @@ def prepara_personagem(id_personagem):
     atributosPersonagem=configura_atributos()
     if len(atributosPersonagem)!=0:
         if atributosPersonagem[4]!=1:#se o personagem estiver inativo, troca o estado
-            estado={'estado':1}
             listaPersonagemId=[personagem_id_global]
-            manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
+            manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagemId,'estado',1)
         busca_lista_personagem_ativo()
     else:
         print(f'Erro ao configurar atributos do personagem!')
@@ -1013,10 +1011,10 @@ def busca_lista_personagem_ativo():
             if personagem!=None:
                 personagem_id_global=personagem[id]
                 dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,
-                                      CHAVE_ESPACO_PRODUCAO:True,
                                       CHAVE_UNICA_CONEXAO:True,
                                       CHAVE_ESPACO_BOLSA:True,
                                       CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
+                dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=personagem[4]
                 print('Inicia busca...')
                 linhaSeparacao()
                 dicionarioPersonagem=inicia_busca_trabalho(dicionarioPersonagem)
@@ -1226,9 +1224,8 @@ def deslogaPersonagem(email):
             manipula_teclado.click_mouse_esquerdo(1,2,35)
         menu=retorna_menu()
     if email!=None:
-        estado={'uso':0}
         listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,email)
-        manipula_cliente.muda_estado_personagem(usuario_id,listaPersonagemId,estado)
+        manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagemId,'uso',0)
 
 def remove_personagem_lista(lista_personagem_retirado,personagem):
     personagem_retirado=personagem[nome]
@@ -1377,12 +1374,15 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem=recupera_trabalho_concluido(dicionarioPersonagem)
     if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
+        listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
-        muda_estado_trabalho_concluido(dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO])
+        manipula_cliente.muda_estado_trabalho(usuario_id,
+                                              dicionarioPersonagem[CHAVE_ID_PERSONAGEM],
+                                              dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO],
+                                              2)
+        if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
+            manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',True)
     return dicionarioPersonagem
-
-def muda_estado_trabalho_concluido(trabalho_concluido):
-    manipula_cliente.muda_estado_trabalho(usuario_id,personagem_id_global,trabalho_concluido,2)
 
 def recupera_trabalho_concluido(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=False
@@ -1414,6 +1414,8 @@ def trataErros(trabalho,dicionarioPersonagem):
             excluir_trabalho(caminho_trabalho)  
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroSemEspacosProducao:#sem espaços de produção livres
+            listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
+            manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',False)
             dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroOutraConexao:
@@ -1942,6 +1944,7 @@ def funcao_teste(id_personagem):
     global personagem_id_global
     personagem_id_global=id_personagem
     dicionarioPersonagem={CHAVE_ID_PERSONAGEM:id_personagem}
+    listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
     # verifica_erro('')
@@ -1972,15 +1975,15 @@ def funcao_teste(id_personagem):
     # print(retorna_licenca_reconhecida())
     # print(verifica_licenca('principiante'))
     # linhaSeparacao()
-    # ativo=True
-    # while input(f'Continuar?')=='s':
-    #     if ativo:
-    #         uso={'uso':1}
-    #         ativo=False
-    #     else:
-    #         uso={'uso':0}
-    #         ativo=True
-    #     manipula_cliente.muda_estado_personagem(usuario_id,[personagem_id_global],uso)
+    valor=True
+    while input(f'Continuar?')=='s':
+        if valor:
+            uso={'uso':1}
+            valor=False
+        else:
+            uso={'uso':0}
+            valor=True
+        manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',valor)
     # if verifica_menu_referencia():
     #     print('Achei!')
     # else:
