@@ -1382,6 +1382,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
                                               2)
         if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
             manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',True)
+            dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=True
     return dicionarioPersonagem
 
 def recupera_trabalho_concluido(dicionarioPersonagem):
