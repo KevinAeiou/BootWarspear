@@ -925,7 +925,7 @@ def entra_personagem_ativo(listaPersonagem):
         manipula_teclado.click_especifico(1,'f2')
         manipula_teclado.click_continuo(8,'left')   
         personagemReconhecido=retornaNomePersonagem(1)
-        while personagemReconhecido!=None or contadorPersonagem<13:
+        while personagemReconhecido!=None and contadorPersonagem<13:
             if confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
                 manipula_teclado.click_especifico(1,'f2')
                 time.sleep(1)
