@@ -594,7 +594,8 @@ def verifica_trabalho_comum(profissao_verificada):
                 nome_trabalho=trabalho_lista[nome]
                 profissao_trabalho=trabalho_lista[profissao]
                 raridade_trabalho=trabalho_lista[raridade]
-                if raridade_trabalho=='Comum' and profissao_trabalho==profissao_verificada:
+                estadoTrabalho=trabalho_lista[estado]
+                if raridade_trabalho=='Comum' and profissao_trabalho==profissao_verificada and estadoTrabalho==para_produzir:
                     print(f'Trabalho na lista: {nome_trabalho}')
                     if nome_trabalho_reconhecido.replace(' ','').lower()==nome_trabalho.replace(' ','').replace('-','').lower():
                         linhaSeparacao()
