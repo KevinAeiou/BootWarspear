@@ -1823,12 +1823,56 @@ def configura_licenca(trabalho):
         return ''
     return trabalho[licenca]
 
-def recebeCorrespondencia():
+def abreCaixaCorreio():
     manipula_teclado.click_especifico(1,'f2')
     manipula_teclado.click_especifico(1,'1')
     manipula_teclado.click_especifico(1,'9')
 
-    
+def verificaCaixaCorreio():
+    telaInteira=retorna_atualizacao_tela()
+    frameTela=telaInteira[233:233+30,235:235+200]
+    if np.sum(frameTela==255)>0:
+        return True
+    return False
+
+def retornaConteudoCorrespondencia():
+    telaInteira=retorna_atualizacao_tela()
+    frameTela=telaInteira[231:231+50,168:168+343]
+    # manipula_imagem.mostra_imagem(0,frameTela,None)
+    textoCarta=manipula_imagem.reconhece_texto(frameTela)
+    produto=verificaVendaProduto(textoCarta)
+    if produto!=None:
+        if produto:
+            print(f'Produto vendido...')
+            removerPalavras=['vendeu','por','de','ouro']
+            print(textoCarta)
+            listaTextoCarta=textoCarta.split()
+            result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
+            print(result)
+            retorno = ' '.join(result)
+            print(retorno)
+            frameTela=telaInteira[415:415+30,250:250+260]
+            frameTelaTratado=manipula_imagem.transforma_branco_preto(frameTela)
+            print(manipula_imagem.reconhece_digito(frameTelaTratado))
+            manipula_imagem.mostra_imagem(0,frameTela,None)
+        else:
+            print(f'Produto expirado...')
+            removerPalavras=['a','oferta','de','expirou']
+            print(textoCarta)
+            listaTextoCarta=textoCarta.split()
+            result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
+            print(result)
+            retorno = ' '.join(result)
+            print(retorno)
+    else:
+        print(f'Erro...')
+
+def verificaVendaProduto(texto):
+    if 'vendeu'in texto.lower():
+        return True
+    elif 'expirou'in texto.lower():
+        return False
+    return None
 
 def verificaPixelCorrespondencia():
     confirmacao=False
@@ -1960,7 +2004,9 @@ def funcao_teste(id_personagem):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
-    verifica_erro(None)
+    # verifica_erro(None)
+    # print(verificaCaixaCorreio())
+    retornaConteudoCorrespondencia()
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
@@ -2006,7 +2052,7 @@ def funcao_teste(id_personagem):
     # atualiza_lista_profissao(dicionarioPersonagem)
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
-    verificaPixelCorrespondencia()
+    # verificaPixelCorrespondencia()
     # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
     # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
     # manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')

@@ -35,16 +35,16 @@ def recorta_frame(frame):
     return fatia_imagem
 
 def reconhece_digito(imagem):
-    # inicio = time.time()
+    inicio = time.time()
     # tesseract image.png output --oem 3 --psm 11 -c tessedit_char_whitelist=0123456789
     caminho = r"C:\Program Files\Tesseract-OCR"
     pytesseract.pytesseract.tesseract_cmd = caminho +r"\tesseract.exe"
     #busca texto das produções
     # texto_reconhecido = pytesseract.image_to_string(imagem, lang="por")
     digitoReconhecido=pytesseract.image_to_string(imagem, config='outputbase digits')
-    # fim = time.time()
-    # print(f'Tempo de reconhece_texto: {fim - inicio}')
-    # print(f'____________________________________________________')
+    fim = time.time()
+    print(f'Tempo de reconhece_digito: {fim - inicio}')
+    print(f'____________________________________________________')
     return digitoReconhecido
 
 def reconhece_texto(imagem):
@@ -57,9 +57,9 @@ def reconhece_texto(imagem):
     texto_reconhecido=pytesseract.image_to_string(imagem, lang="por")
     if len(texto_reconhecido)!=0:
         lista_caracteres_especiais = ['"','',',','.','|','!','@','$','%','¨','&','*','(',')','_','-','+','=','§','[',']','{','}','ª','º','^','~','?','/','°',':',';','>','<','\'','\n']
-        lista_caracteres_numericos = ['0','1','2','3','4','5','6','7','8','9']
-        for numero in lista_caracteres_numericos:
-            texto_reconhecido = texto_reconhecido.replace(numero,'')
+        # lista_caracteres_numericos = ['0','1','2','3','4','5','6','7','8','9']
+        # for numero in lista_caracteres_numericos:
+        #     texto_reconhecido = texto_reconhecido.replace(numero,'')
         for especial in lista_caracteres_especiais:
             texto_reconhecido = texto_reconhecido.replace(especial,'')
         texto=texto_reconhecido
