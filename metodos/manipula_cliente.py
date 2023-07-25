@@ -194,14 +194,14 @@ def consulta_lista_trabalho(nome_proficao,raridade):
     return lista_profissao
 
 #modificado 12/01
-def consulta_lista_desejo(tipo_lista):
+def consulta_lista_desejo(tipo_lista,estado):
     lista_desejo=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{tipo_lista}/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao!=None:
         dicionario_requisicao=requisicao.json()
         for id in dicionario_requisicao:
-            if dicionario_requisicao[id]['estado']==0:
+            if dicionario_requisicao[id]['estado']==estado:
                 id_trabalho = dicionario_requisicao[id]['id']
                 nome_trabalho = dicionario_requisicao[id]['nome']
                 profissao_trabalho = dicionario_requisicao[id]['profissao']

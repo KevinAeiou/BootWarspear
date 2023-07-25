@@ -585,7 +585,7 @@ def verifica_trabalho_comum(profissao_verificada):
     manipula_teclado.click_especifico(5,'down')
     global contador_paracima
     contador_paracima=5
-    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
+    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',0)
     while trabalho==None:#51 capas, 100 acorpoacorpo,
         nome_trabalho_reconhecido = retorna_nome_trabalho_reconhecido(530,1)
         if nome_trabalho_reconhecido!=None:
@@ -854,7 +854,7 @@ def retorna_lista_profissao_verificada(dicionarioPersonagem):
     #abre o arquivo lista de profissoes
     conteudo_lista_profissoes=manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes')
     #abre o arquivo lista de desejos
-    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo')
+    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo',0)
     #percorre todas as linha do aquivo profissoes
     for linhaProfissao in range(len(conteudo_lista_profissoes)):
         profissao=conteudo_lista_profissoes[linhaProfissao]
@@ -1305,7 +1305,7 @@ def loga_personagem(email, senha):
     return confirmacao
 
 def inicia_busca_trabalho(dicionarioPersonagem):
-    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
+    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',)
     dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
