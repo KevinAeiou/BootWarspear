@@ -100,40 +100,51 @@ class App(customtkinter.CTk):
         larguraTela=self.winfo_screenwidth()
         largura=larguraTela//2
         self.title('Gerenciador boot WarSpear')
-        self.geometry(f'{largura}x{alturaTela}+{largura}+0')
+        self.geometry(f'{largura}x{alturaTela}+{largura-5}+0')
 
-        self.frameEsquerdo = customtkinter.CTkFrame(self, width=largura,corner_radius=10)
-        self.frameEsquerdo.grid(row=0, column=0,padx=(10, 0), pady=(10, 0), sticky="nsew")
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(0,weight=0)
+        self.rowconfigure(1,weight=1)
+
+        self.texto=customtkinter.CTkLabel(self,text='Personagens', font=customtkinter.CTkFont(size=16, weight="bold"))
+        self.texto.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        self.frameCentro = customtkinter.CTkFrame(self,corner_radius=10)
+        self.frameCentro.grid(row=1, column=0,padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.frameCentro.columnconfigure(0,weight=0)
+        self.frameCentro.rowconfigure(0,weight=1)
+        self.frameCentro.rowconfigure(1,weight=2)
+        self.frameCentro.rowconfigure(2,weight=2)
 
     def temas(self):
         lista=manipula_cliente.consutar_lista('eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem')
         tamanhoLista=len(lista)
 
-        self.texto=customtkinter.CTkLabel(self.frameEsquerdo,text='Personagens', font=customtkinter.CTkFont(size=16, weight="bold"))
-        self.texto.grid(row=0, column=0, padx=20, pady=(20, 10))
-
-        contadorPersonagem=1
-        self.tabview = customtkinter.CTkTabview(self.frameEsquerdo)
-        self.tabview.grid(row=1, column=0, padx=10, pady=10)
+        self.tabPersonagens = customtkinter.CTkTabview(self.frameCentro)
+        self.tabPersonagens.grid(row=0, column=0, padx=10, pady=10)
+        self.tabPersonagens.columnconfigure(0,weight=0)
+        self.tabPersonagens.rowconfigure(0,weight=1)
         listaTabs=[]
+        contadorPersonagem=1
         for personagem in lista:
-            self.tabview.add(f"{personagem[nome]}")
-            self.tabview.tab(f"{personagem[nome]}").grid_columnconfigure(0, weight=1)
-            listaTabs.append(self.tabview)
+            self.tabPersonagens.add(f"{personagem[nome]}")
+            self.tabPersonagens.tab(f"{personagem[nome]}")
+            # self.tabPersonagens.grid_columnconfigure(0, weight=1)
+            listaTabs.append(self.tabPersonagens)
             contadorPersonagem+=1
-        for personagem in lista:
-            for tabs in listaTabs:
-                self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(f'{personagem[nome]}'))
-                self.tabEstadosTrabalho.grid(row=2,column=0,padx=5,pady=5)
-                self.tabEstadosTrabalho.add(f'To do')
-                self.tabEstadosTrabalho.add(f'Doing')
-                self.tabEstadosTrabalho.add(f'Done')
+        # for personagem in lista:
+        #     for tabs in listaTabs:
+        #         self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(f'{personagem[nome]}'))
+        #         self.tabEstadosTrabalho.grid(row=1,column=0,padx=5,pady=5)
+        #         self.tabEstadosTrabalho.add(f'To do')
+        #         self.tabEstadosTrabalho.add(f'Doing')
+        #         self.tabEstadosTrabalho.add(f'Done')
 
-        self.labelTema=customtkinter.CTkLabel(master=self.frameEsquerdo,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
-        self.labelTema.grid(row=contadorPersonagem+1,column=0,padx=10,pady=10)
+        self.labelTema=customtkinter.CTkLabel(master=self.frameCentro,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
+        self.labelTema.grid(row=1,column=0,padx=10,pady=10)
 
-        self.opcoesTema=customtkinter.CTkOptionMenu(master=self.frameEsquerdo,values=['Light','Dark','System'],command=self.mudaTema)
-        self.opcoesTema.grid(row=contadorPersonagem+2,column=0,padx=10,pady=10)
+        self.opcoesTema=customtkinter.CTkOptionMenu(master=self.frameCentro,values=['Light','Dark','System'],command=self.mudaTema)
+        self.opcoesTema.grid(row=2,column=0,padx=10,pady=10)
 
     def verificaOpcao(self,tamanhoLista,opcaoPersonagem):
         confirmacao=True
