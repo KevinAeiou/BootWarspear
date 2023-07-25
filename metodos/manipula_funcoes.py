@@ -138,8 +138,10 @@ def atualiza_lista_profissao(dicionarioPersonagem):
             break
     else:
         print(f'Processo concluído!')
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
     linhaSeparacao()
     manipula_teclado.click_continuo(8,'up')
+    return dicionarioPersonagem
 
 def atualiza_referencias():
     tela_inteira = retorna_atualizacao_tela()
@@ -520,7 +522,7 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
     linhaSeparacao()
     return False
 #modificado 16/01
-def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
+def verifica_posicoes_trabalhos(profissao_verificada,dicionarioPersonagem):
     yinicial_nome=285
     posicao_trabalho_reconhecido=0
     posicao_trabalho=-1
@@ -528,13 +530,13 @@ def verifica_posicoes_trabalhos(profissao_verificada,conteudo_lista_desejo):
     #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
     #sempre faz três verificações
     time.sleep(2)
-    if not retorna_trabalho_comum(conteudo_lista_desejo,profissao_verificada):
+    if not retorna_trabalho_comum(dicionarioPersonagem[CHAVE_LISTA_DESEJO],profissao_verificada):
         while posicao_trabalho_reconhecido<4 and trabalho_lista==None:
             nome_trabalho_reconhecido=retorna_nome_trabalho_reconhecido(yinicial_nome,0)
             if nome_trabalho_reconhecido!=None and trabalho_lista==None:
                 print(f'Nome do trabalho disponível: {nome_trabalho_reconhecido}')
                 #enquanto não comparar toda lista
-                for trabalho_lista_desejo in conteudo_lista_desejo:
+                for trabalho_lista_desejo in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
                     #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
                     nome_trabalho = trabalho_lista_desejo[nome]
                     profissao_trabalho = trabalho_lista_desejo[profissao]
@@ -761,14 +763,14 @@ def retorna_tipo_erro():
     tela_inteira=retorna_atualizacao_tela()
     frame_erro=tela_inteira[335:335+100,150:526]
     erro_encontrado=manipula_imagem.reconhece_texto(frame_erro)
-    # print(erro_encontrado)
+    print(erro_encontrado)
     if erro_encontrado!=None:
         tipo_erro_trabalho=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
                             'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
                             'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
                             'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                             'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidadatarefadeproduçãoexpirou.',
+                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
                             'reinodejogoselecionado','jogoestadesatualizada']
         for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
             if tipo_erro_trabalho[tamanho_tipo_erro].lower() in erro_encontrado.replace(' ','').lower():
@@ -1326,7 +1328,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                     linhaSeparacao()
                     while True:
                         manipula_teclado.retorna_menu_profissao_especifica(profissao_necessaria[2])
-                        posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,conteudo_lista_desejo)
+                        posicao_trabalho,trabalho_lista_desejo=verifica_posicoes_trabalhos(nome_profissao,dicionarioPersonagem)
                         dicionarioPersonagem=inicia_processo(posicao_trabalho,trabalho_lista_desejo,nome_profissao,dicionarioPersonagem)
                         if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
                             break
@@ -1470,6 +1472,7 @@ def inicia_producao(trabalho,dicionarioPersonagem):
                 if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                     while verifica_erro(trabalho)!=0:
                         continue
+                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
         else:
             print(f'Erro ao busca licença...')
             linhaSeparacao()
@@ -1820,17 +1823,23 @@ def configura_licenca(trabalho):
         return ''
     return trabalho[licenca]
 
-# def recebeCorrespondencia():
+def recebeCorrespondencia():
+    manipula_teclado.click_especifico(1,'f2')
+    manipula_teclado.click_especifico(1,'1')
+    manipula_teclado.click_especifico(1,'9')
+
+    
 
 def verificaPixelCorrespondencia():
     confirmacao=False
     tela=retorna_atualizacao_tela()
-    print(tela[667,658])
-    if (tela[667,658] ==(181,239,255)).all():
+    frameTela=tela[665:690,644:675]
+    contadorPixelCorrespondencia=np.sum(frameTela==(173,239,247))
+    if contadorPixelCorrespondencia>50:
         print(f'Há correspondencia!')
         confirmacao=True
     else:
-        print(f'Há correspondencia!')
+        print(f'Não há correspondencia!')
     linhaSeparacao()
     return confirmacao
 
@@ -1951,7 +1960,7 @@ def funcao_teste(id_personagem):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
-    # verifica_erro('')
+    verifica_erro(None)
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
@@ -1979,15 +1988,15 @@ def funcao_teste(id_personagem):
     # print(retorna_licenca_reconhecida())
     # print(verifica_licenca('principiante'))
     # linhaSeparacao()
-    valor=True
-    while input(f'Continuar?')=='s':
-        if valor:
-            uso={'uso':1}
-            valor=False
-        else:
-            uso={'uso':0}
-            valor=True
-        manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',valor)
+    # valor=True
+    # while input(f'Continuar?')=='s':
+    #     if valor:
+    #         uso={'uso':1}
+    #         valor=False
+    #     else:
+    #         uso={'uso':0}
+    #         valor=True
+    #     manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',valor)
     # if verifica_menu_referencia():
     #     print('Achei!')
     # else:
@@ -1995,8 +2004,9 @@ def funcao_teste(id_personagem):
     # retorna_tipo_erro()
     # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
     # atualiza_lista_profissao(dicionarioPersonagem)
-    while input(f'Continuar?')!='n':
-        retorna_menu()
+    # while input(f'Continuar?')!='n':
+    #     retorna_menu()
+    verificaPixelCorrespondencia()
     # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
     # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
     # manipula_cliente.adicionar_profissao(personagem_id_global,'Teste')
@@ -2009,9 +2019,7 @@ def funcao_teste(id_personagem):
     # inicia_busca_trabalho()
     manipula_teclado.click_atalho_especifico('alt','tab')
 # funcao_teste('')
-# retorna_tipo_erro()
 # verifica_erro(None)
-# verificaPixelCorrespondencia()
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
 # recuperaPresente()
