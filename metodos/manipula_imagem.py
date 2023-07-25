@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import Image
-import mahotas
+# import mahotas
 import time
 from PIL import ImageChops
 
@@ -292,9 +292,36 @@ def mostra_video(caminho_video):
 def retorna_fundo_branco():
     return np.ones((200,200,3))*255
 
+def salvaLimiarImagem():
+    image = cv2.imread("modelo ps.jpg")
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    blur = cv2.GaussianBlur(gray, (5, 5), 
+                        cv2.BORDER_DEFAULT)
+    ret, thresh = cv2.threshold(blur, 200, 255,
+                            cv2.THRESH_BINARY_INV)
+    cv2.imwrite("thresh.png",thresh)
+
+def encontraContorno():
+    image = cv2.imread("modelo ps.jpg")
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    blur = cv2.GaussianBlur(gray, (5, 5), 
+                        cv2.BORDER_DEFAULT)
+    ret, thresh = cv2.threshold(blur, 200, 255,
+                            cv2.THRESH_BINARY_INV)
+    contours, heirarchies = cv2.findContours(
+    thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    blank = np.zeros(thresh.shape[:2], 
+                 dtype='uint8')
+    cv2.drawContours(blank, contours, -1, 
+                    (255, 0, 0), 1)
+    invertido=retornaImagemCoresInvertidas(blank)
+    cv2.imwrite("Invertido.png", invertido)
+
 def temporario():
     imagem_teste = abre_imagem(testeDigitos)
     digitos=reconhece_digito(imagem_teste)
     print(f'Digitos reconhecidos: {digitos}')
 
-# temporario()
+encontraContorno()

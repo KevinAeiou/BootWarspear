@@ -323,4 +323,4 @@ def usuario():
                 menu()
         usuario()
     return
-menu_personagem()
+# menu_personagem()

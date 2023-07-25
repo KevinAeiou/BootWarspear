@@ -58,92 +58,106 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.configuraLayout()
-        self.temas()
-        # self.labelsTeste()
-
-        # self.tabview.add("Tab 2")
-        # self.tabview.add("Tab 3")
-        # self.tabview.tab("CTkTabview").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
-        # self.tabview.tab("Tab 2").grid_columnconfigure(0, weight=1)
-        # if tamanhoLista>0:
-        #     indice=1
-        #     for personagem in lista:
-        #         # print(f'Entrou laço.')
-        #         # personagemBotao=customtkinter.CTkButton(tela,text=personagem[nome],command=lambda:clique(personagem[id]))
-        #         indicePersonagem=f'{indice} - {personagem[nome]}'
-        #         # print(indicePersonagem)
-        #         self.personagemLabel=customtkinter.CTkLabel(self.sidebar_frame,text=indicePersonagem)
-        #         self.personagemLabel.grid(row=indice,column=0,padx=3,pady=3)
-        #         # personagemBotao=customtkinter.CTkButton(tela,text=personagem[nome])
-        #         # personagemBotao.pack(padx=10,pady=10)
-        #         indice+=1
-        #     indicePersonagem=f'0 - Voltar'
-        #     self.personagemLabel=customtkinter.CTkLabel(self.sidebar_frame,text=indicePersonagem)
-        #     self.personagemLabel.grid(row=indice+1,column=0,padx=5,pady=5)
-        #     self.personagemInput=customtkinter.CTkEntry(self.sidebar_frame,placeholder_text='Sua escolha')
-        #     self.personagemInput.grid(row=indice+2,column=0,padx=5,pady=5)
-        #     print(self.personagemInput.get())
-        #     self.personagemBotao=customtkinter.CTkButton(self.sidebar_frame,text='Confirma.',command=lambda:self.verificaOpcao(tamanhoLista,self.personagemInput))
-        #     self.personagemBotao.grid(row=indice+3,column=0,padx=5,pady=5)
-        # else:
-        #     self.texto=customtkinter.CTkLabel(self,text='A lista está vazia')
-        #     self.texto.grid(row=1,column=0,padx=10,pady=10)
-
-    def labelsTeste(self):
-        self.label1=customtkinter.CTkLabel(master=self.frameCentral,text='Teste1',bg_color='transparent',text_color=['#000','#fff'])
-        self.label1.grid(row=0,column=0,padx=10,pady=10)
-        self.label2=customtkinter.CTkLabel(master=self.frameDireito,text='Teste2',bg_color='transparent',text_color=['#000','#fff'])
-        self.label2.grid(row=0,column=0,padx=10,pady=10)
+        self.configuraWidget()
+        self.configuraGridWidgets()
 
     def configuraLayout(self):
         alturaTela=self.winfo_screenheight()
         larguraTela=self.winfo_screenwidth()
         largura=larguraTela//2
         self.title('Gerenciador boot WarSpear')
-        self.geometry(f'{largura}x{alturaTela}+{largura}+0')
+        self.geometry(f'{largura}x{alturaTela}+{largura-5}+0')
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(0,weight=0)
+        self.rowconfigure(1,weight=1)
 
-        self.frameEsquerdo = customtkinter.CTkFrame(self, width=largura,corner_radius=10)
-        self.frameEsquerdo.grid(row=0, column=0,padx=(10, 0), pady=(10, 0), sticky="nsew")
+    def configuraWidget(self):
+        self.labelPersonagem=customtkinter.CTkLabel(self,text='Personagens', font=customtkinter.CTkFont(size=16, weight="bold"))
+        self.frameCentro = customtkinter.CTkFrame(self,corner_radius=10)
+        self.tabPersonagens = customtkinter.CTkTabview(self.frameCentro)
+        self.botaoIniciar=customtkinter.CTkButton(self.frameCentro,text='Iniciar')
+        self.labelTema=customtkinter.CTkLabel(self.frameCentro,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
+        self.opcoesTema=customtkinter.CTkOptionMenu(self.frameCentro,values=['Light','Dark','System'],command=self.mudaTema)
 
-    def temas(self):
-        lista=manipula_cliente.consutar_lista('eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem')
-        tamanhoLista=len(lista)
-
-        self.texto=customtkinter.CTkLabel(self.frameEsquerdo,text='Personagens', font=customtkinter.CTkFont(size=16, weight="bold"))
-        self.texto.grid(row=0, column=0, padx=20, pady=(20, 10))
-
-        contadorPersonagem=1
-        self.tabview = customtkinter.CTkTabview(self.frameEsquerdo)
-        self.tabview.grid(row=1, column=0, padx=10, pady=10)
         listaTabs=[]
+        lista=manipula_cliente.consutar_lista('eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem')
         for personagem in lista:
-            self.tabview.add(f"{personagem[nome]}")
-            self.tabview.tab(f"{personagem[nome]}").grid_columnconfigure(0, weight=1)
-            listaTabs.append(self.tabview)
-            contadorPersonagem+=1
+            self.tabPersonagens.add(f"{personagem[nome]}")
+            self.tabPersonagens.tab(f"{personagem[nome]}").columnconfigure(0,weight=1)
+            self.tabPersonagens.tab(f"{personagem[nome]}").rowconfigure(0,weight=1)
+            listaTabs.append(self.tabPersonagens)
         for personagem in lista:
+            caminhoListaDesejo=f'eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem[id]}/Lista_desejo'  
+            listaToDo = manipula_cliente.consulta_lista_desejo(caminhoListaDesejo,0)
+            print(f'Lista to do do personagem {personagem[nome]}.')
+            listaDoing = manipula_cliente.consulta_lista_desejo(caminhoListaDesejo,1)
+            print(f'Lista doing do personagem {personagem[nome]}.')
+            listaDone = manipula_cliente.consulta_lista_desejo(caminhoListaDesejo,2)
+            print(f'Lista done do personagem {personagem[nome]}.')
             for tabs in listaTabs:
-                self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(f'{personagem[nome]}'))
-                self.tabEstadosTrabalho.grid(row=2,column=0,padx=5,pady=5)
+                self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(personagem[nome]))
+                self.tabEstadosTrabalho.grid(row=0,column=0,padx=5,pady=5,sticky="nsew")
                 self.tabEstadosTrabalho.add(f'To do')
                 self.tabEstadosTrabalho.add(f'Doing')
                 self.tabEstadosTrabalho.add(f'Done')
+                self.tabEstadosTrabalho.tab('To do').columnconfigure(0,weight=1)
+                self.tabEstadosTrabalho.tab('To do').rowconfigure(0,weight=1)
+                self.tabEstadosTrabalho.tab('Doing').columnconfigure(0,weight=1)
+                self.tabEstadosTrabalho.tab('Doing').rowconfigure(0,weight=1)
+                self.tabEstadosTrabalho.tab('Done').columnconfigure(0,weight=1)
+                self.tabEstadosTrabalho.tab('Done').rowconfigure(0,weight=1)
 
-        self.labelTema=customtkinter.CTkLabel(master=self.frameEsquerdo,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
-        self.labelTema.grid(row=contadorPersonagem+1,column=0,padx=10,pady=10)
+                self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('To do'))
+                self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
 
-        self.opcoesTema=customtkinter.CTkOptionMenu(master=self.frameEsquerdo,values=['Light','Dark','System'],command=self.mudaTema)
-        self.opcoesTema.grid(row=contadorPersonagem+2,column=0,padx=10,pady=10)
+                self.frameRolanteLista=[]
+                contadorTrabalho=0
+                if len(listaToDo)!=0:
+                    for toDo in listaToDo:
+                        self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=toDo[nome])
+                        self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                        self.frameRolanteLista.append(self.labelTrabalho)
+                        contadorTrabalho+=1
+                else:
+                    self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
+                    self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
 
-    def verificaOpcao(self,tamanhoLista,opcaoPersonagem):
-        confirmacao=True
-        print(opcaoPersonagem)
-        print(tamanhoLista)
-        if not opcaoPersonagem.isdigit() or int(opcaoPersonagem)<0 or int(opcaoPersonagem)>tamanhoLista:
-            print(f'Opção inválida! Selecione um personagem.')
-            manipula_funcoes.linhaSeparacao()
-            confirmacao=False
-        return confirmacao
+                self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('Doing'))
+                self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
+                self.frameRolanteLista=[]
+                contadorTrabalho=0
+                if len(listaDoing)!=0:
+                    for doing in listaDoing:
+                        self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=doing[nome])
+                        self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                        contadorTrabalho+=1
+                else:
+                    self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
+                    self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                
+                self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('Done'))
+                self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
+                self.frameRolanteLista=[]
+                contadorTrabalho=0
+                if len(listaDone)!=0:
+                    for done in listaDone:
+                        self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=done[nome])
+                        self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                        contadorTrabalho+=1
+                else:
+                    self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
+                    self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                
+    def configuraGridWidgets(self):
+        self.labelPersonagem.grid(row=0, column=0, padx=20, pady=(10, 0),sticky=('we'))
+        self.frameCentro.grid(row=1, column=0,padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.frameCentro.columnconfigure(0,weight=1)
+        self.frameCentro.rowconfigure(0,weight=1)
+        self.frameCentro.rowconfigure((1,2,3),weight=0)
+        self.tabPersonagens.grid(row=0, column=0, padx=10, pady=(10,0),sticky="nsew")
+        self.botaoIniciar.grid(row=1,column=0,padx=10,pady=(10,0))
+        self.labelTema.grid(row=2,column=0,padx=10,pady=(10,0),sticky="sw")
+        self.opcoesTema.grid(row=3,column=0,padx=10,pady=(5,20),sticky="sw")
     
     def mudaTema(self,novaAparencia):
         customtkinter.set_appearance_mode(novaAparencia)
