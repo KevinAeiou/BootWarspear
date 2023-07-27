@@ -99,7 +99,7 @@ def adiciona_trabalho(personagem_id,trabalho,licenca):
 def profissaoExiste(profissaoReconhecida,listaProfissao):
     confirmacao=False
     for profissao in listaProfissao:
-        if profissao[nome]in profissaoReconhecida:
+        if profissao[nome].lower()in profissaoReconhecida.lower():
             confirmacao=True
             break
     return confirmacao
@@ -1305,7 +1305,7 @@ def loga_personagem(email, senha):
     return confirmacao
 
 def inicia_busca_trabalho(dicionarioPersonagem):
-    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',)
+    conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',0)
     dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
@@ -1322,7 +1322,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                     menu=retorna_menu()
                 else:
                     if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
-                        atualiza_lista_profissao(dicionarioPersonagem)
+                        dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
                     nome_profissao=profissao_necessaria[nome]
                     print(f'Verificando profissão: {nome_profissao}')
                     linhaSeparacao()
@@ -1472,7 +1472,7 @@ def inicia_producao(trabalho,dicionarioPersonagem):
                 if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                     while verifica_erro(trabalho)!=0:
                         continue
-                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo')
+                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',0)
         else:
             print(f'Erro ao busca licença...')
             linhaSeparacao()
@@ -2000,13 +2000,13 @@ def deleta_item_lista():
 def funcao_teste(id_personagem):
     global personagem_id_global
     personagem_id_global=id_personagem
-    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:id_personagem}
+    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:id_personagem,CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
     # verifica_erro(None)
     # print(verificaCaixaCorreio())
-    retornaConteudoCorrespondencia()
+    # retornaConteudoCorrespondencia()
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
@@ -2048,8 +2048,8 @@ def funcao_teste(id_personagem):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    # atualiza_lista_profissao(dicionarioPersonagem)
+    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    print(atualiza_lista_profissao(dicionarioPersonagem))
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
     # verificaPixelCorrespondencia()

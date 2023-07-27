@@ -41,7 +41,8 @@ def reconhece_digito(imagem):
     pytesseract.pytesseract.tesseract_cmd = caminho +r"\tesseract.exe"
     #busca texto das produções
     # texto_reconhecido = pytesseract.image_to_string(imagem, lang="por")
-    digitoReconhecido=pytesseract.image_to_string(imagem, config='outputbase digits')
+    digitoReconhecido=pytesseract.image_to_string(imagem,
+                                                  config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
     fim = time.time()
     print(f'Tempo de reconhece_digito: {fim - inicio}')
     print(f'____________________________________________________')
