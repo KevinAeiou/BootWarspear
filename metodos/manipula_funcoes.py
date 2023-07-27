@@ -966,17 +966,6 @@ def confirmaNomePersonagem(personagemReconhecido,listaPersonagem):
 def ativaAtributoUso(primeiroPersonagem):
     listaPersonagemId=manipula_cliente.retornaListaPersonagemId(usuario_id,primeiroPersonagem[0][2])
     manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagemId,'uso',1)
-
-def retorna_medidas_modelos():
-    lista_modelos = [1,2,5,9]
-    lista_medidas = []
-    print(f'Reconhecendo medidas dos tipos de menus.')
-    linhaSeparacao()
-    for x in range(len(lista_modelos)):
-        nome_modelo = f'modelos/modelo_menu_{lista_modelos[x]}.png'
-        modelo = manipula_imagem.abre_imagem(nome_modelo)
-        lista_medidas.append(modelo.shape[:2])
-    return lista_medidas
 #modificado 16/01
 def prepara_personagem(id_personagem):
     global personagem_id_global
@@ -1315,6 +1304,12 @@ def inicia_busca_trabalho(dicionarioPersonagem):
             erro=verifica_erro(None)
             if erro==0:
                 menu=retorna_menu()
+                if menu==menu_inicial:
+                    if verificaPixelCorrespondencia():
+                        manipula_teclado.click_especifico(1,'f2')
+                        manipula_teclado.click_especifico(1,'1')
+                        manipula_teclado.click_especifico(1,'9')
+                        recuperaCorrespondencia()
                 while menu!=menu_produzir:
                     dicionarioPersonagem=trata_menu(menu,dicionarioPersonagem)
                     if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:
@@ -1831,6 +1826,8 @@ def abreCaixaCorreio():
 def verificaCaixaCorreio():
     telaInteira=retorna_atualizacao_tela()
     frameTela=telaInteira[233:233+30,235:235+200]
+    print(f'Verificando se possui correspondencia...')
+    linhaSeparacao()
     if np.sum(frameTela==255)>0:
         return True
     return False
@@ -1840,32 +1837,33 @@ def retornaConteudoCorrespondencia():
     frameTela=telaInteira[231:231+50,168:168+343]
     # manipula_imagem.mostra_imagem(0,frameTela,None)
     textoCarta=manipula_imagem.reconhece_texto(frameTela)
-    produto=verificaVendaProduto(textoCarta)
-    if produto!=None:
-        if produto:
-            print(f'Produto vendido...')
-            removerPalavras=['vendeu','por','de','ouro']
-            print(textoCarta)
-            listaTextoCarta=textoCarta.split()
-            result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
-            print(result)
-            retorno = ' '.join(result)
-            print(retorno)
-            frameTela=telaInteira[415:415+30,250:250+260]
-            frameTelaTratado=manipula_imagem.transforma_branco_preto(frameTela)
-            print(manipula_imagem.reconhece_digito(frameTelaTratado))
-            manipula_imagem.mostra_imagem(0,frameTela,None)
+    if textoCarta!=None:
+        produto=verificaVendaProduto(textoCarta)
+        if produto!=None:
+            if produto:
+                print(f'Produto vendido...')
+                removerPalavras=['vendeu','por','de','ouro']
+                print(textoCarta)
+                listaTextoCarta=textoCarta.split()
+                result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
+                print(result)
+                retorno = ' '.join(result)
+                print(retorno)
+                frameTela=telaInteira[415:415+30,250:250+260]
+                frameTelaTratado=manipula_imagem.transforma_branco_preto(frameTela)
+                print(manipula_imagem.reconhece_digito(frameTelaTratado))
+                # manipula_imagem.mostra_imagem(0,frameTela,None)
+            else:
+                print(f'Produto expirado...')
+                removerPalavras=['a','oferta','de','expirou']
+                print(textoCarta)
+                listaTextoCarta=textoCarta.split()
+                result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
+                print(result)
+                retorno = ' '.join(result)
+                print(retorno)
         else:
-            print(f'Produto expirado...')
-            removerPalavras=['a','oferta','de','expirou']
-            print(textoCarta)
-            listaTextoCarta=textoCarta.split()
-            result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
-            print(result)
-            retorno = ' '.join(result)
-            print(retorno)
-    else:
-        print(f'Erro...')
+            print(f'Erro...')
 
 def verificaVendaProduto(texto):
     if 'vendeu'in texto.lower():
@@ -1873,6 +1871,16 @@ def verificaVendaProduto(texto):
     elif 'expirou'in texto.lower():
         return False
     return None
+
+def recuperaCorrespondencia():
+    while verificaCaixaCorreio():
+        manipula_teclado.click_especifico(1,'enter')
+        conteudoCorrespondencia=retornaConteudoCorrespondencia()
+        manipula_teclado.click_especifico(1,'f2')
+    else:
+        print(f'Caixa de correio vazia!')
+        manipula_teclado.click_mouse_esquerdo(1,2,35)
+        linhaSeparacao()
 
 def verificaPixelCorrespondencia():
     confirmacao=False
