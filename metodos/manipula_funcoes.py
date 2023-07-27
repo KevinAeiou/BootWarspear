@@ -92,8 +92,8 @@ def atualiza_nova_tela():
     print(f'Atualizou a tela.')
     linhaSeparacao()
 
-def adiciona_trabalho(personagem_id,trabalho,licenca):
-    manipula_cliente.adiciona_trabalho(personagem_id,trabalho,licenca,0)
+def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
+    manipula_cliente.adiciona_trabalho(personagem_id,trabalho,licenca,estado)
     linhaSeparacao()
 
 def profissaoExiste(profissaoReconhecida,listaProfissao):
@@ -1364,12 +1364,16 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
         recorrencia=dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][6]
         if recorrencia==0:
+            print(f'Trabalho sem recorrencia.')
             manipula_cliente.muda_estado_trabalho(usuario_id,
                                                 dicionarioPersonagem[CHAVE_ID_PERSONAGEM],
                                                 dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO],
                                                 2)
+            linhaSeparacao()
         else:
-            excluir_trabalho(f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo'/{dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][id]})
+            print(f'Trabalho recorrente.')
+            excluir_trabalho(f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][id]}')
+            linhaSeparacao()
         if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
             manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',True)
             dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=True
@@ -1439,7 +1443,7 @@ def trataMenus(trabalho,dicionarioPersonagem):
             if trabalho[recorrencia]==1:
                 print(f'Recorrencia está ligada.')
                 linhaSeparacao()
-                clone_trabalho=manipula_cliente.adiciona_trabalho(personagem_id_global,trabalho,trabalho[licenca],1)
+                clone_trabalho=adiciona_trabalho(personagem_id_global,trabalho,trabalho[licenca],1)
             elif trabalho[recorrencia]==0:
                 print(f'Recorrencia está desligada.')
                 linhaSeparacao()
