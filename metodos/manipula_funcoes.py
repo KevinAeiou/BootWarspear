@@ -487,18 +487,6 @@ def verifica_ciclo(lista):
             return True
     return False
 
-def retorna_producao_recursos(nome_trabalho):
-    #Grande coleção de rec
-    lista_producao_recursos=([
-        'Grande coleção de recursos comuns','de recursos avançados',
-        'Melhoria da substância comum','Melhoria do catalisador comum','Melhoria da essência comum',
-        'Melhoria da substância composta','Melhoria do catalisador amplificado','Melhoria da essência composta',
-        'Melhorar licença comum','Licença de produção do aprendiz'])
-    for trabalho in lista_producao_recursos:
-        if  trabalho.replace(' ','').lower() in nome_trabalho.replace(' ','').lower():
-            return True
-    return False
-
 def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
     print(f'Confirmando nome do trabalho...')
     x=0
@@ -1374,10 +1362,14 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
     if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
         listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
-        manipula_cliente.muda_estado_trabalho(usuario_id,
-                                              dicionarioPersonagem[CHAVE_ID_PERSONAGEM],
-                                              dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO],
-                                              2)
+        recorrencia=dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][6]
+        if recorrencia==0:
+            manipula_cliente.muda_estado_trabalho(usuario_id,
+                                                dicionarioPersonagem[CHAVE_ID_PERSONAGEM],
+                                                dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO],
+                                                2)
+        else:
+            excluir_trabalho(f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo'/{dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][id]})
         if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
             manipula_cliente.mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',True)
             dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=True
@@ -1393,11 +1385,14 @@ def recupera_trabalho_concluido(dicionarioPersonagem):
         manipula_teclado.click_especifico(1,'f2')
         if nome_trabalho_concluido!=None:
             if verifica_erro(None)==0:
-                trabalho_concluido=['',nome_trabalho_concluido,'',0,'','',0,0]
-                print(f'{trabalho_concluido[nome]} recuperado.')
+                listaDesejoProduzindo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo',1)
+                for trabalhoProduzindo in listaDesejoProduzindo:
+                    if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
+                        dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalhoProduzindo
+                        break
+                print(f'{trabalhoProduzindo[nome]} recuperado.')
                 manipula_teclado.click_especifico(1,'up')
                 linhaSeparacao()
-                dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalho_concluido[1:-1]
             else:
                 dicionarioPersonagem[CHAVE_ESPACO_BOLSA]=False
                 manipula_teclado.click_especifico(1,'up')
@@ -1409,7 +1404,7 @@ def trataErros(trabalho,dicionarioPersonagem):
     erro=verifica_erro(trabalho)
     while erro!=0:
         if erro==erroSemRecursos:
-            caminho_trabalho=f'{personagem_id_global}/Lista_desejo/{trabalho[id]}'
+            caminho_trabalho=f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[id]}'
             excluir_trabalho(caminho_trabalho)  
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroSemEspacosProducao:#sem espaços de produção livres
@@ -1467,7 +1462,7 @@ def inicia_producao(trabalho,dicionarioPersonagem):
                 if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                     while verifica_erro(trabalho)!=0:
                         continue
-                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',0)
+                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{personagem_id_global}/Lista_desejo',0)
         else:
             print(f'Erro ao busca licença...')
             linhaSeparacao()
@@ -1475,17 +1470,6 @@ def inicia_producao(trabalho,dicionarioPersonagem):
         print(f'Erro ao entrar na licença...')
         linhaSeparacao()
     return dicionarioPersonagem
-    
-def verifica_producao_recursos(nome_trabalho_lista_desejo):
-    producao_recurso=True
-    if not retorna_producao_recursos(nome_trabalho_lista_desejo):
-        print(f'Trabalho de produção de equipamentos...')
-        linhaSeparacao()
-        producao_recurso=False
-    else:
-        print(f'Trabalho de produção de recursos...')
-        linhaSeparacao()
-    return producao_recurso
 
 def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
     if listaPersonagemPresenteRecuperado==None:
@@ -2023,7 +2007,7 @@ def funcao_teste(id_personagem):
     # verifica_producao_recursos('Licença de produção do aprendiz')
     # manipula_teclado.click_continuo(9,'up')
     # print(retorna_texto_menu_reconhecido())
-    # recupera_trabalho_concluido()
+    recupera_trabalho_concluido(dicionarioPersonagem)
     # while True:
     # atualiza_nova_tela()
     # manipula_teclado.click_continuo(8,'up')
@@ -2056,8 +2040,8 @@ def funcao_teste(id_personagem):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    print(atualiza_lista_profissao(dicionarioPersonagem))
+    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    # print(atualiza_lista_profissao(dicionarioPersonagem))
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
     # verificaPixelCorrespondencia()

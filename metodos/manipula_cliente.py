@@ -78,7 +78,7 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
               'nivel':int(trabalho[3]),
               'tipo_licenca':licenca,
               'estado':estado,
-              'recorrencia':0})
+              'recorrencia':trabalho[6]})
     for x in range(10):
         try:
             requisicao = requests.post(f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem_id}/Lista_desejo/.json',data=json.dumps(dados))
@@ -202,22 +202,14 @@ def consulta_lista_desejo(tipo_lista,estado):
         dicionario_requisicao=requisicao.json()
         for id in dicionario_requisicao:
             if dicionario_requisicao[id]['estado']==estado:
-                id_trabalho = dicionario_requisicao[id]['id']
-                nome_trabalho = dicionario_requisicao[id]['nome']
-                profissao_trabalho = dicionario_requisicao[id]['profissao']
-                nivel_trabalho = dicionario_requisicao[id]['nivel']
-                licenca_trabalho = dicionario_requisicao[id]['tipo_licenca']
-                raridade_trabalho = dicionario_requisicao[id]['raridade']
-                recorrencia_trabalho=dicionario_requisicao[id]['recorrencia']
-                estado_trabalho=dicionario_requisicao[id]['estado']
-                lista_desejo.append([id_trabalho,
-                                    nome_trabalho,
-                                    profissao_trabalho,
-                                    nivel_trabalho,
-                                    licenca_trabalho,
-                                    raridade_trabalho,
-                                    recorrencia_trabalho,
-                                    estado_trabalho])
+                lista_desejo.append([dicionario_requisicao[id]['id'],
+                                    dicionario_requisicao[id]['nome'],
+                                    dicionario_requisicao[id]['profissao'],
+                                    dicionario_requisicao[id]['nivel'],
+                                    dicionario_requisicao[id]['tipo_licenca'],
+                                    dicionario_requisicao[id]['raridade'],
+                                    dicionario_requisicao[id]['recorrencia'],
+                                    dicionario_requisicao[id]['estado']])
     return lista_desejo
 
 def consulta_lista_personagem(usuario_id):
