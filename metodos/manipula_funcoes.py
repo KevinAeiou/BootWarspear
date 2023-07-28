@@ -1309,6 +1309,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                         return dicionarioPersonagem
                     menu=retorna_menu()
                 else:
+                    print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                     if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                         dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
                     nome_profissao=profissao_necessaria[nome]
@@ -1332,6 +1333,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                 linhaSeparacao()
                 break
         else:
+            print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
             if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                 dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
             print(f'Fim da lista de profissões...')
@@ -1366,7 +1368,7 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
 
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem=recupera_trabalho_concluido(dicionarioPersonagem)
-    if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
+    if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
         listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
         recorrencia=dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][6]
@@ -1387,7 +1389,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def recupera_trabalho_concluido(dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=False
+    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     tela_inteira=retorna_atualizacao_tela()
     frame_nome_trabalho=tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)==0:
@@ -1400,6 +1402,7 @@ def recupera_trabalho_concluido(dicionarioPersonagem):
                 for trabalhoProduzindo in listaDesejoProduzindo:
                     if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
                         dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalhoProduzindo
+                        dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
                         break
                 print(f'{trabalhoProduzindo[nome]} recuperado.')
                 manipula_teclado.click_especifico(1,'up')
