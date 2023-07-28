@@ -4,6 +4,7 @@ import manipula_imagem
 import manipula_teclado
 import manipula_cliente
 import time
+import datetime
 import os.path
 from unidecode import unidecode
 
@@ -74,6 +75,7 @@ produzindo=1
 concluido=2
 
 CHAVE_ID_PERSONAGEM='idPersonagem'
+CHAVE_NOME_PERSONAGEM='nomePersonagem'
 CHAVE_ESPACO_PRODUCAO='espacoProducao'
 CHAVE_ESPACO_BOLSA='espacoBolsa'
 CHAVE_UNICA_CONEXAO='unicaConexao'
@@ -995,7 +997,8 @@ def busca_lista_personagem_ativo():
             personagem=verifica_nome_reconhecido_na_lista(lista_personagem)
             if personagem!=None:
                 personagem_id_global=personagem[id]
-                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,
+                dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem[id],
+                                      CHAVE_NOME_PERSONAGEM:personagem[nome],
                                       CHAVE_UNICA_CONEXAO:True,
                                       CHAVE_ESPACO_BOLSA:True,
                                       CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
@@ -1302,7 +1305,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                         manipula_teclado.click_especifico(1,'f2')
                         manipula_teclado.click_especifico(1,'1')
                         manipula_teclado.click_especifico(1,'9')
-                        recuperaCorrespondencia()
+                        recuperaCorrespondencia(dicionarioPersonagem)
                 while menu!=menu_produzir:
                     dicionarioPersonagem=trata_menu(menu,dicionarioPersonagem)
                     if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:
@@ -1830,10 +1833,9 @@ def verificaCaixaCorreio():
         return True
     return False
 
-def retornaConteudoCorrespondencia():
+def retornaConteudoCorrespondencia(dicionarioPersonagem):
     telaInteira=retorna_atualizacao_tela()
     frameTela=telaInteira[231:231+50,168:168+343]
-    # manipula_imagem.mostra_imagem(0,frameTela,None)
     textoCarta=manipula_imagem.reconhece_texto(frameTela)
     if textoCarta!=None:
         produto=verificaVendaProduto(textoCarta)
@@ -1841,16 +1843,18 @@ def retornaConteudoCorrespondencia():
             if produto:
                 print(f'Produto vendido...')
                 removerPalavras=['vendeu','por','de','ouro']
-                print(textoCarta)
                 listaTextoCarta=textoCarta.split()
                 result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
-                print(result)
                 retorno = ' '.join(result)
-                print(retorno)
                 frameTela=telaInteira[415:415+30,250:250+260]
                 frameTelaTratado=manipula_imagem.transforma_branco_preto(frameTela)
-                print(manipula_imagem.reconhece_digito(frameTelaTratado))
-                # manipula_imagem.mostra_imagem(0,frameTela,None)
+                ouro=manipula_imagem.reconhece_digito(frameTelaTratado)
+                dataAtual=datetime.date.today()
+                dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagem[CHAVE_NOME_PERSONAGEM],
+                                 'nomeProduto':retorno,
+                                 'valorProduto':ouro,
+                                 'dataVenda':dataAtual}
+                print(dicionarioVenda)
             else:
                 print(f'Produto expirado...')
                 removerPalavras=['a','oferta','de','expirou']
@@ -1870,10 +1874,10 @@ def verificaVendaProduto(texto):
         return False
     return None
 
-def recuperaCorrespondencia():
+def recuperaCorrespondencia(dicionarioPersonagem):
     while verificaCaixaCorreio():
         manipula_teclado.click_especifico(1,'enter')
-        conteudoCorrespondencia=retornaConteudoCorrespondencia()
+        conteudoCorrespondencia=retornaConteudoCorrespondencia(dicionarioPersonagem)
         manipula_teclado.click_especifico(1,'f2')
     else:
         print(f'Caixa de correio vazia!')
@@ -2006,13 +2010,13 @@ def deleta_item_lista():
 def funcao_teste(id_personagem):
     global personagem_id_global
     personagem_id_global=id_personagem
-    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:id_personagem,CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
+    dicionarioPersonagem={CHAVE_ID_PERSONAGEM:id_personagem,CHAVE_NOME_PERSONAGEM:'Nome teste',CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     manipula_teclado.click_atalho_especifico('alt','tab')
     # deleta_item_lista()
     # verifica_erro(None)
     # print(verificaCaixaCorreio())
-    # retornaConteudoCorrespondencia()
+    retornaConteudoCorrespondencia(dicionarioPersonagem)
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
@@ -2054,8 +2058,8 @@ def funcao_teste(id_personagem):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    atualiza_lista_profissao(dicionarioPersonagem)
+    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    # atualiza_lista_profissao(dicionarioPersonagem)
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
     # verificaPixelCorrespondencia()
