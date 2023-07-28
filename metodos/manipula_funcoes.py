@@ -79,6 +79,7 @@ CHAVE_ESPACO_BOLSA='espacoBolsa'
 CHAVE_UNICA_CONEXAO='unicaConexao'
 CHAVE_LISTA_DESEJO='listaDesejo'
 CHAVE_LISTA_PROFISSAO='listaProfissao'
+CHAVE_LISTA_PROFISSAO_VERIFICADA='listaProfissaoVerificada'
 CHAVE_CONFIRMACAO='confirmacao'
 CHAVE_TRABALHO_CONCLUIDO='trabalhoConcluido'
 CHAVE_LISTA_PROFISSAO_MODIFICADA='listaProfissoesAtualizada'
@@ -103,44 +104,48 @@ def profissaoExiste(profissaoReconhecida,listaProfissao):
             confirmacao=True
             break
     return confirmacao
-#modificado16/01
+
 def atualiza_lista_profissao(dicionarioPersonagem):
-    #285,355
     yinicial_profissao=285
-    listaProfissaoAtual=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]
-    #altura frame: 35 pixel
-    #altura entre os frames: 70 pixel
     print(f'Atualizando lista de profissões...')
     linhaSeparacao()
-    for x in range(len(listaProfissaoAtual)):
+    for x in range(8):
         if x==4:
             manipula_teclado.click_especifico(5,'down')
-            #yinicial_profissao recebe valor fixo=529
-            yinicial_profissao = 529
+            yinicial_profissao=529
         elif x>4:
             manipula_teclado.click_especifico(1,'down')
             yinicial_profissao=529
         tela_inteira=retorna_atualizacao_tela()
-        frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,233:456]
-        #reconhece a profissao do frame
+        frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,232:232+237]
         profissaoReconhecida=manipula_imagem.reconhece_texto(frame_nome_profissao)
         if profissaoReconhecida!=None:
             profissaoReconhecida=unidecode(profissaoReconhecida)
-            if profissaoExiste(profissaoReconhecida,listaProfissaoAtual):
-                if listaProfissaoAtual[x][nome]!=profissaoReconhecida:
-                    manipula_cliente.modificarProfissao(dicionarioPersonagem[CHAVE_ID_PERSONAGEM],listaProfissaoAtual[x][id],profissaoReconhecida)
+            if profissaoReconhecida.replace(' ','').lower()==dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][nome].replace(' ','').lower():
+                print(f'Profissão: {profissaoReconhecida} OK')
                 yinicial_profissao+=70
+                continue
             else:
-                print(f'Profissão não existe!')
-                break
+                for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:
+                    if profissaoReconhecida.replace(' ','').lower()==profissao[nome].replace(' ','').lower():
+                        segundoId=profissao[id]
+                        manipula_cliente.modificarProfissao(dicionarioPersonagem[CHAVE_ID_PERSONAGEM],segundoId,profissao[nome])
+                        print(f'Trocando posição: {profissao[nome]}')
+                        break
+                primeiroId=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][id]
+                manipula_cliente.modificarProfissao(dicionarioPersonagem[CHAVE_ID_PERSONAGEM],primeiroId,profissaoReconhecida)
+                print(f'Trocando posição: {profissaoReconhecida}')
+                linhaSeparacao()
+                dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+                yinicial_profissao+=70
         else:
             print(f'Processo interrompido!')
             break
     else:
+        manipula_teclado.click_continuo(8,'up')
         print(f'Processo concluído!')
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
     linhaSeparacao()
-    manipula_teclado.click_continuo(8,'up')
     return dicionarioPersonagem
 
 def atualiza_referencias():
@@ -843,12 +848,12 @@ def retorna_lista_profissao_verificada(dicionarioPersonagem):
     #cria lista vazia
     lista_profissao_verificada=[]
     #abre o arquivo lista de profissoes
-    conteudo_lista_profissoes=manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes')
+    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=manipula_cliente.consutar_lista(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes')
     #abre o arquivo lista de desejos
     conteudo_lista_desejo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo',0)
     #percorre todas as linha do aquivo profissoes
-    for linhaProfissao in range(len(conteudo_lista_profissoes)):
-        profissao=conteudo_lista_profissoes[linhaProfissao]
+    for linhaProfissao in range(len(dicionarioPersonagem[CHAVE_LISTA_PROFISSAO])):
+        profissao=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][linhaProfissao]
         #percorre todas as linhas do aquivo lista de desejos
         for linhaDesejo in range(len(conteudo_lista_desejo)):
             atributos=conteudo_lista_desejo[linhaDesejo]
@@ -858,12 +863,12 @@ def retorna_lista_profissao_verificada(dicionarioPersonagem):
                 lista_profissao_verificada.append([profissao[id],profissao[nome],linhaProfissao+1])
                 break
     else:
-        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=lista_profissao_verificada
-        mostra_profissoes_necessarias(lista_profissao_verificada)
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]=lista_profissao_verificada
+        mostra_profissoes_necessarias(dicionarioPersonagem)
     return dicionarioPersonagem
 
-def mostra_profissoes_necessarias(lista_profissao_verificada):
-    for profissao in lista_profissao_verificada:
+def mostra_profissoes_necessarias(dicionarioPersonagem):
+    for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]:
         print(f'Profissão necessária: {profissao[nome]}')
     linhaSeparacao()
 
@@ -1286,7 +1291,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_LISTA_DESEJO]=conteudo_lista_desejo
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-        for profissao_necessaria in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:#percorre lista de profissao
+        for profissao_necessaria in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
             if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                 continue
             erro=verifica_erro(None)
@@ -1327,6 +1332,8 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                 linhaSeparacao()
                 break
         else:
+            if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
+                dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
             print(f'Fim da lista de profissões...')
             linhaSeparacao()
     else:
@@ -2011,7 +2018,7 @@ def funcao_teste(id_personagem):
     # verifica_producao_recursos('Licença de produção do aprendiz')
     # manipula_teclado.click_continuo(9,'up')
     # print(retorna_texto_menu_reconhecido())
-    recupera_trabalho_concluido(dicionarioPersonagem)
+    # recupera_trabalho_concluido(dicionarioPersonagem)
     # while True:
     # atualiza_nova_tela()
     # manipula_teclado.click_continuo(8,'up')
@@ -2044,8 +2051,8 @@ def funcao_teste(id_personagem):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    # print(atualiza_lista_profissao(dicionarioPersonagem))
+    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    atualiza_lista_profissao(dicionarioPersonagem)
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
     # verificaPixelCorrespondencia()

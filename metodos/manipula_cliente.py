@@ -317,6 +317,6 @@ def adicionaAtributoRecorrencia():
             print('____________________________________________')
         else:
             print(f'Fim da lista.')
-
+# 0iQB1H7srqXMiufTR4HzqYQPj71hz
 # adicionaAtributoRecorrencia()
 # print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))
