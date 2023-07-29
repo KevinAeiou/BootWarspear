@@ -998,7 +998,7 @@ def busca_lista_personagem_ativo():
             if personagem!=None:
                 personagem_id_global=personagem[id]
                 dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem[id],
-                                      CHAVE_NOME_PERSONAGEM:personagem[nome],
+                                      CHAVE_NOME_PERSONAGEM:personagem[1],
                                       CHAVE_UNICA_CONEXAO:True,
                                       CHAVE_ESPACO_BOLSA:True,
                                       CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
@@ -1371,7 +1371,7 @@ def inicia_processo(posicao_trabalho,trabalho_lista_desejo,profissao_verificada,
 
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem=recupera_trabalho_concluido(dicionarioPersonagem)
-    if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
+    if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
         listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
         recorrencia=dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][6]
@@ -1392,7 +1392,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def recupera_trabalho_concluido(dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+    dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=False
     tela_inteira=retorna_atualizacao_tela()
     frame_nome_trabalho=tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)==0:
@@ -1405,7 +1405,6 @@ def recupera_trabalho_concluido(dicionarioPersonagem):
                 for trabalhoProduzindo in listaDesejoProduzindo:
                     if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
                         dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalhoProduzindo
-                        dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
                         break
                 print(f'{trabalhoProduzindo[nome]} recuperado.')
                 manipula_teclado.click_especifico(1,'up')
