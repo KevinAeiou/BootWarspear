@@ -6,6 +6,7 @@ import manipula_cliente
 import time
 import datetime
 import os.path
+import re
 from unidecode import unidecode
 
 xinicial=181
@@ -1843,23 +1844,17 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
         if produto!=None:
             if produto:
                 print(f'Produto vendido...')
-                removerPalavras=['vendeu','por','de','ouro','un']
                 listaTextoCarta=textoCarta.split()
-                nomeProduto=listaTextoCarta
-                x=0
-                for texto in listaTextoCarta:
-                    if 'un' in texto.lower():
-                        quantidadeProduto=1
-                        if texto.isdigit():
-                            quantidadeProduto=int(listaTextoCarta[x-1])
-                    for palavra in removerPalavras:
-                        if palavra in texto:
-                            del nomeProduto[x]
-                    x+=1
+                quantidadeProduto=retornaQuantidadeProdutoVendido(listaTextoCarta)
+                # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
                 frameTela=telaInteira[415:415+30,250:250+260]
                 frameTelaTratado=manipula_imagem.transforma_branco_preto(frameTela)
                 ouro=manipula_imagem.reconhece_digito(frameTelaTratado)
+                ouro=re.sub('[^0-9]','',ouro)
+                if ouro.isdigit():
+                    ouro=int(ouro)
                 dataAtual=datetime.date.today()
+                listaTextoCarta=' '.join(listaTextoCarta)
                 dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagem[CHAVE_NOME_PERSONAGEM],
                                  'nomeProduto':listaTextoCarta,
                                  'quantidadeProduto':quantidadeProduto,
@@ -1877,6 +1872,45 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                 print(retorno)
         else:
             print(f'Erro...')
+
+def retornaQuantidadeProdutoVendido(listaTextoCarta):
+    x=0
+    for texto in listaTextoCarta:
+        if 'un' in texto.lower():
+            print(f'un encontrado na posição: {x}, {listaTextoCarta[x]}')
+            quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x])
+            if not quantidadeProduto.isdigit():
+                quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x-1])
+                if quantidadeProduto.isdigit():
+                    print(f'Digito encontrado em: {listaTextoCarta[x-1]}')
+                else:
+                    print(f'Não foi possível reconhecer a quantidade do produto.')
+                    linhaSeparacao()
+            else:
+                quantidadeProduto=int(quantidadeProduto)
+                print(f'Digito encontrado em: {listaTextoCarta[x]}')
+            print(f'quantidadeProduto:{quantidadeProduto}')
+        x+=1
+    return quantidadeProduto
+
+# def retornaNomeProdutoVendido(listaTextoCarta):
+    removerPalavras=['vendeu','por','de','ouro','un']
+    nomeProduto=listaTextoCarta
+    print(f'nomeProduto inicial: {nomeProduto}')
+    x=0
+    for palavra in listaTextoCarta:
+        nomeProduto=re.sub('[vendeu,por,de,ouro,un]','',palavra)
+        print(nomeProduto)
+        # for retirarPalavra in removerPalavras:
+        #     if retirarPalavra in palavra.lower():
+        #         print(f'Palavra indesejada: {palavra}')
+        #         nomeProduto.remove(palavra)
+        #         print(f'nomeProduto: {nomeProduto}')
+        #         linhaSeparacao()
+        x+=1
+    print(f'nomeProduto final: {nomeProduto}')
+    linhaSeparacao()
+    return listaTextoCarta
 
 def verificaVendaProduto(texto):
     if 'vendeu'in texto.lower():
@@ -2027,7 +2061,9 @@ def funcao_teste(id_personagem):
     # deleta_item_lista()
     # verifica_erro(None)
     # print(verificaCaixaCorreio())
-    retornaConteudoCorrespondencia(dicionarioPersonagem)
+    dataAtual=datetime.date.today()
+    print(dataAtual.ctime())
+    # retornaConteudoCorrespondencia(dicionarioPersonagem)
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
     # busca_lista_personagem_ativo(lista_personagem_ativo)
