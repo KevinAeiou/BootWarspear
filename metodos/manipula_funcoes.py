@@ -1373,7 +1373,6 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem=recupera_trabalho_concluido(dicionarioPersonagem)
     if dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]!=False:
         listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
-        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
         recorrencia=dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO][6]
         if recorrencia==0:
             print(f'Trabalho sem recorrencia.')
@@ -1401,6 +1400,9 @@ def recupera_trabalho_concluido(dicionarioPersonagem):
         manipula_teclado.click_especifico(1,'f2')
         if nome_trabalho_concluido!=None:
             if verifica_erro(None)==0:
+                if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
+                    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
+                    print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                 listaDesejoProduzindo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo',1)
                 for trabalhoProduzindo in listaDesejoProduzindo:
                     if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
@@ -1841,16 +1843,26 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
         if produto!=None:
             if produto:
                 print(f'Produto vendido...')
-                removerPalavras=['vendeu','por','de','ouro']
+                removerPalavras=['vendeu','por','de','ouro','un']
                 listaTextoCarta=textoCarta.split()
-                result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
-                retorno = ' '.join(result)
+                nomeProduto=listaTextoCarta
+                x=0
+                for texto in listaTextoCarta:
+                    if 'un' in texto.lower():
+                        quantidadeProduto=1
+                        if texto.isdigit():
+                            quantidadeProduto=int(listaTextoCarta[x-1])
+                    for palavra in removerPalavras:
+                        if palavra in texto:
+                            del nomeProduto[x]
+                    x+=1
                 frameTela=telaInteira[415:415+30,250:250+260]
                 frameTelaTratado=manipula_imagem.transforma_branco_preto(frameTela)
                 ouro=manipula_imagem.reconhece_digito(frameTelaTratado)
                 dataAtual=datetime.date.today()
                 dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagem[CHAVE_NOME_PERSONAGEM],
-                                 'nomeProduto':retorno,
+                                 'nomeProduto':listaTextoCarta,
+                                 'quantidadeProduto':quantidadeProduto,
                                  'valorProduto':ouro,
                                  'dataVenda':dataAtual}
                 print(dicionarioVenda)
