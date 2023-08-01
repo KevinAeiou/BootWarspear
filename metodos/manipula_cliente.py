@@ -69,7 +69,11 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
     else:
         print(f'Limite de tentativas de conexão atingido.')
     return requisicaoRetorno
-
+def adicionaVenda(venda):
+    caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_vendas/.json'
+    requisicao=retornaRequisicao(POST,caminhoRequisicao,venda)
+    if requisicao!=None:
+        print(f'Nova venda foi adicionada: {venda}')
 def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
     trabalho_adicionado=[]
     dados = ({'nome':trabalho[1],

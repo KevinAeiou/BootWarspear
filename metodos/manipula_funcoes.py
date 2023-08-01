@@ -1853,13 +1853,14 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                 ouro=re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
                     ouro=int(ouro)
-                dataAtual=datetime.date.today()
+                dataAtual=str(datetime.date.today())
                 listaTextoCarta=' '.join(listaTextoCarta)
                 dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagem[CHAVE_NOME_PERSONAGEM],
                                  'nomeProduto':listaTextoCarta,
                                  'quantidadeProduto':quantidadeProduto,
                                  'valorProduto':ouro,
                                  'dataVenda':dataAtual}
+                manipula_cliente.adicionaVenda(dicionarioVenda)
                 print(dicionarioVenda)
             else:
                 print(f'Produto expirado...')
@@ -1887,30 +1888,10 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
                     print(f'Não foi possível reconhecer a quantidade do produto.')
                     linhaSeparacao()
             else:
-                quantidadeProduto=int(quantidadeProduto)
                 print(f'Digito encontrado em: {listaTextoCarta[x]}')
             print(f'quantidadeProduto:{quantidadeProduto}')
         x+=1
-    return quantidadeProduto
-
-# def retornaNomeProdutoVendido(listaTextoCarta):
-    removerPalavras=['vendeu','por','de','ouro','un']
-    nomeProduto=listaTextoCarta
-    print(f'nomeProduto inicial: {nomeProduto}')
-    x=0
-    for palavra in listaTextoCarta:
-        nomeProduto=re.sub('[vendeu,por,de,ouro,un]','',palavra)
-        print(nomeProduto)
-        # for retirarPalavra in removerPalavras:
-        #     if retirarPalavra in palavra.lower():
-        #         print(f'Palavra indesejada: {palavra}')
-        #         nomeProduto.remove(palavra)
-        #         print(f'nomeProduto: {nomeProduto}')
-        #         linhaSeparacao()
-        x+=1
-    print(f'nomeProduto final: {nomeProduto}')
-    linhaSeparacao()
-    return listaTextoCarta
+    return int(quantidadeProduto)
 
 def verificaVendaProduto(texto):
     if 'vendeu'in texto.lower():
@@ -1941,6 +1922,38 @@ def verificaPixelCorrespondencia():
         print(f'Não há correspondencia!')
     linhaSeparacao()
     return confirmacao
+
+def percorreFrameItemBolsa():
+    # x=168-488=320
+    # larguraFrameItem=64
+    # y=187-alturaTela
+    # alturaFrameItem=64
+    x=168
+    y=187
+    larguraAlturaFrame=64
+    telaInteira=retorna_atualizacao_tela()
+    contadorItensPercorridos=1
+    while True:
+        frameNomeItemBolsa=telaInteira[588:588+30,172:172+337]
+        frameNomeItemBolsa=manipula_imagem.retorna_imagem_cinza(frameNomeItemBolsa)
+        nomeItemBolsaReconhecido=manipula_imagem.reconhece_texto(frameNomeItemBolsa)
+        print(f'Item: {nomeItemBolsaReconhecido}({quantidadeItemBolsa})')
+        if nomeItemBolsaReconhecido==None:
+            break
+        frameItemBolsa=telaInteira[y:y+larguraAlturaFrame,x:x+larguraAlturaFrame]
+        frameItemBolsa=manipula_imagem.retorna_imagem_cinza(frameItemBolsa)
+        quantidadeItemBolsa=manipula_imagem.reconhece_digito(frameItemBolsa)
+        manipula_imagem.mostra_imagem(0,frameItemBolsa,quantidadeItemBolsa)
+        if contadorItensPercorridos%5==0:
+            y+=larguraAlturaFrame
+            x=168
+        else:
+            x+=larguraAlturaFrame
+        if contadorItensPercorridos>=30:
+            y=507
+        manipula_teclado.click_especifico(1,'right')
+        telaInteira=retorna_atualizacao_tela()
+        contadorItensPercorridos+=1
 
 def descobreFrames():
     tela_inteira=retorna_atualizacao_tela()
@@ -2061,8 +2074,9 @@ def funcao_teste(id_personagem):
     # deleta_item_lista()
     # verifica_erro(None)
     # print(verificaCaixaCorreio())
-    dataAtual=datetime.date.today()
-    print(dataAtual.ctime())
+    # dataAtual=datetime.date.today()
+    # print(dataAtual.ctime())
+    percorreFrameItemBolsa()
     # retornaConteudoCorrespondencia(dicionarioPersonagem)
     # manipula_teclado.click_atalho_especifico('win','up')
     # lista_personagem_ativo = manipula_cliente.consulta_lista_personagem(usuario_id)
