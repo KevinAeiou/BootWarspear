@@ -59,6 +59,7 @@ erroEmailSenhaIncorreta=15
 erroTempoProducaoExpirou=16
 erroReinoIndisponivel=17
 erroAtualizaJogo=18
+erroRestaurandoConexao=19
 
 lista_personagem_ativo=[]
 
@@ -662,6 +663,7 @@ def verifica_erro(trabalho):
 # erroTempoProducaoExpirou=16
 # erroReinoIndisponivel=17
 # erroAtualizaJogo=18
+# erroRestaurandoConexao=19
     if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
         manipula_teclado.click_especifico(2,"enter")
         if erro==erroPrecisaLicenca:
@@ -699,8 +701,11 @@ def verifica_erro(trabalho):
         manipula_teclado.click_especifico(1,'enter')
         manipula_teclado.click_especifico(2,'f2')
         manipula_teclado.click_continuo(9,'up')
-    elif erro==erroConectando:
-        print(f'Conectando...')
+    elif erro==erroConectando or erro==erroRestaurandoConexao:
+        if erro==erroConectando:
+            print(f'Conectando...')
+        elif erro==erroRestaurandoConexao:
+            print(f'Reutanrando conexão...')
         linhaSeparacao()
         time.sleep(1)
     elif erro==erroReceberRecompensas or erro==erroAtualizaJogo:
@@ -767,7 +772,7 @@ def retorna_tipo_erro():
                             'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                             'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
                             'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
-                            'reinodejogoselecionado','jogoestadesatualizada']
+                            'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão']
         for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
             if tipo_erro_trabalho[tamanho_tipo_erro].lower() in erro_encontrado.replace(' ','').lower():
                 erro=tamanho_tipo_erro+1
@@ -1296,7 +1301,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
     if len(conteudo_lista_desejo)>0:#verifica se a lista está vazia
         dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
         for profissao_necessaria in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
-            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO] or not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
+            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                 continue
             erro=verifica_erro(None)
             if erro==0:
