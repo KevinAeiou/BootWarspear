@@ -1410,16 +1410,17 @@ def recupera_trabalho_concluido(dicionarioPersonagem):
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
                     print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                 listaDesejoProduzindo=manipula_cliente.consulta_lista_desejo(f'{usuario_id}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo',1)
-                for trabalhoProduzindo in listaDesejoProduzindo:
-                    if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
-                        dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalhoProduzindo
-                        break
-                print(f'{trabalhoProduzindo[nome]} recuperado.')
-                manipula_teclado.click_especifico(1,'up')
+                if len(listaDesejoProduzindo)!=0:
+                    for trabalhoProduzindo in listaDesejoProduzindo:
+                        if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
+                            dicionarioPersonagem[CHAVE_TRABALHO_CONCLUIDO]=trabalhoProduzindo
+                            break
+                    print(f'{trabalhoProduzindo[nome]} recuperado.')
+                manipula_teclado.click_continuo(1,'up')
                 linhaSeparacao()
             else:
                 dicionarioPersonagem[CHAVE_ESPACO_BOLSA]=False
-                manipula_teclado.click_especifico(1,'up')
+                manipula_teclado.click_continuo(1,'up')
                 manipula_teclado.click_especifico(1,'left')
     return dicionarioPersonagem
 
