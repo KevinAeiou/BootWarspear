@@ -116,7 +116,20 @@ def adiciona_trabalho(personagem_id,trabalho,licenca,estado):
     else:
         print(f'Limite de tentativas de conexão atingido.')
     return trabalho_adicionado
-#modificado 16/01
+
+def retornaListaDicionarioProfissao(dicionarioPersonagem):
+    listaDicionarioProfissao=[]
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes/.json'
+    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+    if requisicao!=None:
+        dicionarioProfissoes=requisicao.json()
+        if dicionarioProfissoes!=None:
+            for idProfissao in dicionarioProfissoes:
+                dicionarioProfissao={CHAVE_ID:idProfissao,
+                                     CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
+                listaDicionarioProfissao.append(dicionarioProfissao)
+    return listaDicionarioProfissao
+
 def modificarProfissao(personagemId,profissaoId,profissao):
     dados={'nome':profissao}
     caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagemId}/Lista_profissoes/{profissaoId}/.json'
@@ -321,6 +334,7 @@ def adicionaAtributoRecorrencia():
             print('____________________________________________')
         else:
             print(f'Fim da lista.')
+
 # 0iQB1H7srqXMiufTR4HzqYQPj71hz
 # adicionaAtributoRecorrencia()
 # print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))
