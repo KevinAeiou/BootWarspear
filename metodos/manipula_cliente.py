@@ -72,9 +72,39 @@ def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
     if requisicao!=None:
         print(f'Nova venda foi adicionada: {dicionarioVenda}')
 
-def adicionaTrabalhoDesejo(dicionariPersonagem,dicionarioTrabalho):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionariPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionariPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/.json'
-    requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
+            trabalho_adicionado.append([id_trabalho,
+                                nome_trabalho,
+                                profissao_trabalho,
+                                nivel_trabalho,
+                                licenca_trabalho,
+                                raridade_trabalho,
+                                recorrencia_trabalho,
+                                estado_trabalho])
+            print(f'{nome_trabalho} foi adicionado!')
+            break
+        except requests.exceptions.ConnectionError:
+            print(f'Conecção recusada!')
+    else:
+        print(f'Limite de tentativas de conexão atingido.')
+    return trabalho_adicionado
+
+def retornaListaDicionarioProfissao(dicionarioPersonagem):
+    listaDicionarioProfissao=[]
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes/.json'
+    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+    if requisicao!=None:
+        dicionarioProfissoes=requisicao.json()
+        if dicionarioProfissoes!=None:
+            for idProfissao in dicionarioProfissoes:
+                dicionarioProfissao={CHAVE_ID:idProfissao,
+                                     CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
+                listaDicionarioProfissao.append(dicionarioProfissao)
+    return listaDicionarioProfissao
+#modificado 16/01
+def modificarProfissao(personagemId,profissaoId,profissao):
+    dados={'nome':profissao}
+    caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagemId}/Lista_profissoes/{profissaoId}/.json'
+    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
     if requisicao!=None:
         dicionarioTrabalho=requisicao.json()
         if dicionarioTrabalho!=None:
@@ -288,26 +318,15 @@ def adicionaAtributoRecorrencia():
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dados={'recorrencia':0}
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
-            for id in dicionarioRequisicao:
-                nome=dicionarioRequisicao[id]['nome']
-                caminhoRequisicao=f'{link_database}/Lista_trabalhos/{id}/.json'
-                requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-                print(f'Atributo recorrencia atribuido a: {nome}.')
-                print('____________________________________________')
-            else:
-                print(f'Fim da lista.')
-    else:
-        print(f'Resultado da requisição: {requisicao}.')
-
-def cadastrar_imagem_trabalho():
-    dados={'nome':nome_imagem_trabalho}
-    caminhoRequisicao=f'{link_storage}/Lista_imagens_trabalhos/{nome_imagem_trabalho}'
-    requisicao=retornaRequisicao(POST,caminhoRequisicao,dados)
-    if requisicao!=None:
-        print(requisicao)
-        print(requisicao.text)
+        dicionario_requisicao=requisicao.json()
+        for id in dicionario_requisicao:
+            nome=dicionario_requisicao[id]['nome']
+            caminhoRequisicao=f'{link_database}/Lista_trabalhos/{id}/.json'
+            requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+            print(f'Atributo recorrencia atribuido a: {nome}.')
+            print('____________________________________________')
+        else:
+            print(f'Fim da lista.')
 # 0iQB1H7srqXMiufTR4HzqYQPj71hz
 # adicionaAtributoRecorrencia()
 # print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))
