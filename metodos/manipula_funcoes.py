@@ -101,7 +101,7 @@ def atualiza_lista_profissao(dicionarioPersonagem):
         elif x>4:
             click_especifico(1,'down')
             yinicial_profissao=529
-        tela_inteira=retorna_atualizacao_tela()
+        tela_inteira=retornaAtualizacaoTela()
         frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,232:232+237]
         profissaoReconhecida=reconhece_texto(frame_nome_profissao)
         if profissaoReconhecida!=None:
@@ -136,7 +136,7 @@ def atualiza_lista_profissao(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def atualiza_referencias():
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     largura_tela = tela_inteira.shape[1]
     frame_referencia1 = tela_inteira[705-50:705,0:50]
     frame_referencia2 = tela_inteira[705-50:705,largura_tela-50:largura_tela]
@@ -170,7 +170,7 @@ def cadastra_nome_trabalho(tipo_raridade_trabalho,nome_profissao):
             linhaSeparacao()
             return
         while True:
-            tela_inteira = retorna_atualizacao_tela()
+            tela_inteira = retornaAtualizacaoTela()
             frame_nome_trabalho = tela_inteira[280:280+33,169:169+303]#frame nome trabalho menu especifico
             # frame_nome_trabalho = tela_inteira[273:273+311,167:167+347]
             nome_trabalho_reconhecido = reconhece_texto(frame_nome_trabalho)
@@ -211,7 +211,7 @@ def detecta_movimento():
         # if not verifica_referencia_tela(referencia_anterior1,referencia_anterior2):
             print(f'Atualizou o background.')
             backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
-        tela_inteira = retorna_atualizacao_tela()
+        tela_inteira = retornaAtualizacaoTela()
         altura_tela = tela_inteira.shape[0]
         frame_tela = tela_inteira[0:altura_tela,0:674]
         frame_tela = cv2.resize(frame_tela,(0,0),fx=0.9,fy=0.9)
@@ -257,7 +257,7 @@ def detecta_movimento_teste():
     while True:
         if not verifica_referencia_tela(referencia_anterior1):
             backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
-        tela_inteira = retorna_atualizacao_tela()
+        tela_inteira = retornaAtualizacaoTela()
         altura_tela = tela_inteira.shape[0]
         frame_tela = tela_inteira[0:altura_tela,0:674]
         #frame_tela = cv2.resize(frame_tela,(0,0),fx=0.9,fy=0.9)
@@ -283,7 +283,7 @@ def detecta_movimento_teste():
             raio_posicao = largura_tela/56
             ajuste_y = x+altura_objeto-int(raio_posicao)
             #click_mouse_esquerdo(1,centro_objeto[0],ajuste_y)
-            tela_inteira = retorna_atualizacao_tela()
+            tela_inteira = retornaAtualizacaoTela()
             nome_objeto_reconhecido=retorna_nome_inimigo(tela_inteira)
             if nome_objeto_reconhecido!=None:
                 print(nome_objeto_reconhecido)
@@ -366,7 +366,7 @@ def verifica_referencia_tela(referencia_anterior1):
 def verifica_menu_referencia():
     confirmacao=False
     posicao_menu=[[703,627],[712,1312]]
-    tela_inteira=retorna_atualizacao_tela()
+    tela_inteira=retornaAtualizacaoTela()
     for posicao in posicao_menu:
         frame_tela=tela_inteira[posicao[0]:posicao[0]+53,posicao[1]:posicao[1]+53]
         contadorPixelPreto=np.sum(frame_tela==(85,204,255))
@@ -376,18 +376,18 @@ def verifica_menu_referencia():
     return confirmacao
 
 def verifica_alvo():
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     pixel_vida_alvo = tela_inteira[67,1194]
     return (pixel_vida_alvo == [33,25,255]).all()
 
 def verifica_modo_ataque():
     #atualiza a tela
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     pixel_modo_ataque = tela_inteira[55,0]
     return (pixel_modo_ataque != [66,197,230]).all()
 
 def verifica_porcentagem_vida():
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     xvida = int(38+(133*(porcentagem_vida/100)))
     if (tela_inteira[67,xvida]!=[33,25,255]).all() and (tela_inteira[67,xvida]!=[0,0,205]).all():
         print(f'Vida abaixo de {porcentagem_vida}%.')
@@ -397,7 +397,7 @@ def verifica_porcentagem_vida():
 def retornaEstadoTrabalho():
     estado_espaco=0
     #icone do primeiro espaço de produç 181,295 228,342
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     frame_trabalho_concluido = tela_inteira[311:311+43, 233:486]
     texto=reconhece_texto(frame_trabalho_concluido)
     if texto!=None:
@@ -458,7 +458,7 @@ def verifica_licenca(licenca_trabalho):
 def retorna_licenca_reconhecida():
     licencaRetornada=None
     lista_licencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
-    tela_inteira=retorna_atualizacao_tela()
+    tela_inteira=retornaAtualizacaoTela()
     frame_tela=tela_inteira[275:317,169:512]
     frame_tela_equalizado=retorna_imagem_equalizada(frame_tela)
     licenca_reconhecida=reconhece_texto(frame_tela_equalizado)
@@ -484,7 +484,7 @@ def confirma_nome_trabalho(nome_trabalho_lista,tipo_trabalho):
     altura=3
     lista_frames=[[169,280,303,33],[169,195,343,31]]
     posicao=lista_frames[tipo_trabalho]
-    imagem_inteira=retorna_atualizacao_tela()#tira novo print da tela
+    imagem_inteira=retornaAtualizacaoTela()#tira novo print da tela
     frame_nome_trabalho=imagem_inteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
     frame_nome_trabalho_tratado=transforma_caracteres_preto(frame_nome_trabalho)
     nome_trabalho=reconhece_texto(frame_nome_trabalho_tratado)
@@ -600,7 +600,7 @@ def retorna_nome_trabalho_reconhecido(yinicial_nome,identificador):
     elif identificador==1:
         altura=68
     #tira novo print da tela
-    imagem_inteira=retorna_atualizacao_tela()
+    imagem_inteira=retornaAtualizacaoTela()
     frame_nome_trabalho=imagem_inteira[yinicial_nome:yinicial_nome+altura,233:478]
     #teste trata frame trabalho comum
     frame_nome_trabalho_tratado=transforma_branco_preto(frame_nome_trabalho)
@@ -738,7 +738,7 @@ def entra_trabalho_encontrado(x):
 #modificado 12/01
 def retorna_tipo_erro():
     erro=0
-    tela_inteira=retorna_atualizacao_tela()
+    tela_inteira=retornaAtualizacaoTela()
     frame_erro=tela_inteira[335:335+100,150:526]
     erro_encontrado=reconhece_texto(frame_erro)
     print(erro_encontrado)
@@ -863,7 +863,7 @@ def retorna_lista_habilidade_verificada():
     print(f'Criando lista de habilidades...')
     lista_habilidade_encontrada = []
     lista_imagem_habilidade = retorna_lista_imagem_habilidade()
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     altura_modelo = lista_imagem_habilidade[0].shape[0]
     largura_modelo = lista_imagem_habilidade[0].shape[1]
     for x in range(380,980):
@@ -1029,7 +1029,7 @@ def busca_lista_personagem_ativo(dicionarioUsuario):
                         listaDicionarioPersonagemRetirado,listaDicionarioPersonagensAtivos=removePersonagemLista(listaDicionarioPersonagemRetirado,dicionarioPersonagemReconhecido,dicionarioPersonagem)
 
 def retorna_texto_menu_reconhecido(x,y,largura):
-    tela_inteira=retorna_atualizacao_tela()
+    tela_inteira=retornaAtualizacaoTela()
     centroAltura=tela_inteira.shape[0]//2
     centroMetade=tela_inteira.shape[1]//4
     # print(centroAltura)
@@ -1336,12 +1336,11 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                             else:
                                 if dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]==5:
                                     dicionarioTrabalho[CHAVE_NOME_TRABALHO]=None
-                                print(f'Nem um trabalho disponível está na lista de desejos.')
-                                click_continuo(4,'up')
-                                click_especifico(1,'left')
-                                linhaSeparacao()
-                            dicionarioTrabalho,dicionarioPersonagem=inicia_processo(dicionarioTrabalho,dicionarioPersonagem)
-                            if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
+                            print(f'Nem um trabalho disponível está na lista de desejos.')
+                            click_continuo(4,'up')
+                            click_especifico(1,'left')
+                            linhaSeparacao()
+                            if not dicionarioTrabalho[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
                                 break
                     if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                         if dicionarioPersonagem[CHAVE_ESPACO_BOLSA]:
@@ -1404,7 +1403,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
 
 def recupera_trabalho_concluido(dicionarioPersonagem):
     dicionarioTrabalho={CHAVE_TRABALHO_CONCLUIDO:False}
-    tela_inteira=retorna_atualizacao_tela()
+    tela_inteira=retornaAtualizacaoTela()
     frame_nome_trabalho=tela_inteira[285:285+37, 233:486]
     if verifica_erro(None)==0:
         nome_trabalho_concluido=reconhece_texto(frame_nome_trabalho)
@@ -1493,7 +1492,7 @@ def trataMenus(trabalho,dicionarioPersonagem):
 def inicia_producao(trabalho,dicionarioPersonagem):
     dicionarioPersonagem=entra_licenca(dicionarioPersonagem)
     if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
-        if verifica_licenca(trabalho[licenca]):#verifica tipo de licença de produção
+        if verifica_licenca(trabalho[CHAVE_LICENCA]):#verifica tipo de licença de produção
             click_especifico(1,'f2')#click que definitivamente começa a produção
             dicionarioPersonagem=trataErros(trabalho,dicionarioPersonagem)
             if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
@@ -1544,7 +1543,7 @@ def recuperaPresente():
     evento=0
     print(f'Buscando recompensa diária...')
     while evento<2:
-        telaInteira=retorna_atualizacao_tela()
+        telaInteira=retornaAtualizacaoTela()
         metadeAltura=telaInteira.shape[0]//2
         metadeLargura=telaInteira.shape[1]//4
         alturaFrame=80
@@ -1602,7 +1601,7 @@ def retornaNomePersonagem(posicao):
     nome=None
     print(f'Verificando nome personagem...')
     posicaoNome=[[2,33,169,21],[197,354,170,27]]
-    telaInteira=retorna_atualizacao_tela()
+    telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
     frameNomePersonagemTratado=transforma_caracteres_preto(frameNomePersonagem)
     # mostra_imagem(0,frameNomePersonagemTratado,None)
@@ -1681,7 +1680,7 @@ def usa_habilidade():
                     #percorre a lista de habilidades
                     for habilidade in lista_habilidade:
                         #atualiza a tela
-                        tela_inteira = retorna_atualizacao_tela()
+                        tela_inteira = retornaAtualizacaoTela()
                         #recorta frame na posição da habilidade específica
                         frame_habilidade = tela_inteira[728:728+habilidade[1].shape[0], habilidade[0]:habilidade[0]+habilidade[1].shape[1]]
                         #define o tamanho do frame
@@ -1718,7 +1717,7 @@ def usa_habilidade():
                     linhaSeparacao()
 
 def verifica_habilidade_central(lista_habilidade):
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     for indice in range(len(lista_habilidade)):
         habilidade=lista_habilidade[indice]
         for x in range(658,662):
@@ -1777,7 +1776,7 @@ def modifica_quantidade_personagem_ativo():
             print(f'Quantidade de personagens ativos modificada com sucesso!')
             linhaSeparacao()
 
-def retorna_atualizacao_tela():
+def retornaAtualizacaoTela():
     screenshot = tira_screenshot()
     return retorna_imagem_colorida(screenshot)
 
@@ -1847,7 +1846,7 @@ def abreCaixaCorreio():
     click_especifico(1,'9')
 
 def verificaCaixaCorreio():
-    telaInteira=retorna_atualizacao_tela()
+    telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[233:233+30,235:235+200]
     print(f'Verificando se possui correspondencia...')
     linhaSeparacao()
@@ -1856,7 +1855,7 @@ def verificaCaixaCorreio():
     return False
 
 def retornaConteudoCorrespondencia(dicionarioPersonagem):
-    telaInteira=retorna_atualizacao_tela()
+    telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[231:231+50,168:168+343]
     textoCarta=reconhece_texto(frameTela)
     if textoCarta!=None:
@@ -1932,7 +1931,7 @@ def recuperaCorrespondencia(dicionarioPersonagem):
 
 def verificaPixelCorrespondencia():
     confirmacao=False
-    tela=retorna_atualizacao_tela()
+    tela=retornaAtualizacaoTela()
     frameTela=tela[665:690,644:675]
     contadorPixelCorrespondencia=np.sum(frameTela==(173,239,247))
     if contadorPixelCorrespondencia>50:
@@ -1951,7 +1950,7 @@ def percorreFrameItemBolsa():
     x=168
     y=187
     larguraAlturaFrame=64
-    telaInteira=retorna_atualizacao_tela()
+    telaInteira=retornaAtualizacaoTela()
     contadorItensPercorridos=1
     while True:
         frameNomeItemBolsa=telaInteira[588:588+30,172:172+337]
@@ -1972,11 +1971,11 @@ def percorreFrameItemBolsa():
         if contadorItensPercorridos>=30:
             y=507
         click_especifico(1,'right')
-        telaInteira=retorna_atualizacao_tela()
+        telaInteira=retornaAtualizacaoTela()
         contadorItensPercorridos+=1
 
 def descobreFrames():
-    tela_inteira=retorna_atualizacao_tela()
+    tela_inteira=retornaAtualizacaoTela()
     alturaTela=tela_inteira.shape[0]
     larguraTela=tela_inteira.shape[1]
 
@@ -2011,7 +2010,7 @@ def descobreFrames():
 
 def retorna_texto_sair():
     texto=None
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     alturaTela=tela_inteira.shape[0]
     frame_jogar = tela_inteira[alturaTela-50:alturaTela-25,50:50+60]
     frame_jogar_tratado = transforma_menu_preto(frame_jogar)
@@ -2031,7 +2030,7 @@ def retorna_lista_pixel_minimap():
     somaX=1
     somaY=0
     fundo=retorna_fundo_branco()
-    telaInteira=retorna_atualizacao_tela()
+    telaInteira=retornaAtualizacaoTela()
     for x in range(444):
         lista_pixel.append(telaInteira[yMapa,xMapa])
         if (telaInteira[yMapa,xMapa]==(0,221,255)).all():
@@ -2052,13 +2051,20 @@ def retorna_lista_pixel_minimap():
     mostra_imagem(0,fundo,'Minimapa')
     return lista_pixel
 
+def encontraMercador():
+    telaInteira=retornaAtualizacaoTela()
+    for y in range(0,telaInteira.shape[0]):
+        for x in range(0,telaInteira.shape[1]):
+            frameTela=telaInteira[y:y+48,x:x+48]
+            # if np.sum(frameTela==()):
+
 def salva_imagem_envia_servidor():
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     imagem_trabalho = tela_inteira[273:273+311,167:167+347]
     cv2.imwrite('imagem_trabalho.png', imagem_trabalho)
 
 def salva_imagem():
-    tela_inteira = retorna_atualizacao_tela()
+    tela_inteira = retornaAtualizacaoTela()
     imagem_trabalho = tela_inteira[486:486+45,181:181+43]
     cv2.imwrite('imagem_produzir.png', imagem_trabalho)
 
