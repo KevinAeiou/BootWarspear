@@ -2052,11 +2052,29 @@ def retorna_lista_pixel_minimap():
     return lista_pixel
 
 def encontraMercador():
+    # cor mercador:432
     telaInteira=retornaAtualizacaoTela()
-    for y in range(0,telaInteira.shape[0]):
-        for x in range(0,telaInteira.shape[1]):
-            frameTela=telaInteira[y:y+48,x:x+48]
-            # if np.sum(frameTela==()):
+    quantidadeLinhas=1
+    contadorCorMercador=0
+    for y in range(31,telaInteira.shape[0],24):
+        print(f'Linhas: {quantidadeLinhas}')
+        if y+46>telaInteira.shape[0]:
+            continue
+        for x in range(0,telaInteira.shape[1]//2,24):
+            if x+46>telaInteira.shape[1]//2:
+                quantidadeLinhas+=1
+                continue
+            frameTela=telaInteira[y:y+46,x:x+46]
+            mostra_imagem(300,frameTela,None)
+            for yFrame in range(0,frameTela.shape[0]):
+                for xFrame in range(0,frameTela.shape[1]):
+                    if (frameTela[yFrame,xFrame]==(51,51,187)).all():
+                        contadorCorMercador+=1
+            if contadorCorMercador==104:
+                print(f'Debug - Frame icone mercador encontrado!')
+                linhaSeparacao()
+                mostra_imagem(0,frameTela,None)
+                # return frameTela
 
 def salva_imagem_envia_servidor():
     tela_inteira = retornaAtualizacaoTela()
@@ -2098,6 +2116,16 @@ def funcao_teste(dicionarioUsuario):
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     click_atalho_especifico('alt','tab')
+    telaInteira=retornaAtualizacaoTela()
+    frameTela=telaInteira[263:263+46,284:284+46]
+    contadorCorMercador=0
+    for yFrame in range(0,frameTela.shape[0]):
+        for xFrame in range(0,frameTela.shape[1]):
+            if (frameTela[yFrame,xFrame]==(51,51,187)).all():
+                    contadorCorMercador+=1
+    print(contadorCorMercador)
+    # mostra_imagem(0,frameTela,None)
+    encontraMercador()
     # deleta_item_lista()
     # verifica_erro(None)
     # print(verificaCaixaCorreio())
@@ -2153,8 +2181,8 @@ def funcao_teste(dicionarioUsuario):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    atualiza_lista_profissao(dicionarioPersonagem)
+    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    # atualiza_lista_profissao(dicionarioPersonagem)
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
     # verificaPixelCorrespondencia()
