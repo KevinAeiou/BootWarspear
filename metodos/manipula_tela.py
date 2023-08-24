@@ -88,11 +88,11 @@ class App(customtkinter.CTk):
             listaTabs.append(self.tabPersonagens)
         for personagem in lista:
             caminhoListaDesejo=f'eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem[id]}/Lista_desejo'  
-            listaToDo = manipula_cliente.retornaDicionarioTrabalhosDesejados(caminhoListaDesejo,0)
+            listaToDo = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,0)
             print(f'Lista to do do personagem {personagem[nome]}.')
-            listaDoing = manipula_cliente.retornaDicionarioTrabalhosDesejados(caminhoListaDesejo,1)
+            listaDoing = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,1)
             print(f'Lista doing do personagem {personagem[nome]}.')
-            listaDone = manipula_cliente.retornaDicionarioTrabalhosDesejados(caminhoListaDesejo,2)
+            listaDone = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,2)
             print(f'Lista done do personagem {personagem[nome]}.')
             for tabs in listaTabs:
                 self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(personagem[nome]))
