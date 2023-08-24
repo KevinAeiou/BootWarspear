@@ -64,15 +64,6 @@ erroRestaurandoConexao=19
 
 lista_personagem_ativo=[]
 
-id=0
-nome=1
-profissao=2
-nivel=3
-licenca=4
-raridade=5
-recorrencia=6
-estado=7
-
 para_produzir=0
 produzindo=1
 concluido=2
@@ -94,7 +85,7 @@ def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
 def profissaoExiste(profissaoReconhecida,listaProfissao):
     confirmacao=False
     for profissao in listaProfissao:
-        if profissao[nome].lower()in profissaoReconhecida.lower():
+        if profissao[CHAVE_NOME].lower()in profissaoReconhecida.lower():
             confirmacao=True
             break
     return confirmacao
@@ -114,21 +105,23 @@ def atualiza_lista_profissao(dicionarioPersonagem):
         frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,232:232+237]
         profissaoReconhecida=reconhece_texto(frame_nome_profissao)
         if profissaoReconhecida!=None:
-            profissaoReconhecida=unidecode(profissaoReconhecida)
-            if profissaoReconhecida.replace(' ','').lower()==dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][nome].replace(' ','').lower():
+            if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][CHAVE_NOME]).replace(' ','').lower():
                 print(f'Profissão: {profissaoReconhecida} OK')
                 yinicial_profissao+=70
                 continue
             else:
                 for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:
-                    if profissaoReconhecida.replace(' ','').lower()==profissao[nome].replace(' ','').lower():
-                        segundoId=profissao[id]
-                        modificaProfissao(dicionarioPersonagem[CHAVE_ID_PERSONAGEM],segundoId,profissao[nome])
-                        print(f'Trocando posição: {profissao[nome]}')
+                    if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(profissao[CHAVE_NOME]).replace(' ','').lower():
+                        idA=profissao[CHAVE_ID]
                         break
-                primeiroId=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][id]
-                modificaProfissao(dicionarioPersonagem[CHAVE_ID_PERSONAGEM],primeiroId,profissaoReconhecida)
-                print(f'Trocando posição: {profissaoReconhecida}')
+                profissaoB=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][CHAVE_NOME]
+                dicionarioProfissao={CHAVE_ID:dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][CHAVE_ID],
+                                     CHAVE_NOME:profissaoReconhecida}
+                modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
+                dicionarioProfissao={CHAVE_ID:idA,
+                                     CHAVE_NOME:profissaoB}
+                modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
+                print(f'Trocando posições: {profissaoReconhecida} x {profissaoB}')
                 linhaSeparacao()
                 dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
                 yinicial_profissao+=70
@@ -312,8 +305,8 @@ def mostra_lista(dicionarioUsuario):
     tamanho_lista=len(dicionarioListaPersonagem)
     x=1
     if tamanho_lista>0:
-        for id in dicionarioListaPersonagem:
-            print(f'{x} - {dicionarioListaPersonagem[id][CHAVE_NOME]}')
+        for personagem in dicionarioListaPersonagem:
+            print(f'{x} - {dicionarioListaPersonagem[personagem][CHAVE_NOME]}')
             x+=1
         print(f'0 - Voltar.')
     else:
@@ -322,17 +315,16 @@ def mostra_lista(dicionarioUsuario):
     return dicionarioListaPersonagem
 
 def mostraListaDesejo(dicionarioUsuario):
-    dicionarioListaDesejo=retornaDicionarioTrabalhosDesejados(dicionarioUsuario)
-    tamanhoDicionario=len(dicionarioListaDesejo)
+    listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
+    tamanhoDicionario=len(listaDicionarioTrabalhoDesejado)
     if tamanhoDicionario>0:
-        for id in dicionarioListaDesejo:
-            print(f'{dicionarioListaDesejo[id][CHAVE_NOME]}')
+        for trabalhoDesejado in listaDicionarioTrabalhoDesejado:
+            print(f'{trabalhoDesejado[CHAVE_NOME]}')
         linhaSeparacao()
     else:
         print(f'A lista está vazia.')
         linhaSeparacao()
-        dicionarioListaDesejo = 0
-    return dicionarioListaDesejo
+    return listaDicionarioTrabalhoDesejado
 
 #modificado 16/01
 def mostra_lista_trabalho(nome_profissao,raridade_trabalho):
@@ -517,7 +509,7 @@ def verifica_posicoes_trabalhos(dicionarioTrabalho):
         #enquanto não comparar toda lista
         for trabalho_lista_desejo in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
             #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
-            nome_trabalho=trabalho_lista_desejo[nome]
+            nome_trabalho=trabalho_lista_desejo[CHAVE_NOME]
             profissao_trabalho=trabalho_lista_desejo[profissao]
             #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
             if dicionarioTrabalho[CHAVE_NOME_PROFISSAO]==profissao_trabalho:
@@ -527,7 +519,7 @@ def verifica_posicoes_trabalhos(dicionarioTrabalho):
                     print(f'{nome_trabalho} reconhecido...')
                     linhaSeparacao()
                     if entra_trabalho_encontrado(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]):
-                        if confirma_nome_trabalho(dicionarioTrabalho[CHAVE_LISTA_DESEJO][nome],1):#confirma o nome do trabalho
+                        if confirma_nome_trabalho(dicionarioTrabalho[CHAVE_LISTA_DESEJO][CHAVE_NOME],1):#confirma o nome do trabalho
                             dicionarioTrabalho[CHAVE_NOME_TRABALHO]=trabalho_lista_desejo
                             break
                         else:    
@@ -544,7 +536,7 @@ def verifica_posicoes_trabalhos(dicionarioTrabalho):
 def retorna_trabalho_comum(dicionarioTrabalho):
     print(f'Buscando trabalho comum na lista...')
     for trabalho_lista_desejo in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
-        nome_trabalho = trabalho_lista_desejo[nome]
+        nome_trabalho = trabalho_lista_desejo[CHAVE_NOME]
         profissao_trabalho = trabalho_lista_desejo[profissao]
         raridade_trabalho = trabalho_lista_desejo[raridade]
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
@@ -572,7 +564,7 @@ def verifica_trabalho_comum(dicionarioTrabalho):
         if nome_trabalho_reconhecido!=None:
             print(f'Trabalho reconhecido: {nome_trabalho_reconhecido}')
             for trabalho_lista in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
-                nome_trabalho=trabalho_lista[nome]
+                nome_trabalho=trabalho_lista[CHAVE_NOME]
                 profissao_trabalho=trabalho_lista[profissao]
                 raridade_trabalho=trabalho_lista[raridade]
                 estadoTrabalho=trabalho_lista[estado]
@@ -841,20 +833,22 @@ def retorna_lista_profissao_verificada(dicionarioPersonagem):
     #cria lista vazia
     lista_profissao_verificada=[]
     #abre o arquivo lista de profissoes
-    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=retornaDicionarioUsuario(dicionarioPersonagem)
+    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
     #abre o arquivo lista de desejos
-    conteudo_lista_desejo=retornaDicionarioTrabalhosDesejados(dicionarioPersonagem)
+    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
     #percorre todas as linha do aquivo profissoes
-    for linhaProfissao in range(len(dicionarioPersonagem[CHAVE_LISTA_PROFISSAO])):
-        profissao=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][linhaProfissao]
+    posicao=1
+    for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:
         #percorre todas as linhas do aquivo lista de desejos
-        for linhaDesejo in range(len(conteudo_lista_desejo)):
-            atributos=conteudo_lista_desejo[linhaDesejo]
-            nome_profissao_desejo=atributos[2]
-            if(profissao[nome].lower()==nome_profissao_desejo.lower()):
+        for trabalhoDesejado in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
+            if(unidecode(profissao[CHAVE_NOME]).replace(' ','').lower()==unidecode(trabalhoDesejado[CHAVE_PROFISSAO]).replace(' ','').lower()):
                 #verifca se o indice já está na lista
-                lista_profissao_verificada.append([profissao[id],profissao[nome],linhaProfissao+1])
+                dicionarioProfissao={CHAVE_ID:profissao[CHAVE_ID],
+                                     CHAVE_NOME:profissao[CHAVE_NOME],
+                                     CHAVE_POSICAO:posicao}
+                lista_profissao_verificada.append(dicionarioProfissao)
                 break
+        posicao+=1
     else:
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]=lista_profissao_verificada
         mostra_profissoes_necessarias(dicionarioPersonagem)
@@ -862,7 +856,7 @@ def retorna_lista_profissao_verificada(dicionarioPersonagem):
 
 def mostra_profissoes_necessarias(dicionarioPersonagem):
     for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]:
-        print(f'Profissão necessária: {profissao[nome]}')
+        print(f'Profissão necessária: {profissao[CHAVE_NOME]}')
     linhaSeparacao()
 
 def retorna_lista_habilidade_verificada():
@@ -1294,7 +1288,7 @@ def loga_personagem(listaDicionarioPersonagensAtivos):
     return confirmacao
 
 def inicia_busca_trabalho(dicionarioPersonagem):
-    conteudo_lista_desejo=retornaDicionarioTrabalhosDesejados(dicionarioPersonagem)
+    conteudo_lista_desejo=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
     dicionarioTrabalho={CHAVE_LISTA_DESEJO:conteudo_lista_desejo,
                         CHAVE_NOME_TRABALHO:None,
                         CHAVE_POSICAO_TRABALHO:0,
@@ -1323,9 +1317,9 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                     print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                     if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                         dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
-                    print(f'Verificando profissão: {profissao_necessaria[nome]}')
+                    print(f'Verificando profissão: {profissao_necessaria[CHAVE_NOME]}')
                     linhaSeparacao()
-                    dicionarioTrabalho[CHAVE_NOME_PROFISSAO]=profissao_necessaria[nome]
+                    dicionarioTrabalho[CHAVE_NOME_PROFISSAO]=profissao_necessaria[CHAVE_NOME]
                     while True:
                         retorna_menu_profissao_especifica(profissao_necessaria[2])
                         dicionarioTrabalho=retorna_trabalho_comum(dicionarioTrabalho)
@@ -1421,13 +1415,13 @@ def recupera_trabalho_concluido(dicionarioPersonagem):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
                     print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
-                listaDesejoProduzindo=retornaDicionarioTrabalhosDesejados(dicionarioPersonagem)
+                listaDesejoProduzindo=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if len(listaDesejoProduzindo)!=0:
                     for trabalhoProduzindo in listaDesejoProduzindo:
-                        if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[nome].lower().replace(' ',''):
+                        if nome_trabalho_concluido[1:-1].lower().replace(' ','')in trabalhoProduzindo[CHAVE_NOME].lower().replace(' ',''):
                             dicionarioTrabalho[CHAVE_TRABALHO_CONCLUIDO]=trabalhoProduzindo
                             break
-                    print(f'{trabalhoProduzindo[nome]} recuperado.')
+                    print(f'{trabalhoProduzindo[CHAVE_NOME]} recuperado.')
                 click_continuo(1,'up')
                 linhaSeparacao()
             else:
@@ -1442,7 +1436,7 @@ def trataErros(trabalho,dicionarioPersonagem):
     while erro!=0:
         if erro==erroSemRecursos:
             dicionarioTrabalho={}
-            caminho_trabalho=f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[id]}'
+            caminho_trabalho=f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[CHAVE_ID]}'
             excluir_trabalho(dicionarioPersonagem,dicionarioTrabalho)  
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroSemEspacosProducao:#sem espaços de produção livres
@@ -1465,7 +1459,7 @@ def trataMenus(trabalho,dicionarioPersonagem):
         elif menu==menu_trab_especifico:#trabalho especifico
             click_especifico(1,'f2')
             if verifica_erro(trabalho)==erroSemRecursos:
-                caminho_trabalho=f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[id]}'
+                caminho_trabalho=f'{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[CHAVE_ID]}'
                 excluir_trabalho(caminho_trabalho)
                 break
         elif menu==menu_esc_equipamento:#menu escolha equipamento
@@ -1479,7 +1473,7 @@ def trataMenus(trabalho,dicionarioPersonagem):
                 linhaSeparacao()
                 dicionarioTrabalho={'estado':0,
                                     'nivel':trabalho[nivel],
-                                    'nome':trabalho[nome],
+                                    'nome':trabalho[CHAVE_NOME],
                                     'profissao':trabalho[profissao],
                                     'raridade':trabalho[raridade],
                                     'recorrencia':1,
@@ -1507,7 +1501,7 @@ def inicia_producao(trabalho,dicionarioPersonagem):
                 if dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                     while verifica_erro(trabalho)!=0:
                         continue
-                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=retornaDicionarioTrabalhosDesejados(dicionarioPersonagem)
+                    dicionarioPersonagem[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
         else:
             print(f'Erro ao busca licença...')
             linhaSeparacao()
@@ -2092,8 +2086,6 @@ def deleta_item_lista():
     print(f'{lista}')
 
 def funcao_teste(dicionarioUsuario):
-    global personagem_id_global
-    personagem_id_global=dicionarioUsuario[CHAVE_ID_PERSONAGEM]
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
@@ -2106,13 +2098,13 @@ def funcao_teste(dicionarioUsuario):
     # dataAtual=datetime.date.today()
     # print(dataAtual.ctime())
     # percorreFrameItemBolsa()
-    dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
-    listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
-    print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
-    linhaSeparacao()
-    dicionarioPrimeiroPersonagem=listaDicionarioPersonagensAtivos[0]
-    print(dicionarioPrimeiroPersonagem)
-    linhaSeparacao()
+    # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
+    # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
+    # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
+    # linhaSeparacao()
+    # dicionarioPrimeiroPersonagem=listaDicionarioPersonagensAtivos[0]
+    # print(dicionarioPrimeiroPersonagem)
+    # linhaSeparacao()
     # retornaConteudoCorrespondencia(dicionarioPersonagem)
     # click_atalho_especifico('win','up')
     # lista_personagem_ativo = consulta_lista_personagem(usuario_id)
@@ -2155,8 +2147,8 @@ def funcao_teste(dicionarioUsuario):
     # else:
     #     print('Não achei...')
     # retorna_tipo_erro()
-    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    # atualiza_lista_profissao(dicionarioPersonagem)
+    dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+    atualiza_lista_profissao(dicionarioPersonagem)
     # while input(f'Continuar?')!='n':
     #     retorna_menu()
     # verificaPixelCorrespondencia()
