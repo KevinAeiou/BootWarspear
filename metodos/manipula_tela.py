@@ -28,7 +28,7 @@ corVidaMana=(0,0,148)#vermelho
 #         manipula_cliente.envia_dados_servidor(coordenadas)
 
 def desenhaMiniMapa():
-    telaInteira=manipula_funcoes.retorna_atualizacao_tela()
+    telaInteira=manipula_funcoes.retornaAtualizacaoTela()
     larguraTela=telaInteira.shape[1]
     alturaTela=telaInteira.shape[0]
     metadeLargura=larguraTela//2
@@ -40,7 +40,7 @@ def desenhaMiniMapa():
 def retornaVidaMana(vidaMana,posicao):
     if vidaMana==85:
         corVidaMana=(148,99,0)#azul
-    telaInteira=manipula_funcoes.retorna_atualizacao_tela()
+    telaInteira=manipula_funcoes.retornaAtualizacaoTela()
     frameTela=telaInteira[vidaMana:vidaMana+1,posicao:posicao+133]
     contadorPixelVermelho=np.sum(frameTela==corVidaMana)
     return retornaPorcentagemVida(contadorPixelVermelho)
