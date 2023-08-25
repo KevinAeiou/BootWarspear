@@ -104,9 +104,10 @@ def modificarProfissao(personagemId,profissaoId,profissao):
 
 def modificaProfissao(dicionarioPersonagem,dicionarioProfissao):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'
-    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dicionarioProfissao)
+    dicionarioNomeProfissao={CHAVE_NOME:dicionarioProfissao[CHAVE_NOME]}
+    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dicionarioNomeProfissao)
     if requisicao!=None:
-        print(f'{dicionarioProfissao} foi modificado!')
+        print(f'{dicionarioNomeProfissao} foi modificado!')
 
 def cadastraNovoTrabalho(dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Lista_trabalhos/.json'
@@ -182,25 +183,18 @@ def retornaDicionarioTrabalhos():
         print(f'Resultado da requisição: {requisicao}.')
     return dicionarioTrabalhos
 
-def retornaListaDicionarioTrabalhoDesejado(dicionarioPersonagem):
+def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem):
     listaDicionarioTrabalhoDesejado=[]
+    dicionarioTrabalhoDesejado={}
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dicionarioRequisicao=requisicao.json()
         if dicionarioRequisicao!=None:
-            for idTrabalhoDesejado in dicionarioRequisicao:
-                dicionarioTrabalhoDesejado={
-                    CHAVE_ID:idTrabalhoDesejado,
-                    CHAVE_NOME:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_NOME],
-                    CHAVE_NIVEL:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_NIVEL],
-                    CHAVE_PROFISSAO:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_PROFISSAO],
-                    CHAVE_RARIDADE:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_RARIDADE],
-                    CHAVE_RECORRENCIA:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_RECORRENCIA],
-                    CHAVE_ESTADO:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_ESTADO],
-                    CHAVE_LICENCA:dicionarioRequisicao[idTrabalhoDesejado][CHAVE_LICENCA]
-                }
-            listaDicionarioTrabalhoDesejado.append(dicionarioTrabalhoDesejado)
+            for id in dicionarioRequisicao:
+                dicionarioTrabalhoDesejado=dicionarioRequisicao[id]
+                dicionarioTrabalhoDesejado[CHAVE_ID]=id
+                listaDicionarioTrabalhoDesejado.append(dicionarioTrabalhoDesejado)
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.')  
     else:
