@@ -947,12 +947,10 @@ def ativaAtributoUso(dicionarioPersonagensAtivos,dicionarioPersonagem):
     modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemId,CHAVE_USO,True)
 #modificado 16/01
 def prepara_personagem(dicionarioUsuario):
-    global personagem_id_global
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
     #e o indice 1=nome da profissão
     click_atalho_especifico('alt','tab')
     click_atalho_especifico('win','left')
-    personagem_id_global=dicionarioUsuario[CHAVE_ID_PERSONAGEM]
     dicionarioDadosPersonagem=retornaDicionarioDadosPersonagem(dicionarioUsuario)
     if len(dicionarioDadosPersonagem)!=0:
         if not dicionarioDadosPersonagem[CHAVE_USO]:#se o personagem estiver inativo, troca o estado
@@ -1004,7 +1002,7 @@ def busca_lista_personagem_ativo(dicionarioUsuario):
                 linhaSeparacao()
                 dicionarioPersonagem=inicia_busca_trabalho(dicionarioPersonagem)
                 if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
-                    if verifica_erro(None)!=0 or len(dicionarioPersonagens)==1:
+                    if verifica_erro(None)!=0 or len(listaDicionarioPersonagensAtivos)==1:
                         dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
                         listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
                         print(f'Lista de personagens ativos atualizada...')
@@ -1036,7 +1034,7 @@ def retorna_texto_menu_reconhecido(x,y,largura):
     texto=None
     frame_menu=tela_inteira[centroAltura+y:centroAltura+y+alturaFrame,centroMetade+x:centroMetade+x+largura]
     frame_menu_tratado=transforma_caracteres_preto(frame_menu)
-    # mostra_imagem(0,frame_menu_tratado,None)
+    mostra_imagem(0,frame_menu_tratado,None)
     # print(f'Quantidade de pixels pretos: {np.sum(frame_menu_tratado==0)}')
     contadorPixelPreto=np.sum(frame_menu_tratado==0)
     if contadorPixelPreto>1000 and contadorPixelPreto<3010:
@@ -1044,9 +1042,10 @@ def retorna_texto_menu_reconhecido(x,y,largura):
         if texto!=None:
             texto=texto.lower().replace(' ','')
             print(f'Texto reconhecimento de menus: {texto}.')
+    # print(f'{D} - {texto}')
     return texto
 
-def retorna_menu():
+def retornaMenu():
     # 1050,1077,3006,1035,1251,1092,1215,1854,1863,1617,1377,2637,1344,
     # 1947,2721
     inicio = time.time()
@@ -1179,6 +1178,15 @@ def retorna_menu():
             print(f'Tempo de reconhece_texto: {fim - inicio}')
             linhaSeparacao()
             return menu_rec_diarias
+    texto_menu=retorna_texto_menu_reconhecido(-161,-330,300)
+    if texto_menu!=None:
+        if('recompensasdiárias'in texto_menu):
+            print(f'Menu recompensas diárias...')
+            linhaSeparacao()
+            fim = time.time()
+            print(f'Tempo de reconhece_texto: {fim - inicio}')
+            linhaSeparacao()
+            return menu_rec_diarias
     texto_menu=retorna_texto_menu_reconhecido(-31,-46,57)
     if texto_menu!=None:
         if 'meuperfil'in texto_menu:
@@ -1200,7 +1208,7 @@ def retorna_menu():
     return menu_desconhecido
 
 def deslogaPersonagem(email,dicionarioPersonagem):
-    menu=retorna_menu()
+    menu=retornaMenu()
     while menu!=menu_jogar:
         if menu==menu_inicial:
             encerra_secao()
@@ -1209,7 +1217,7 @@ def deslogaPersonagem(email,dicionarioPersonagem):
             break
         else:
             click_mouse_esquerdo(1,2,35)
-        menu=retorna_menu()
+        menu=retornaMenu()
     if email!=None or dicionarioPersonagem!=None:
         listaPersonagemId=retornaDicionarioListaIdPersonagem(dicionarioPersonagem,email)
         modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemId,CHAVE_USO,False)
@@ -1258,7 +1266,7 @@ def verificaNomePersonagemAtivoReconhecido(listaDicionarioPersonagensAtivos):
 
 def configura_login_personagem(listaDicionarioPersonagensAtivos):
     login=False
-    menu=retorna_menu()
+    menu=retornaMenu()
     while menu!=menu_jogar:
         if menu==menu_noticias or menu==menu_escolha_p:
             click_especifico(1,'f1')
@@ -1267,7 +1275,7 @@ def configura_login_personagem(listaDicionarioPersonagensAtivos):
         else:
             encerra_secao()
         linhaSeparacao()
-        menu=retorna_menu()
+        menu=retornaMenu()
     else:
         login=loga_personagem(listaDicionarioPersonagensAtivos)
     return login
@@ -1300,7 +1308,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                 continue
             erro=verifica_erro(None)
             if erro==0:
-                menu=retorna_menu()
+                menu=retornaMenu()
                 if menu==menu_inicial:
                     if verificaPixelCorrespondencia():
                         click_especifico(1,'f2')
@@ -1311,7 +1319,7 @@ def inicia_busca_trabalho(dicionarioPersonagem):
                     dicionarioPersonagem=trata_menu(menu,dicionarioPersonagem)
                     if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:
                         return dicionarioPersonagem
-                    menu=retorna_menu()
+                    menu=retornaMenu()
                 else:
                     print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                     if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
@@ -1451,7 +1459,7 @@ def trataErros(trabalho,dicionarioPersonagem):
 def trataMenus(trabalho,dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     while True:
-        menu=retorna_menu()
+        menu=retornaMenu()
         if menu==menu_desconhecido:
             continue
         elif menu==menu_trab_especifico:#trabalho especifico
@@ -1536,7 +1544,7 @@ def recebeTodasRecompensas(menu):
             print(f'Todos os personagens foram verificados!')
             linhaSeparacao()
             break
-        menu=retorna_menu()
+        menu=retornaMenu()
 
 def recuperaPresente():
     evento=0
@@ -2124,7 +2132,9 @@ def funcao_teste(dicionarioUsuario):
                     contadorCorMercador+=1
     print(contadorCorMercador)
     # mostra_imagem(0,frameTela,None)
-    encontraMercador()
+    # encontraMercador()
+    # texto_menu=retorna_texto_menu_reconhecido(-161,-330,300)
+    # print(texto_menu)
     # deleta_item_lista()
     # verifica_erro(None)
     # print(verificaCaixaCorreio())
@@ -2146,7 +2156,6 @@ def funcao_teste(dicionarioUsuario):
     #     continue
     # verifica_producao_recursos('Licença de produção do aprendiz')
     # click_continuo(9,'up')
-    # print(retorna_texto_menu_reconhecido())
     # recupera_trabalho_concluido(dicionarioPersonagem)
     # while True:
     # atualiza_nova_tela()
