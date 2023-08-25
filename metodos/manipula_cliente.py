@@ -305,18 +305,19 @@ def excluir_lista_profissoes(dicionarioPersonagem):
     else:
         print(f'Erro ao limpar lista de profissões!')
 
-def adicionaAtributoRecorrencia():
-    caminhoRequisicao=f'{link_database}/Lista_trabalhos/.json'
+def adicionaAtributoRecorrencia(dicionarioPersonagem):
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
-        dados={'recorrencia':0}
+        dados={'recorrencia':False}
         dicionario_requisicao=requisicao.json()
         for id in dicionario_requisicao:
-            nome=dicionario_requisicao[id]['nome']
-            caminhoRequisicao=f'{link_database}/Lista_trabalhos/{id}/.json'
-            requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-            print(f'Atributo recorrencia atribuido a: {nome}.')
-            print('____________________________________________')
+            if dicionario_requisicao[id][CHAVE_RECORRENCIA]==0 or dicionario_requisicao[id][CHAVE_RECORRENCIA]==1:
+                nome=dicionario_requisicao[id][CHAVE_NOME]
+                caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{id}/.json'
+                requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+                print(f'Atributo recorrencia atribuido a: {nome}.')
+                print('____________________________________________')
         else:
             print(f'Fim da lista.')
 # 0iQB1H7srqXMiufTR4HzqYQPj71hz
