@@ -75,6 +75,15 @@ def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
         print(f'Limite de tentativas de conexão atingido.')
     return dicionarioVenda
 
+def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/.json'
+    requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
+    if requisicao!=None:
+        print(f'Novo trabalho foi adicionado: {dicionarioTrabalho}')
+    else:
+        print(f'Limite de tentativas de conexão atingido.')
+    return dicionarioTrabalho
+
 def retornaListaDicionarioProfissao(dicionarioPersonagem):
     listaDicionarioProfissao=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes/.json'
@@ -291,12 +300,12 @@ def muda_quantidade_personagem(usuario_id,nova_quantidade):
         return True
     return False
 
-def excluir_trabalho(dicionarioPersonagem,dicionarioTrabalho):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioTrabalho[CHAVE_ID]}/.json'
+def excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho):
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{dicionarioTrabalho[CHAVE_ID]}/.json'
     if retornaRequisicao(DELETE,caminhoRequisicao,None):
-        print('Trabalho exluido da lista de desejo.')
+        print(f'Trabalho {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
     else:
-        print('Erro ao exluir da lista de desejo.')
+        print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
 
 def excluir_lista_profissoes(dicionarioPersonagem):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_profissoes/.json'

@@ -218,7 +218,7 @@ def menu(dicionarioUsuario):
                 manipula_funcoes.prepara_personagem(dicionarioUsuario)
                 manipula_funcoes.linhaSeparacao()
             elif opcao_lista == 2:#Exclui trabalho da lista
-                excluir_trabalho(dicionarioUsuario)
+                excluiTrabalho(dicionarioUsuario)
                 manipula_funcoes.linhaSeparacao()
         elif escolha==3:#Menu habilidade
             opcao_habilidade = mostra_menu_habilidade()
@@ -260,7 +260,7 @@ def menu(dicionarioUsuario):
         menu(dicionarioUsuario)
     return
 
-def excluir_trabalho(dicionarioUsuario):
+def excluiTrabalho(dicionarioUsuario):
     lista_desejo = manipula_funcoes.mostra_lista(f'{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_ID_PERSONAGEM]}/Lista_desejo')
     opcao_exclui_trabalho = input(f'Qual trabalho deseja exluir?')
     manipula_funcoes.linhaSeparacao()
@@ -277,7 +277,7 @@ def excluir_trabalho(dicionarioUsuario):
         else:
             trabalho = lista_desejo[opcao_exclui_trabalho-1]
             trabalho_id = f'{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[id]}'
-            manipula_funcoes.excluir_trabalho(trabalho_id)
+            manipula_funcoes.excluiTrabalho(trabalho_id)
 
 def menu_personagem(dicionarioUsuario):
     print(f'Personagens.')

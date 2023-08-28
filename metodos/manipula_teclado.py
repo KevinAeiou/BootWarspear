@@ -134,7 +134,7 @@ def inicia_trabalho(posicao):
         print('____________________________________')
         time.sleep(1) 
 
-def retorna_menu_profissao_especifica(indice):
+def entraProfissaoEspecifica(indice):
     time.sleep(0.5)
     for x in range(indice):
         tecla.hotkey('down')
@@ -185,7 +185,7 @@ def click_especifico(clicks,tecla_esp):
             tecla_num = tecla_esp
         tecla.hotkey(tecla_num)
         print(f'{tecla_esp}.')
-        time.sleep(1)
+        time.sleep(0.5)
     
 def click_atalho_especifico(tecla1,tecla2):
     time.sleep(1)
