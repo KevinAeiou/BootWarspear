@@ -314,7 +314,8 @@ def mostraListaDesejo(dicionarioUsuario):
     tamanhoDicionario=len(listaDicionarioTrabalhoDesejado)
     if tamanhoDicionario>0:
         for trabalhoDesejado in listaDicionarioTrabalhoDesejado:
-            print(f'{trabalhoDesejado[CHAVE_NOME]}')
+            if trabalhoDesejado[CHAVE_ESTADO]==0:
+                print(f'{trabalhoDesejado[CHAVE_NOME]}')
         linhaSeparacao()
     else:
         print(f'A lista está vazia.')
