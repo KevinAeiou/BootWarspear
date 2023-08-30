@@ -556,30 +556,24 @@ def retornaTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
     global contadorParaCima
     contadorParaCima=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]
-    if dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]==-1:
+    if primeiraBusca(dicionarioTrabalho):
         clicks=5
         contadorParaCima=5
     else:
         clicks=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]
     click_especifico(clicks,'down')
-    while dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:#51 capas, 100 acorpoacorpo,
-        nome_trabalho_reconhecido=retornaNomeTrabalhoReconhecido(530,1)
-        if nome_trabalho_reconhecido!=None:
-            print(f'Trabalho reconhecido: {nome_trabalho_reconhecido}')
-            for trabalho_lista in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
-                nome_trabalho=trabalho_lista[CHAVE_NOME]
-                profissao_trabalho=trabalho_lista[CHAVE_PROFISSAO]
-                raridade_trabalho=trabalho_lista[CHAVE_RARIDADE]
-                estadoTrabalho=trabalho_lista[CHAVE_ESTADO]
-                if (raridade_trabalho=='Comum'and
-                    profissao_trabalho==dicionarioTrabalho[CHAVE_NOME_PROFISSAO]and
-                    estadoTrabalho==para_produzir):
-                    print(f'Trabalho na lista: {nome_trabalho}')
-                    if nome_trabalho_reconhecido.replace(' ','').lower()==nome_trabalho.replace(' ','').replace('-','').lower():
+    while not chaveDicionarioTrabalhoExiste(dicionarioTrabalho):#51 capas, 100 acorpoacorpo,
+        nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(530,1)
+        if variavelExiste(nomeTrabalhoReconhecido):
+            print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
+            for trabalhoListaDesejo in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
+                if trabalhoPreencheRequisitos(dicionarioTrabalho, trabalhoListaDesejo):
+                    print(f'Trabalho na lista: {trabalhoListaDesejo[CHAVE_NOME]}')
+                    if trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido, trabalhoListaDesejo):
                         linhaSeparacao()
                         click_especifico(1,'enter')
                         dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=contadorParaCima
-                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=trabalho_lista
+                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=trabalhoListaDesejo
                         contadorParaCima+=1
                         break
             else:
@@ -587,14 +581,38 @@ def retornaTrabalhoComum(dicionarioTrabalho):
                 click_especifico(1,'down')
                 contadorParaCima+=1
         else:
-            click_especifico(1,'f1')
-            click_continuo(9,'up')
-            click_especifico(1,'left')
+            vaiParaMenuTrabalhoEmProducao()
             print(f'Trabalho comum não reconhecido!')
             linhaSeparacao()
             break
         # print(f'Teste de contador: {contador_paracima}')
     return dicionarioTrabalho
+
+def vaiParaMenuTrabalhoEmProducao():
+    click_especifico(1,'f1')
+    click_continuo(9,'up')
+    click_especifico(1,'left')
+
+def trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido, trabalhoListaDesejo):
+    return unidecode(nomeTrabalhoReconhecido).replace(' ','').lower()==unidecode(trabalhoListaDesejo[CHAVE_NOME]).replace(' ','').replace('-','').lower()
+
+def trabalhoPreencheRequisitos(dicionarioTrabalho, trabalhoListaDesejo):
+    return trabalhoEComum(trabalhoListaDesejo)and trabalhoEProfissaoVerificada(dicionarioTrabalho, trabalhoListaDesejo)and trabalhoEParaProduzir(trabalhoListaDesejo)
+
+def trabalhoEParaProduzir(trabalhoListaDesejo):
+    return trabalhoListaDesejo[CHAVE_ESTADO]==para_produzir
+
+def trabalhoEProfissaoVerificada(dicionarioTrabalho, trabalhoListaDesejo):
+    return unidecode(trabalhoListaDesejo[CHAVE_PROFISSAO]).replace(' ','').lower()==unidecode(dicionarioTrabalho[CHAVE_NOME_PROFISSAO]).replace(' ','').lower()
+
+def trabalhoEComum(trabalhoListaDesejo):
+    return trabalhoListaDesejo[CHAVE_RARIDADE].lower()=='comum'
+
+def variavelExiste(nomeTrabalhoReconhecido):
+    return nomeTrabalhoReconhecido!=None
+
+def primeiraBusca(dicionarioTrabalho):
+    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]==-1
 
 def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     #recorta frame para reconhecimento de texto
@@ -1305,28 +1323,26 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
     dicionarioTrabalho={CHAVE_LISTA_DESEJO:listaDicionariosTrabalhosDesejados,
                         CHAVE_DICIONARIO_TRABALHO_DESEJADO:None,
                         CHAVE_CONFIRMACAO:False}
-    if len(listaDicionariosTrabalhosDesejados)>0:#verifica se a lista está vazia
+    if existeLista(listaDicionariosTrabalhosDesejados):#verifica se a lista está vazia
         dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
         for profissaoVerificada in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
-            if not dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
+            if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
                 continue
             erro=verificaErro(None)
-            if erro==0:
+            if nenhumErroEncontrado(erro):
                 menu=retornaMenu()
-                if menu==menu_inicial:
-                    if verificaPixelCorrespondencia():
-                        click_especifico(1,'f2')
-                        click_especifico(1,'1')
-                        click_especifico(1,'9')
+                if estaMenuInicial(menu):
+                    if existePixelCorrespondencia():
+                        vaiParaMenuCorrespondencia()
                         recuperaCorrespondencia(dicionarioPersonagem)
-                while menu!=menu_produzir:
+                while naoEstiverMenuProduzir(menu):
                     dicionarioPersonagem=trata_menu(menu,dicionarioPersonagem)
-                    if not dicionarioPersonagem[CHAVE_CONFIRMACAO]:
+                    if not chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
                         return dicionarioPersonagem
                     menu=retornaMenu()
                 else:
                     # print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
-                    if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
+                    if listaProfissoesFoiModificada(dicionarioPersonagem):
                         dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
                     print(f'Verificando profissão: {profissaoVerificada[CHAVE_NOME]}')
                     linhaSeparacao()
@@ -1338,18 +1354,15 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                         linhaSeparacao()
                         entraProfissaoEspecifica(profissaoVerificada[CHAVE_POSICAO])
                         dicionarioTrabalho=verificaTrabalhoComum(dicionarioTrabalho)
-                        if dicionarioTrabalho[CHAVE_CONFIRMACAO]:
+                        if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                             print(f'Iniciou processo de fabricação de trabalho comum.')
                             linhaSeparacao()
                             print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}')
                             dicionarioTrabalho=retornaTrabalhoComum(dicionarioTrabalho)
-                            if dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]!=None:
+                            if chaveDicionarioTrabalhoExiste(dicionarioTrabalho):
                                 dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],dicionarioPersonagem)
                                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
                                 click_especifico(1,'left')
-                            else:
-                                print(f'Erro ao buscar trabalho comum!')
-                                linhaSeparacao()
                             if not dicionarioTrabalho[CHAVE_CONFIRMACAO]or not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
                                 print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
                                 linhaSeparacao()
@@ -1358,17 +1371,17 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                             dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=0
                             print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
                             linhaSeparacao()
-                            while dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]<4:
+                            while naoFizerQuatroVerificacoes(dicionarioTrabalho):
                                 dicionarioTrabalho=verificaPosicoesTrabalhos(dicionarioTrabalho)
-                                if dicionarioTrabalho[CHAVE_CONFIRMACAO]:
+                                if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     print(f'Iniciou processo de fabricação de trabalho raro/especial.')
                                     linhaSeparacao()
                                     dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],dicionarioPersonagem)
                                     click_especifico(1,'left')
                                     dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
-                                elif dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
+                                elif not chaveDicionarioTrabalhoExiste(dicionarioTrabalho):
                                     break
-                                dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]+=1
+                                incrementaChavePosicaoTrabalho(dicionarioTrabalho)
                                 print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
                                 linhaSeparacao()
                             print(f'Nem um trabalho disponível está na lista de desejos.')
@@ -1377,20 +1390,20 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                             linhaSeparacao()
                         if not dicionarioTrabalho[CHAVE_CONFIRMACAO]or not dicionarioPersonagem[CHAVE_CONFIRMACAO]:#só quebra o laço quando retornar falso
                             break
-                    if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
-                        if dicionarioPersonagem[CHAVE_ESPACO_BOLSA]:
+                    if chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
+                        if chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
                             if retornaEstadoTrabalho()==concluido:
                                 dicionarioPersonagem=verificaTrabalhoConcluido(dicionarioPersonagem)
                         click_especifico(1,'left')
-            elif erro==erroOutraConexao:
+            elif existeOutraConexao(erro):
                 dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
             else:
                 print(f'Erro ao percorrer lista de profissões...')
                 linhaSeparacao()
                 break
         else:
-            print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
-            if dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
+            # print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
+            if listaProfissoesFoiModificada(dicionarioPersonagem):
                 dicionarioPersonagem=atualiza_lista_profissao(dicionarioPersonagem)
             print(f'Fim da lista de profissões...')
             linhaSeparacao()
@@ -1398,6 +1411,47 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
         print(f'Lista de trabalhos desejados vazia.')
         linhaSeparacao()
     return dicionarioPersonagem
+
+def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
+    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]+=1
+
+def chaveDicionarioTrabalhoExiste(dicionarioTrabalho):
+    return dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]!=None
+
+def naoFizerQuatroVerificacoes(dicionarioTrabalho):
+    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]<4
+
+def chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
+    return dicionarioPersonagem[CHAVE_ESPACO_BOLSA]
+
+def existeOutraConexao(erro):
+    return erro==erroOutraConexao
+
+def listaProfissoesFoiModificada(dicionarioPersonagem):
+    return dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]
+
+def existeLista(listaDicionariosTrabalhosDesejados):
+    return len(listaDicionariosTrabalhosDesejados)>0
+
+def chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
+    return dicionarioPersonagem[CHAVE_UNICA_CONEXAO]
+
+def chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
+    return dicionarioPersonagem[CHAVE_CONFIRMACAO]
+
+def naoEstiverMenuProduzir(menu):
+    return menu!=menu_produzir
+
+def nenhumErroEncontrado(erro):
+    return erro==0
+
+def vaiParaMenuCorrespondencia():
+    click_especifico(1,'f2')
+    click_especifico(1,'1')
+    click_especifico(1,'9')
+
+def estaMenuInicial(menu):
+    return menu==menu_inicial
 
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem,dicionarioTrabalho=recuperaTrabalhoConcluido(dicionarioPersonagem)
@@ -1945,7 +1999,7 @@ def recuperaCorrespondencia(dicionarioPersonagem):
         click_mouse_esquerdo(1,2,35)
         linhaSeparacao()
 
-def verificaPixelCorrespondencia():
+def existePixelCorrespondencia():
     confirmacao=False
     tela=retornaAtualizacaoTela()
     frameTela=tela[665:690,644:675]
