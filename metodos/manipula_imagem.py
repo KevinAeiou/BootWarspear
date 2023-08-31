@@ -169,7 +169,7 @@ def abre_imagem(caminho_imagem):
     imagem = cv2.imread(caminho_imagem)
     return imagem
 
-def mostra_imagem(indice,imagem,nome_frame):
+def mostraImagem(indice,imagem,nome_frame):
     if nome_frame == None:
         nome_frame = 'Janela teste'
     cv2.imshow(nome_frame,imagem)

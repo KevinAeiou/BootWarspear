@@ -471,14 +471,14 @@ def verifica_ciclo(lista):
             return True
     return False
 
-def confirmaNomeTrabalho(trabalhoDesejado,tipo_trabalho):
+def confirmaNomeTrabalho(trabalhoDesejado,dicionarioTrabalho,tipoTrabalho):
     print(f'Confirmando nome do trabalho...')
     x=0
     y=1
     largura=2
     altura=3
     listaFrames=[[169,280,303,33],[169,195,343,31]]
-    posicao=listaFrames[tipo_trabalho]
+    posicao=listaFrames[tipoTrabalho]
     telaInteira=retornaAtualizacaoTela()#tira novo print da tela
     frameNomeTrabalho=telaInteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
     frameNomeTrabalhoTratado=transformaCaracteresPreto(frameNomeTrabalho)
@@ -488,14 +488,14 @@ def confirmaNomeTrabalho(trabalhoDesejado,tipo_trabalho):
         if trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido,trabalhoDesejado):
             print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
             linhaSeparacao()
-            trabalhoDesejado[CHAVE_CONFIRMACAO]=True
+            dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
         else:
-            trabalhoDesejado[CHAVE_CONFIRMACAO]=False
+            dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
             print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
             linhaSeparacao()
     else:
-        trabalhoDesejado[CHAVE_CONFIRMACAO]=False
-    return trabalhoDesejado
+        dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+    return dicionarioTrabalho
 
 def verificaPosicoesTrabalhos(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
@@ -515,7 +515,7 @@ def verificaPosicoesTrabalhos(dicionarioTrabalho):
                     linhaSeparacao()
                     dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoListaDesejo)
                     if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                        dicionarioTrabalho=confirmaNomeTrabalho(trabalhoListaDesejo[CHAVE_NOME],1)
+                        dicionarioTrabalho=confirmaNomeTrabalho(trabalhoListaDesejo,dicionarioTrabalho,1)
                         if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):#confirma o nome do trabalho
                             dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=trabalhoListaDesejo
                             break
@@ -591,12 +591,6 @@ def vaiParaMenuTrabalhoEmProducao():
     clickEspecifico(1,'left')
 
 def trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido, trabalhoListaDesejo):
-    nomeTrabalhoReconhecido=unidecode(nomeTrabalhoReconhecido)
-    nomeTrabalhoReconhecido=nomeTrabalhoReconhecido.replace(' ','')
-    nomeTrabalhoReconhecido=nomeTrabalhoReconhecido.lower()
-    nomeTrabalhoReconhecido=nomeTrabalhoReconhecido[1:-1]
-    print(f'Comparando: {nomeTrabalhoReconhecido}:{unidecode(trabalhoListaDesejo[CHAVE_NOME]).lower()}.')
-    linhaSeparacao()
     return unidecode(nomeTrabalhoReconhecido).replace(' ','').lower()[1:-1]in unidecode(trabalhoListaDesejo[CHAVE_NOME]).replace(' ','').replace('-','').lower()
 
 def trabalhoPreencheRequisitos(dicionarioTrabalho, trabalhoListaDesejo):
@@ -1605,12 +1599,12 @@ def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
     return dicionarioTrabalho,dicionarioPersonagem
 
 def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
-    if listaPersonagemPresenteRecuperado==None:
+    if listaEstaVazia(listaPersonagemPresenteRecuperado):
         print(f'Limpou a lista...')
         linhaSeparacao()
         listaPersonagemPresenteRecuperado=[]
     nomePersonagemReconhecido=retornaNomePersonagem(0)
-    if nomePersonagemReconhecido!=None:
+    if variavelExiste(nomePersonagemReconhecido):
         print(f'{nomePersonagemReconhecido} foi adicionado a lista!')
         linhaSeparacao()
         listaPersonagemPresenteRecuperado.append(nomePersonagemReconhecido)
@@ -1620,7 +1614,7 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
     return listaPersonagemPresenteRecuperado
 
 def recebeTodasRecompensas(menu):
-    listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(None)
+    listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
     while True:
         reconheceMenuRecompensa(menu)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
@@ -1642,10 +1636,14 @@ def recuperaPresente():
         metadeAltura=telaInteira.shape[0]//2
         metadeLargura=telaInteira.shape[1]//4
         alturaFrame=80
-        y=-261
+        y=123
+        y=95
+        aux=metadeAltura-y
+        y=metadeAltura-aux
         larguraFrame=150
         for x in range(8):
-            frameTela=telaInteira[metadeAltura+y:metadeAltura+y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
+            frameTela=telaInteira[y:y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
+            # mostraImagem(0,frameTela,None)
             # frameTratado=retornaImagemCoresInvertidas(frameTela)
             frameTratado=transformaCaracteresPreto(frameTela)
             contadorPixelPreto=np.sum(frameTratado==0)
@@ -1656,7 +1654,7 @@ def recuperaPresente():
                     print(f'Texto reconhecido: {textoReconhecido}.')
                     if textoReconhecido.replace(' ','').lower()=='pegar':
                         centroX=metadeLargura+larguraFrame//2
-                        centroY=metadeAltura+y+alturaFrame//2
+                        centroY=y+alturaFrame//2
                         click_mouse_esquerdo(1,centroX,centroY)
                         posiciona_mouse_esquerdo(telaInteira.shape[1]//2,metadeAltura)
                         if verificaErro(None)!=0:
@@ -2056,7 +2054,7 @@ def percorreFrameItemBolsa():
         frameItemBolsa=telaInteira[y:y+larguraAlturaFrame,x:x+larguraAlturaFrame]
         frameItemBolsa=retorna_imagem_cinza(frameItemBolsa)
         quantidadeItemBolsa=reconhece_digito(frameItemBolsa)
-        mostra_imagem(0,frameItemBolsa,quantidadeItemBolsa)
+        mostraImagem(0,frameItemBolsa,quantidadeItemBolsa)
         if contadorItensPercorridos%5==0:
             y+=larguraAlturaFrame
             x=168
@@ -2095,7 +2093,7 @@ def descobreFrames():
     
     frame_menu_tratado=transformaCaracteresPreto(frameMenuOferta)
     print(reconheceTexto(frame_menu_tratado))
-    mostra_imagem(0,frameMenuOferta,None)
+    mostraImagem(0,frameMenuOferta,None)
     # mostra_imagem(0,frameMenuProfissoes,None)
     # mostra_imagem(0,frameMenuVoltar,None)
     # mostra_imagem(0,frameMenuNoticias,None)
@@ -2142,7 +2140,7 @@ def retorna_lista_pixel_minimap():
             somaY=-1
         xMapa=xMapa+somaX
         yMapa=yMapa+somaY
-    mostra_imagem(0,fundo,'Minimapa')
+    mostraImagem(0,fundo,'Minimapa')
     return lista_pixel
 
 def encontraMercador():
@@ -2159,7 +2157,7 @@ def encontraMercador():
                 quantidadeLinhas+=1
                 continue
             frameTela=telaInteira[y:y+46,x:x+46]
-            mostra_imagem(300,frameTela,None)
+            mostraImagem(300,frameTela,None)
             for yFrame in range(0,frameTela.shape[0]):
                 for xFrame in range(0,frameTela.shape[1]):
                     if (frameTela[yFrame,xFrame]==(51,51,187)).all():
@@ -2167,7 +2165,7 @@ def encontraMercador():
             if contadorCorMercador==104:
                 print(f'Debug - Frame icone mercador encontrado!')
                 linhaSeparacao()
-                mostra_imagem(0,frameTela,None)
+                mostraImagem(0,frameTela,None)
                 # return frameTela
 
 def salva_imagem_envia_servidor():
@@ -2218,7 +2216,7 @@ def funcao_teste(dicionarioUsuario):
     #         if (frameTela[yFrame,xFrame]==(51,51,187)).all():
     #                 contadorCorMercador+=1
     # print(contadorCorMercador)
-    adicionaAtributoRecorrencia(dicionarioPersonagem)
+    # adicionaAtributoRecorrencia(dicionarioPersonagem)
     # mostra_imagem(0,frameTela,None)
     # encontraMercador()
     # texto_menu=retorna_texto_menu_reconhecido(-161,-330,300)
@@ -2290,6 +2288,7 @@ def funcao_teste(dicionarioUsuario):
     # verifica_trabalho_comum(trabalho,'profissaoteste')
     # while inicia_busca_trabalho():
     #     continue
+    recuperaPresente()
     # entra_personagem_ativo('mrninguem')
     # inicia_busca_trabalho()
     click_atalho_especifico('alt','tab')
@@ -2297,7 +2296,6 @@ def funcao_teste(dicionarioUsuario):
 # verifica_erro(None)
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
-# recuperaPresente()
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
