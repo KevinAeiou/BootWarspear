@@ -471,14 +471,14 @@ def verifica_ciclo(lista):
             return True
     return False
 
-def confirmaNomeTrabalho(trabalhoDesejado,tipo_trabalho):
+def confirmaNomeTrabalho(trabalhoDesejado,dicionarioTrabalho,tipoTrabalho):
     print(f'Confirmando nome do trabalho...')
     x=0
     y=1
     largura=2
     altura=3
     listaFrames=[[169,280,303,33],[169,195,343,31]]
-    posicao=listaFrames[tipo_trabalho]
+    posicao=listaFrames[tipoTrabalho]
     telaInteira=retornaAtualizacaoTela()#tira novo print da tela
     frameNomeTrabalho=telaInteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
     frameNomeTrabalhoTratado=transformaCaracteresPreto(frameNomeTrabalho)
@@ -488,14 +488,14 @@ def confirmaNomeTrabalho(trabalhoDesejado,tipo_trabalho):
         if trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido,trabalhoDesejado):
             print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
             linhaSeparacao()
-            trabalhoDesejado[CHAVE_CONFIRMACAO]=True
+            dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
         else:
-            trabalhoDesejado[CHAVE_CONFIRMACAO]=False
+            dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
             print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
             linhaSeparacao()
     else:
-        trabalhoDesejado[CHAVE_CONFIRMACAO]=False
-    return trabalhoDesejado
+        dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+    return dicionarioTrabalho
 
 def verificaPosicoesTrabalhos(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
@@ -515,7 +515,7 @@ def verificaPosicoesTrabalhos(dicionarioTrabalho):
                     linhaSeparacao()
                     dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoListaDesejo)
                     if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                        dicionarioTrabalho=confirmaNomeTrabalho(trabalhoListaDesejo[CHAVE_NOME],1)
+                        dicionarioTrabalho=confirmaNomeTrabalho(trabalhoListaDesejo,dicionarioTrabalho,1)
                         if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):#confirma o nome do trabalho
                             dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=trabalhoListaDesejo
                             break
@@ -591,12 +591,6 @@ def vaiParaMenuTrabalhoEmProducao():
     clickEspecifico(1,'left')
 
 def trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido, trabalhoListaDesejo):
-    nomeTrabalhoReconhecido=unidecode(nomeTrabalhoReconhecido)
-    nomeTrabalhoReconhecido=nomeTrabalhoReconhecido.replace(' ','')
-    nomeTrabalhoReconhecido=nomeTrabalhoReconhecido.lower()
-    nomeTrabalhoReconhecido=nomeTrabalhoReconhecido[1:-1]
-    print(f'Comparando: {nomeTrabalhoReconhecido}:{unidecode(trabalhoListaDesejo[CHAVE_NOME]).lower()}.')
-    linhaSeparacao()
     return unidecode(nomeTrabalhoReconhecido).replace(' ','').lower()[1:-1]in unidecode(trabalhoListaDesejo[CHAVE_NOME]).replace(' ','').replace('-','').lower()
 
 def trabalhoPreencheRequisitos(dicionarioTrabalho, trabalhoListaDesejo):
