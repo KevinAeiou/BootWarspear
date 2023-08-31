@@ -48,7 +48,7 @@ def reconhece_digito(imagem):
     print(f'____________________________________________________')
     return digitoReconhecido
 
-def reconhece_texto(imagem):
+def reconheceTexto(imagem):
     # inicio = time.time()
     # tesseract image.png output --oem 3 --psm 11 -c tessedit_char_whitelist=0123456789
     texto=None
@@ -69,7 +69,7 @@ def reconhece_texto(imagem):
     # print(f'____________________________________________________')
     return texto
 
-def transforma_caracteres_preto(imagem_original):
+def transformaCaracteresPreto(imagem_original):
     # inicio = time.time()
     #marrom1 = 48,87,164
     imagem_tratada = imagem_original

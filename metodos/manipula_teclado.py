@@ -149,33 +149,33 @@ def entraProfissaoEspecifica(indice):
     print('____________________________________')
 
 def entra_secao(email,senha):
-    click_especifico(1,'f2')
-    click_especifico(1,0)
-    click_especifico(1,'f2')
-    click_especifico(1,'down')
-    click_continuo(30,'backspace')
+    clickEspecifico(1,'f2')
+    clickEspecifico(1,0)
+    clickEspecifico(1,'f2')
+    clickEspecifico(1,'down')
+    clickContinuo(30,'backspace')
     tecla.write(email)
-    click_especifico(1,'down')
+    clickEspecifico(1,'down')
     tecla.write(senha)
-    click_especifico(2,'down')
-    click_especifico(1,'enter')
+    clickEspecifico(2,'down')
+    clickEspecifico(1,'enter')
     time.sleep(5)
 
 def entra_personagem(personagem):
-    click_especifico(1,'f2')
+    clickEspecifico(1,'f2')
 
 def encerra_secao():
     print(f'Encerrando seção...')
-    click_especifico(1,'f2')
-    click_especifico(1,8)
-    click_especifico(1,5)
-    click_especifico(1,'f2')
+    clickEspecifico(1,'f2')
+    clickEspecifico(1,8)
+    clickEspecifico(1,5)
+    clickEspecifico(1,'f2')
 
-def click_continuo(tempo,tecla_esp):
+def clickContinuo(tempo,tecla_esp):
     for x in range(tempo):
         tecla.press(tecla_esp)
 
-def click_especifico(clicks,tecla_esp):
+def clickEspecifico(clicks,tecla_esp):
     time.sleep(0.5)
     for x in range(clicks):
         if isinstance(tecla_esp,int):
