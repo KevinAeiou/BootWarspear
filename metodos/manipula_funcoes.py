@@ -977,7 +977,7 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
             linhaSeparacao()
         else:#se houver pelo menos um personagem ativo
             dicionarioPersonagemReconhecido=verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem)
-            if dicionarioPersonagemReconhecido!=None:
+            if not listaEstaVazia(dicionarioPersonagemReconhecido):
                 dicionarioPersonagem[CHAVE_ID_PERSONAGEM]=dicionarioPersonagemReconhecido[CHAVE_ID]
                 dicionarioPersonagem[CHAVE_NOME_PERSONAGEM]=dicionarioPersonagemReconhecido[CHAVE_NOME]
                 dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=dicionarioPersonagemReconhecido[CHAVE_ESPACO_PRODUCAO]
@@ -1003,10 +1003,10 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                     continue
             else:#se o nome reconhecido não estiver na lista de ativos
                 if not listaEstaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]) and dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[0][CHAVE_EMAIL]:
-                    nome=entraPersonagemAtivo(dicionarioPersonagem,dicionarioPersonagem)
+                    nome=entraPersonagemAtivo(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO],dicionarioPersonagem)
                     print(nome)
-                elif configuraLoginPersonagem(dicionarioPersonagem):
-                    nome=entraPersonagemAtivo(dicionarioPersonagem,dicionarioPersonagem)
+                elif configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
+                    nome=entraPersonagemAtivo(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO],dicionarioPersonagem)
                     print(nome)
                     if nome!=None and dicionarioPersonagemReconhecido!=None:
                         dicionarioPersonagem,dicionarioPersonagem=removePersonagemLista(dicionarioPersonagemReconhecido,dicionarioPersonagem)
@@ -1276,6 +1276,8 @@ def logaPersonagem(listaDicionarioPersonagensAtivos):
     while erro!=0:
         if erro==erroConectando or erro==erroRestaurandoConexao:
             time.sleep(1)
+        elif erro==erroEmailSenhaIncorreta:
+            break
         else:
             print('Erro ao tentar logar...')
         erro=verificaErro(None)
