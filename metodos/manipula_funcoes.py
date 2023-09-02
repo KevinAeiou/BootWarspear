@@ -100,17 +100,17 @@ def atualiza_lista_profissao(dicionarioPersonagem):
         frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,232:232+237]
         profissaoReconhecida=reconheceTexto(frame_nome_profissao)
         if profissaoReconhecida!=None:
-            if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][CHAVE_NOME]).replace(' ','').lower():
+            if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_NOME]).replace(' ','').lower():
                 print(f'Profissão: {profissaoReconhecida} OK')
                 yinicial_profissao+=70
                 continue
             else:
-                for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:
+                for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
                     if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(profissao[CHAVE_NOME]).replace(' ','').lower():
                         idA=profissao[CHAVE_ID]
                         break
-                profissaoB=dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][CHAVE_NOME]
-                dicionarioProfissao={CHAVE_ID:dicionarioPersonagem[CHAVE_LISTA_PROFISSAO][x][CHAVE_ID],
+                profissaoB=dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_NOME]
+                dicionarioProfissao={CHAVE_ID:dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_ID],
                                      CHAVE_NOME:profissaoReconhecida}
                 modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
                 dicionarioProfissao={CHAVE_ID:idA,
@@ -295,18 +295,12 @@ def detecta_movimento_teste():
     cv2.destroyAllWindows()
     print(lista)
 #modificado 16/01
-def mostraLista(dicionarioUsuario):
-    dicionarioUsuario=retornaListaDicionarioPersonagens(dicionarioUsuario)
+def mostraLista(listaDicionarios):
     x=1
-    if not listaEstaVazia(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
-        for dicionarioPersonagem in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-            print(f'{x} - {dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM][dicionarioPersonagem][CHAVE_NOME]}.')
-            x+=1
-        print(f'0 - Voltar.')
-    else:
-        print(f'A lista está vazia.')
-        linhaSeparacao()
-    return dicionarioUsuario
+    for dicionarioPersonagem in listaDicionarios:
+        print(f'{x} - {dicionarioPersonagem[CHAVE_NOME]}.')
+        x+=1
+    print(f'0 - Voltar.')
 
 def mostraListaDesejo(dicionarioUsuario):
     listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
@@ -319,20 +313,6 @@ def mostraListaDesejo(dicionarioUsuario):
         print(f'A lista está vazia.')
         linhaSeparacao()
     return listaDicionarioTrabalhoDesejado
-
-#modificado 16/01
-def mostra_lista_trabalho(nome_profissao,raridade_trabalho):
-    lista = retornaDicionarioTrabalhos(nome_profissao,raridade_trabalho)
-    tamanho_lista = len(lista)
-    if tamanho_lista>0:
-        for x in range(tamanho_lista):
-            print(f'{x+1} - {lista[x][0]}')
-        print(f'0 - Voltar.')
-    else:
-        print(f'A lista está vazia.')
-        linhaSeparacao()
-        lista = 0
-    return lista
 
 def verifica_lista_inimigo(nome_reconhecido):
     lista_inimigos = ['Sombradapodridãofuriosa','Mineradorlouco','Lobocego','adecãoebuliente','Chamadasprofundezas','Párialouco','Harpialadra','Sombradapodridão','Goblinmestreminério','ChifraçoAncião']
@@ -547,6 +527,17 @@ def retornaListaDicionarioTrabalhoComum(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]=listaDicionariosTrabalhosComunsDesejados
     return dicionarioTrabalho
 
+def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade):
+    listaDicionariosTrabalhosBuscados=[]
+    for dicionarioTrabalho in listaDicionariosTrabalhos:
+        if (mesmoValor(listaDicionariosTrabalhos[dicionarioTrabalho][CHAVE_PROFISSAO],profissao)and
+            mesmoValor(listaDicionariosTrabalhos[dicionarioTrabalho][CHAVE_RARIDADE],raridade)):
+            listaDicionariosTrabalhosBuscados.append(listaDicionariosTrabalhos[dicionarioTrabalho])
+    return listaDicionariosTrabalhosBuscados
+
+def mesmoValor(valor1, valor2):
+    return unidecode(valor1).replace(' ','').lower()==unidecode(valor2).replace(' ','').lower()
+
 def retornaTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
     global contadorParaCima
@@ -604,8 +595,8 @@ def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
 def raridadeTrabalhoEComum(trabalhoListaDesejo):
     return trabalhoListaDesejo[CHAVE_RARIDADE].lower()=='comum'
 
-def variavelExiste(nomeTrabalhoReconhecido):
-    return nomeTrabalhoReconhecido!=None
+def variavelExiste(variavelVerificada):
+    return variavelVerificada!=None
 
 def primeiraBusca(dicionarioTrabalho):
     return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]==-1
@@ -849,12 +840,12 @@ def retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
     #cria lista vazia
     lista_profissao_verificada=[]
     #abre o arquivo lista de profissoes
-    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
     #abre o arquivo lista de desejos
     dicionarioPersonagem[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
     #percorre todas as linha do aquivo profissoes
     posicao=1
-    for profissao in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO]:
+    for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
         #percorre todas as linhas do aquivo lista de desejos
         for trabalhoDesejado in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
             if profissaoENecessaria(profissao, trabalhoDesejado)and estadoTrabalhoEParaProduzir(trabalhoDesejado):
@@ -1003,7 +994,7 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
     while True:
         if verificaListaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-            dicionarioPersonagem=retornaListaDicionarioPersonagens(dicionarioUsuario)
+            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioUsuario)
             dicionarioPersonagem=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
             print(f'Lista de personagens ativos atualizada...')
             linhaSeparacao()
@@ -1021,7 +1012,7 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                 dicionarioPersonagem=iniciaBuscaTrabalho(dicionarioPersonagem)
                 if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                     if verificaErro(None)!=0 or len(dicionarioPersonagem)==1:
-                        dicionarioPersonagem=retornaListaDicionarioPersonagens(dicionarioUsuario)
+                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioUsuario)
                         dicionarioPersonagem=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
                         print(f'Lista de personagens ativos atualizada...')
                         linhaSeparacao()
@@ -1244,8 +1235,8 @@ def removePersonagemLista(dicionarioPersonagemReconhecido,dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
     print(f'{dicionarioPersonagemReconhecido[CHAVE_NOME]} adicionado a lista de retirados.')
     linhaSeparacao()
-    dicionarioPersonagens=retornaListaDicionarioPersonagens(dicionarioPersonagem)
-    listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioPersonagem)
+    listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
     print(f'Lista de personagens ativos atualizada!')
     linhaSeparacao()
     for dicionarioPersonagemRemovido in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:#percorre lista de personagem retirado

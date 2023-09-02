@@ -82,6 +82,7 @@ def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
         print(f'Novo trabalho foi adicionado: {dicionarioTrabalho}')
     else:
         print(f'Limite de tentativas de conexão atingido.')
+        print(f'Erro ao adicionar {dicionarioTrabalho[CHAVE_NOME]} a lista de desejo.')
     return dicionarioTrabalho
 
 def retornaListaDicionarioProfissao(dicionarioPersonagem):
@@ -178,7 +179,7 @@ def retornaDicionarioUsuario(dicionarioUsuario):
         print(f'Resultado da requisição: {requisicao}.')
     return dicionarioUsuario
 
-def retornaDicionarioTrabalhos():
+def retornaListaDicionariosTrabalhos():
     dicionarioTrabalhos={}
     caminhoRequisicao=f'{link_database}/Lista_trabalhos/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
@@ -190,7 +191,8 @@ def retornaDicionarioTrabalhos():
             print(f'Resultado do dicionário: {dicionarioRequisicao}.')
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    return dicionarioTrabalhos
+    listaDicionariosOrdenada=sorted(dicionarioTrabalhos,key=lambda dicionario:dicionario[CHAVE_NOME])
+    return listaDicionariosOrdenada
 
 def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem):
     listaDicionarioTrabalhoDesejado=[]
@@ -208,20 +210,24 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem):
             print(f'Resultado do dicionario: {dicionarioRequisicao}.')  
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    return listaDicionarioTrabalhoDesejado
+    listaDicionariosOrdenada=sorted(listaDicionarioTrabalhoDesejado,key=lambda dicionario:dicionario[CHAVE_PROFISSAO])
+    return listaDicionariosOrdenada
 
 def retornaListaDicionarioPersonagens(dicionarioPersonagem):
+    listaDicionarioPersonagem=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dicionarioRequisicao=requisicao.json()
         if dicionarioRequisicao!=None:
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=dicionarioRequisicao
+            for idPersonagem in dicionarioRequisicao:
+                listaDicionarioPersonagem.append(dicionarioRequisicao[idPersonagem])
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    return dicionarioPersonagem
+    listaDicionariosOrdenada=sorted(listaDicionarioPersonagem,key=lambda dicionario:dicionario[CHAVE_NOME])
+    return listaDicionariosOrdenada
 
 def modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,novoEstado):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/.json'
