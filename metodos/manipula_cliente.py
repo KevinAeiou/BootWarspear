@@ -210,19 +210,18 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem):
         print(f'Resultado da requisição: {requisicao}.')
     return listaDicionarioTrabalhoDesejado
 
-def retornaDicionarioPersonagens(dicionarioUsuario):
-    dicionarioListaPersonagens={}
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
+def retornaListaDicionarioPersonagens(dicionarioPersonagem):
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dicionarioRequisicao=requisicao.json()
         if dicionarioRequisicao!=None:
-            dicionarioListaPersonagens=dicionarioRequisicao
+            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=dicionarioRequisicao
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    return dicionarioListaPersonagens
+    return dicionarioPersonagem
 
 def modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,novoEstado):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/.json'
