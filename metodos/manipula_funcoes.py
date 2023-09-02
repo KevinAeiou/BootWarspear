@@ -151,51 +151,28 @@ def pega_centro(x, y, largura, altura):
     cy = y + y1
     return cx, cy
 #modificado 16/01
-def cadastraNovoTrabalho(tipo_raridade_trabalho,nome_profissao):
-    nivel_trabalho = input(f'Nivel do trabalho: ')
-    linhaSeparacao()
-    while not nivel_trabalho.isdigit() or int(nivel_trabalho)<0 or int(nivel_trabalho)>32:
-        print(f'Opção inválida! Selecione uma das opções.')
-        nivel_trabalho = input(f'Sua escolha: ')
-        linhaSeparacao()
-    else:
-        nivel_trabalho = int(nivel_trabalho)
-        if nivel_trabalho==0:
-            print(f'Voltar...')
+def cadastraNovoTrabalho(raridade,profissao,nivel):
+    confirmacao='s'
+    while confirmacao.replace(' ','').lower()=='s':
+        nome=input(f'Novo trabalho: ')
+        if len(nome.replace(' ',''))!=0:
+            print(f'Confirma novo trabalho:(S/N)?')
+            dicionarioTrabalho={CHAVE_NOME:nome,
+                                CHAVE_PROFISSAO:profissao,
+                                CHAVE_RARIDADE:raridade,
+                                CHAVE_NIVEL:nivel,
+                                CHAVE_LICENCA:'',
+                                CHAVE_RECORRENCIA:False,
+                                CHAVE_ESTADO:0}
+            # cadastraNovoTrabalho(dicionarioTrabalho)
+        else:
+            print(f'Nome vazio!')
             linhaSeparacao()
-            return
-        while True:
-            tela_inteira = retornaAtualizacaoTela()
-            frame_nome_trabalho = tela_inteira[280:280+33,169:169+303]#frame nome trabalho menu especifico
-            # frame_nome_trabalho = tela_inteira[273:273+311,167:167+347]
-            nome_trabalho_reconhecido = reconheceTexto(frame_nome_trabalho)
-            confirma_cadastro = input(f'Cadastrar {nome_trabalho_reconhecido}? Sim ou não(S/N): ')
+        confirmacao=input(f'Cadastra novo trabalho:(S/N)?')
+        while len(confirmacao.replace(' ',''))==0 or confirmacao.replace(' ','').lower()=='s'or not confirmacao.replace(' ','').lower()=='n':
+            print(f'Opção invalida!')
             linhaSeparacao()
-            while not confirma_cadastro.isalpha() or (str(confirma_cadastro).lower().replace('\n','')!='s' and str(confirma_cadastro).lower().replace('\n','')!='n'):
-                print(f'Opção inválida! Cadastrar {nome_trabalho_reconhecido}?')
-                confirma_cadastro = input(f'Sim ou não(S/N): ')
-                linhaSeparacao()
-            else:
-                confirma_cadastro = str(confirma_cadastro).lower().replace('\n','')
-                if confirma_cadastro == 's':
-                    atributos_trabalho=[nome_trabalho_reconhecido,tipo_raridade_trabalho,nivel_trabalho,nome_profissao]
-                    cadastraNovoTrabalho(atributos_trabalho)
-                    #manipula_arquivo.inclui_linha(linha,tipo_raridade_trabalho)
-                    print(f'{nome_trabalho_reconhecido} foi cadastrado!')
-                    linhaSeparacao()
-                novo_cadastro = str(input(f'Deseja cadastrar novo trabalho? Sim ou não(S/N): '))
-                linhaSeparacao()
-                while not novo_cadastro.isalpha() or (str(novo_cadastro).lower().replace('\n','')!='s' and str(novo_cadastro).lower().replace('\n','')!='n'):
-                    print(f'Opção inválida! Cadastrar novo trabalho?')
-                    novo_cadastro = input(f'Sim ou não(S/N): ')
-                    linhaSeparacao()
-                else:
-                    novo_cadastro = str(novo_cadastro).lower().replace('\n','')
-                    if novo_cadastro == 'n':
-                        print(f'Voltar.')
-                        linhaSeparacao()
-                        break
-
+            confirmacao=input(f'Cadastra novo trabalho:(S/N)?')
 def detecta_movimento():
     detec = []
     print(f'Atualizou o background.')
