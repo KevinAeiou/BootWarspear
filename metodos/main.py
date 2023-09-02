@@ -236,7 +236,7 @@ def menu(dicionarioUsuario):
                 print(f'Voltar.')
                 linhaSeparacao()
             elif opcao_lista == 1:#Inicia busca
-                prepara_personagem(dicionarioUsuario)
+                preparaPersonagem(dicionarioUsuario)
                 linhaSeparacao()
             elif opcao_lista == 2:#Exclui trabalho da lista
                 excluiTrabalho(dicionarioUsuario)
@@ -260,11 +260,11 @@ def menu(dicionarioUsuario):
                 print(f'Voltar.')
                 linhaSeparacao()
             elif opcao_cadastro == 1:#Cadastra novo trabalho
-                raridade = defineRaridade() 
-                if raridade != '':
-                    profissao = defineProfissao(dicionarioUsuario[CHAVE_ID_PERSONAGEM])
-                    if profissao != '':
-                        cadastra_nome_trabalho(profissao,raridade)
+                raridade=defineRaridade() 
+                if variavelExiste(raridade):
+                    profissao=defineProfissao(dicionarioUsuario[CHAVE_ID_PERSONAGEM])
+                    if variavelExiste(profissao):
+                        cadastraNovoTrabalho(profissao,raridade)
             elif opcao_cadastro == 2:#Cadastra novo modelo de habilidade
                 print(f'Em desenvolvimento...')
                 linhaSeparacao()

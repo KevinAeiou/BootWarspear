@@ -151,7 +151,7 @@ def pega_centro(x, y, largura, altura):
     cy = y + y1
     return cx, cy
 #modificado 16/01
-def cadastra_nome_trabalho(tipo_raridade_trabalho,nome_profissao):
+def cadastraNovoTrabalho(tipo_raridade_trabalho,nome_profissao):
     nivel_trabalho = input(f'Nivel do trabalho: ')
     linhaSeparacao()
     while not nivel_trabalho.isdigit() or int(nivel_trabalho)<0 or int(nivel_trabalho)>32:
@@ -530,9 +530,9 @@ def retornaListaDicionarioTrabalhoComum(dicionarioTrabalho):
 def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade):
     listaDicionariosTrabalhosBuscados=[]
     for dicionarioTrabalho in listaDicionariosTrabalhos:
-        if (mesmoValor(listaDicionariosTrabalhos[dicionarioTrabalho][CHAVE_PROFISSAO],profissao)and
-            mesmoValor(listaDicionariosTrabalhos[dicionarioTrabalho][CHAVE_RARIDADE],raridade)):
-            listaDicionariosTrabalhosBuscados.append(listaDicionariosTrabalhos[dicionarioTrabalho])
+        if (mesmoValor(dicionarioTrabalho[CHAVE_PROFISSAO],profissao)and
+            mesmoValor(dicionarioTrabalho[CHAVE_RARIDADE],raridade)):
+            listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
     return listaDicionariosTrabalhosBuscados
 
 def mesmoValor(valor1, valor2):
@@ -957,7 +957,7 @@ def ativaAtributoUso(dicionarioPersonagensAtivos,dicionarioPersonagem):
     listaPersonagemId=retornaDicionarioListaIdPersonagem(dicionarioPersonagem,dicionarioPersonagensAtivos[0][CHAVE_EMAIL])
     modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemId,CHAVE_USO,True)
 #modificado 16/01
-def prepara_personagem(dicionarioUsuario):
+def preparaPersonagem(dicionarioUsuario):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
     #e o indice 1=nome da profissão
     click_atalho_especifico('alt','tab')
@@ -974,14 +974,14 @@ def prepara_personagem(dicionarioUsuario):
 
 def retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]=[]
-    for idPersonagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        print(f'Verificando estado do personagem: {idPersonagem}.')
-        if (dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM][idPersonagem][CHAVE_ESTADO]or
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM][idPersonagem][CHAVE_ESTADO]==1):
-            print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM][idPersonagem][CHAVE_NOME]} é ativo.')
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM][idPersonagem])
+    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+        print(f'Verificando estado do personagem: {personagem}.')
+        if (personagem[CHAVE_ESTADO]or
+            personagem[CHAVE_ESTADO]==1):
+            print(f'{personagem[CHAVE_NOME]} é ativo.')
+            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(personagem)
         else:
-            print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM][idPersonagem][CHAVE_NOME]} é inativo.')
+            print(f'{personagem[CHAVE_NOME]} é inativo.')
         linhaSeparacao()
     return dicionarioPersonagem
 
@@ -1267,7 +1267,7 @@ def verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem):
             if trabalhoReconhecidoEstaNaLista(nomePersonagemReconhecidoTratado,personagem):
                 print(f'Personagem {nomePersonagemReconhecidoTratado} confirmado!')
                 linhaSeparacao()
-                dicionarioPersonagemReconhecido=dicionarioPersonagem
+                dicionarioPersonagemReconhecido=personagem
     else:
         print(f'Nome personagem diferente!')
         linhaSeparacao()
