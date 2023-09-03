@@ -43,16 +43,16 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
     for x in range(10):
         try:
             if tipoRequisicao==GET:
-                print('Fez requisição GET!')
+                # print(f'{D}:Fez requisição GET!')
                 requisicao=requests.get(caminhoRequisicao,timeout=(tempoConeccao,tempoLeitura))
             elif tipoRequisicao==POST:
-                print('Fez requisição POST!')
+                # print(f'{D}:Fez requisição POST!')
                 requisicao=requests.post(caminhoRequisicao,data=json.dumps(dados),timeout=(tempoConeccao,tempoLeitura))
             elif tipoRequisicao==PATCH:
-                print('Fez requisição PATCH!')
+                # print(f'{D}:Fez requisição PATCH!')
                 requisicao=requests.patch(caminhoRequisicao,data=json.dumps(dados),timeout=(tempoConeccao,tempoLeitura))
             elif tipoRequisicao==DELETE:
-                print('Fez requisição DELETE!')
+                # print(f'{D}:Fez requisição DELETE!')
                 requisicao=requests.delete(caminhoRequisicao,timeout=(tempoConeccao,tempoLeitura))
             requisicaoRetorno=requisicao
             break

@@ -9,61 +9,6 @@ nome_arquivo_trabalho = 'arquivos\lista_trabalho_desejado.txt'
 def tira_screenshot():
     return tecla.screenshot()
 #proxima posição yinicial=365, yfinal=412
-def atualiza_lista_profissoes():
-    contador=0
-    yinicial = 295
-    yfinal = 342
-    print(f'Lista de profissões vazia.')
-    reconhece_tela.atualiza_nova_tela()
-    #reconhece profissão
-    #seleciona frame para comparação
-    #se contador for igual a 4
-    while contador<8:
-        if contador == 4:
-            x=0
-            for x in range(5):
-                tecla.hotkey('down')
-            reconhece_tela.atualiza_nova_tela()
-            imagem = cv2.imread(tela)
-            fatia_imagem = imagem[539:586, 181:228]
-            #compara o frame com os modelos das profissões
-            #fatia_imagem = cv2.cvtColor(np.array(fatia_imagem), cv2.COLOR_BGR2GRAY)
-            nome_profissao = compara_frame_modelo(fatia_imagem)
-            print(f'Gravou {nome_profissao}')
-            inclui_nome_profissao(nome_profissao,'a')
-            contador+=1
-        elif contador > 4:
-            tecla.hotkey('down')
-            reconhece_tela.atualiza_nova_tela()
-            imagem = cv2.imread(tela)
-            fatia_imagem = imagem[539:586, 181:228]
-            #fatia_imagem = cv2.cvtColor(np.array(fatia_imagem), cv2.COLOR_BGR2GRAY)
-            #compara o frame com os modelos das profissões
-            nome_profissao = compara_frame_modelo(fatia_imagem)
-            print(f'Gravou {nome_profissao}')
-            inclui_nome_profissao(nome_profissao,'a')
-            contador+=1
-        elif contador==0:
-            imagem = cv2.imread(tela)
-            fatia_imagem = imagem[yinicial:yfinal, 181:228]
-            nome_profissao = compara_frame_modelo(fatia_imagem)
-            print(f'Gravou {nome_profissao}')
-            inclui_nome_profissao(nome_profissao,'w')
-            yinicial = yinicial+70
-            yfinal = yfinal+70
-            contador+=1  
-        else:
-            imagem = cv2.imread(tela)
-            fatia_imagem = imagem[yinicial:yfinal, 181:228]
-            #fatia_imagem = cv2.cvtColor(np.array(fatia_imagem), cv2.COLOR_BGR2GRAY)
-            #compara o frame com os modelos das profissões
-            nome_profissao = compara_frame_modelo(fatia_imagem)
-            print(f'Gravou {nome_profissao}')
-            inclui_nome_profissao(nome_profissao,'a')
-            yinicial = yinicial+70
-            yfinal = yfinal+70
-            contador+=1 
-
 def inclui_nome_profissao(nome_profissao,a):
     y = open(lista_profissoes, 'r')
     total_linhas = len(y.readlines())

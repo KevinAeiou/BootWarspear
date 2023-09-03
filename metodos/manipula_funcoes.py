@@ -151,28 +151,29 @@ def pega_centro(x, y, largura, altura):
     cy = y + y1
     return cx, cy
 #modificado 16/01
-def cadastraNovoTrabalho(raridade,profissao,nivel):
+def defineNovoTrabalho(raridade,profissao,nivel):
     confirmacao='s'
     while confirmacao.replace(' ','').lower()=='s':
         nome=input(f'Novo trabalho: ')
         if len(nome.replace(' ',''))!=0:
             print(f'Confirma novo trabalho:(S/N)?')
-            dicionarioTrabalho={CHAVE_NOME:nome,
-                                CHAVE_PROFISSAO:profissao,
-                                CHAVE_RARIDADE:raridade,
-                                CHAVE_NIVEL:nivel,
-                                CHAVE_LICENCA:'',
-                                CHAVE_RECORRENCIA:False,
-                                CHAVE_ESTADO:0}
-            # cadastraNovoTrabalho(dicionarioTrabalho)
+            confirmaTrabalho=input(f'Escolha: ')
+            if confirmaTrabalho.replace(' ','').lower()=='s':
+                dicionarioTrabalho={CHAVE_NOME:nome,
+                                    CHAVE_PROFISSAO:profissao,
+                                    CHAVE_RARIDADE:raridade,
+                                    CHAVE_NIVEL:nivel,
+                                    CHAVE_LICENCA:'',
+                                    CHAVE_RECORRENCIA:False,
+                                    CHAVE_ESTADO:0}
+                # print(f'{D}:dicionarioTrablho{dicionarioTrabalho}.')
+                linhaSeparacao()
+                cadastraNovoTrabalho(dicionarioTrabalho)
         else:
             print(f'Nome vazio!')
             linhaSeparacao()
         confirmacao=input(f'Cadastra novo trabalho:(S/N)?')
-        while len(confirmacao.replace(' ',''))==0 or confirmacao.replace(' ','').lower()=='s'or not confirmacao.replace(' ','').lower()=='n':
-            print(f'Opção invalida!')
-            linhaSeparacao()
-            confirmacao=input(f'Cadastra novo trabalho:(S/N)?')
+
 def detecta_movimento():
     detec = []
     print(f'Atualizou o background.')
@@ -425,7 +426,7 @@ def verifica_ciclo(lista):
             return True
     return False
 
-def confirmaNomeTrabalho(trabalhoDesejado,dicionarioTrabalho,tipoTrabalho):
+def confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,tipoTrabalho):
     print(f'Confirmando nome do trabalho...')
     x=0
     y=1
@@ -439,7 +440,7 @@ def confirmaNomeTrabalho(trabalhoDesejado,dicionarioTrabalho,tipoTrabalho):
     nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
     # mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
     if variavelExiste(nomeTrabalhoReconhecido):
-        if trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido,trabalhoDesejado):
+        if textoReconhecidoPertenceTextoDicionario(nomeTrabalhoReconhecido,dicionarioTrabalhoDesejado):
             print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
             linhaSeparacao()
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
@@ -460,18 +461,18 @@ def verificaPosicoesTrabalhos(dicionarioTrabalho):
     if nomeTrabalhoReconhecido!=None and dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
         print(f'Nome do trabalho disponível: {nomeTrabalhoReconhecido}')
         #enquanto não comparar toda lista
-        for trabalhoListaDesejo in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
+        for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
             #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
-            if estadoTrabalhoEParaProduzir(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho,trabalhoListaDesejo):
-                print(f'Nome do trabalho na lista: {trabalhoListaDesejo[CHAVE_NOME]}')
-                if trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido,trabalhoListaDesejo):
-                    print(f'{trabalhoListaDesejo[CHAVE_NOME]} reconhecido...')
+            if estadoTrabalhoEParaProduzir(dicionarioTrabalhoDesejado)and profissaoEIgual(dicionarioTrabalho,dicionarioTrabalhoDesejado):
+                print(f'Nome do trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
+                if textoReconhecidoPertenceTextoDicionario(nomeTrabalhoReconhecido,dicionarioTrabalhoDesejado):
+                    print(f'{dicionarioTrabalhoDesejado[CHAVE_NOME]} reconhecido...')
                     linhaSeparacao()
-                    dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoListaDesejo)
+                    dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,dicionarioTrabalhoDesejado)
                     if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                        dicionarioTrabalho=confirmaNomeTrabalho(trabalhoListaDesejo,dicionarioTrabalho,1)
+                        dicionarioTrabalho=confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,1)
                         if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):#confirma o nome do trabalho
-                            dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=trabalhoListaDesejo
+                            dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
                             break
                         else:    
                             clickEspecifico(1,'f1')
@@ -492,7 +493,7 @@ def retornaListaDicionarioTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum na lista...')
     for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-        if trabalhoPreencheRequisitos(dicionarioTrabalho,trabalhoDesejado):
+        if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho,trabalhoDesejado):
             print(f'Trabalho comum encontado: {trabalhoDesejado[CHAVE_NOME]}.')
             linhaSeparacao()
             listaDicionariosTrabalhosComunsDesejados.append(trabalhoDesejado)
@@ -527,14 +528,14 @@ def retornaTrabalhoComum(dicionarioTrabalho):
         nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(530,1)
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
-            for trabalhoListaDesejo in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]:
-                if trabalhoPreencheRequisitos(dicionarioTrabalho, trabalhoListaDesejo):
-                    print(f'Trabalho na lista: {trabalhoListaDesejo[CHAVE_NOME]}')
-                    if trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido, trabalhoListaDesejo):
+            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]:
+                if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, dicionarioTrabalhoDesejado):
+                    print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
+                    if textoEIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
                         linhaSeparacao()
                         clickEspecifico(1,'enter')
                         dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=contadorParaCima
-                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=trabalhoListaDesejo
+                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
                         contadorParaCima+=1
                         break
             else:
@@ -555,26 +556,32 @@ def vaiParaMenuTrabalhoEmProducao():
     clickContinuo(9,'up')
     clickEspecifico(1,'left')
 
-def trabalhoReconhecidoEstaNaLista(nomeTrabalhoReconhecido, trabalhoListaDesejo):
-    return unidecode(nomeTrabalhoReconhecido).replace(' ','').lower()[1:-1]in unidecode(trabalhoListaDesejo[CHAVE_NOME]).replace(' ','').replace('-','').lower()
+def textoReconhecidoPertenceTextoDicionario(textoReconhecido, dicionario):
+    return limpaRuidoTexto(textoReconhecido)[1:-1]in limpaRuidoTexto(dicionario[CHAVE_NOME]).replace('-','')
 
-def trabalhoPreencheRequisitos(dicionarioTrabalho, trabalhoListaDesejo):
+def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
     return raridadeTrabalhoEComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
 
 def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
     return trabalhoListaDesejo[CHAVE_ESTADO]==para_produzir
 
 def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
-    return unidecode(trabalhoListaDesejo[CHAVE_PROFISSAO]).replace(' ','').lower()==unidecode(dicionarioTrabalho[CHAVE_PROFISSAO]).replace(' ','').lower()
+    return textoEIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
 
 def raridadeTrabalhoEComum(trabalhoListaDesejo):
-    return trabalhoListaDesejo[CHAVE_RARIDADE].lower()=='comum'
+    return textoEIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'comum')
+
+def textoEIgual(texto1,texto2):
+    return limpaRuidoTexto(texto1)==limpaRuidoTexto(texto2)
 
 def variavelExiste(variavelVerificada):
     return variavelVerificada!=None
 
 def primeiraBusca(dicionarioTrabalho):
     return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]==-1
+
+def limpaRuidoTexto(texto):
+    return unidecode(texto).replace(' ','').lower()
 
 def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     #recorta frame para reconhecimento de texto
@@ -953,7 +960,7 @@ def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
         # print(f'Verificando estado do personagem: {personagem}.')
         if (personagem[CHAVE_ESTADO]or
             personagem[CHAVE_ESTADO]==1):
-            print(f'{personagem[CHAVE_NOME]} é ativo.')
+            # print(f'{D}:{personagem[CHAVE_NOME]} é ativo.')
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(personagem)
         else:
             print(f'{personagem[CHAVE_NOME]} é inativo.')
@@ -1239,11 +1246,11 @@ def verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem):
     print(f'Verificando nome personagem...')
     nomePersonagemReconhecidoTratado=retornaNomePersonagem(0)
     if variavelExiste(nomePersonagemReconhecidoTratado):
-        for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-            if trabalhoReconhecidoEstaNaLista(nomePersonagemReconhecidoTratado,personagem):
+        for dicionarioPersonagemVerificado in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
+            if textoReconhecidoPertenceTextoDicionario(nomePersonagemReconhecidoTratado,dicionarioPersonagemVerificado):
                 print(f'Personagem {nomePersonagemReconhecidoTratado} confirmado!')
                 linhaSeparacao()
-                dicionarioPersonagemReconhecido=personagem
+                dicionarioPersonagemReconhecido=dicionarioPersonagemVerificado
     else:
         print(f'Nome personagem diferente!')
         linhaSeparacao()
@@ -1669,8 +1676,8 @@ def retornaNomePersonagem(posicao):
         nomePersonagemReconhecidoTratado=unidecode(nomePersonagemReconhecido)
         if nomePersonagemReconhecidoTratado!='':
             nome=nomePersonagemReconhecidoTratado
-            print(f'Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
-            linhaSeparacao()
+            # print(f'{D}:Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
+            # linhaSeparacao()
     return nome
 
 def entraPersonagem(listaPersonagemPresenteRecuperado):

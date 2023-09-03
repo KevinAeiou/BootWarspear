@@ -303,11 +303,11 @@ def menu(dicionarioUsuario):
             elif opcao_cadastro == 1:#Cadastra novo trabalho
                 raridade=defineRaridade() 
                 if variavelExiste(raridade):
-                    profissao=defineProfissao(dicionarioUsuario[CHAVE_ID_PERSONAGEM])
+                    profissao=defineProfissao(dicionarioUsuario)
                     if variavelExiste(profissao):
                         nivel=defineNivel()
                         if variavelExiste(nivel):
-                            cadastraNovoTrabalho(profissao,raridade,nivel)
+                            defineNovoTrabalho(raridade,profissao,nivel)
             elif opcao_cadastro == 2:#Cadastra novo modelo de habilidade
                 print(f'Em desenvolvimento...')
                 linhaSeparacao()
