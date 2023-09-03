@@ -601,7 +601,7 @@ def sai_trabalho_encontrado(x,tipo_trabalho):
 def verificaErro(dicionarioTrabalho):
     licenca=configuraLicenca(dicionarioTrabalho)
     print(f'Verificando erro...')
-    erro = retorna_tipo_erro()
+    erro = retornaTipoErro()
 # erroPrecisaLicenca=1
 # erroFalhaConectar=2
 # erroSemRecursos=3
@@ -718,23 +718,23 @@ def entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoListaDesejo):
     return dicionarioTrabalho
 
 #modificado 12/01
-def retorna_tipo_erro():
+def retornaTipoErro():
     erro=0
-    tela_inteira=retornaAtualizacaoTela()
-    frame_erro=tela_inteira[335:335+100,150:526]
-    erro_encontrado=reconheceTexto(frame_erro)
-    print(erro_encontrado)
-    if erro_encontrado!=None:
-        tipo_erro_trabalho=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
+    telaInteira=retornaAtualizacaoTela()
+    frameErro=telaInteira[335:335+100,150:526]
+    textoErroEncontrado=reconheceTexto(frameErro)
+    # print(f'{D}:{textoErroEncontrado}')
+    if variavelExiste(textoErroEncontrado):
+        tipoErro=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
                             'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
                             'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
                             'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                             'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
                             'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
                             'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão']
-        for tamanho_tipo_erro in range(len(tipo_erro_trabalho)):
-            if tipo_erro_trabalho[tamanho_tipo_erro].lower() in erro_encontrado.replace(' ','').lower():
-                erro=tamanho_tipo_erro+1
+        for posicaoTipoErro in range(len(tipoErro)):
+            if tipoErro[posicaoTipoErro].lower() in textoErroEncontrado.replace(' ','').lower():
+                erro=posicaoTipoErro+1
     return erro
 
 def retorna_nome_inimigo(tela_inteira):
