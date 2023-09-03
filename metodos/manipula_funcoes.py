@@ -1346,6 +1346,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                                     linhaSeparacao()
                                     dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
                                     clickEspecifico(1,'left')
+                                    break
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
                                 incrementaChavePosicaoTrabalho(dicionarioTrabalho)
@@ -1353,10 +1354,10 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                                 linhaSeparacao()
                             else:
                                 dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-                            print(f'Nem um trabalho disponível está na lista de desejos.')
-                            clickContinuo(4,'up')
-                            clickEspecifico(1,'left')
-                            linhaSeparacao()
+                                print(f'Nem um trabalho disponível está na lista de desejos.')
+                                clickContinuo(4,'up')
+                                clickEspecifico(1,'left')
+                                linhaSeparacao()
                         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
                             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
                                 if retornaEstadoTrabalho()==concluido:
@@ -1396,7 +1397,7 @@ def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]+=1
 
 def chaveDicionarioTrabalhoExiste(dicionarioTrabalho):
-    print(f'{D}:CHAVE_DICIONARIO_TRABALHO_DESEJADO: {dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]}.')
+    # print(f'{D}:CHAVE_DICIONARIO_TRABALHO_DESEJADO: {dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]}.')
     return dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]!=None
 
 def naoFizerQuatroVerificacoes(dicionarioTrabalho):
