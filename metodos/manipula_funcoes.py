@@ -274,22 +274,20 @@ def detecta_movimento_teste():
 #modificado 16/01
 def mostraLista(listaDicionarios):
     x=1
-    for dicionarioPersonagem in listaDicionarios:
-        print(f'{x} - {dicionarioPersonagem[CHAVE_NOME]}.')
+    for dicionario in listaDicionarios:
+        print(f'{x} - {dicionario[CHAVE_NOME]}.')
         x+=1
     print(f'0 - Voltar.')
 
+def defineListaDesejo(dicionarioUsuario):
+    dicionarioUsuario[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
+    return dicionarioUsuario
+
 def mostraListaDesejo(dicionarioUsuario):
-    listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
-    if not listaEstaVazia(listaDicionarioTrabalhoDesejado):
-        for trabalhoDesejado in listaDicionarioTrabalhoDesejado:
-            if estadoTrabalhoEParaProduzir(trabalhoDesejado):
-                print(f'{trabalhoDesejado[CHAVE_PROFISSAO]}: {trabalhoDesejado[CHAVE_NOME]}')
-        linhaSeparacao()
-    else:
-        print(f'A lista está vazia.')
-        linhaSeparacao()
-    return listaDicionarioTrabalhoDesejado
+    for trabalhoDesejado in dicionarioUsuario[CHAVE_LISTA_DESEJO]:
+        if estadoTrabalhoEParaProduzir(trabalhoDesejado):
+            print(f'{trabalhoDesejado[CHAVE_PROFISSAO]}: {trabalhoDesejado[CHAVE_NOME]}')
+    linhaSeparacao()
 
 def verifica_lista_inimigo(nome_reconhecido):
     lista_inimigos = ['Sombradapodridãofuriosa','Mineradorlouco','Lobocego','adecãoebuliente','Chamadasprofundezas','Párialouco','Harpialadra','Sombradapodridão','Goblinmestreminério','ChifraçoAncião']
@@ -949,10 +947,10 @@ def preparaPersonagem(dicionarioUsuario):
         print(f'Erro ao configurar atributos do personagem!')
         linhaSeparacao()
 
-def retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem):
+def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]=[]
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        print(f'Verificando estado do personagem: {personagem}.')
+        # print(f'Verificando estado do personagem: {personagem}.')
         if (personagem[CHAVE_ESTADO]or
             personagem[CHAVE_ESTADO]==1):
             print(f'{personagem[CHAVE_NOME]} é ativo.')
@@ -966,13 +964,13 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_LISTA_DICIONARIO_PERSONAGEM:dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]}
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-    dicionarioPersonagem=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
+    dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
     # print(f'CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO: {dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]}.')
     while True:
         if verificaListaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioUsuario)
-            dicionarioPersonagem=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
+            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
+            dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
             print(f'Lista de personagens ativos atualizada...')
             linhaSeparacao()
         else:#se houver pelo menos um personagem ativo
@@ -989,27 +987,31 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                 dicionarioPersonagem=iniciaBuscaTrabalho(dicionarioPersonagem)
                 if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
                     if verificaErro(None)!=0 or len(dicionarioPersonagem)==1:
-                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioUsuario)
-                        dicionarioPersonagem=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
+                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
+                        dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
                         print(f'Lista de personagens ativos atualizada...')
                         linhaSeparacao()
                         continue
                     else:
                         click_mouse_esquerdo(1,2,35)
                         deslogaPersonagem(dicionarioPersonagemReconhecido[CHAVE_EMAIL],dicionarioPersonagem)
-                        dicionarioPersonagem,dicionarioPersonagem=removePersonagemLista(dicionarioPersonagemReconhecido,dicionarioPersonagem)
+                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
+                        dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
                 else:
-                    dicionarioPersonagem,dicionarioPersonagem=removePersonagemLista(dicionarioPersonagemReconhecido,dicionarioPersonagem)
+                    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
+                    dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
                     continue
             else:#se o nome reconhecido não estiver na lista de ativos
-                if not listaEstaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]) and dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[0][CHAVE_EMAIL]:
-                    nome=entraPersonagemAtivo(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO],dicionarioPersonagem)
-                    print(nome)
-                elif configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
+                # if (not listaEstaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])and
+                #     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][0][CHAVE_EMAIL]):
+                #     nome=entraPersonagemAtivo(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO],dicionarioPersonagem)
+                #     print(nome)
+                if configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
                     nome=entraPersonagemAtivo(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO],dicionarioPersonagem)
                     print(nome)
                     if nome!=None and dicionarioPersonagemReconhecido!=None:
-                        dicionarioPersonagem,dicionarioPersonagem=removePersonagemLista(dicionarioPersonagemReconhecido,dicionarioPersonagem)
+                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
+                        dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
 
 def retorna_texto_menu_reconhecido(x,y,largura):
     tela_inteira=retornaAtualizacaoTela()
@@ -1208,25 +1210,22 @@ def deslogaPersonagem(email,dicionarioPersonagem):
         listaPersonagemId=retornaDicionarioListaIdPersonagem(dicionarioPersonagem,email)
         modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemId,CHAVE_USO,False)
 
-def removePersonagemLista(dicionarioPersonagemReconhecido,dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
-    print(f'{dicionarioPersonagemReconhecido[CHAVE_NOME]} adicionado a lista de retirados.')
-    linhaSeparacao()
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioPersonagem)
-    listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagem)
+def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioPersonagem)
+    dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
     print(f'Lista de personagens ativos atualizada!')
     linhaSeparacao()
     for dicionarioPersonagemRemovido in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:#percorre lista de personagem retirado
         posicao=0
-        for dicionarioPersonagemAtivo in listaDicionarioPersonagensAtivos:#percorre lista de personagem ativo
+        for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:#percorre lista de personagem ativo
             if dicionarioPersonagemAtivo[CHAVE_NOME] in dicionarioPersonagemRemovido[CHAVE_NOME]:#compara nome na lista de ativo com nome na lista de retirado
-                print(f'{listaDicionarioPersonagensAtivos[posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
+                print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
                 linhaSeparacao()
-                del listaDicionarioPersonagensAtivos[posicao]
+                del dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao]
                 posicao-=1
             else:
                 posicao+=1
-    return dicionarioPersonagem,listaDicionarioPersonagensAtivos
+    return dicionarioPersonagem
 
 def verificaListaVazia(lista_personagem_ativo):
     if len(lista_personagem_ativo)==0:

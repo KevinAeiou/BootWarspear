@@ -146,7 +146,7 @@ def retornaIdPersonagemAtivo(dicionarioPersonagem):
         print(f'Erro verificar personagem ativo!')
 
 def retornaDicionarioDadosPersonagem(dicionarioPersonagem):
-    dadosPersonagem={CHAVE_ID:None,CHAVE_NOME:None,CHAVE_EMAIL:None,CHAVE_SENHA:None,CHAVE_ESTADO:None,CHAVE_USO:None,CHAVE_ESPACO_PRODUCAO:None}
+    dadosPersonagem={}
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
@@ -215,7 +215,7 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem):
         print(f'Resultado da requisição: {requisicao}.')
     return listaDicionariosOrdenada
 
-def retornaListaDicionarioPersonagens(dicionarioPersonagem):
+def defineListaDicionarioPersonagem(dicionarioPersonagem):
     listaDicionarioPersonagem=[]
     listaDicionariosOrdenada=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
@@ -225,7 +225,7 @@ def retornaListaDicionarioPersonagens(dicionarioPersonagem):
         if dicionarioRequisicao!=None:
             for personagemId in dicionarioRequisicao:
                 listaDicionarioPersonagem.append(dicionarioRequisicao[personagemId])
-                listaDicionariosOrdenada=sorted(listaDicionarioPersonagem,key=lambda dicionario:dicionario[CHAVE_NOME])
+                listaDicionariosOrdenada=sorted(listaDicionarioPersonagem,key=lambda dicionario:dicionario[CHAVE_EMAIL])
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:

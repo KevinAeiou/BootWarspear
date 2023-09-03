@@ -7,7 +7,12 @@ nome_arquivo_lista_trabalho = 'arquivos\lista_trabalho_desejado.txt'
 
 def mostraMenuListaDesejo(dicionarioUsuario):
     print(f'Lista de trabalhos desejados:')
-    mostraListaDesejo(dicionarioUsuario)
+    dicionarioUsuario=defineListaDesejo(dicionarioUsuario)
+    if not listaEstaVazia(dicionarioUsuario[CHAVE_LISTA_DESEJO]):
+        mostraListaDesejo(dicionarioUsuario)
+    else:
+        print(f'A lista está vazia.')
+        linhaSeparacao()
     print(f'1 - Iniciar a busca.')
     print(f'2 - Excluir trabalho da lista.')
     print(f'0 - Voltar.')
@@ -18,12 +23,10 @@ def mostraMenuListaDesejo(dicionarioUsuario):
         opcaoLista=input(f'Sua escolha: ')
         linhaSeparacao()
     else:
-        opcaoLista = int(opcaoLista,2)
+        opcaoLista = int(opcaoLista)
         if opcaoLista==0:
-            print(f'Voltar...')
-            linhaSeparacao()
             return 0
-    return opcaoLista
+    return dicionarioUsuario,opcaoLista
 
 def opcaoInvalida(opcaoLista,tamanhoMenu):
     return not opcaoLista.isdigit() or int(opcaoLista)<0 or int(opcaoLista)>tamanhoMenu
@@ -269,15 +272,15 @@ def menu(dicionarioUsuario):
                                 dicionarioTrabalho[CHAVE_RECORRENCIA]=recorrencia
                                 adicionaTrabalhoDesejo(dicionarioUsuario,dicionarioTrabalho)
         elif opcaoEscolha==2:#Menu lista de desejo
-            opcao_lista=mostraMenuListaDesejo(dicionarioUsuario)
-            if opcao_lista == 0:#Volta ao menu anterior
+            dicionarioUsuario,opcaoLista=mostraMenuListaDesejo(dicionarioUsuario)
+            if opcaoLista == 0:#Volta ao menu anterior
                 print(f'Voltar.')
                 linhaSeparacao()
-            elif opcao_lista == 1:#Inicia busca
+            elif opcaoLista == 1:#Inicia busca
                 preparaPersonagem(dicionarioUsuario)
                 linhaSeparacao()
-            elif opcao_lista == 2:#Exclui trabalho da lista
-                excluiTrabalho(dicionarioUsuario)
+            elif opcaoLista == 2:#Exclui trabalho da lista
+                menuExcluiTrabalho(dicionarioUsuario)
                 linhaSeparacao()
         elif opcaoEscolha==3:#Menu habilidade
             opcao_habilidade = mostraMenuHabilidade()
@@ -321,28 +324,38 @@ def menu(dicionarioUsuario):
         menu(dicionarioUsuario)
     return
 
-def excluiTrabalho(dicionarioUsuario):
-    lista_desejo = mostraLista(f'{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_ID_PERSONAGEM]}/Lista_desejo')
-    opcao_exclui_trabalho = input(f'Qual trabalho deseja exluir?')
+def defineDicionarioTrabalho(dicionarioUsuario,opcaoExclui):
+    dicionarioTrabalhoExclui={}
+    contador=1
+    for dicionarioTrabalho in dicionarioUsuario[CHAVE_LISTA_DESEJO]:
+        if contador==opcaoExclui:
+            dicionarioTrabalhoExclui=dicionarioTrabalho
+            return dicionarioTrabalhoExclui
+        contador+=1
+    else:
+        print(f'Erro ao definir dicionarioTrabalho!')
+        linhaSeparacao()
+    return dicionarioTrabalhoExclui
+
+def menuExcluiTrabalho(dicionarioUsuario):
+    mostraLista(dicionarioUsuario[CHAVE_LISTA_DESEJO])
+    opcaoExclui=input(f'Qual trabalho deseja exluir?')
     linhaSeparacao()
-    while not opcao_exclui_trabalho.isdigit() or int(opcao_exclui_trabalho)<0 or int(opcao_exclui_trabalho)>len(lista_desejo):
+    while opcaoInvalida(opcaoExclui,len(dicionarioUsuario[CHAVE_LISTA_DESEJO])):
         print(f'Opção inválida! Selecione uma das opções.')
-        opcao_exclui_trabalho = input(f'Sua escolha: ')
+        opcaoExclui = input(f'Sua escolha: ')
         linhaSeparacao()
     else:
-        opcao_exclui_trabalho = int(opcao_exclui_trabalho)
-        if opcao_exclui_trabalho==0:
-            print(f'Voltar...')
-            linhaSeparacao()
+        opcaoExclui = int(opcaoExclui)
+        if opcaoExclui==0:
             return
         else:
-            trabalho = lista_desejo[opcao_exclui_trabalho-1]
-            trabalho_id = f'{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{trabalho[id]}'
-            excluiTrabalho(trabalho_id)
+            dicionarioTrabalho=defineDicionarioTrabalho(dicionarioUsuario,opcaoExclui)
+            excluiTrabalho(dicionarioUsuario,dicionarioTrabalho)
 
 def menuPersonagem(dicionarioUsuario):
     print(f'Personagens.')
-    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=retornaListaDicionarioPersonagens(dicionarioUsuario)
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
     if listaEstaVazia(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
         menuTeste()
         return
