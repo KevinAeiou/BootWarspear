@@ -8,7 +8,7 @@ nome_arquivo_lista_trabalho = 'arquivos\lista_trabalho_desejado.txt'
 def mostraMenuListaDesejo(dicionarioUsuario):
     print(f'Lista de trabalhos desejados:')
     dicionarioUsuario=defineListaDesejo(dicionarioUsuario)
-    if not listaEstaVazia(dicionarioUsuario[CHAVE_LISTA_DESEJO]):
+    if not tamanhoMaiorQueZero(dicionarioUsuario[CHAVE_LISTA_DESEJO]):
         mostraListaDesejo(dicionarioUsuario)
     else:
         print(f'A lista está vazia.')
@@ -154,7 +154,7 @@ def defineNivel():
 def defineProfissao(dicionarioUsuario):
     print(f'Define de profissão.')
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
-    if listaEstaVazia(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]):
+    if tamanhoMaiorQueZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]):
         linhaSeparacao()
         menu(dicionarioUsuario)
     else:    
@@ -186,9 +186,9 @@ def defineTrabalho(profissao,raridade):
     print(f'Trabalhos:')
     dicionarioTrabalho={}
     listaDicionariosTrabalhos=retornaListaDicionariosTrabalhos()
-    if not listaEstaVazia(listaDicionariosTrabalhos):
+    if not tamanhoMaiorQueZero(listaDicionariosTrabalhos):
         listaDicionariosTrabalhosBuscados=retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade)
-        if not listaEstaVazia(listaDicionariosTrabalhosBuscados):
+        if not tamanhoMaiorQueZero(listaDicionariosTrabalhosBuscados):
             mostraLista(listaDicionariosTrabalhosBuscados)
             opcaoTrabalho=input(f'Trabalho escolhido: ')
             linhaSeparacao()
@@ -263,7 +263,7 @@ def menu(dicionarioUsuario):
                 profissao=defineProfissao(dicionarioUsuario)
                 if variavelExiste(profissao):
                     dicionarioTrabalho=defineTrabalho(profissao,raridade)
-                    if not listaEstaVazia(dicionarioTrabalho):
+                    if not tamanhoMaiorQueZero(dicionarioTrabalho):
                         licenca=defineLicenca()
                         if variavelExiste(licenca):
                             dicionarioTrabalho[CHAVE_LICENCA]=licenca
@@ -356,7 +356,7 @@ def menuExcluiTrabalho(dicionarioUsuario):
 def menuPersonagem(dicionarioUsuario):
     print(f'Personagens.')
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
-    if listaEstaVazia(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
+    if tamanhoMaiorQueZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
         menuTeste()
         return
     else:

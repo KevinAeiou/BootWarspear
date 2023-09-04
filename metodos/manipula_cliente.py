@@ -284,22 +284,6 @@ def modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemId,atributo,v
             print(f'Resultado da requisição: {requisicao}.')
             break
 
-def retornaDicionarioListaIdPersonagem(dicionarioPersonagem,personagemEmail):
-    listaPersonagemId=[]
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
-    if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
-            for id in dicionarioRequisicao:
-                if personagemEmail==dicionarioRequisicao[id][CHAVE_EMAIL]:
-                    listaPersonagemId.append(id)
-        else:
-                print(f'Resultado do dicionario: {dicionarioRequisicao}.')
-    else:
-        print(f'Resultado da requisição: {requisicao}.')
-    return listaPersonagemId
-
 def muda_quantidade_personagem(usuario_id,nova_quantidade):
     dados={'personagem_ativo':nova_quantidade}
     caminhoRequisicao=f'{link_database}/Usuarios/{usuario_id}/.json'

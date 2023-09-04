@@ -93,7 +93,7 @@ def entraProfissaoEspecifica(indice):
     time.sleep(0.5)
     print('____________________________________')
 
-def entra_secao(email,senha):
+def preencheCamposLogin(email,senha):
     clickEspecifico(1,'f2')
     clickEspecifico(1,0)
     clickEspecifico(1,'f2')
