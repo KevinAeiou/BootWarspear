@@ -1356,7 +1356,6 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                                     print(f'Iniciou processo de fabricação de trabalho raro/especial.')
                                     linhaSeparacao()
                                     dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
-                                    clickEspecifico(1,'left')
                                     break
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
@@ -1521,31 +1520,24 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     while True:
         menu=retornaMenu()
-        if menu==menu_desconhecido:
+        if naoReconheceMenu(menu):
             continue
-        elif menu==menu_trab_especifico:#trabalho especifico
+        elif menuTrabalhoEspecificoReconhecido(menu):
             clickEspecifico(1,'f2')
-            if verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])==erroSemRecursos:
+            if naoHaRecursosSuficientes(dicionarioTrabalho):
                 excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
                 break
-        elif menu==menu_esc_equipamento:#menu escolha equipamento
+        elif menuEscolhaEquipamentoReconhecido(menu):
             clickEspecifico(1,'f2')
             time.sleep(1)
             verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-        elif menu==menu_trab_atuais:#trabalhos atuais
-            if dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA]:
-                cloneDicionarioTrabalho={
-                                        CHAVE_NOME:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NOME],
-                                        CHAVE_ESTADO:1,
-                                        CHAVE_NIVEL:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL],
-                                        CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_PROFISSAO],
-                                        CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RARIDADE],
-                                        CHAVE_RECORRENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA],
-                                        CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
+        elif menuTrabalhosAtuais(menu):
+            if trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está ligada.')
+                cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
                 cloneDicionarioTrabalho=adicionaTrabalhoDesejo(dicionarioPersonagem,cloneDicionarioTrabalho)
                 linhaSeparacao()
-            elif not dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA]:
+            elif not trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está desligada.')
                 modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
                 linhaSeparacao()
@@ -1555,6 +1547,35 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagem):
         else:
             break
     return dicionarioPersonagem
+
+def defineCloneDicionarioTrabalho(dicionarioTrabalho):
+    cloneDicionarioTrabalho={CHAVE_NOME:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NOME],
+                            CHAVE_ESTADO:1,
+                            CHAVE_NIVEL:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL],
+                            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_PROFISSAO],
+                            CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RARIDADE],
+                            CHAVE_RECORRENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA],
+                            CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
+                            
+    return cloneDicionarioTrabalho
+
+def trabalhoERecorrente(dicionarioTrabalho):
+    return dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA]
+
+def menuTrabalhosAtuais(menu):
+    return menu==menu_trab_atuais
+
+def naoHaRecursosSuficientes(dicionarioTrabalho):
+    return verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])==erroSemRecursos
+
+def menuEscolhaEquipamentoReconhecido(menu):
+    return menu==menu_esc_equipamento
+
+def menuTrabalhoEspecificoReconhecido(menu):
+    return menu==menu_trab_especifico
+
+def naoReconheceMenu(menu):
+    return menu==menu_desconhecido
 
 def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
     dicionarioPersonagem=entraLicenca(dicionarioPersonagem)
