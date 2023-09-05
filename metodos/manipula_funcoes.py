@@ -583,6 +583,12 @@ def primeiraBusca(dicionarioTrabalho):
 def limpaRuidoTexto(texto):
     return unidecode(texto).replace(' ','').lower()
 
+def retiraDigitos(texto):
+    listaDigitos=['0','1','2','3','4','5','6','7','8','9']
+    for digito in listaDigitos:
+        texto=texto.replace(digito,'')
+    return texto
+
 def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     #recorta frame para reconhecimento de texto
     if identificador==0:
@@ -608,7 +614,7 @@ def sai_trabalho_encontrado(x,tipo_trabalho):
 def verificaErro(dicionarioTrabalho):
     licenca=configuraLicenca(dicionarioTrabalho)
     print(f'Verificando erro...')
-    erro = retornaTipoErro()
+    erro=retornaTipoErro()
 # erroPrecisaLicenca=1
 # erroFalhaConectar=2
 # erroSemRecursos=3
@@ -731,16 +737,22 @@ def retornaTipoErro():
     frameErro=telaInteira[335:335+100,150:526]
     textoErroEncontrado=reconheceTexto(frameErro)
     # print(f'{D}:{textoErroEncontrado}')
+    linhaSeparacao()
     if variavelExiste(textoErroEncontrado):
+        textoErroEncontrado=limpaRuidoTexto(textoErroEncontrado)
+        textoErroEncontrado=retiraDigitos(textoErroEncontrado)
         tipoErro=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
-                            'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
-                            'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
-                            'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
-                            'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-                            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
-                            'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão']
+                    'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
+                    'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
+                    'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
+                    'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
+                    'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
+                    'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão']
         for posicaoTipoErro in range(len(tipoErro)):
-            if tipoErro[posicaoTipoErro].lower() in textoErroEncontrado.replace(' ','').lower():
+            textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
+            if textoErro in textoErroEncontrado:
+                # print(f'{D}:"{textoErro}" encontrado em "{textoErroEncontrado}".')
+                linhaSeparacao()
                 erro=posicaoTipoErro+1
     return erro
 
@@ -2208,12 +2220,14 @@ def deleta_item_lista():
     print(f'{lista}')
 
 def funcao_teste(dicionarioUsuario):
+    dicionarioTrabalho={CHAVE_LICENCA:None}
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     click_atalho_especifico('alt','tab')
+    verificaErro(dicionarioTrabalho)
     # telaInteira=retornaAtualizacaoTela()
     # frameTela=telaInteira[263:263+46,284:284+46]
     # contadorCorMercador=0
@@ -2228,7 +2242,6 @@ def funcao_teste(dicionarioUsuario):
     # texto_menu=retorna_texto_menu_reconhecido(-161,-330,300)
     # print(texto_menu)
     # deleta_item_lista()
-    # verifica_erro(None)
     # print(verificaCaixaCorreio())
     # dataAtual=datetime.date.today()
     # print(dataAtual.ctime())
@@ -2294,12 +2307,10 @@ def funcao_teste(dicionarioUsuario):
     # verifica_trabalho_comum(trabalho,'profissaoteste')
     # while inicia_busca_trabalho():
     #     continue
-    recuperaPresente()
+    # recuperaPresente()
     # entra_personagem_ativo('mrninguem')
     # inicia_busca_trabalho()
     click_atalho_especifico('alt','tab')
-# funcao_teste('')
-# verifica_erro(None)
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
 # entraPersonagem(['tobraba','gunsa','totiste'])
