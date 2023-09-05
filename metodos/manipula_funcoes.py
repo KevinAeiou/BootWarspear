@@ -930,7 +930,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
 
 def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
     for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-        print(f'{D}:{personagemReconhecido} e {dicionarioPersonagemAtivo[CHAVE_NOME]}.')
+        # print(f'{D}:{personagemReconhecido} e {dicionarioPersonagemAtivo[CHAVE_NOME]}.')
         if textoReconhecidoPertenceTextoDicionario(personagemReconhecido,dicionarioPersonagemAtivo):
             print(f'Personagem {personagemReconhecido} confirmado!')
             linhaSeparacao()
@@ -940,7 +940,7 @@ def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
 
 def defineListaIdPersonagemMesmoEmail(dicionarioPersonagem,personagemEmail):
     listaIdPersonagemMesmoEmail=[]
-    for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
+    for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         if mesmoValor(dicionarioPersonagemAtivo[CHAVE_EMAIL],personagemEmail):
             listaIdPersonagemMesmoEmail.append(dicionarioPersonagemAtivo[CHAVE_ID])
     return listaIdPersonagemMesmoEmail
@@ -1020,11 +1020,11 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                     dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
                     continue
             else:#se o nome reconhecido não estiver na lista de ativos
-                # if (not listaEstaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])and
-                #     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][0][CHAVE_EMAIL]):
-                #     nome=entraPersonagemAtivo(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO],dicionarioPersonagem)
-                #     print(nome)
-                if configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
+                if (not tamanhoMaiorQueZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])and
+                    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][0][CHAVE_EMAIL]):
+                    nome=entraPersonagemAtivo(dicionarioPersonagem)
+                    print(nome)
+                elif configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
                     nome=entraPersonagemAtivo(dicionarioPersonagem)
                     print(nome)
                     if nome!=None and dicionarioPersonagemReconhecido!=None:
