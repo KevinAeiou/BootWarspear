@@ -24,8 +24,6 @@ def mostraMenuListaDesejo(dicionarioUsuario):
         linhaSeparacao()
     else:
         opcaoLista = int(opcaoLista)
-        if opcaoLista==0:
-            return 0
     return dicionarioUsuario,opcaoLista
 
 def opcaoInvalida(opcaoLista,tamanhoMenu):

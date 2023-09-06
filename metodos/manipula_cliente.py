@@ -85,8 +85,8 @@ def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
         requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
         if requisicao!=None:
             dicionarioRequisicao=requisicao.json()
-            for id in dicionarioRequisicao:
-                print(f'Novo trabalho foi adicionado: {dicionarioRequisicao[id][CHAVE_NOME]}.')
+            # for id in dicionarioRequisicao:
+            #     print(f'Novo trabalho foi adicionado: {dicionarioRequisicao[id][CHAVE_NOME]}.')
         else:
             caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
             requisicao=retornaRequisicao(DELETE,caminhoRequisicao,None)
