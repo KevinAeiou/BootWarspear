@@ -694,6 +694,7 @@ def verificaErro(dicionarioTrabalho):
         linhaSeparacao()
     elif erro==erroSemEspacosBolsa:
         clickEspecifico(1,'f1')
+        clickContinuo(8,'up')
         print(f'Ignorando trabalho concluído!')
         linhaSeparacao()
     elif erro==erroSemMoedas:
@@ -1479,16 +1480,16 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
 def recuperaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioTrabalho={}
     tela_inteira=retornaAtualizacaoTela()
-    frame_nome_trabalho=tela_inteira[285:285+37, 233:486]
+    frameNomeTrabalho=tela_inteira[285:285+37, 233:486]
     if verificaErro(None)==0:
-        nomeTrabalhoConcluido=reconheceTexto(frame_nome_trabalho)
+        nomeTrabalhoConcluido=reconheceTexto(frameNomeTrabalho)
         clickEspecifico(1,'down')
         clickEspecifico(1,'f2')
-        if nomeTrabalhoConcluido!=None:
+        if variavelExiste(nomeTrabalhoConcluido):
             if verificaErro(None)==0:
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
-                    print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
+                    print(f'{D}:CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                 listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if len(listaDicionarioTrabalhoDesejado)!=0:
                     for dicionarioTrabalhoProduzindo in listaDicionarioTrabalhoDesejado:
@@ -1561,7 +1562,8 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagem):
     return dicionarioPersonagem
 
 def defineCloneDicionarioTrabalho(dicionarioTrabalho):
-    cloneDicionarioTrabalho={CHAVE_NOME:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NOME],
+    cloneDicionarioTrabalho={CHAVE_ID:None,
+                            CHAVE_NOME:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NOME],
                             CHAVE_ESTADO:1,
                             CHAVE_NIVEL:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL],
                             CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_PROFISSAO],
