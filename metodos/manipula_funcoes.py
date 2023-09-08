@@ -689,7 +689,7 @@ def verificaErro(dicionarioTrabalho):
         if erro==erroConectando:
             print(f'Conectando...')
         elif erro==erroRestaurandoConexao:
-            print(f'Reutanrando conexão...')
+            print(f'Restaurando conexão...')
         linhaSeparacao()
         time.sleep(1)
     elif erro==erroReceberRecompensas or erro==erroAtualizaJogo:
