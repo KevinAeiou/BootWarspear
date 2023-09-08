@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import Image
+from manipula_teclado import *
 # import mahotas
 import time
 from PIL import ImageChops
@@ -11,26 +12,15 @@ testeDigitos='testeDigitos.png'
 
 #cor letras voltar, avançar, fechar, jogar (93,218,254)
 
-def salva_nova_tela(screenshot):
+def salvaNovaTela(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
     cv2.imwrite(tela, imagem)
 
-def recorta_frame(frame):
+def recortaFrame(frame):
     imagem = abre_imagem(tela)
     if 'novo_modelo_habilidade' in frame:
         nome_arquivo = f'modelos/{frame}.png'
         fatia_imagem = imagem[719:719+33,85:85+43]
-    #frame especial habilidade
-    #fatia_imagem = imagem[33:95,175:189]
-    #frame = f'modelos/modelo_menu_{id}.png'
-    #recorta frame do centro do menu
-    #fatia_imagem = imagem[336:336+117, 280:280+117]
-    #recorta frame profissoes e trabalhos atuais
-    #fatia_imagem = imagem[242:242+27,248:248+185]
-    #recorta frame inferior da esquerda do menu
-    #fatia_imagem = imagem[611:611+32,168:168+141]
-    #recorta frame inferior direito do menu 611:642,371:512
-    #fatia_imagem = imagem[703:703+53,627:627+53]
     cv2.imwrite(nome_arquivo, fatia_imagem)
     return fatia_imagem
 
@@ -320,9 +310,36 @@ def encontraContorno():
     invertido=retornaImagemCoresInvertidas(blank)
     cv2.imwrite("Invertido.png", invertido)
 
+def preProcessamento(imagem):
+    imagemPreProcessada=cv2.GaussianBlur(imagem,(5,5),3)
+    imagemPreProcessada=cv2.Canny(imagemPreProcessada,90,140)
+    kernel=np.ones((4,4),np.uint8)
+    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=2)
+    imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=1)
+    return imagemPreProcessada
+
+def encontraContornoMenu():
+    while True:
+        screenshot=tira_screenshot()
+        telaInteira=retorna_imagem_colorida(screenshot)
+        metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
+        # metadeTela=cv2.resize(metadeTela,(640,480))
+        imagemPreprocessada=preProcessamento(metadeTela)
+        contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        for cnt in contornos:
+            area=cv2.contourArea(cnt)
+            if area>1500:
+                x,y,l,a=cv2.boundingRect(cnt)
+                cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
+
+        cv2.imshow('Metade da tela',imagemPreprocessada)
+        cv2.imshow('Metade da tela',metadeTela)
+        cv2.waitKey(1)
+
+
 def temporario():
     imagem_teste = abre_imagem(testeDigitos)
     digitos=reconhece_digito(imagem_teste)
     print(f'Digitos reconhecidos: {digitos}')
 
-# encontraContorno()
+encontraContornoMenu()

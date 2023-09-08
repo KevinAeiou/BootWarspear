@@ -73,7 +73,7 @@ tela = 'atualizacao_tela.png'
 
 def atualiza_nova_tela():
     imagem = tira_screenshot()
-    salva_nova_tela(imagem)
+    salvaNovaTela(imagem)
     print(f'Atualizou a tela.')
     linhaSeparacao()
 
@@ -1878,7 +1878,7 @@ def recorta_novo_modelo_habilidade():
         opcao = str(opcao).lower().replace('\n','')
         while opcao!='n':
             atualiza_nova_tela()
-            fatia = recorta_frame(f'novo_modelo_habilidade_{indice}')
+            fatia = recortaFrame(f'novo_modelo_habilidade_{indice}')
             lista_imagem_habilidade = retorna_lista_imagem_habilidade()
             indice = len(lista_imagem_habilidade)
             opcao = input(f'Recortar modelo: nº{indice}? Sim ou não. S/N: ')
