@@ -86,40 +86,40 @@ def profissaoExiste(profissaoReconhecida,listaProfissao):
     return confirmacao
 
 def atualizaListaProfissao(dicionarioPersonagem):
-    yinicial_profissao=285
+    yinicialProfissao=285
     print(f'Atualizando lista de profissões...')
     linhaSeparacao()
     for x in range(8):
-        if x==4:
+        if ehQuartaVerificacao(x):
             clickEspecifico(5,'down')
-            yinicial_profissao=529
-        elif x>4:
+            yinicialProfissao=529
+        elif ehMaisQueQuartaVerificacao(x):
             clickEspecifico(1,'down')
-            yinicial_profissao=529
-        tela_inteira=retornaAtualizacaoTela()
-        frame_nome_profissao=tela_inteira[yinicial_profissao:yinicial_profissao+35,232:232+237]
-        profissaoReconhecida=reconheceTexto(frame_nome_profissao)
-        if profissaoReconhecida!=None:
-            if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_NOME]).replace(' ','').lower():
+            yinicialProfissao=529
+        telaInteira=retornaAtualizacaoTela()
+        frameNomeProfissao=telaInteira[yinicialProfissao:yinicialProfissao+35,232:232+237]
+        profissaoReconhecida=reconheceTexto(frameNomeProfissao)
+        if variavelExiste(profissaoReconhecida):
+            if textoReconhecidoPertenceTextoDicionario(profissaoReconhecida,dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x]):
                 print(f'Profissão: {profissaoReconhecida} OK')
-                yinicial_profissao+=70
+                yinicialProfissao+=70
                 continue
             else:
-                for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
-                    if unidecode(profissaoReconhecida).replace(' ','').lower()==unidecode(profissao[CHAVE_NOME]).replace(' ','').lower():
-                        idA=profissao[CHAVE_ID]
-                        break
-                profissaoB=dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_NOME]
-                dicionarioProfissao={CHAVE_ID:dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_ID],
-                                     CHAVE_NOME:profissaoReconhecida}
-                modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
-                dicionarioProfissao={CHAVE_ID:idA,
-                                     CHAVE_NOME:profissaoB}
-                modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
-                print(f'Trocando posições: {profissaoReconhecida} x {profissaoB}')
-                linhaSeparacao()
-                dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
-                yinicial_profissao+=70
+                idA = encontraPrimeiroId(dicionarioPersonagem, profissaoReconhecida)
+                if variavelExiste(idA):
+                    profissaoB=dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_NOME]
+                    dicionarioProfissao={CHAVE_ID:dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO][x][CHAVE_ID],
+                                        CHAVE_NOME:profissaoReconhecida}
+                    modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
+                    dicionarioProfissao={CHAVE_ID:idA,
+                                        CHAVE_NOME:profissaoB}
+                    modificaProfissao(dicionarioPersonagem,dicionarioProfissao)
+                    print(f'Trocando posições: {profissaoReconhecida} x {profissaoB}')
+                    linhaSeparacao()
+                    dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
+                    yinicialProfissao+=70
+                else:
+                    print(f'Erro ao buscar id na lista de profissões de: {profissaoReconhecida}.')
         else:
             print(f'Processo interrompido!')
             break
@@ -129,6 +129,20 @@ def atualizaListaProfissao(dicionarioPersonagem):
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
     linhaSeparacao()
     return dicionarioPersonagem
+
+def encontraPrimeiroId(dicionarioPersonagem, profissaoReconhecida):
+    idA=None
+    for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+        if textoReconhecidoPertenceTextoDicionario(profissaoReconhecida,profissao):
+            idA=profissao[CHAVE_ID]
+            break
+    return idA
+
+def ehMaisQueQuartaVerificacao(x):
+    return x>4
+
+def ehQuartaVerificacao(x):
+    return x==4
 
 def atualiza_referencias():
     tela_inteira = retornaAtualizacaoTela()
