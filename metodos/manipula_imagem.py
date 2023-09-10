@@ -311,28 +311,34 @@ def encontraContorno():
     cv2.imwrite("Invertido.png", invertido)
 
 def preProcessamento(imagem):
-    imagemPreProcessada=cv2.GaussianBlur(imagem,(5,5),3)
-    imagemPreProcessada=cv2.Canny(imagemPreProcessada,90,140)
-    kernel=np.ones((4,4),np.uint8)
-    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=2)
+    imagemPreProcessada=cv2.GaussianBlur(imagem,(3,3),100)
+    t_lower = 300  # Lower Threshold
+    t_upper = 300  # Upper threshold
+    imagemPreProcessada=cv2.Canny(imagemPreProcessada,t_lower,t_upper)
+    kernel=np.ones((2,2),np.uint8)
+    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=1)
     imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=1)
     return imagemPreProcessada
 
 def encontraContornoMenu():
+    porcentagem=20
     while True:
         screenshot=tira_screenshot()
         telaInteira=retorna_imagem_colorida(screenshot)
         metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
-        # metadeTela=cv2.resize(metadeTela,(640,480))
+        altura=telaInteira.shape[0]-(telaInteira.shape[0]*(porcentagem/100))
+        largura=telaInteira.shape[1]/2-(telaInteira.shape[1]/2*(porcentagem/100))
+        metadeTela=cv2.resize(metadeTela,(int(altura),int(largura)))
         imagemPreprocessada=preProcessamento(metadeTela)
+        imagemPreprocessada=cv2.resize(imagemPreprocessada,(int(altura),int(largura)))
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            if area>1500:
+            if area>1000 and area <16000:#14500 de boa
                 x,y,l,a=cv2.boundingRect(cnt)
                 cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
 
-        cv2.imshow('Metade da tela',imagemPreprocessada)
+        # cv2.imshow('Metade da tela processada',imagemPreprocessada)
         cv2.imshow('Metade da tela',metadeTela)
         cv2.waitKey(1)
 
@@ -342,4 +348,4 @@ def temporario():
     digitos=reconhece_digito(imagem_teste)
     print(f'Digitos reconhecidos: {digitos}')
 
-# encontraContornoMenu()
+encontraContornoMenu()
