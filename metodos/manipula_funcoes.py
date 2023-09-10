@@ -61,6 +61,7 @@ erroTempoProducaoExpirou=16
 erroReinoIndisponivel=17
 erroAtualizaJogo=18
 erroRestaurandoConexao=19
+erroUsarObjetoParaProduzir=20
 
 lista_personagem_ativo=[]
 
@@ -629,25 +630,6 @@ def verificaErro(dicionarioTrabalho):
     licenca=configuraLicenca(dicionarioTrabalho)
     print(f'Verificando erro...')
     erro=retornaTipoErro()
-# erroPrecisaLicenca=1
-# erroFalhaConectar=2
-# erroSemRecursos=3
-# erroPrecisaEscolherItem=4
-# erroConectando=5
-# erroSemExperiencia=6
-# erroReceberRecompensas=7
-# erroSemEspacosProducao=8
-# erroConcluirTrabalho=9
-# erroManutencaoServidor=10
-# erroOutraConeccao=11
-# erroSemEspacosBolsa=12
-# erroConeccaoInterrompida=13
-# erroSemMoedas=14
-# erroEmailSenhaIncorreta=15
-# erroTempoProducaoExpirou=16
-# erroReinoIndisponivel=17
-# erroAtualizaJogo=18
-# erroRestaurandoConexao=19
     if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
         clickEspecifico(2,"enter")
         if erro==erroPrecisaLicenca:
@@ -683,7 +665,7 @@ def verificaErro(dicionarioTrabalho):
         print(f'Escolhendo item.')
         linhaSeparacao()
         clickEspecifico(1,'enter')
-        clickEspecifico(2,'f2')
+        clickEspecifico(1,'f2')
         clickContinuo(9,'up')
     elif erro==erroConectando or erro==erroRestaurandoConexao:
         if erro==erroConectando:
@@ -692,10 +674,12 @@ def verificaErro(dicionarioTrabalho):
             print(f'Restaurando conexão...')
         linhaSeparacao()
         time.sleep(1)
-    elif erro==erroReceberRecompensas or erro==erroAtualizaJogo:
+    elif erro==erroReceberRecompensas or erro==erroAtualizaJogo or erro==erroUsarObjetoParaProduzir:
         clickEspecifico(1,'f2')
         if erro==erroReceberRecompensas:
             print(f'Recuperar presente.')
+        elif erro==erroUsarObjetoParaProduzir:
+            print(f'Usa objeto para produzir outro.')
         elif erro==erroAtualizaJogo:
             print(f'Atualizando jogo...')
             clickEspecifico(1,'f1')
@@ -762,7 +746,7 @@ def retornaTipoErro():
                     'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                     'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
                     'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
-                    'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão']
+                    'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução']
         for posicaoTipoErro in range(len(tipoErro)):
             textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
             if textoErro in textoErroEncontrado:
@@ -2243,7 +2227,8 @@ def funcao_teste(dicionarioUsuario):
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     click_atalho_especifico('alt','tab')
-    verificaErro(dicionarioTrabalho)
+    # verificaErro(dicionarioTrabalho)
+    retornaTipoErro()
     # telaInteira=retornaAtualizacaoTela()
     # frameTela=telaInteira[263:263+46,284:284+46]
     # contadorCorMercador=0

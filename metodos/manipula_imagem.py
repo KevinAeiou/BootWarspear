@@ -342,4 +342,4 @@ def temporario():
     digitos=reconhece_digito(imagem_teste)
     print(f'Digitos reconhecidos: {digitos}')
 
-encontraContornoMenu()
+# encontraContornoMenu()
