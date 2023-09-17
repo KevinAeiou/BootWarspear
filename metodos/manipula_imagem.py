@@ -311,13 +311,13 @@ def encontraContorno():
     cv2.imwrite("Invertido.png", invertido)
 
 def preProcessamento(imagem):
-    imagemPreProcessada=cv2.GaussianBlur(imagem,(3,3),100)
-    t_lower = 300  # Lower Threshold
-    t_upper = 300  # Upper threshold
+    imagemPreProcessada=cv2.GaussianBlur(imagem,(1,1),0)
+    t_lower = 100  # Lower Threshold
+    t_upper = 600  # Upper threshold
     imagemPreProcessada=cv2.Canny(imagemPreProcessada,t_lower,t_upper)
-    kernel=np.ones((2,2),np.uint8)
-    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=1)
-    imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=1)
+    kernel=np.ones((1,1),np.uint8)
+    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=3)
+    imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=3)
     return imagemPreProcessada
 
 def encontraContornoMenu():
@@ -334,11 +334,11 @@ def encontraContornoMenu():
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            if area>1000 and area <16000:#14500 de boa
+            if area>100:#14500 de boa
                 x,y,l,a=cv2.boundingRect(cnt)
                 cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
 
-        # cv2.imshow('Metade da tela processada',imagemPreprocessada)
+        cv2.imshow('Metade da tela processada',imagemPreprocessada)
         cv2.imshow('Metade da tela',metadeTela)
         cv2.waitKey(1)
 
@@ -370,4 +370,4 @@ def temporario():
     
     cv2.destroyAllWindows() 
 
-# temporario()
+# encontraContornoMenu()
