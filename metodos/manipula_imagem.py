@@ -35,8 +35,8 @@ def reconhece_digito(imagem):
     digitoReconhecido=pytesseract.image_to_string(imagem,
                                                   config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
     fim = time.time()
-    print(f'Tempo de reconhece_digito: {fim - inicio}')
-    print(f'____________________________________________________')
+    # print(f'Tempo de reconhece_digito: {fim - inicio}')
+    # print(f'____________________________________________________')
     return digitoReconhecido
 
 def reconheceTexto(imagem):
@@ -306,7 +306,7 @@ def salvaLimiarImagem(image):
     ret, thresh = cv2.threshold(blur, 150, 600,
                             cv2.THRESH_BINARY_INV)
     fim = time.time()
-    print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
+    # print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
     return thresh
 
 def encontraContorno():

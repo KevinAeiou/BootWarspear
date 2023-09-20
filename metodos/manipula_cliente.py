@@ -70,7 +70,7 @@ def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioVenda)
     if requisicao!=None:
-        print(f'Nova venda foi adicionada: {dicionarioVenda}')
+        print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
     else:
         print(f'Limite de tentativas de conexão atingido.')
     return dicionarioVenda

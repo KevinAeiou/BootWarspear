@@ -1086,28 +1086,28 @@ def retornaTextoMenuReconhecido(x,y,largura):
     alturaFrame=30
     texto=None
     frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
-    frameTelaLimiar=salvaLimiarImagem(frameTela)
+    if y>30:
+        frameTela=salvaLimiarImagem(frameTela)
     # mostraImagem(0,frameTela,None)
-    # mostraImagem(0,frameTelaLimiar,None)
-    print(f'Quantidade de pixels pretos: {np.sum(frameTelaLimiar==0)}')
-    contadorPixelPreto=np.sum(frameTelaLimiar==0)
+    # print(f'Quantidade de pixels pretos: {np.sum(frameTela==0)}')
+    contadorPixelPreto=np.sum(frameTela==0)
     if existePixelPretoSuficiente(contadorPixelPreto):
-        texto=reconheceTexto(frameTelaLimiar)
+        texto=reconheceTexto(frameTela)
         if variavelExiste(texto):
             texto=limpaRuidoTexto(texto)
-            print(f'{D}:Texto reconhecimento de menus: {texto}.')
-    print(f'{D} :{texto}')
+            # print(f'{D}:Texto reconhecimento de menus: {texto}.')
+    # print(f'{D} :{texto}')
     return texto
 
 def existePixelPretoSuficiente(contadorPixelPreto):
-    return contadorPixelPreto>380 and contadorPixelPreto<3500
+    return contadorPixelPreto>380 and contadorPixelPreto<3000
 
 def retornaMenu():
     # 1050,1077,3006,1035,1251,1092,1215,1854,1863,1617,1377,2637,1344,
     # 1947,2721
     inicio = time.time()
     print(f'Reconhecendo menu.')
-    textoMenu=retornaTextoMenuReconhecido(26,7,150)
+    textoMenu=retornaTextoMenuReconhecido(26,1,150)
     if variavelExiste(textoMenu):
         if texto1PertenceTexto2('spearonline',textoMenu):
             textoMenu=retornaTextoMenuReconhecido(216,194,270)
@@ -1116,14 +1116,14 @@ def retornaMenu():
                     print(f'Menu notícias...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_noticias
                 elif texto1PertenceTexto2('seleçãodepersonagem',textoMenu):
                     print(f'Menu escolha de personagem...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_escolha_p
                 elif texto1PertenceTexto2('produzir',textoMenu):
@@ -1136,21 +1136,21 @@ def retornaMenu():
                                     print(f'Menu produzir...')
                                     linhaSeparacao()
                                     fim = time.time()
-                                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                                     linhaSeparacao()
                                     return menu_produzir
                                 elif texto1PertenceTexto2('voltar',textoMenu):
                                     print(f'Menu trabalhos diponíveis...')
                                     linhaSeparacao()
                                     fim = time.time()
-                                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                                     linhaSeparacao()
                                     return menu_trab_disponiveis
                         elif texto1PertenceTexto2('trabalhosatuais',textoMenu):
                             print(f'Menu trabalhos atuais...')
                             linhaSeparacao()
                             fim = time.time()
-                            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                            # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                             linhaSeparacao()
                             return menu_trab_atuais
             textoMenu=retornaTextoSair()
@@ -1159,14 +1159,14 @@ def retornaMenu():
                     print(f'Menu jogar...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_jogar
             if verificaMenuReferencia():
                 print(f'Menu tela inicial...')
                 linhaSeparacao()
                 fim = time.time()
-                print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                 linhaSeparacao()
                 return menu_inicial
             textoMenu=retornaTextoMenuReconhecido(291,409,100)
@@ -1175,14 +1175,14 @@ def retornaMenu():
                     print(f'Menu personagem...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_personagem
                 elif texto1PertenceTexto2('interagir',textoMenu):
                     print(f'Menu principal...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_principal
             textoMenu=retornaTextoMenuReconhecido(191,319,270)
@@ -1192,14 +1192,14 @@ def retornaMenu():
                         print(f'Menu atributo do trabalho...')
                         linhaSeparacao()
                         fim = time.time()
-                        print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                        # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                         linhaSeparacao()
                         return menu_trab_atributos
                     else:
                         print(f'Menu licenças...')
                         linhaSeparacao()
                         fim = time.time()
-                        print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                        # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                         linhaSeparacao()
                         return menu_licencas
             textoMenu=retornaTextoMenuReconhecido(281,429,120)
@@ -1208,7 +1208,7 @@ def retornaMenu():
                     print(f'Menu trabalho específico...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_trab_especifico
             textoMenu=retornaTextoMenuReconhecido(266,269,150)
@@ -1217,7 +1217,7 @@ def retornaMenu():
                     print(f'Menu oferta diária...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_ofe_diaria
             textoMenu=retornaTextoMenuReconhecido(181,71,150)
@@ -1226,7 +1226,7 @@ def retornaMenu():
                     print(f'Menu loja milagrosa...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_loja_milagrosa
             textoMenu=retornaTextoMenuReconhecido(180,40,300)
@@ -1235,7 +1235,7 @@ def retornaMenu():
                     print(f'{D}:Menu recompensas diárias...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_rec_diarias
             textoMenu=retornaTextoMenuReconhecido(180,60,300)
@@ -1244,7 +1244,7 @@ def retornaMenu():
                     print(f'Menu recompensas diárias...')
                     linhaSeparacao()
                     fim = time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_rec_diarias
             textoMenu=retornaTextoMenuReconhecido(310,338,57)
@@ -1253,7 +1253,7 @@ def retornaMenu():
                     print(f'Menu meu perfil...')
                     linhaSeparacao()
                     fim=time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_meu_perfil
             
@@ -1263,14 +1263,14 @@ def retornaMenu():
                     print(f'Menu bolsa...')
                     linhaSeparacao()
                     fim=time.time()
-                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_bolsa
 
     print(f'Menu não reconhecido...')
     linhaSeparacao()
     fim = time.time()
-    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+    # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
     linhaSeparacao()
     click_atalho_especifico('win','left')
     click_atalho_especifico('win','left')
@@ -1318,8 +1318,8 @@ def verificaListaVazia(lista_personagem_ativo):
 
 def verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem):
     dicionarioPersonagemReconhecido={}
-    print(f'Verificando nome personagem...')
     nomePersonagemReconhecidoTratado=retornaNomePersonagem(0)
+    # print(f'{D}:Nome personagem na posição 0:{nomePersonagemReconhecidoTratado}')
     if variavelExiste(nomePersonagemReconhecidoTratado):
         for dicionarioPersonagemVerificado in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
             if textoReconhecidoPertenceTextoDicionario(nomePersonagemReconhecidoTratado,dicionarioPersonagemVerificado):
@@ -1540,7 +1540,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem,dicionarioTrabalho=recuperaTrabalhoConcluido(dicionarioPersonagem)
     if len(dicionarioTrabalho)!=0:
         listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
-        if dicionarioTrabalho[CHAVE_RECORRENCIA]==0:
+        if dicionarioTrabalho[CHAVE_RECORRENCIA]:
             print(f'Trabalho sem recorrencia.')
             modificaEstadoTrabalho(dicionarioPersonagem,
                                     dicionarioTrabalho,
@@ -1791,12 +1791,12 @@ def reconheceMenuRecompensa(menu):
 def retornaNomePersonagem(posicao):
     nome=None
     print(f'Verificando nome personagem...')
-    posicaoNome=[[2,33,169,21],[197,354,170,27]]
+    posicaoNome=[[2,33,169,27],[197,354,170,27]]
     telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
     frameNomePersonagemTratado=salvaLimiarImagem(frameNomePersonagem)
     contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
-    print(f'{D}:{contadorPixelPreto}')
+    # print(f'{D}:{contadorPixelPreto}')
     # mostraImagem(0,frameNomePersonagemTratado,None)
     if contadorPixelPreto>100:
         nomePersonagemReconhecido=reconheceTexto(frameNomePersonagemTratado)
@@ -2071,7 +2071,7 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                                  'valorProduto':ouro,
                                  'dataVenda':dataAtual}
                 adicionaVenda(dicionarioPersonagem,dicionarioVenda)
-                print(dicionarioVenda)
+                # print(dicionarioVenda)
                 linhaSeparacao()
             else:
                 print(f'Produto expirado:')
@@ -2090,7 +2090,7 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
     x=0
     for texto in listaTextoCarta:
         if 'un' in texto.lower():
-            print(f'un encontrado na posição: {x}, {listaTextoCarta[x]}')
+            # print(f'un encontrado na posição: {x}, {listaTextoCarta[x]}')
             quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x])
             if not quantidadeProduto.isdigit():
                 quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x-1])
@@ -2099,8 +2099,8 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
                 else:
                     print(f'Não foi possível reconhecer a quantidade do produto.')
                     linhaSeparacao()
-            else:
-                print(f'Digito encontrado em: {listaTextoCarta[x]}')
+            # else:
+                # print(f'Digito encontrado em: {listaTextoCarta[x]}')
             print(f'quantidadeProduto:{quantidadeProduto}')
         x+=1
     return int(quantidadeProduto)
@@ -2397,7 +2397,7 @@ def funcao_teste(dicionarioUsuario):
         # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
-        print(retornaNomePersonagem(1))
+        print(retornaNomePersonagem(0))
         click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
