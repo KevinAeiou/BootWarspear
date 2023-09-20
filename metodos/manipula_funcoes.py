@@ -452,7 +452,7 @@ def confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,tipoTraba
     posicao=listaFrames[tipoTrabalho]
     telaInteira=retornaAtualizacaoTela()#tira novo print da tela
     frameNomeTrabalho=telaInteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
-    frameNomeTrabalhoTratado=transformaCaracteresPreto(frameNomeTrabalho)
+    frameNomeTrabalhoTratado=salvaLimiarImagem(frameNomeTrabalho)
     nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
     # mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
     if variavelExiste(nomeTrabalhoReconhecido):
@@ -652,11 +652,8 @@ def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     imagem_inteira=retornaAtualizacaoTela()
     frame_nome_trabalho=imagem_inteira[yinicial_nome:yinicial_nome+altura,233:478]
     #teste trata frame trabalho comum
-    frame_nome_trabalho_tratado=transforma_branco_preto(frame_nome_trabalho)
-    nomeTrabalhoReconhecido=reconheceTexto(frame_nome_trabalho_tratado)
-    if nomeTrabalhoReconhecido!=None:
-        nomeTrabalhoReconhecido=nomeTrabalhoReconhecido.replace(' ','').lower()
-    return nomeTrabalhoReconhecido
+    frameNomeTrabalhoTratado=salvaLimiarImagem(frame_nome_trabalho)
+    return reconheceTexto(frameNomeTrabalhoTratado)
 
 def sai_trabalho_encontrado(x,tipo_trabalho):
     clicks=[2,1]
@@ -853,19 +850,6 @@ def verifica_arquivo_existe(caminho_arquivo):
           return True
     return False
 
-def verifica_nome_personagem(nome_personagem,posicao):
-    confirmacao=False
-    nome_personagem_reconhecido_tratado=retornaNomePersonagem(posicao)
-    if nome_personagem_reconhecido_tratado!=None:
-        if nome_personagem_reconhecido_tratado.replace(' ','').lower()in nome_personagem.replace(' ','').lower():
-            print(f'Personagem {nome_personagem_reconhecido_tratado} confirmado!')
-            linhaSeparacao()
-            confirmacao=True
-    else:
-        print(f'Nome personagem diferente!')
-        linhaSeparacao()
-    return confirmacao
-
 def retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
     print(f'Verificando profissões necessárias...')
     #cria lista vazia
@@ -948,8 +932,9 @@ def entraPersonagemAtivo(dicionarioPersonagem):
         clickEspecifico(1,'f2')
         clickContinuo(8,'left')   
         personagemReconhecido=retornaNomePersonagem(1)
+        # print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
-        while personagemReconhecido!=None and contadorPersonagem<13:
+        while variavelExiste(personagemReconhecido) and contadorPersonagem<13:
             dicionarioPersonagem=confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem)
             if variavelExiste(dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
                 ativaAtributoUso(dicionarioPersonagem)
@@ -969,6 +954,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
             else:
                 clickEspecifico(1,'right')
                 personagemReconhecido=retornaNomePersonagem(1)
+                # print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
             contadorPersonagem+=1
         else:
             print(f'Personagem não encontrado!')
@@ -1022,9 +1008,6 @@ def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
             personagem[CHAVE_ESTADO]==1):
             # print(f'{D}:{personagem[CHAVE_NOME]} é ativo.')
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(personagem)
-        else:
-            print(f'{personagem[CHAVE_NOME]} é inativo.')
-        linhaSeparacao()
     return dicionarioPersonagem
 
 def buscaListaPersonagemAtivo(dicionarioUsuario):
@@ -1449,6 +1432,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                                 dicionarioTrabalho=defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho)
                                 if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                                     dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
+                                    print(f'{D}:CHAVE depois de sair da função iniciaProducao:{dicionarioTrabalho[CHAVE_CONFIRMACAO]}.')
+                                    linhaSeparacao()
                             else:
                                 dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
                                 print(f'Nem um trabalho disponível está na lista de desejos.')
@@ -1459,6 +1444,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                             dicionarioTrabalho=defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho)
                             if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                                 dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
+                                print(f'{D}:CHAVE depois de sair da função iniciaProducao:{dicionarioTrabalho[CHAVE_CONFIRMACAO]}.')
+                                linhaSeparacao()
                         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
                             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
                                 if retornaEstadoTrabalho()==concluido:
@@ -1470,6 +1457,9 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                             clickEspecifico(1,'left')
                             linhaSeparacao()
                         else:
+                            print(f'{D}:CHAVE_UNICA_CONEXAO:{dicionarioPersonagem[CHAVE_UNICA_CONEXAO]}.')
+                            print(f'Quebrou laço de verificação da profição: {profissaoVerificada[CHAVE_NOME]}.')
+                            linhaSeparacao()
                             break
                     if not chaveEspacoProducaoForVerdadeira(dicionarioPersonagem):
                         break
@@ -1513,8 +1503,8 @@ def existeOutraConexao(erro):
 def listaProfissoesFoiModificada(dicionarioPersonagem):
     return dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]
 
-def tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
-    return len(listaDicionariosTrabalhosDesejados)==0
+def tamanhoIgualZero(lista):
+    return len(lista)==0
 
 def chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
     return dicionarioPersonagem[CHAVE_UNICA_CONEXAO]
@@ -1538,7 +1528,7 @@ def estaMenuInicial(menu):
 
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem,dicionarioTrabalho=recuperaTrabalhoConcluido(dicionarioPersonagem)
-    if len(dicionarioTrabalho)!=0:
+    if not tamanhoIgualZero(dicionarioTrabalho):
         listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
         if dicionarioTrabalho[CHAVE_RECORRENCIA]:
             print(f'Trabalho sem recorrencia.')
@@ -1563,15 +1553,16 @@ def recuperaTrabalhoConcluido(dicionarioPersonagem):
         nomeTrabalhoConcluido=reconheceTexto(frameNomeTrabalho)
         clickEspecifico(1,'down')
         clickEspecifico(1,'f2')
+        print(f'{D}:Trabalho concluido reconhecido: {nomeTrabalhoConcluido}.')
         if variavelExiste(nomeTrabalhoConcluido):
             if verificaErro(None)==0:
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
                     print(f'{D}:CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                 listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-                if len(listaDicionarioTrabalhoDesejado)!=0:
+                if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
                     for dicionarioTrabalhoProduzindo in listaDicionarioTrabalhoDesejado:
-                        if (unidecode(nomeTrabalhoConcluido[1:-1]).lower().replace(' ','')in unidecode(dicionarioTrabalhoProduzindo[CHAVE_NOME]).lower().replace(' ','')and
+                        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],dicionarioTrabalhoProduzindo[CHAVE_NOME])and
                             dicionarioTrabalhoProduzindo[CHAVE_ESTADO]==produzindo):
                             dicionarioTrabalho=dicionarioTrabalhoProduzindo
                             print(f'{dicionarioTrabalhoProduzindo[CHAVE_NOME]} recuperado.')
@@ -1593,6 +1584,7 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
             dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
             if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
                 dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+                print(f'{D}:trataErros:CHAVE_CONFIRMACAO=False')
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroSemEspacosProducao:#sem espaços de produção livres
             listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
@@ -1600,10 +1592,12 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
             dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+            print(f'{D}:trataErros:CHAVE_CONFIRMACAO=False')
         elif erro==erroOutraConexao:
             dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+            print(f'{D}:trataErros:CHAVE_CONFIRMACAO=False')
         erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     return dicionarioTrabalho,dicionarioPersonagem
 
@@ -1675,6 +1669,8 @@ def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
         if verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]):#verifica tipo de licença de produção
             clickEspecifico(1,'f2')#click que definitivamente começa a produção
             dicionarioTrabalho,dicionarioPersonagem=trataErros(dicionarioTrabalho,dicionarioPersonagem)
+            print(f'{D}:CHAVE_CONFIRMACAO depois de sair da função trataErros:{dicionarioTrabalho[CHAVE_CONFIRMACAO]}.')
+            linhaSeparacao()
             if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
                 dicionarioPersonagem=trataMenus(dicionarioTrabalho,dicionarioPersonagem)
                 if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
@@ -1684,11 +1680,13 @@ def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
                     dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                     if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
                         dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+                        print(f'{D}:iniciaProducao:CHAVE_CONFIRMACAO=False')
                     print(f'Atualizou a CHAVE_LISTA_DESEJO.')
                     linhaSeparacao()
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
         else:
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+            print(f'{D}:iniciaProducao:CHAVE_CONFIRMACAO=False')
             print(f'Erro ao busca licença...')
             linhaSeparacao()
     else:
@@ -1791,15 +1789,16 @@ def reconheceMenuRecompensa(menu):
 def retornaNomePersonagem(posicao):
     nome=None
     print(f'Verificando nome personagem...')
-    posicaoNome=[[2,33,169,27],[197,354,170,27]]
+    posicaoNome=[[2,33,169,27],[190,351,177,30]]
     telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
     frameNomePersonagemTratado=salvaLimiarImagem(frameNomePersonagem)
     contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
     # print(f'{D}:{contadorPixelPreto}')
-    # mostraImagem(0,frameNomePersonagemTratado,None)
+    # m1ostraImagem(0,frameNomePersonagemTratado,None)
     if contadorPixelPreto>100:
         nomePersonagemReconhecido=reconheceTexto(frameNomePersonagemTratado)
+        # print(f'{D}:{nomePersonagemReconhecido}.')
         if variavelExiste(nomePersonagemReconhecido):
             nome=limpaRuidoTexto(nomePersonagemReconhecido)
             # print(f'{D}:Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
@@ -2397,7 +2396,7 @@ def funcao_teste(dicionarioUsuario):
         # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
-        print(retornaNomePersonagem(0))
+        print(retornaNomePersonagem(1))
         click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)

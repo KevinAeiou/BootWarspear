@@ -78,8 +78,8 @@ def transformaCaracteresPreto(imagem_original):
             else:
                 imagem_tratada[y,x] = (255,255,255)
     fim = time.time()
-    print(f'Tempo de transforma_caracteres_preto: {fim - inicio}')
-    print(f'____________________________________________________')
+    # print(f'Tempo de transforma_caracteres_preto: {fim - inicio}')
+    # print(f'____________________________________________________')
     return imagem_tratada
 
 def transforma_menu_preto(imagem_original):
@@ -89,19 +89,6 @@ def transforma_menu_preto(imagem_original):
         for x in range(0, imagem_original.shape[1]):
             #se a cor do pixel for diferente de preto ou marrom 
             if (imagem_original[y,x] == (93,218,254)).all():
-                #tranforma pixel em preto
-                imagem_tratada[y,x] = (0,0,0)
-            else:
-                imagem_tratada[y,x] = (255,255,255)
-    return imagem_tratada
-
-def transforma_branco_preto(imagem_original):
-    #marrom1 = 48,87,164
-    imagem_tratada = imagem_original
-    for y in range(0,imagem_original.shape[0]):
-        for x in range(0, imagem_original.shape[1]):
-            #se a cor do pixel for diferente de preto ou marrom 
-            if (imagem_original[y,x] == (255,255,255)).all():
                 #tranforma pixel em preto
                 imagem_tratada[y,x] = (0,0,0)
             else:
@@ -303,7 +290,7 @@ def salvaLimiarImagem(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (1, 1), 
                         cv2.BORDER_DEFAULT)
-    ret, thresh = cv2.threshold(blur, 150, 600,
+    ret, thresh = cv2.threshold(blur, 180, 600,
                             cv2.THRESH_BINARY_INV)
     fim = time.time()
     # print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
