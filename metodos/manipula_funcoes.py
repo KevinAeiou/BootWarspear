@@ -443,6 +443,7 @@ def verifica_ciclo(lista):
     return False
 
 def confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,tipoTrabalho):
+    dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
     print(f'Confirmando nome do trabalho...')
     x=0
     y=1
@@ -459,7 +460,6 @@ def confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,tipoTraba
         if textoReconhecidoPertenceTextoDicionario(nomeTrabalhoReconhecido,dicionarioTrabalhoDesejado):
             print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
             linhaSeparacao()
-            dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
         else:
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
             print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
@@ -477,7 +477,7 @@ def verificaPosicoesTrabalhos(dicionarioTrabalho):
     if nomeTrabalhoReconhecido!=None and dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
         print(f'Nome do trabalho disponível: {nomeTrabalhoReconhecido}')
         #enquanto não comparar toda lista
-        for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
+        for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
             #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
             if estadoTrabalhoEParaProduzir(dicionarioTrabalhoDesejado)and profissaoEIgual(dicionarioTrabalho,dicionarioTrabalhoDesejado):
                 print(f'Nome do trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
@@ -755,6 +755,7 @@ def entraLicenca(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoListaDesejo):
+    dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
     erro=verificaErro(trabalhoListaDesejo)
     if erroEncontrado(erro):
         if erro==erroOutraConexao:
@@ -1083,7 +1084,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
     return texto
 
 def existePixelPretoSuficiente(contadorPixelPreto):
-    return contadorPixelPreto>380 and contadorPixelPreto<3000
+    return contadorPixelPreto>250 and contadorPixelPreto<3000
 
 def retornaMenu():
     # 1050,1077,3006,1035,1251,1092,1215,1854,1863,1617,1377,2637,1344,
