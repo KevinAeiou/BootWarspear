@@ -3,6 +3,7 @@ import numpy as np
 import pytesseract
 from PIL import Image
 from manipula_teclado import *
+from lista_chaves import *
 # import mahotas
 import time
 from PIL import ImageChops
@@ -60,7 +61,7 @@ def reconheceTexto(imagem):
     return texto
 
 def transformaCaracteresPreto(imagem_original):
-    # inicio = time.time()
+    inicio = time.time()
     #marrom1 = 48,87,164
     imagem_tratada = imagem_original
     for y in range(0,imagem_original.shape[0]):
@@ -76,9 +77,9 @@ def transformaCaracteresPreto(imagem_original):
                 imagem_tratada[y,x] = (0,0,0)
             else:
                 imagem_tratada[y,x] = (255,255,255)
-    # fim = time.time()
-    # print(f'Tempo de transforma_caracteres_preto: {fim - inicio}')
-    # print(f'____________________________________________________')
+    fim = time.time()
+    print(f'Tempo de transforma_caracteres_preto: {fim - inicio}')
+    print(f'____________________________________________________')
     return imagem_tratada
 
 def transforma_menu_preto(imagem_original):
@@ -189,6 +190,20 @@ def retorna_imagem_concatenada(imagem,imagem2):
     imagem_concatenada = cv2.hconcat([imagem,imagem2])
     return imagem_concatenada
 
+def vconcat_resize(img_list, interpolation  
+                   = cv2.INTER_CUBIC): 
+      
+    w_min = min(img.shape[1]  
+                for img in img_list) 
+      
+    
+    im_list_resize = [cv2.resize(img, 
+                      (w_min, int(img.shape[0] * w_min / img.shape[1])), 
+                                 interpolation = interpolation) 
+                      for img in img_list] 
+    
+    return cv2.vconcat(im_list_resize) 
+
 def retorna_subtracao_imagem(imagem1,imagem2):
     tamanho_imagem1 = imagem1.shape[:2]
     tamanho_imagem2 = imagem2.shape[:2]
@@ -283,15 +298,16 @@ def mostra_video(caminho_video):
 def retorna_fundo_branco():
     return np.ones((200,200,3))*255
 
-def salvaLimiarImagem():
-    image = cv2.imread("modelo ps.jpg")
+def salvaLimiarImagem(image):
+    inicio = time.time()
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    blur = cv2.GaussianBlur(gray, (5, 5), 
+    blur = cv2.GaussianBlur(gray, (1, 1), 
                         cv2.BORDER_DEFAULT)
-    ret, thresh = cv2.threshold(blur, 200, 255,
+    ret, thresh = cv2.threshold(blur, 150, 600,
                             cv2.THRESH_BINARY_INV)
-    cv2.imwrite("thresh.png",thresh)
+    fim = time.time()
+    print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
+    return thresh
 
 def encontraContorno():
     image = cv2.imread("modelo ps.jpg")
@@ -312,12 +328,12 @@ def encontraContorno():
 
 def preProcessamento(imagem):
     imagemPreProcessada=cv2.GaussianBlur(imagem,(1,1),0)
-    t_lower = 100  # Lower Threshold
-    t_upper = 600  # Upper threshold
+    t_lower = 150  # Lower Threshold
+    t_upper = 300  # Upper threshold
     imagemPreProcessada=cv2.Canny(imagemPreProcessada,t_lower,t_upper)
-    kernel=np.ones((1,1),np.uint8)
-    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=3)
-    imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=3)
+    kernel=np.ones((3,3),np.uint8)
+    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=1)
+    imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=1)
     return imagemPreProcessada
 
 def encontraContornoMenu():
@@ -334,7 +350,7 @@ def encontraContornoMenu():
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            if area>100:#14500 de boa
+            if area>100 and area<2000:#14500 de boa
                 x,y,l,a=cv2.boundingRect(cnt)
                 cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
 
@@ -344,25 +360,31 @@ def encontraContornoMenu():
 
 
 def temporario():
-    cap = cv2.VideoCapture('VID-20171230-WA0021.mp4') 
-   
+    cap = cv2.VideoCapture('DG_MINAS_ABANDONADAS.mp4') 
+    porcentagem=50
     if (cap.isOpened()== False):  
         print("Error opening video  file") 
         
     while(cap.isOpened()): 
-        
-        
-        ret, frame = cap.read() 
+        ret, frame = cap.read()
+        alturaDesejada=frame.shape[0]*porcentagem/100
+        larguraDesejada=frame.shape[1]*porcentagem/100
+        frame=cv2.resize(frame,(int(larguraDesejada),int(alturaDesejada)))
+        frameLimiar=salvaLimiarImagem(frame)
+        imagemPreprocessada=preProcessamento(frame)
+        contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        for cnt in contornos:
+            area=cv2.contourArea(cnt)
+            if area>400 and area<800:#14500 de boa
+                x,y,l,a=cv2.boundingRect(cnt)
+                cv2.rectangle(frame,(x,y),(x+l,y+a),(0,255,0),2)
+        # frameConcatenado=vconcat_resize([frame,imagemPreprocessada])
         if ret == True: 
-        
-            
             cv2.imshow('Frame', frame) 
-        
-            
+            cv2.imshow('Frame tratado', imagemPreprocessada) 
+            # cv2.imshow('Frame limiar', frameLimiar) 
             if cv2.waitKey(25) & 0xFF == ord('q'): 
                 break
-        
-        
         else:  
             break
     
@@ -370,4 +392,4 @@ def temporario():
     
     cv2.destroyAllWindows() 
 
-# encontraContornoMenu()
+# temporario()

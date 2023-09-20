@@ -40,6 +40,7 @@ menu_rec_diarias=39
 menu_ofe_diaria=40
 menu_inicial=41
 menu_meu_perfil=42
+menu_bolsa=43
 menu_desconhecido=None
 
 erroPrecisaLicenca=1
@@ -328,7 +329,7 @@ def verifica_referencia_tela(referencia_anterior1):
         return False
     return True
 
-def verifica_menu_referencia():
+def verificaMenuReferencia():
     confirmacao=False
     posicao_menu=[[703,627],[712,1312]]
     tela_inteira=retornaAtualizacaoTela()
@@ -469,7 +470,7 @@ def confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,tipoTraba
 
 def verificaPosicoesTrabalhos(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
-    yinicial_nome=(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]*70)+285
+    yinicial_nome=(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]*70)+285
     #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
     time.sleep(2)
     nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicial_nome,0)
@@ -491,7 +492,7 @@ def verificaPosicoesTrabalhos(dicionarioTrabalho):
                             break
                         else:    
                             clickEspecifico(1,'f1')
-                            clickContinuo(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]+1,'up')
+                            clickContinuo(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]+1,'up')
                     else:
                         print(f'Erro ao entrar no trabalho encontrado...')
                         linhaSeparacao()
@@ -499,16 +500,14 @@ def verificaPosicoesTrabalhos(dicionarioTrabalho):
             linhaSeparacao()
     else:
         dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-        print(f'Ocorreu algum erro ao reconhecer nome do trabalho!')
-        linhaSeparacao()
     return dicionarioTrabalho
 
 def retornaListaDicionarioTrabalhoComum(dicionarioTrabalho):
     listaDicionariosTrabalhosComunsDesejados=[]
     print(f'Buscando trabalho comum na lista...')
-    for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
+    for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-        if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho,trabalhoDesejado):
+        if raridadeTrabalhoEComum(trabalhoDesejado):
             print(f'Trabalho comum encontado: {trabalhoDesejado[CHAVE_NOME]}.')
             linhaSeparacao()
             listaDicionariosTrabalhosComunsDesejados.append(trabalhoDesejado)
@@ -532,24 +531,24 @@ def mesmoValor(valor1, valor2):
 def defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
     global contadorParaCima
-    contadorParaCima=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]
+    contadorParaCima=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]
     if primeiraBusca(dicionarioTrabalho):
         clicks=5
         contadorParaCima=5
     else:
-        clicks=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]
+        clicks=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]
     clickEspecifico(clicks,'down')
     while not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):#51 capas, 100 acorpoacorpo,
         nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(530,1)
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
-            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
+            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]:
                 if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, dicionarioTrabalhoDesejado):
                     print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
-                    if textoEIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
+                    if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
                         linhaSeparacao()
                         clickEspecifico(1,'enter')
-                        dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=contadorParaCima
+                        dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaCima
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
                         contadorParaCima+=1
                         break
@@ -572,7 +571,7 @@ def vaiParaMenuTrabalhoEmProducao():
     clickEspecifico(1,'left')
 
 def textoReconhecidoPertenceTextoDicionario(textoReconhecido, dicionario):
-    return limpaRuidoTexto(textoReconhecido)[1:-1]in limpaRuidoTexto(dicionario[CHAVE_NOME]).replace('-','')
+    return texto1PertenceTexto2(textoReconhecido[1:-1],dicionario[CHAVE_NOME].replace('-',''))
 
 def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
     return raridadeTrabalhoEComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
@@ -581,19 +580,22 @@ def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
     return trabalhoListaDesejo[CHAVE_ESTADO]==para_produzir
 
 def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
-    return textoEIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
+    return textoEhIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
 
 def raridadeTrabalhoEComum(trabalhoListaDesejo):
-    return textoEIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'comum')
+    return textoEhIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'comum')
 
-def textoEIgual(texto1,texto2):
+def texto1PertenceTexto2(texto1,texto2):
+    return limpaRuidoTexto(texto1)in limpaRuidoTexto(texto2)
+
+def textoEhIgual(texto1,texto2):
     return limpaRuidoTexto(texto1)==limpaRuidoTexto(texto2)
 
 def variavelExiste(variavelVerificada):
     return variavelVerificada!=None
 
 def primeiraBusca(dicionarioTrabalho):
-    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]==-1
+    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]==-1
 
 def limpaRuidoTexto(texto):
     return unidecode(texto).replace(' ','').lower()
@@ -635,7 +637,7 @@ def trabalhoEProducaoRecursos(dicionarioTrabalhoLista):
         'adquirirfuradordoaprendiz','produzindotecidodelicado','extraçãodesubstânciainstável',
         'adquirirfuradordoprincipiante','produzindotecidodenso','extraçãodesubstânciaestável']
     for recurso in listaProducaoRecurso:
-        if textoEIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME]):
+        if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME]):
             confirmacao=True
             break
     return confirmacao
@@ -761,7 +763,7 @@ def entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoListaDesejo):
         if erro==erroOutraConexao:
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
     clickContinuo(3,'up')
-    clickEspecifico(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]+1,'down')
+    clickEspecifico(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]+1,'down')
     clickEspecifico(1,'enter')
     return dicionarioTrabalho
 
@@ -1051,7 +1053,7 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                 linhaSeparacao()
                 dicionarioPersonagem=iniciaBuscaTrabalho(dicionarioPersonagem)
                 if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
-                    if verificaErro(None)!=0 or len(dicionarioPersonagem)==1:
+                    if verificaErro(None)!=0 or len(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1:
                         dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
                         dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
                         print(f'Lista de personagens ativos atualizada...')
@@ -1078,177 +1080,192 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                         dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
                         dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
 
-def retorna_texto_menu_reconhecido(x,y,largura):
-    tela_inteira=retornaAtualizacaoTela()
-    centroAltura=tela_inteira.shape[0]//2
-    centroMetade=tela_inteira.shape[1]//4
-    # print(centroAltura)
+def retornaTextoMenuReconhecido(x,y,largura):
+    telaInteira=retornaAtualizacaoTela()
+    # print(centroAltura,centroMetade)# 384 341
     alturaFrame=30
     texto=None
-    frame_menu=tela_inteira[centroAltura+y:centroAltura+y+alturaFrame,centroMetade+x:centroMetade+x+largura]
-    frame_menu_tratado=transformaCaracteresPreto(frame_menu)
-    # mostra_imagem(0,frame_menu_tratado,None)
-    # print(f'Quantidade de pixels pretos: {np.sum(frame_menu_tratado==0)}')
-    contadorPixelPreto=np.sum(frame_menu_tratado==0)
-    if contadorPixelPreto>1000 and contadorPixelPreto<3010:
-        texto=reconheceTexto(frame_menu_tratado)
-        if texto!=None:
-            texto=texto.lower().replace(' ','')
-            print(f'Texto reconhecimento de menus: {texto}.')
-    # print(f'{D} - {texto}')
+    frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
+    frameTelaLimiar=salvaLimiarImagem(frameTela)
+    # mostraImagem(0,frameTela,None)
+    # mostraImagem(0,frameTelaLimiar,None)
+    print(f'Quantidade de pixels pretos: {np.sum(frameTelaLimiar==0)}')
+    contadorPixelPreto=np.sum(frameTelaLimiar==0)
+    if existePixelPretoSuficiente(contadorPixelPreto):
+        texto=reconheceTexto(frameTelaLimiar)
+        if variavelExiste(texto):
+            texto=limpaRuidoTexto(texto)
+            print(f'{D}:Texto reconhecimento de menus: {texto}.')
+    print(f'{D} :{texto}')
     return texto
+
+def existePixelPretoSuficiente(contadorPixelPreto):
+    return contadorPixelPreto>380 and contadorPixelPreto<3500
 
 def retornaMenu():
     # 1050,1077,3006,1035,1251,1092,1215,1854,1863,1617,1377,2637,1344,
     # 1947,2721
     inicio = time.time()
     print(f'Reconhecendo menu.')
-    texto_menu=retorna_texto_menu_reconhecido(-125,-190,350)
-    if texto_menu!=None:
-        if ('notícias'in texto_menu):
-            print(f'Menu notícias...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_noticias
-        elif ('seleçãodepersonagem'in texto_menu):
-            print(f'Menu escolha de personagem...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_escolha_p
-        elif ('produzir'in texto_menu):
-            texto_menu=retorna_texto_menu_reconhecido(-75,-140,150)
-            if texto_menu!=None:
-                if ('profissões'in texto_menu):
-                    texto_menu=retorna_texto_menu_reconhecido(-150,225,100)
-                    if texto_menu!=None:
-                        if('fechar'in texto_menu):
-                            print(f'Menu produzir...')
-                            linhaSeparacao()
-                            fim = time.time()
-                            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-                            linhaSeparacao()
-                            return menu_produzir
-                        elif ('voltar' in texto_menu):
-                            print(f'Menu trabalhos diponíveis...')
-                            linhaSeparacao()
-                            fim = time.time()
-                            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-                            linhaSeparacao()
-                            return menu_trab_disponiveis
-                elif ('trabalhosatuais'in texto_menu):
-                    print(f'Menu trabalhos atuais...')
+    textoMenu=retornaTextoMenuReconhecido(26,7,150)
+    if variavelExiste(textoMenu):
+        if texto1PertenceTexto2('spearonline',textoMenu):
+            textoMenu=retornaTextoMenuReconhecido(216,194,270)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('notícias',textoMenu):
+                    print(f'Menu notícias...')
                     linhaSeparacao()
                     fim = time.time()
                     print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
-                    return menu_trab_atuais
-    texto_menu=retorna_texto_sair()
-    if texto_menu!=None:
-        if texto_menu.lower()=='sair':
-            print(f'Menu jogar...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_jogar
-    if verifica_menu_referencia():
-        print(f'Menu tela inicial...')
-        linhaSeparacao()
-        fim = time.time()
-        print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-        linhaSeparacao()
-        return menu_inicial
-    texto_menu=retorna_texto_menu_reconhecido(-50,25,100)
-    if texto_menu!=None:
-        if ('conquistas'in texto_menu):
-            print(f'Menu personagem...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_personagem
-        elif ('interagir'in texto_menu):
-            print(f'Menu principal...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_principal
-    texto_menu=retorna_texto_menu_reconhecido(-150,-65,300)
-    if texto_menu!=None:
-        if('parâmetros'in texto_menu):
-            if('requisitos'in texto_menu):
-                print(f'Menu atributo do trabalho...')
+                    return menu_noticias
+                elif texto1PertenceTexto2('seleçãodepersonagem',textoMenu):
+                    print(f'Menu escolha de personagem...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_escolha_p
+                elif texto1PertenceTexto2('produzir',textoMenu):
+                    textoMenu=retornaTextoMenuReconhecido(266,242,150)
+                    if variavelExiste(textoMenu):
+                        if texto1PertenceTexto2('profissões',textoMenu):
+                            textoMenu=retornaTextoMenuReconhecido(191,609,100)
+                            if variavelExiste(textoMenu):
+                                if texto1PertenceTexto2('fechar',textoMenu):
+                                    print(f'Menu produzir...')
+                                    linhaSeparacao()
+                                    fim = time.time()
+                                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                                    linhaSeparacao()
+                                    return menu_produzir
+                                elif texto1PertenceTexto2('voltar',textoMenu):
+                                    print(f'Menu trabalhos diponíveis...')
+                                    linhaSeparacao()
+                                    fim = time.time()
+                                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                                    linhaSeparacao()
+                                    return menu_trab_disponiveis
+                        elif texto1PertenceTexto2('trabalhosatuais',textoMenu):
+                            print(f'Menu trabalhos atuais...')
+                            linhaSeparacao()
+                            fim = time.time()
+                            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                            linhaSeparacao()
+                            return menu_trab_atuais
+            textoMenu=retornaTextoSair()
+            if variavelExiste(textoMenu):
+                if textoEhIgual(textoMenu,'sair'):
+                    print(f'Menu jogar...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_jogar
+            if verificaMenuReferencia():
+                print(f'Menu tela inicial...')
                 linhaSeparacao()
                 fim = time.time()
                 print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                 linhaSeparacao()
-                return menu_trab_atributos
-            else:
-                print(f'Menu licenças...')
-                linhaSeparacao()
-                fim = time.time()
-                print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-                linhaSeparacao()
-                return menu_licencas
-    texto_menu=retorna_texto_menu_reconhecido(-60,45,120)
-    if texto_menu!=None:
-        if('profissional'in texto_menu):
-            print(f'Menu trabalho específico...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_trab_especifico
-    texto_menu=retorna_texto_menu_reconhecido(-75,-115,150)
-    if texto_menu!=None:
-        if ('ofertadiária'in texto_menu):
-            print(f'Menu oferta diária...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_ofe_diaria
-    texto_menu=retorna_texto_menu_reconhecido(-161,-314,300)
-    if texto_menu!=None:
-        if 'lojamilagrosa'in texto_menu:
-            print(f'Menu loja milagrosa...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_loja_milagrosa
-    texto_menu=retorna_texto_menu_reconhecido(-161,-344,300)
-    if texto_menu!=None:
-        if('recompensasdiárias'in texto_menu):
-            print(f'{D}:Menu recompensas diárias...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_rec_diarias
-    texto_menu=retorna_texto_menu_reconhecido(-161,-330,300)
-    if texto_menu!=None:
-        if('recompensasdiárias'in texto_menu):
-            print(f'Menu recompensas diárias...')
-            linhaSeparacao()
-            fim = time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_rec_diarias
-    texto_menu=retorna_texto_menu_reconhecido(-31,-46,57)
-    if texto_menu!=None:
-        if 'meuperfil'in texto_menu:
-            print(f'Menu meu perfil...')
-            linhaSeparacao()
-            fim=time.time()
-            print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-            linhaSeparacao()
-            return menu_meu_perfil
+                return menu_inicial
+            textoMenu=retornaTextoMenuReconhecido(291,409,100)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('conquistas',textoMenu):
+                    print(f'Menu personagem...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_personagem
+                elif texto1PertenceTexto2('interagir',textoMenu):
+                    print(f'Menu principal...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_principal
+            textoMenu=retornaTextoMenuReconhecido(191,319,270)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('parâmetros',textoMenu):
+                    if texto1PertenceTexto2('requisitos',textoMenu):
+                        print(f'Menu atributo do trabalho...')
+                        linhaSeparacao()
+                        fim = time.time()
+                        print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                        linhaSeparacao()
+                        return menu_trab_atributos
+                    else:
+                        print(f'Menu licenças...')
+                        linhaSeparacao()
+                        fim = time.time()
+                        print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                        linhaSeparacao()
+                        return menu_licencas
+            textoMenu=retornaTextoMenuReconhecido(281,429,120)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('profissional',textoMenu):
+                    print(f'Menu trabalho específico...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_trab_especifico
+            textoMenu=retornaTextoMenuReconhecido(266,269,150)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('ofertadiária',textoMenu):
+                    print(f'Menu oferta diária...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_ofe_diaria
+            textoMenu=retornaTextoMenuReconhecido(181,71,150)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('lojamilagrosa',textoMenu):
+                    print(f'Menu loja milagrosa...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_loja_milagrosa
+            textoMenu=retornaTextoMenuReconhecido(180,40,300)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('recompensasdiárias',textoMenu):
+                    print(f'{D}:Menu recompensas diárias...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_rec_diarias
+            textoMenu=retornaTextoMenuReconhecido(180,60,300)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('recompensasdiárias',textoMenu):
+                    print(f'Menu recompensas diárias...')
+                    linhaSeparacao()
+                    fim = time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_rec_diarias
+            textoMenu=retornaTextoMenuReconhecido(310,338,57)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('meu',textoMenu):
+                    print(f'Menu meu perfil...')
+                    linhaSeparacao()
+                    fim=time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_meu_perfil
+            
+            textoMenu=retornaTextoMenuReconhecido(169,97,75)
+            if variavelExiste(textoMenu):
+                if texto1PertenceTexto2('bolsa',textoMenu):
+                    print(f'Menu bolsa...')
+                    linhaSeparacao()
+                    fim=time.time()
+                    print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+                    linhaSeparacao()
+                    return menu_bolsa
 
     print(f'Menu não reconhecido...')
     linhaSeparacao()
@@ -1355,11 +1372,11 @@ def defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho):
     listaDicionariosTrabalhosDesejadosPriorizados=[]
     for dicionarioTrabalhoLista in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
         if (estadoTrabalhoEParaProduzir(dicionarioTrabalhoLista)and
-            textoEIgual(dicionarioTrabalho[CHAVE_PROFISSAO],dicionarioTrabalhoLista[CHAVE_PROFISSAO])):
-            if textoEIgual(dicionarioTrabalhoLista[CHAVE_RARIDADE],'especial'):
+            textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO],dicionarioTrabalhoLista[CHAVE_PROFISSAO])):
+            if textoEhIgual(dicionarioTrabalhoLista[CHAVE_RARIDADE],'especial'):
                 dicionarioTrabalhoLista[CHAVE_PRIORIDADE]=1
                 listaDicionariosTrabalhosDesejadosPriorizados.append(dicionarioTrabalhoLista)
-            elif textoEIgual(dicionarioTrabalhoLista[CHAVE_RARIDADE],'raro'):
+            elif textoEhIgual(dicionarioTrabalhoLista[CHAVE_RARIDADE],'raro'):
                 if trabalhoEProducaoRecursos(dicionarioTrabalhoLista):
                     dicionarioTrabalhoLista[CHAVE_PRIORIDADE]=3
                     listaDicionariosTrabalhosDesejadosPriorizados.append(dicionarioTrabalhoLista)
@@ -1408,52 +1425,14 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                     print(f'Verificando profissão: {profissaoVerificada[CHAVE_NOME]}')
                     linhaSeparacao()
                     dicionarioTrabalho[CHAVE_PROFISSAO]=profissaoVerificada[CHAVE_NOME]
-                    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=-1
+                    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=-1
                     dicionarioTrabalho[CHAVE_CONFIRMACAO]=True
-                    dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
                     while chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                        # print(f'{D}:Entrando na profissão: {profissaoVerificada[CHAVE_NOME]}')
-                        # print(f'{D}:Entrando na posição: {profissaoVerificada[CHAVE_POSICAO]}')
-                        # linhaSeparacao()
                         entraProfissaoEspecifica(profissaoVerificada[CHAVE_POSICAO])
-                        for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-                            if textoEIgual(trabalhoDesejado[CHAVE_RARIDADE],'comum'):
-                                dicionarioTrabalho=defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho)
-                                if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
-                                    dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
-                            else:
-                                dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=0
-                                # print(f'{D}:Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
-                                # linhaSeparacao()
-                                while naoFizerQuatroVerificacoes(dicionarioTrabalho):
-                                    dicionarioTrabalho=verificaPosicoesTrabalhos(dicionarioTrabalho)
-                                    if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
-                                        print(f'Iniciou processo de fabricação de trabalho raro/especial.')
-                                        linhaSeparacao()
-                                        dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
-                                        break
-                                    if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                                        break
-                                    incrementaChavePosicaoTrabalho(dicionarioTrabalho)
-                                    print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
-                                    linhaSeparacao()
-                                else:
-                                    dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-                                    print(f'Nem um trabalho disponível está na lista de desejos.')
-                                    clickContinuo(4,'up')
-                                    clickEspecifico(1,'left')
-                                    linhaSeparacao() 
-                        ''' dicionarioTrabalho=retornaListaDicionarioTrabalhoComum(dicionarioTrabalho)
-                        if not tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]):
-                            print(f'Iniciou processo de fabricação de trabalho comum.')
-                            linhaSeparacao()
-                            dicionarioTrabalho=defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho)
-                            if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
-                                dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
-                        else:
-                            dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]=0
-                            print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
-                            linhaSeparacao()
+                        dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+                        dicionarioTrabalho=retornaListaDicionarioTrabalhoComum(dicionarioTrabalho)
+                        if not textoEhIgual(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE],'comum'):
+                            dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]=0
                             while naoFizerQuatroVerificacoes(dicionarioTrabalho):
                                 dicionarioTrabalho=verificaPosicoesTrabalhos(dicionarioTrabalho)
                                 if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
@@ -1464,14 +1443,22 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
                                 incrementaChavePosicaoTrabalho(dicionarioTrabalho)
-                                print(f'Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]}.')
+                                print(f'{D}:Posição trabalho: {dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]}.')
                                 linhaSeparacao()
+                            if not tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]):# existe trabalho comum?
+                                dicionarioTrabalho=defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho)
+                                if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
+                                    dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
                             else:
                                 dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
                                 print(f'Nem um trabalho disponível está na lista de desejos.')
                                 clickContinuo(4,'up')
                                 clickEspecifico(1,'left')
-                                linhaSeparacao() '''
+                                linhaSeparacao()
+                        else:
+                            dicionarioTrabalho=defineChaveDicionarioTrabalhoDesejado(dicionarioTrabalho)
+                            if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
+                                dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
                         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
                             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
                                 if retornaEstadoTrabalho()==concluido:
@@ -1508,14 +1495,14 @@ def chaveEspacoProducaoForVerdadeira(dicionarioPersonagem):
     return dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]
 
 def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
-    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]+=1
+    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]+=1
 
 def chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
     # print(f'{D}:CHAVE_DICIONARIO_TRABALHO_DESEJADO: {dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]}.')
     return dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]!=None
 
 def naoFizerQuatroVerificacoes(dicionarioTrabalho):
-    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO]<4
+    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]<4
 
 def chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
     return dicionarioPersonagem[CHAVE_ESPACO_BOLSA]
@@ -1742,7 +1729,7 @@ def recebeTodasRecompensas(menu):
 def recuperaPresente():
     evento=0
     print(f'Buscando recompensa diária...')
-    while evento<2:
+    while evento<1:
         telaInteira=retornaAtualizacaoTela()
         metadeAltura=telaInteira.shape[0]//2
         metadeLargura=telaInteira.shape[1]//4
@@ -1807,13 +1794,14 @@ def retornaNomePersonagem(posicao):
     posicaoNome=[[2,33,169,21],[197,354,170,27]]
     telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
-    frameNomePersonagemTratado=transformaCaracteresPreto(frameNomePersonagem)
-    # mostra_imagem(0,frameNomePersonagemTratado,None)
-    nomePersonagemReconhecido=reconheceTexto(frameNomePersonagemTratado)
-    if nomePersonagemReconhecido!=None:
-        nomePersonagemReconhecidoTratado=unidecode(nomePersonagemReconhecido)
-        if nomePersonagemReconhecidoTratado!='':
-            nome=nomePersonagemReconhecidoTratado
+    frameNomePersonagemTratado=salvaLimiarImagem(frameNomePersonagem)
+    contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
+    print(f'{D}:{contadorPixelPreto}')
+    # mostraImagem(0,frameNomePersonagemTratado,None)
+    if contadorPixelPreto>100:
+        nomePersonagemReconhecido=reconheceTexto(frameNomePersonagemTratado)
+        if variavelExiste(nomePersonagemReconhecido):
+            nome=limpaRuidoTexto(nomePersonagemReconhecido)
             # print(f'{D}:Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
             # linhaSeparacao()
     return nome
@@ -1878,7 +1866,7 @@ def usa_habilidade():
         print(f'Buscando referência!')
         linhaSeparacao()
         while True:
-            if verifica_menu_referencia():
+            if verificaMenuReferencia():
                 #verifica se está em modo de ataque
                 if verifica_modo_ataque() or verifica_alvo():
                     #percorre a lista de habilidades
@@ -1891,7 +1879,7 @@ def usa_habilidade():
                         tamanho_frame_habilidade = frame_habilidade.shape[:2]
                         #define o tamanho do modelo
                         tamanho_modelo = habilidade[1].shape[:2]
-                        if verifica_porcentagem_vida() and verifica_menu_referencia():
+                        if verifica_porcentagem_vida() and verificaMenuReferencia():
                             click_especifico_habilidade(1,'t')
                         #compara os tamanhos das imagens
                         if tamanho_frame_habilidade == tamanho_modelo:
@@ -2065,7 +2053,7 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
         produto=verificaVendaProduto(textoCarta)
         if produto!=None:
             if produto:
-                print(f'Produto vendido...')
+                print(f'Produto vendido:')
                 listaTextoCarta=textoCarta.split()
                 quantidadeProduto=retornaQuantidadeProdutoVendido(listaTextoCarta)
                 # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
@@ -2084,15 +2072,17 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                                  'dataVenda':dataAtual}
                 adicionaVenda(dicionarioPersonagem,dicionarioVenda)
                 print(dicionarioVenda)
+                linhaSeparacao()
             else:
-                print(f'Produto expirado...')
+                print(f'Produto expirado:')
                 removerPalavras=['a','oferta','de','expirou']
-                print(textoCarta)
+                # print(textoCarta)
                 listaTextoCarta=textoCarta.split()
                 result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
-                print(result)
+                # print(result)
                 retorno = ' '.join(result)
                 print(retorno)
+                linhaSeparacao()
         else:
             print(f'Erro...')
 
@@ -2211,7 +2201,7 @@ def descobreFrames():
     # mostra_imagem(0,frameMenuAvancar,None)
 # descobreFrames()
 
-def retorna_texto_sair():
+def retornaTextoSair():
     texto=None
     tela_inteira = retornaAtualizacaoTela()
     alturaTela=tela_inteira.shape[0]
@@ -2319,98 +2309,98 @@ def funcao_teste(dicionarioUsuario):
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
-    click_atalho_especifico('alt','tab')
-    # verificaErro(dicionarioTrabalho)
-    dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
-    dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-    defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
-    # retornaTipoErro()
-    # telaInteira=retornaAtualizacaoTela()
-    # frameTela=telaInteira[263:263+46,284:284+46]
-    # contadorCorMercador=0
-    # for yFrame in range(0,frameTela.shape[0]):
-    #     for xFrame in range(0,frameTela.shape[1]):
-    #         if (frameTela[yFrame,xFrame]==(51,51,187)).all():
-    #                 contadorCorMercador+=1
-    # print(contadorCorMercador)
-    # adicionaAtributoRecorrencia(dicionarioPersonagem)
-    # mostra_imagem(0,frameTela,None)
-    # encontraMercador()
-    # texto_menu=retorna_texto_menu_reconhecido(-161,-330,300)
-    # print(texto_menu)
-    # deleta_item_lista()
-    # print(verificaCaixaCorreio())
-    # dataAtual=datetime.date.today()
-    # print(dataAtual.ctime())
-    # percorreFrameItemBolsa()
-    # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
-    # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
-    # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
-    # linhaSeparacao()
-    # dicionarioPrimeiroPersonagem=listaDicionarioPersonagensAtivos[0]
-    # print(dicionarioPrimeiroPersonagem)
-    # linhaSeparacao()
-    # retornaConteudoCorrespondencia(dicionarioPersonagem)
-    # click_atalho_especifico('win','up')
-    # lista_personagem_ativo = consulta_lista_personagem(usuario_id)
-    # busca_lista_personagem_ativo(lista_personagem_ativo)
-    # while not loga_personagem('caah.rm15@gmail.com','aeioukel'):
-    #     continue
-    # verifica_producao_recursos('Licença de produção do aprendiz')
-    # click_continuo(9,'up')
-    # recupera_trabalho_concluido(dicionarioPersonagem)
-    # while True:
-    # atualiza_nova_tela()
-    # click_continuo(8,'up')
-    # confirma_nome_trabalho('Melhorar licença comum',1)
-    #     menu=retorna_menu()
-    #     if menu!=11:
-    #         trata_menu(menu,dicionarioPersonagem)
-    #     break
-    # print('Fim')
-    # lista_habilidade = retorna_lista_habilidade_verificada()
-    # lista_ativos = consulta_lista_personagem(usuario_id)
-    # print(lista_ativos)
-    # modifica_quantidade_personagem_ativo()
-    # while True:
-    #     verifica_habilidade_central(lista_habilidade)
-    # print(retorna_licenca_reconhecida())
-    # print(verifica_licenca('principiante'))
-    # linhaSeparacao()
-    # valor=True
-    # while input(f'Continuar?')=='s':
-    #     if valor:
-    #         uso={'uso':1}
-    #         valor=False
-    #     else:
-    #         uso={'uso':0}
-    #         valor=True
-    #     mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',valor)
-    # if verifica_menu_referencia():
-    #     print('Achei!')
-    # else:
-    #     print('Não achei...')
-    # retorna_tipo_erro()
-    # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-    # atualiza_lista_profissao(dicionarioPersonagem)
-    # while input(f'Continuar?')!='n':
-    #     retorna_menu()
-    # verificaPixelCorrespondencia()
-    # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
-    # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
-    # adicionar_profissao(personagem_id_global,'Teste')
-    # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
-    # inicia_producao(trabalho,dicionarioPersonagem)
-    # verifica_trabalho_comum(trabalho,'profissaoteste')
-    # while inicia_busca_trabalho():
-    #     continue
-    # recuperaPresente()
-    # entra_personagem_ativo('mrninguem')
-    # inicia_busca_trabalho()
-    click_atalho_especifico('alt','tab')
+    while input(f'Continuar?')!='n':
+        click_atalho_especifico('alt','tab')
+        # texto_menu=retornaTextoMenuReconhecido(26,1,100)
+        # verificaErro(dicionarioTrabalho)
+        # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
+        # dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
+        # defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        # retornaTipoErro()
+        # telaInteira=retornaAtualizacaoTela()
+        # frameTela=telaInteira[263:263+46,284:284+46]
+        # contadorCorMercador=0
+        # for yFrame in range(0,frameTela.shape[0]):
+        #     for xFrame in range(0,frameTela.shape[1]):
+        #         if (frameTela[yFrame,xFrame]==(51,51,187)).all():
+        #                 contadorCorMercador+=1
+        # print(contadorCorMercador)
+        # adicionaAtributoRecorrencia(dicionarioPersonagem)
+        # mostra_imagem(0,frameTela,None)
+        # encontraMercador()
+        # print(texto_menu)
+        # deleta_item_lista()
+        # print(verificaCaixaCorreio())
+        # dataAtual=datetime.date.today()
+        # print(dataAtual.ctime())
+        # percorreFrameItemBolsa()
+        # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
+        # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
+        # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
+        # linhaSeparacao()
+        # dicionarioPrimeiroPersonagem=listaDicionarioPersonagensAtivos[0]
+        # print(dicionarioPrimeiroPersonagem)
+        # linhaSeparacao()
+        # retornaConteudoCorrespondencia(dicionarioPersonagem)
+        # click_atalho_especifico('win','up')
+        # lista_personagem_ativo = consulta_lista_personagem(usuario_id)
+        # busca_lista_personagem_ativo(lista_personagem_ativo)
+        # while not loga_personagem('caah.rm15@gmail.com','aeioukel'):
+        #     continue
+        # verifica_producao_recursos('Licença de produção do aprendiz')
+        # click_continuo(9,'up')
+        # recupera_trabalho_concluido(dicionarioPersonagem)
+        # while True:
+        # atualiza_nova_tela()
+        # click_continuo(8,'up')
+        # confirma_nome_trabalho('Melhorar licença comum',1)
+        #     menu=retorna_menu()
+        #     if menu!=11:
+        #         trata_menu(menu,dicionarioPersonagem)
+        #     break
+        # print('Fim')
+        # lista_habilidade = retorna_lista_habilidade_verificada()
+        # lista_ativos = consulta_lista_personagem(usuario_id)
+        # print(lista_ativos)
+        # modifica_quantidade_personagem_ativo()
+        # while True:
+        #     verifica_habilidade_central(lista_habilidade)
+        # print(retorna_licenca_reconhecida())
+        # print(verifica_licenca('principiante'))
+        # linhaSeparacao()
+        # valor=True
+        # while input(f'Continuar?')=='s':
+        #     if valor:
+        #         uso={'uso':1}
+        #         valor=False
+        #     else:
+        #         uso={'uso':0}
+        #         valor=True
+        #     mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',valor)
+        # if verifica_menu_referencia():
+        #     print('Achei!')
+        # else:
+        #     print('Não achei...')
+        # retorna_tipo_erro()
+        # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
+        # atualiza_lista_profissao(dicionarioPersonagem)
+            # retornaMenu()
+        # verificaPixelCorrespondencia()
+        # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
+        # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
+        # adicionar_profissao(personagem_id_global,'Teste')
+        # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
+        # inicia_producao(trabalho,dicionarioPersonagem)
+        # verifica_trabalho_comum(trabalho,'profissaoteste')
+        # while inicia_busca_trabalho():
+        #     continue
+        # recuperaPresente()
+        # entra_personagem_ativo('mrninguem')
+        # inicia_busca_trabalho()
+        print(retornaNomePersonagem(1))
+        click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
 # entraPersonagem(['tobraba','gunsa','totiste'])
 # entra_personagem_ativo('tobraba')
 # busca_lista_personagem_ativo_teste()
-# print(retornaNomePersonagem(1))
