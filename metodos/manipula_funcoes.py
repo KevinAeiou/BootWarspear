@@ -663,6 +663,7 @@ def sai_trabalho_encontrado(x,tipo_trabalho):
 
 def verificaErro(dicionarioTrabalho):
     licenca=configuraLicenca(dicionarioTrabalho)
+    sleep(0.5)
     print(f'Verificando erro...')
     erro=retornaTipoErro()
     if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
@@ -1800,13 +1801,15 @@ def retornaNomePersonagem(posicao):
     contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
     # print(f'{D}:{contadorPixelPreto}')
     # m1ostraImagem(0,frameNomePersonagemTratado,None)
-    if contadorPixelPreto>100:
+    if contadorPixelPreto>50:
         nomePersonagemReconhecido=reconheceTexto(frameNomePersonagemTratado)
         # print(f'{D}:{nomePersonagemReconhecido}.')
         if variavelExiste(nomePersonagemReconhecido):
             nome=limpaRuidoTexto(nomePersonagemReconhecido)
             # print(f'{D}:Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
             # linhaSeparacao()
+        elif contadorPixelPreto>50:
+            nome='provisorioatecair'
     return nome
 
 def entraPersonagem(listaPersonagemPresenteRecuperado):
@@ -2195,7 +2198,7 @@ def descobreFrames():
     frameMenuInteragir=[30,100]
     frameMenuInteragir=tela_inteira[centroAltura+25:centroAltura+25+frameMenuInteragir[0],centroMetade-(frameMenuInteragir[1]//2):centroMetade+(frameMenuInteragir[1]//2)]
     
-    frame_menu_tratado=transformaCaracteresPreto(frameMenuOferta)
+    frame_menu_tratado=retornaImagemBinarizada(frameMenuOferta)
     print(reconheceTexto(frame_menu_tratado))
     mostraImagem(0,frameMenuOferta,None)
     # mostra_imagem(0,frameMenuProfissoes,None)
@@ -2210,7 +2213,7 @@ def retornaTextoSair():
     frameTela=telaInteira[telaInteira.shape[0]-50:telaInteira.shape[0]-25,50:50+60]
     frameTelaTratado=retornaImagemBinarizada(frameTela)
     contadorPixelPreto=np.sum(frameTelaTratado==0)
-    print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
+    # print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
     # mostraImagem(0,frameTelaTratado,None)
     if contadorPixelPreto>400 and contadorPixelPreto<430:
         texto=reconheceTexto(frameTelaTratado)
@@ -2397,10 +2400,10 @@ def funcao_teste(dicionarioUsuario):
         # while inicia_busca_trabalho():
         #     continue
         # recuperaPresente()
-        print(retornaTextoSair())
+        # print(retornaTextoSair())
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
-        # print(retornaNomePersonagem(1))
+        print(retornaNomePersonagem(1))
         click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)

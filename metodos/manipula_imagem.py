@@ -60,54 +60,6 @@ def reconheceTexto(imagem):
     # print(f'____________________________________________________')
     return texto
 
-def transformaCaracteresPreto(imagem_original):
-    inicio = time.time()
-    #marrom1 = 48,87,164
-    imagem_tratada = imagem_original
-    for y in range(0,imagem_original.shape[0]):
-        for x in range(0, imagem_original.shape[1]):
-            #se a cor do pixel for diferente de preto ou marrom 
-            if (imagem_original[y,x] == (0,255,255)).all()\
-                or(imagem_original[y,x] == (139,236,255)).all()\
-                or(imagem_original[y,x] == (93,218,254)).all()\
-                or(imagem_original[y,x] == (255,255,255)).all()\
-                or(imagem_original[y,x] == (255,102,255)).all()\
-                or(imagem_original[y,x] == (88,219,255)).all():
-                #tranforma pixel em preto
-                imagem_tratada[y,x] = (0,0,0)
-            else:
-                imagem_tratada[y,x] = (255,255,255)
-    fim = time.time()
-    # print(f'Tempo de transforma_caracteres_preto: {fim - inicio}')
-    # print(f'____________________________________________________')
-    return imagem_tratada
-
-def transforma_menu_preto(imagem_original):
-    #marrom1 = 48,87,164
-    imagem_tratada = imagem_original
-    for y in range(0,imagem_original.shape[0]):
-        for x in range(0, imagem_original.shape[1]):
-            #se a cor do pixel for diferente de preto ou marrom 
-            if (imagem_original[y,x] == (93,218,254)).all():
-                #tranforma pixel em preto
-                imagem_tratada[y,x] = (0,0,0)
-            else:
-                imagem_tratada[y,x] = (255,255,255)
-    return imagem_tratada
-
-def trata_frame_nivel_trabalho(imagem_original):#transforma pixels vermelhos em preto e resto em branco
-    imagem_tratada = imagem_original
-    for y in range(0,imagem_original.shape[0]):
-        for x in range(0, imagem_original.shape[1]):
-            #se a cor do pixel for diferente de branco
-            if (imagem_original[y,x] == (255,0,0)).all():
-                #tranforma pixel em preto
-                imagem_tratada[y,x] = (255,255,255)
-            else:
-                imagem_tratada[y,x] = (0,0,0)
-
-    return imagem_tratada
-
 def trata_frame_menu_profissao(imagem_original):
     imagem_tratada = imagem_original
     for y in range(0,imagem_original.shape[0]):
@@ -125,23 +77,6 @@ def trata_frame_nome_inimigo(imagem_original):
                 #tranforma pixel em branco
                 imagem_tratada[y,x] = (255,255,255)
     return imagem_tratada
-
-def trata_imagem(imagem_preto_branco):
-    for y in range(0,imagem_preto_branco.shape[0]):
-        for x in range(0, imagem_preto_branco.shape[1]):
-            #se as coordenadas forem menores que 17 pixels
-            if y<17 or x<17:
-                #transforma o pixel em outra cor
-                imagem_preto_branco[y,x] = (255,100,255)
-            #se o pixel for diferente de branco,
-            if (imagem_preto_branco[y,x] != (255,255,255)).any():
-                #transforma o pixel em branco
-                imagem_preto_branco[y,x] = (255,255,255)
-            #se o pixel é branco
-            elif (imagem_preto_branco[y,x] == (255,255,255)).any():
-                #transforma o pixel em preto
-                imagem_preto_branco[y,x] = (0,0,0)
-    return imagem_preto_branco
 
 def abre_imagem(caminho_imagem):
     imagem = cv2.imread(caminho_imagem)
