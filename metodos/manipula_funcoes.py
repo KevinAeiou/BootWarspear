@@ -2206,17 +2206,16 @@ def descobreFrames():
 
 def retornaTextoSair():
     texto=None
-    tela_inteira = retornaAtualizacaoTela()
-    alturaTela=tela_inteira.shape[0]
-    frame_jogar = tela_inteira[alturaTela-50:alturaTela-25,50:50+60]
-    frame_jogar_tratado = transforma_menu_preto(frame_jogar)
-    # mostra_imagem(0,frame_jogar_tratado,None)
-    # print(f'Quantidade de pixels pretos: {np.sum(frame_jogar_tratado==0)}')
-    contadorPixelPreto=np.sum(frame_jogar_tratado==0)
-    if contadorPixelPreto>1000 and contadorPixelPreto<1100:
-        texto=reconheceTexto(frame_jogar_tratado)
-        if texto!=None:
-            texto=texto.lower().replace(' ','')
+    telaInteira=retornaAtualizacaoTela()
+    frameTela=telaInteira[telaInteira.shape[0]-50:telaInteira.shape[0]-25,50:50+60]
+    frameTelaTratado=retornaImagemBinarizada(frameTela)
+    contadorPixelPreto=np.sum(frameTelaTratado==0)
+    print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
+    # mostraImagem(0,frameTelaTratado,None)
+    if contadorPixelPreto>400 and contadorPixelPreto<430:
+        texto=reconheceTexto(frameTelaTratado)
+        if variavelExiste(texto):
+            texto=limpaRuidoTexto(texto)
     return texto
 
 def retorna_lista_pixel_minimap():
@@ -2397,7 +2396,8 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        recuperaPresente()
+        # recuperaPresente()
+        print(retornaTextoSair())
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
         # print(retornaNomePersonagem(1))
