@@ -450,13 +450,13 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
     y=1
     largura=2
     altura=3
-    listaFrames=[[169,280,303,33],[169,195,343,31]]
+    listaFrames=[[169,280,303,33],[183,195,318,31]]
     posicao=listaFrames[tipoTrabalho]
     telaInteira=retornaAtualizacaoTela()#tira novo print da tela
     frameNomeTrabalho=telaInteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
     frameNomeTrabalhoTratado=retornaImagemBinarizada(frameNomeTrabalho)
     nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
-    # mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
+    # mostraImagem(0,frameNomeTrabalhoTratado,nomeTrabalhoReconhecido)
     if variavelExiste(nomeTrabalhoReconhecido):
         for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
             if textoReconhecidoPertenceTextoDicionario(nomeTrabalhoReconhecido,dicionarioTrabalhoDesejado):
@@ -578,7 +578,7 @@ def vaiParaMenuTrabalhoEmProducao():
     clickEspecifico(1,'left')
 
 def textoReconhecidoPertenceTextoDicionario(textoReconhecido, dicionario):
-    return texto1PertenceTexto2(textoReconhecido[1:-1],dicionario[CHAVE_NOME].replace('-',''))
+    return texto1PertenceTexto2(textoReconhecido[3:-3],dicionario[CHAVE_NOME].replace('-',''))
 
 def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
     return raridadeTrabalhoEComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
@@ -2350,9 +2350,8 @@ def funcao_teste(dicionarioUsuario):
         click_atalho_especifico('alt','tab')
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
-        # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
-        # dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-        # defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
+        dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
         # retornaTipoErro()
         # telaInteira=retornaAtualizacaoTela()
         # frameTela=telaInteira[263:263+46,284:284+46]
@@ -2435,7 +2434,9 @@ def funcao_teste(dicionarioUsuario):
         # print(retornaTextoSair())
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
-        print(retornaNomePersonagem(1))
+        # retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
+        dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        confirmaNomeTrabalho(dicionarioTrabalho,1)
         click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
