@@ -227,7 +227,7 @@ def detecta_movimento():
         # cv2.imshow('Teste',dilatado)
         cv2.imshow('Teste2',frame_tela)
         print(centro)
-        click_mouse_esquerdo(1,centro[0],centro[1])
+        clickMouseEsquerdo(1,centro[0],centro[1])
         frame_nome_objeto = frame_tela[32:32+30,frame_tela.shape[1]-164:frame_tela.shape[1]]
         nome_objeto_reconhecido=reconheceTexto(frame_nome_objeto)
         print(f'Nome reconhecido: {nome_objeto_reconhecido}')
@@ -453,7 +453,7 @@ def confirmaNomeTrabalho(dicionarioTrabalhoDesejado,dicionarioTrabalho,tipoTraba
     posicao=listaFrames[tipoTrabalho]
     telaInteira=retornaAtualizacaoTela()#tira novo print da tela
     frameNomeTrabalho=telaInteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
-    frameNomeTrabalhoTratado=salvaLimiarImagem(frameNomeTrabalho)
+    frameNomeTrabalhoTratado=retornaImagemBinarizada(frameNomeTrabalho)
     nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
     # mostra_imagem(0,frame_nome_trabalho_tratado,nome_trabalho)
     if variavelExiste(nomeTrabalhoReconhecido):
@@ -652,7 +652,7 @@ def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     imagem_inteira=retornaAtualizacaoTela()
     frame_nome_trabalho=imagem_inteira[yinicial_nome:yinicial_nome+altura,233:478]
     #teste trata frame trabalho comum
-    frameNomeTrabalhoTratado=salvaLimiarImagem(frame_nome_trabalho)
+    frameNomeTrabalhoTratado=retornaImagemBinarizada(frame_nome_trabalho)
     return reconheceTexto(frameNomeTrabalhoTratado)
 
 def sai_trabalho_encontrado(x,tipo_trabalho):
@@ -1044,7 +1044,7 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                         linhaSeparacao()
                         continue
                     else:
-                        click_mouse_esquerdo(1,2,35)
+                        clickMouseEsquerdo(1,2,35)
                         deslogaPersonagem(dicionarioPersonagemReconhecido[CHAVE_EMAIL],dicionarioPersonagem)
                         dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
                         dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
@@ -1071,7 +1071,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
     texto=None
     frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
     if y>30:
-        frameTela=salvaLimiarImagem(frameTela)
+        frameTela=retornaImagemBinarizada(frameTela)
     # mostraImagem(0,frameTela,None)
     # print(f'Quantidade de pixels pretos: {np.sum(frameTela==0)}')
     contadorPixelPreto=np.sum(frameTela==0)
@@ -1270,7 +1270,7 @@ def deslogaPersonagem(personagemEmail,dicionarioPersonagem):
         elif menu==menu_jogar:
             break
         else:
-            click_mouse_esquerdo(1,2,35)
+            clickMouseEsquerdo(1,2,35)
         menu=retornaMenu()
     if personagemEmail!=None or dicionarioPersonagem!=None:
         listaPersonagemId=defineListaIdPersonagemMesmoEmail(dicionarioPersonagem,personagemEmail)
@@ -1322,7 +1322,7 @@ def configuraLoginPersonagem(listaDicionarioPersonagensAtivos):
         if menu==menu_noticias or menu==menu_escolha_p:
             clickEspecifico(1,'f1')
         elif menu!=menu_inicial:
-            click_mouse_esquerdo(1,2,35)
+            clickMouseEsquerdo(1,2,35)
         else:
             encerra_secao()
         linhaSeparacao()
@@ -1740,20 +1740,20 @@ def recuperaPresente():
         larguraFrame=150
         for x in range(8):
             frameTela=telaInteira[y:y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
-            # mostraImagem(0,frameTela,None)
-            # frameTratado=retornaImagemCoresInvertidas(frameTela)
-            frameTratado=transformaCaracteresPreto(frameTela)
+            frameTratado=retornaImagemBinarizada(frameTela)
             contadorPixelPreto=np.sum(frameTratado==0)
-            if contadorPixelPreto>800 and contadorPixelPreto<2200:
+            # print(f'Contador pixel preto: {contadorPixelPreto}.')
+            # mostraImagem(0,frameTratado,None)
+            if existemPixelsSuficientes(contadorPixelPreto):
                 textoReconhecido=reconheceTexto(frameTratado)
                 # mostra_imagem(0,frameTratado,None)
-                if textoReconhecido!=None:
+                if variavelExiste(textoReconhecido):
                     print(f'Texto reconhecido: {textoReconhecido}.')
-                    if textoReconhecido.replace(' ','').lower()=='pegar':
+                    if textoEhIgual(textoReconhecido,'pegar'):
                         centroX=metadeLargura+larguraFrame//2
                         centroY=y+alturaFrame//2
-                        click_mouse_esquerdo(1,centroX,centroY)
-                        posiciona_mouse_esquerdo(telaInteira.shape[1]//2,metadeAltura)
+                        clickMouseEsquerdo(1,centroX,centroY)
+                        posicionaMouseEsquerdo(telaInteira.shape[1]//2,metadeAltura)
                         if verificaErro(None)!=0:
                             evento=2
                             break
@@ -1762,7 +1762,7 @@ def recuperaPresente():
                         clickEspecifico(1,'left')
                         linhaSeparacao()
                         break
-                    elif 'pegarem'in textoReconhecido.replace(' ','').lower():
+                    elif texto1PertenceTexto2('pegarem',textoReconhecido):
                         clickContinuo(8,'up')
                         clickEspecifico(1,'left')
                         linhaSeparacao()
@@ -1772,7 +1772,10 @@ def recuperaPresente():
                     linhaSeparacao()
             y+=80
         evento+=1
-    clickEspecifico(2,'f1')#sai do menu recupera recompensas
+    clickEspecifico(2,'f1')
+
+def existemPixelsSuficientes(contadorPixelPreto):
+    return contadorPixelPreto>500 and contadorPixelPreto<1100
 
 def reconheceMenuRecompensa(menu):
     print(f'Entrou em recuperaPresente.')
@@ -1793,7 +1796,7 @@ def retornaNomePersonagem(posicao):
     posicaoNome=[[2,33,169,27],[190,351,177,30]]
     telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
-    frameNomePersonagemTratado=salvaLimiarImagem(frameNomePersonagem)
+    frameNomePersonagemTratado=retornaImagemBinarizada(frameNomePersonagem)
     contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
     # print(f'{D}:{contadorPixelPreto}')
     # m1ostraImagem(0,frameNomePersonagemTratado,None)
@@ -1898,7 +1901,7 @@ def usa_habilidade():
                                 lista_habilidade_clicada.append(habilidade)
                                 if verifica_habilidade_central(lista_habilidade_clicada)!=0:
                                     x,y = retorna_posicao_mouse()
-                                    click_mouse_esquerdo(1,x,y)
+                                    clickMouseEsquerdo(1,x,y)
                                     linhaSeparacao()
                         else:
                             print(f'Modelos com tamanhos diferentes. {tamanho_frame_habilidade}-{tamanho_modelo}')
@@ -2058,7 +2061,7 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                 quantidadeProduto=retornaQuantidadeProdutoVendido(listaTextoCarta)
                 # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
                 frameTela=telaInteira[415:415+30,250:250+260]
-                frameTelaTratado=transforma_branco_preto(frameTela)
+                frameTelaTratado=retornaImagemBinarizada(frameTela)
                 ouro=reconhece_digito(frameTelaTratado)
                 ouro=re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
@@ -2119,7 +2122,7 @@ def recuperaCorrespondencia(dicionarioPersonagem):
         clickEspecifico(1,'f2')
     else:
         print(f'Caixa de correio vazia!')
-        click_mouse_esquerdo(1,2,35)
+        clickMouseEsquerdo(1,2,35)
         linhaSeparacao()
 
 def existePixelCorrespondencia():
@@ -2394,10 +2397,10 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        # recuperaPresente()
+        recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
-        print(retornaNomePersonagem(1))
+        # print(retornaNomePersonagem(1))
         click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)

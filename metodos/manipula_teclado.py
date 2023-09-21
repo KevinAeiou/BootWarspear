@@ -152,14 +152,14 @@ def click_especifico_habilidade(clicks,tecla_esp):
         # print(f'{tecla_esp}.')
         time.sleep(0.5)
 
-def click_mouse_esquerdo(clicks,x_tela,y_tela):
+def clickMouseEsquerdo(clicks,x_tela,y_tela):
     time.sleep(0.5)
     for x in range(clicks):
         tecla.leftClick(x_tela,y_tela)
         print(f'Click em {x_tela}:{y_tela}.')
         time.sleep(1)
 
-def posiciona_mouse_esquerdo(x_tela,y_tela):
+def posicionaMouseEsquerdo(x_tela,y_tela):
     tecla.moveTo(x_tela,y_tela)
     print(f'Posicionado em {x_tela}:{y_tela}.')
 

@@ -10,5 +10,5 @@ coneccao,endereco = servidor.accept()
 while True:
     coordenadas = coneccao.recv(1024).decode()
     coordenada = coordenadas.split(',')
-    manipula_teclado.click_mouse_esquerdo(1,int(coordenada[0]),int(coordenada[1]))
+    manipula_teclado.clickMouseEsquerdo(1,int(coordenada[0]),int(coordenada[1]))
     time.sleep(0.5)
