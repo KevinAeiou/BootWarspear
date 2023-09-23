@@ -943,7 +943,6 @@ def passa_proxima_posicao():
     yfinal = yfinal+altura_frame
 
 def entraPersonagemAtivo(dicionarioPersonagem):
-    personagem=None
     contadorPersonagem=0
     print(f'Buscando personagem ativo...')
     clickEspecifico(1,'enter')
@@ -954,7 +953,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
         clickEspecifico(1,'f2')
         clickContinuo(8,'left')   
         personagemReconhecido=retornaNomePersonagem(1)
-        # print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
+        print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
         while variavelExiste(personagemReconhecido) and contadorPersonagem<13:
             dicionarioPersonagem=confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem)
@@ -965,8 +964,8 @@ def entraPersonagemAtivo(dicionarioPersonagem):
                 erro=verificaErro(None)
                 while erro!=0:
                     if erro==erroOutraConexao:
-                        personagem=personagemReconhecido
-                        personagemReconhecido=None
+                        dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
+                        contadorPersonagem=14
                         break
                     erro=verificaErro(None)
                 else:
@@ -983,7 +982,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
             linhaSeparacao()
             if retornaMenu()==menu_escolha_p:
                 clickEspecifico(1,'f1')
-    return personagem
+    return dicionarioPersonagem
 
 def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
     for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
@@ -1076,12 +1075,10 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
             else:#se o nome reconhecido não estiver na lista de ativos
                 if (not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])and
                     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][0][CHAVE_EMAIL]):
-                    nome=entraPersonagemAtivo(dicionarioPersonagem)
-                    print(nome)
+                    dicionarioPersonagem=entraPersonagemAtivo(dicionarioPersonagem)
                 elif configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
-                    nome=entraPersonagemAtivo(dicionarioPersonagem)
-                    print(nome)
-                    if nome!=None and dicionarioPersonagemReconhecido!=None:
+                    dicionarioPersonagem=entraPersonagemAtivo(dicionarioPersonagem)
+                    if dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]!=None and dicionarioPersonagemReconhecido!=None:
                         dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
                         dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
 
@@ -1093,10 +1090,12 @@ def retornaTextoMenuReconhecido(x,y,largura):
     frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
     if y>30:
         frameTela=retornaImagemCinza(frameTela)
+        frameTela=retornaImagemEqualizada(frameTela)
         frameTela=retornaImagemBinarizada(frameTela)
-    # mostraImagem(0,frameTela,None)
-    # print(f'Quantidade de pixels pretos: {np.sum(frameTela==0)}')
+        # mostraImagem(0,frameTela,None)
     contadorPixelPreto=np.sum(frameTela==0)
+    print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
+    # mostraImagem(0,frameTela,'Frame tela')
     if existePixelPretoSuficiente(contadorPixelPreto):
         texto=reconheceTexto(frameTela)
         if variavelExiste(texto):
@@ -1306,13 +1305,19 @@ def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem):
     for dicionarioPersonagemRemovido in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:#percorre lista de personagem retirado
         posicao=0
         for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:#percorre lista de personagem ativo
-            if dicionarioPersonagemAtivo[CHAVE_NOME] in dicionarioPersonagemRemovido[CHAVE_NOME]:#compara nome na lista de ativo com nome na lista de retirado
+            if not tamanhoIgualZero(dicionarioPersonagemRemovido):
+                if dicionarioPersonagemAtivo[CHAVE_NOME] in dicionarioPersonagemRemovido[CHAVE_NOME]:#compara nome na lista de ativo com nome na lista de retirado
+                    print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
+                    linhaSeparacao()
+                    del dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao]
+                    posicao-=1
+                else:
+                    posicao+=1
+            else:
                 print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
                 linhaSeparacao()
                 del dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao]
                 posicao-=1
-            else:
-                posicao+=1
     return dicionarioPersonagem
 
 def verificaListaVazia(lista_personagem_ativo):
@@ -1830,6 +1835,7 @@ def retornaNomePersonagem(posicao):
     telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
     frameNomePersonagemTratado=retornaImagemCinza(frameNomePersonagem)
+    frameNomePersonagemTratado=retornaImagemEqualizada(frameNomePersonagemTratado)
     frameNomePersonagemTratado=retornaImagemBinarizada(frameNomePersonagemTratado)
     contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
     # print(f'{D}:{contadorPixelPreto}')
@@ -2190,8 +2196,8 @@ def percorreFrameItemBolsa():
         nomeItemBolsaReconhecido=reconheceTexto(frameNomeItemBolsaBinarizada)
         print(f'Item: {nomeItemBolsaReconhecido}')
         mostraImagem(2000,frameNomeItemBolsaBinarizada,nomeItemBolsaReconhecido)
-        # if nomeItemBolsaReconhecido==None:
-        #     break
+        if nomeItemBolsaReconhecido==None:
+            break
         if contadorItensPercorridos%5==0:
             y+=larguraAlturaFrame
             x=168
@@ -2243,11 +2249,11 @@ def retornaTextoSair():
     telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[telaInteira.shape[0]-50:telaInteira.shape[0]-25,50:50+60]
     frameTelaTratado=retornaImagemCinza(frameTela)
-    frameTelaTratado=retornaImagemBinarizada(frameTela)
+    frameTelaTratado=retornaImagemBinarizada(frameTelaTratado)
     contadorPixelPreto=np.sum(frameTelaTratado==0)
-    # print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
+    # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
     # mostraImagem(0,frameTelaTratado,None)
-    if contadorPixelPreto>400 and contadorPixelPreto<430:
+    if contadorPixelPreto>350 and contadorPixelPreto<400:
         texto=reconheceTexto(frameTelaTratado)
         if variavelExiste(texto):
             texto=limpaRuidoTexto(texto)
@@ -2348,6 +2354,7 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
+        print(retornaTextoSair())
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
         # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
@@ -2372,7 +2379,7 @@ def funcao_teste(dicionarioUsuario):
         # print(verificaCaixaCorreio())
         # dataAtual=datetime.date.today()
         # print(dataAtual.ctime())
-        percorreFrameItemBolsa()
+        # percorreFrameItemBolsa()
         # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
         # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
         # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
@@ -2434,7 +2441,6 @@ def funcao_teste(dicionarioUsuario):
         # while inicia_busca_trabalho():
         #     continue
         # recuperaPresente()
-        # print(retornaTextoSair())
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
         # retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
