@@ -215,8 +215,7 @@ def retorna_fundo_branco():
 
 def retornaImagemBinarizada(image):
     inicio = time.time()
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray, (1, 1), 
+    blur = cv2.GaussianBlur(image, (1, 1), 
                         cv2.BORDER_DEFAULT)
     ret, thresh = cv2.threshold(blur, 180, 600,
                             cv2.THRESH_BINARY_INV)
@@ -285,7 +284,8 @@ def temporario():
         alturaDesejada=frame.shape[0]*porcentagem/100
         larguraDesejada=frame.shape[1]*porcentagem/100
         frame=cv2.resize(frame,(int(larguraDesejada),int(alturaDesejada)))
-        frameLimiar=retornaImagemBinarizada(frame)
+        frameCinza=retornaImagemCinza(frame)
+        frameLimiar=retornaImagemBinarizada(frameCinza)
         imagemPreprocessada=preProcessamento(frame)
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:

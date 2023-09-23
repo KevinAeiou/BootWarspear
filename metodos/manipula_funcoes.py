@@ -452,6 +452,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
     posicao=listaFrames[tipoTrabalho]
     telaInteira=retornaAtualizacaoTela()#tira novo print da tela
     frameNomeTrabalho=telaInteira[posicao[y]:posicao[y]+posicao[altura],posicao[x]:posicao[x]+posicao[largura]]
+    frameNomeTrabalhoTratado=retornaImagemCinza(frameNomeTrabalho)
     frameNomeTrabalhoTratado=retornaImagemBinarizada(frameNomeTrabalho)
     nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
     # mostraImagem(0,frameNomeTrabalhoTratado,nomeTrabalhoReconhecido)
@@ -660,7 +661,8 @@ def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     telaInteira=retornaAtualizacaoTela()
     frameTelaInteira=telaInteira[yinicial_nome:yinicial_nome+altura,233:478]
     #teste trata frame trabalho comum
-    frameNomeTrabalhoTratado=retornaImagemBinarizada(frameTelaInteira)
+    frameNomeTrabalhoTratado=retornaImagemCinza(frameTelaInteira)
+    frameNomeTrabalhoTratado=retornaImagemBinarizada(frameNomeTrabalhoTratado)
     contadorPixelPreto=np.sum(frameNomeTrabalhoTratado==0)
     # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
     # mostraImagem(0,frameNomeTrabalhoTratado,None)
@@ -1090,6 +1092,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
     texto=None
     frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
     if y>30:
+        frameTela=retornaImagemCinza(frameTela)
         frameTela=retornaImagemBinarizada(frameTela)
     # mostraImagem(0,frameTela,None)
     # print(f'Quantidade de pixels pretos: {np.sum(frameTela==0)}')
@@ -1769,7 +1772,8 @@ def recuperaPresente():
         larguraFrame=150
         for x in range(8):
             frameTela=telaInteira[y:y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
-            frameTratado=retornaImagemBinarizada(frameTela)
+            frameTratado=retornaImagemCinza(frameTela)
+            frameTratado=retornaImagemBinarizada(frameTratado)
             contadorPixelPreto=np.sum(frameTratado==0)
             # print(f'Contador pixel preto: {contadorPixelPreto}.')
             # mostraImagem(0,frameTratado,None)
@@ -1825,7 +1829,8 @@ def retornaNomePersonagem(posicao):
     posicaoNome=[[2,33,169,27],[190,351,177,30]]
     telaInteira=retornaAtualizacaoTela()
     frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
-    frameNomePersonagemTratado=retornaImagemBinarizada(frameNomePersonagem)
+    frameNomePersonagemTratado=retornaImagemCinza(frameNomePersonagem)
+    frameNomePersonagemTratado=retornaImagemBinarizada(frameNomePersonagemTratado)
     contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
     # print(f'{D}:{contadorPixelPreto}')
     # mostraImagem(0,frameNomePersonagemTratado,None)
@@ -2092,7 +2097,8 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                 quantidadeProduto=retornaQuantidadeProdutoVendido(listaTextoCarta)
                 # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
                 frameTela=telaInteira[415:415+30,250:250+260]
-                frameTelaTratado=retornaImagemBinarizada(frameTela)
+                frameTelaTratado=retornaImagemCinza(frameTela)
+                frameTelaTratado=retornaImagemBinarizada(frameTelaTratado)
                 ouro=reconhece_digito(frameTelaTratado)
                 ouro=re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
@@ -2175,13 +2181,15 @@ def percorreFrameItemBolsa():
     larguraAlturaFrame=64
     telaInteira=retornaAtualizacaoTela()
     contadorItensPercorridos=1
-    while contadorItensPercorridos<15:
+    while contadorItensPercorridos<20:
         # 617
         frameNomeItemBolsa=telaInteira[580:623,180:500]
-        frameNomeItemBolsa=retornaImagemEqualizada(frameNomeItemBolsa)
-        nomeItemBolsaReconhecido=reconheceTexto(frameNomeItemBolsa)
+        frameNomeItemBolsaCinza=retornaImagemCinza(frameNomeItemBolsa)
+        frameNomeItemBolsaEqualizada=retornaImagemEqualizada(frameNomeItemBolsaCinza)
+        frameNomeItemBolsaBinarizada=retornaImagemBinarizada(frameNomeItemBolsaEqualizada)
+        nomeItemBolsaReconhecido=reconheceTexto(frameNomeItemBolsaBinarizada)
         print(f'Item: {nomeItemBolsaReconhecido}')
-        mostraImagem(2000,frameNomeItemBolsa,nomeItemBolsaReconhecido)
+        mostraImagem(2000,frameNomeItemBolsaBinarizada,nomeItemBolsaReconhecido)
         # if nomeItemBolsaReconhecido==None:
         #     break
         if contadorItensPercorridos%5==0:
@@ -2220,7 +2228,8 @@ def descobreFrames():
     frameMenuInteragir=[30,100]
     frameMenuInteragir=tela_inteira[centroAltura+25:centroAltura+25+frameMenuInteragir[0],centroMetade-(frameMenuInteragir[1]//2):centroMetade+(frameMenuInteragir[1]//2)]
     
-    frame_menu_tratado=retornaImagemBinarizada(frameMenuOferta)
+    frame_menu_tratado=retornaImagemCinza(frameMenuOferta)
+    frame_menu_tratado=retornaImagemBinarizada(frame_menu_tratado)
     print(reconheceTexto(frame_menu_tratado))
     mostraImagem(0,frameMenuOferta,None)
     # mostra_imagem(0,frameMenuProfissoes,None)
@@ -2233,6 +2242,7 @@ def retornaTextoSair():
     texto=None
     telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[telaInteira.shape[0]-50:telaInteira.shape[0]-25,50:50+60]
+    frameTelaTratado=retornaImagemCinza(frameTela)
     frameTelaTratado=retornaImagemBinarizada(frameTela)
     contadorPixelPreto=np.sum(frameTelaTratado==0)
     # print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
@@ -2362,7 +2372,7 @@ def funcao_teste(dicionarioUsuario):
         # print(verificaCaixaCorreio())
         # dataAtual=datetime.date.today()
         # print(dataAtual.ctime())
-        # percorreFrameItemBolsa()
+        percorreFrameItemBolsa()
         # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
         # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
         # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
@@ -2394,7 +2404,7 @@ def funcao_teste(dicionarioUsuario):
         # modifica_quantidade_personagem_ativo()
         # while True:
         #     verifica_habilidade_central(lista_habilidade)
-        print(retornaLicencaReconhecida())
+        # print(retornaLicencaReconhecida())
         # print(verifica_licenca('principiante'))
         # linhaSeparacao()
         # valor=True
