@@ -425,12 +425,14 @@ def retornaLicencaReconhecida():
     listaLicencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
     telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[275:317,169:512]
-    frameTelaEqualizado=retorna_imagem_equalizada(frameTela)
+    frameTelaCinza=retornaImagemCinza(frameTela)
+    frameTelaEqualizado=retornaImagemEqualizada(frameTelaCinza)
     textoReconhecido=reconheceTexto(frameTelaEqualizado)
+    mostraImagem(0,frameTelaEqualizado,textoReconhecido)
     if variavelExiste(textoReconhecido):
         for licenca in listaLicencas:
             if texto1PertenceTexto2(licenca,textoReconhecido):
-                return licencaRetornada
+                return textoReconhecido
     return licencaRetornada
     
 def verifica_ciclo(lista):
@@ -2173,10 +2175,10 @@ def percorreFrameItemBolsa():
     larguraAlturaFrame=64
     telaInteira=retornaAtualizacaoTela()
     contadorItensPercorridos=1
-    while contadorItensPercorridos<30:
+    while contadorItensPercorridos<15:
         # 617
         frameNomeItemBolsa=telaInteira[580:623,180:500]
-        # frameNomeItemBolsa=retornaImagemBinarizada(frameNomeItemBolsa)
+        frameNomeItemBolsa=retornaImagemEqualizada(frameNomeItemBolsa)
         nomeItemBolsaReconhecido=reconheceTexto(frameNomeItemBolsa)
         print(f'Item: {nomeItemBolsaReconhecido}')
         mostraImagem(2000,frameNomeItemBolsa,nomeItemBolsaReconhecido)
@@ -2360,7 +2362,7 @@ def funcao_teste(dicionarioUsuario):
         # print(verificaCaixaCorreio())
         # dataAtual=datetime.date.today()
         # print(dataAtual.ctime())
-        percorreFrameItemBolsa()
+        # percorreFrameItemBolsa()
         # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
         # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
         # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
@@ -2392,7 +2394,7 @@ def funcao_teste(dicionarioUsuario):
         # modifica_quantidade_personagem_ativo()
         # while True:
         #     verifica_habilidade_central(lista_habilidade)
-        # print(retorna_licenca_reconhecida())
+        print(retornaLicencaReconhecida())
         # print(verifica_licenca('principiante'))
         # linhaSeparacao()
         # valor=True

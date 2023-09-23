@@ -95,7 +95,7 @@ def retorna_imagem_colorida(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
     return imagem
 
-def retorna_imagem_cinza(screenshot):
+def retornaImagemCinza(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2GRAY)
     return imagem
 
@@ -130,10 +130,12 @@ def retorna_subtracao_imagem(imagem1,imagem2):
         print(f'Imagens com tamanhos diferentes.{tamanho_imagem1}:{tamanho_imagem2}')
     return False
 
-def retorna_imagem_equalizada(img_original):
-    img = cv2.cvtColor(np.array(img_original), cv2.COLOR_RGB2GRAY)
+def retornaImagemEqualizada(img):
+    inicio = time.time()
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     cl2 = clahe.apply(img)
+    fim = time.time()
+    # print(f'{D}:{fim-inicio}.')
     return cl2
 
 def retorna_modelo_nivel_tratado(modelo_original):
