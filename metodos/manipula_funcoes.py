@@ -18,8 +18,6 @@ yinicial_nivel = 285
 yfinal_nivel = 285 + 69
 
 cont_voltas = 0
-contadorParaCima=4
-personagem_id_global=''
 altura_frame = 70
 porcentagem_vida = 25
 
@@ -530,24 +528,24 @@ def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao
 
 def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
-    global contadorParaCima
+    contadorParaBaixo=0
     if not primeiraBusca(dicionarioTrabalho):
-        contadorParaCima=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]
-        clickEspecifico(contadorParaCima,'down')
-        if dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]==3:
-            yinicialNome=(2*70)+285
-            nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
+        contadorParaBaixo=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]
+        clickEspecifico(contadorParaBaixo,'down')
     while not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
         if primeiraBusca(dicionarioTrabalho):
             clicks=3
-            contadorParaCima=3
+            contadorParaBaixo=3
             clickEspecifico(clicks,'down')
             yinicialNome=(2*70)+285
             nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
-        elif contadorParaCima==4:
+        elif contadorParaBaixo==3:
+            yinicialNome=(2*70)+285
+            nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
+        elif contadorParaBaixo==4:
             yinicialNome=(3*70)+285
             nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
-        elif contadorParaCima>4:
+        elif contadorParaBaixo>4:
             nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(530,1)
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
@@ -555,16 +553,17 @@ def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
                 if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, dicionarioTrabalhoDesejado):
                     print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
                     if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
-                        linhaSeparacao()
                         clickEspecifico(1,'enter')
-                        dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaCima
+                        dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
-                        contadorParaCima+=1
+                        contadorParaBaixo+=1
+                        linhaSeparacao()
                         break
             else:
                 linhaSeparacao()
                 clickEspecifico(1,'down')
-                contadorParaCima+=1
+                dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
+                contadorParaBaixo+=1
         else:
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
             vaiParaMenuTrabalhoEmProducao()
@@ -700,8 +699,8 @@ def verificaErro(dicionarioTrabalho):
         linhaSeparacao()
     elif erro==erroSemRecursos or erro==erroTempoProducaoExpirou or erro==erroSemExperiencia or erro==erroSemEspacosProducao:
         clickEspecifico(1,'enter')
-        clickEspecifico(1,'f1')
-        clickContinuo(contadorParaCima,'up')
+        clickEspecifico(2,'f1')
+        clickContinuo(9,'up')
         clickEspecifico(1,'left')
         if erro==erroSemRecursos:
             print(f'Retirrando trabalho da lista.')
