@@ -60,15 +60,6 @@ def reconheceTexto(imagem):
     # print(f'____________________________________________________')
     return texto
 
-def trata_frame_menu_profissao(imagem_original):
-    imagem_tratada = imagem_original
-    for y in range(0,imagem_original.shape[0]):
-        for x in range(0, imagem_original.shape[1]): 
-            if (imagem_original[y,x] != (41,49,49)).any() and (imagem_original[y,x] != (41,66,66)).any():
-                #tranforma pixel em branco
-                imagem_tratada[y,x] = (255,255,255)
-    return imagem_tratada
-
 def trata_frame_nome_inimigo(imagem_original):
     imagem_tratada = imagem_original
     for y in range(0,imagem_original.shape[0]):

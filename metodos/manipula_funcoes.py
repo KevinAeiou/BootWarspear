@@ -385,7 +385,7 @@ def verificaLicenca(licencaTrabalho):
     confirmacao=False
     print(f"Buscando: {licencaTrabalho}")
     linhaSeparacao()
-    licenca_reconhecida=retorna_licenca_reconhecida()
+    licenca_reconhecida=retornaLicencaReconhecida()
     if licenca_reconhecida!=None and licencaTrabalho!=None:
         licencaTrabalho=licencaTrabalho.replace(' ','').lower()
         print(f'Licença reconhecida: {licenca_reconhecida}.')
@@ -397,7 +397,7 @@ def verificaLicenca(licencaTrabalho):
                 primeira_busca=False
                 clickEspecifico(1,"right")
                 lista_ciclo.append(licenca_reconhecida)
-                licenca_reconhecida=retorna_licenca_reconhecida()
+                licenca_reconhecida=retornaLicencaReconhecida()
                 if licenca_reconhecida!=None:
                     print(f'Licença reconhecida: {licenca_reconhecida}.')
                     linhaSeparacao()
@@ -420,19 +420,17 @@ def verificaLicenca(licencaTrabalho):
         linhaSeparacao()
     return confirmacao
 
-def retorna_licenca_reconhecida():
+def retornaLicencaReconhecida():
     licencaRetornada=None
-    lista_licencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
-    tela_inteira=retornaAtualizacaoTela()
-    frame_tela=tela_inteira[275:317,169:512]
-    frame_tela_equalizado=retorna_imagem_equalizada(frame_tela)
-    licenca_reconhecida=reconheceTexto(frame_tela_equalizado)
-    if licenca_reconhecida!=None:
-        licenca_reconhecida=licenca_reconhecida.replace(' ','').lower()
-        for licenca in lista_licencas:
-            if licenca in licenca_reconhecida:
-                licencaRetornada=licenca_reconhecida
-                break            
+    listaLicencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
+    telaInteira=retornaAtualizacaoTela()
+    frameTela=telaInteira[275:317,169:512]
+    frameTelaEqualizado=retorna_imagem_equalizada(frameTela)
+    textoReconhecido=reconheceTexto(frameTelaEqualizado)
+    if variavelExiste(textoReconhecido):
+        for licenca in listaLicencas:
+            if texto1PertenceTexto2(licenca,textoReconhecido):
+                return licencaRetornada
     return licencaRetornada
     
 def verifica_ciclo(lista):
@@ -2170,27 +2168,20 @@ def existePixelCorrespondencia():
     return confirmacao
 
 def percorreFrameItemBolsa():
-    # x=168-488=320
-    # larguraFrameItem=64
-    # y=187-alturaTela
-    # alturaFrameItem=64
     x=168
     y=187
     larguraAlturaFrame=64
     telaInteira=retornaAtualizacaoTela()
     contadorItensPercorridos=1
-    while True:
-        frameNomeItemBolsa=telaInteira[588:588+30,172:172+337]
-        frameNomeItemBolsa=retornaImagemBinarizada(frameNomeItemBolsa)
+    while contadorItensPercorridos<30:
+        # 617
+        frameNomeItemBolsa=telaInteira[580:623,180:500]
+        # frameNomeItemBolsa=retornaImagemBinarizada(frameNomeItemBolsa)
         nomeItemBolsaReconhecido=reconheceTexto(frameNomeItemBolsa)
         print(f'Item: {nomeItemBolsaReconhecido}')
-        mostraImagem(0,frameNomeItemBolsa,None)
-        if nomeItemBolsaReconhecido==None:
-            break
-        # frameItemBolsa=telaInteira[y:y+larguraAlturaFrame,x:x+larguraAlturaFrame]
-        # frameItemBolsa=retorna_imagem_cinza(frameItemBolsa)
-        # quantidadeItemBolsa=reconhece_digito(frameItemBolsa)
-        # mostraImagem(0,frameItemBolsa,quantidadeItemBolsa)
+        mostraImagem(2000,frameNomeItemBolsa,nomeItemBolsaReconhecido)
+        # if nomeItemBolsaReconhecido==None:
+        #     break
         if contadorItensPercorridos%5==0:
             y+=larguraAlturaFrame
             x=168
