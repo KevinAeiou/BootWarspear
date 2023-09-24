@@ -67,7 +67,7 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
     return requisicaoRetorno
 
 def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_vendas/.json'
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioVenda)
     if requisicao!=None:
         print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
