@@ -353,7 +353,8 @@ def menuExcluiTrabalho(dicionarioUsuario):
 
 def menuPersonagem(dicionarioUsuario):
     print(f'Personagens.')
-    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
+    dicionarioUsuario=defineListaDicionarioPersonagem(dicionarioUsuario)
+    linhaSeparacao()
     if tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
         menuTeste()
         return
@@ -377,7 +378,7 @@ def defineChaveIdPersonagem(dicionarioUsuario,opcaoPersonagem):
     x=1
     for personagem in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         if x==opcaoPersonagem:
-            dicionarioUsuario[CHAVE_ID_PERSONAGEM]=personagem[CHAVE_ID]
+            dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
             break
         x+=1
     return dicionarioUsuario

@@ -380,37 +380,36 @@ def retornaEstadoTrabalho():
         print(f'Ocorreu algum erro ao verificar o espaço de produção!')
     linhaSeparacao()
     return estadoTrabalho
-#modificado 10/01
+
 def verificaLicenca(licencaTrabalho):
     confirmacao=False
     print(f"Buscando: {licencaTrabalho}")
     linhaSeparacao()
-    licenca_reconhecida=retornaLicencaReconhecida()
-    if licenca_reconhecida!=None and licencaTrabalho!=None:
-        licencaTrabalho=licencaTrabalho.replace(' ','').lower()
-        print(f'Licença reconhecida: {licenca_reconhecida}.')
+    textoReconhecido=retornaLicencaReconhecida()
+    if variavelExiste(textoReconhecido) and variavelExiste(licencaTrabalho):
+        print(f'Licença reconhecida: {textoReconhecido}.')
         linhaSeparacao()
-        if 'licençasdeproduçaomaspode' not in licenca_reconhecida:
-            primeira_busca=True
-            lista_ciclo=[]
-            while not licenca_reconhecida in licencaTrabalho:
-                primeira_busca=False
+        if not texto1PertenceTexto2('licençasdeproduçaomaspode',textoReconhecido):
+            primeiraBusca=True
+            listaCiclo=[]
+            while not texto1PertenceTexto2(textoReconhecido,licencaTrabalho):
+                primeiraBusca=False
                 clickEspecifico(1,"right")
-                lista_ciclo.append(licenca_reconhecida)
-                licenca_reconhecida=retornaLicencaReconhecida()
-                if licenca_reconhecida!=None:
-                    print(f'Licença reconhecida: {licenca_reconhecida}.')
+                listaCiclo.append(textoReconhecido)
+                textoReconhecido=retornaLicencaReconhecida()
+                if variavelExiste(textoReconhecido):
+                    print(f'Licença reconhecida: {textoReconhecido}.')
                     linhaSeparacao()
-                    print(f'Licença reconhecida: {licenca_reconhecida}.')
-                    if verifica_ciclo(lista_ciclo)or licenca_reconhecida in 'nenhumitem':
+                    if verifica_ciclo(listaCiclo)or texto1PertenceTexto2('nenhumitem',textoReconhecido):
                         licencaTrabalho='licençadeproduçãodoiniciante'
                         print(f'Licença para trabalho agora é: {licencaTrabalho}.')
+                        linhaSeparacao()
                 else:
                     print(f'Erro ao reconhecer licença!')
                     linhaSeparacao()
                     break
             else:#se encontrou a licença buscada
-                if primeira_busca:
+                if primeiraBusca:
                     clickEspecifico(1,"f1")
                 else:
                     clickEspecifico(1,"f2")
@@ -428,7 +427,7 @@ def retornaLicencaReconhecida():
     frameTelaCinza=retornaImagemCinza(frameTela)
     frameTelaEqualizado=retornaImagemEqualizada(frameTelaCinza)
     textoReconhecido=reconheceTexto(frameTelaEqualizado)
-    mostraImagem(0,frameTelaEqualizado,textoReconhecido)
+    # mostraImagem(0,frameTelaEqualizado,textoReconhecido)
     if variavelExiste(textoReconhecido):
         for licenca in listaLicencas:
             if texto1PertenceTexto2(licenca,textoReconhecido):
@@ -466,39 +465,6 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
         else:
             dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
             print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
-            linhaSeparacao()
-    else:
-        dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-    return dicionarioTrabalho
-
-def verificaPosicoesTrabalhos(dicionarioTrabalho):
-    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
-    yinicial_nome=(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]*70)+285
-    #xinicial=233, xfinal=478, yinicial=285, yfinal=324 altura=70
-    time.sleep(2)
-    nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicial_nome,0)
-    if nomeTrabalhoReconhecido!=None and dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
-        print(f'Nome do trabalho disponível: {nomeTrabalhoReconhecido}')
-        #enquanto não comparar toda lista
-        for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-            #retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
-            if estadoTrabalhoEParaProduzir(dicionarioTrabalhoDesejado)and profissaoEIgual(dicionarioTrabalho,dicionarioTrabalhoDesejado):
-                print(f'Nome do trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
-                if textoReconhecidoPertenceTextoDicionario(nomeTrabalhoReconhecido,dicionarioTrabalhoDesejado):
-                    print(f'{dicionarioTrabalhoDesejado[CHAVE_NOME]} reconhecido...')
-                    linhaSeparacao()
-                    dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,dicionarioTrabalhoDesejado)
-                    if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                        dicionarioTrabalho=confirmaNomeTrabalho(dicionarioTrabalho,1)
-                        if variavelExiste(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]):
-                            break
-                        else:    
-                            clickEspecifico(1,'f1')
-                            clickContinuo(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]+1,'up')
-                    else:
-                        print(f'Erro ao entrar no trabalho encontrado...')
-                        linhaSeparacao()
-        else:
             linhaSeparacao()
     else:
         dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
@@ -566,11 +532,12 @@ def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
                 dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
                 contadorParaBaixo+=1
         else:
-            dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-            vaiParaMenuTrabalhoEmProducao()
-            print(f'Trabalho comum não reconhecido!')
-            linhaSeparacao()
-            break
+            if not primeiraBusca(dicionarioTrabalho):
+                dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+                vaiParaMenuTrabalhoEmProducao()
+                print(f'Trabalho comum não reconhecido!')
+                linhaSeparacao()
+                break
     return dicionarioTrabalho
 
 def vaiParaMenuTrabalhoEmProducao():
@@ -985,6 +952,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
     for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
         # print(f'{D}:{personagemReconhecido} e {dicionarioPersonagemAtivo[CHAVE_NOME]}.')
         if textoEhIgual(personagemReconhecido,dicionarioPersonagemAtivo[CHAVE_NOME]):
@@ -994,17 +962,17 @@ def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
             break
     return dicionarioPersonagem
 
-def defineListaIdPersonagemMesmoEmail(dicionarioPersonagem,personagemEmail):
+def defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,personagemEmail):
     listaIdPersonagemMesmoEmail=[]
-    for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        if textoEhIgual(dicionarioPersonagemAtivo[CHAVE_EMAIL],personagemEmail):
-            listaIdPersonagemMesmoEmail.append(dicionarioPersonagemAtivo[CHAVE_ID])
+    for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],personagemEmail):
+            listaIdPersonagemMesmoEmail.append(dicionarioPersonagem[CHAVE_ID])
     return listaIdPersonagemMesmoEmail
 
-def ativaAtributoUso(dicionarioPersonagem):
-    listaPersonagemIdMesmoEmail=defineListaIdPersonagemMesmoEmail(dicionarioPersonagem,dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL])
-    if not verificaListaVazia(listaPersonagemIdMesmoEmail):
-        modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemIdMesmoEmail,CHAVE_USO,True)
+def ativaAtributoUso(dicionarioPersonagemAtributos):
+    listaPersonagemIdMesmoEmail=defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL])
+    if not tamanhoIgualZero(listaPersonagemIdMesmoEmail):
+        modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemIdMesmoEmail,CHAVE_USO,True)
 #modificado 16/01
 def preparaPersonagem(dicionarioUsuario):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
@@ -1012,7 +980,7 @@ def preparaPersonagem(dicionarioUsuario):
     click_atalho_especifico('alt','tab')
     click_atalho_especifico('win','left')
     dicionarioDadosPersonagem=retornaDicionarioDadosPersonagem(dicionarioUsuario)
-    if len(dicionarioDadosPersonagem)!=0:
+    if not tamanhoIgualZero(dicionarioDadosPersonagem):
         if not dicionarioDadosPersonagem[CHAVE_USO]:#se o personagem estiver inativo, troca o estado
             listaPersonagemId=[dicionarioUsuario[CHAVE_ID_PERSONAGEM]]
             modificaAtributoPersonagem(dicionarioUsuario,listaPersonagemId,CHAVE_ESTADO,True)
@@ -1024,64 +992,72 @@ def preparaPersonagem(dicionarioUsuario):
 def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]=[]
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        # print(f'Verificando estado do personagem: {personagem}.')
         if (personagem[CHAVE_ESTADO]or
             personagem[CHAVE_ESTADO]==1):
-            # print(f'{D}:{personagem[CHAVE_NOME]} é ativo.')
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(personagem)
+    print(f'{D}:Lista de personagens ativos:')
+    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
+        print(f'{D}:{personagem[CHAVE_NOME]}.')
+    linhaSeparacao()
     return dicionarioPersonagem
 
 def buscaListaPersonagemAtivo(dicionarioUsuario):
-    dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
-                          CHAVE_LISTA_DICIONARIO_PERSONAGEM:dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]}
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-    dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
+    dicionarioPersonagemAtributos={
+        CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
+        CHAVE_LISTA_DICIONARIO_PERSONAGEM:dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM],
+        CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO:[]
+        }
+    dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
     # print(f'CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO: {dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]}.')
     while True:
-        if verificaListaVazia(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
-            dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
-            print(f'Lista de personagens ativos atualizada...')
+        if tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
+            print(f'{D}:Lista de personagem ativo vazia')
+            dicionarioPersonagemAtributos=defineListaDicionarioPersonagem(dicionarioUsuario)
+            linhaSeparacao()
+            dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
+            dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
+            print(f'{D}:Atributos do dicionarioPersonagemAtributos:')
+            for chave in dicionarioPersonagemAtributos:
+                print(f'{D}:{chave}.')
             linhaSeparacao()
         else:#se houver pelo menos um personagem ativo
-            dicionarioPersonagemReconhecido=verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem)
-            if not tamanhoIgualZero(dicionarioPersonagemReconhecido):
-                dicionarioPersonagem[CHAVE_ID_PERSONAGEM]=dicionarioPersonagemReconhecido[CHAVE_ID]
-                dicionarioPersonagem[CHAVE_NOME_PERSONAGEM]=dicionarioPersonagemReconhecido[CHAVE_NOME]
-                dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=dicionarioPersonagemReconhecido[CHAVE_ESPACO_PRODUCAO]
-                dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=True
-                dicionarioPersonagem[CHAVE_ESPACO_BOLSA]=True
-                dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
+            dicionarioPersonagemAtributos=defineDicionarioPersonagemEmUso(dicionarioPersonagemAtributos)
+            if variavelExiste(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
+                dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=True
+                dicionarioPersonagemAtributos[CHAVE_ESPACO_BOLSA]=True
+                dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
                 print('Inicia busca...')
                 linhaSeparacao()
-                dicionarioPersonagem=iniciaBuscaTrabalho(dicionarioPersonagem)
-                if dicionarioPersonagem[CHAVE_UNICA_CONEXAO]:
-                    if verificaErro(None)!=0 or len(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1:
-                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
-                        dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
-                        print(f'Lista de personagens ativos atualizada...')
-                        linhaSeparacao()
+                dicionarioPersonagemAtributos=iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
+                if dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]:
+                    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
+                    dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
+                    print(f'{D}:Lista de personagem retirado:')
+                    for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:
+                        print(f'{D}:{personagem[CHAVE_NOME]}.')
+                    linhaSeparacao()
+                    if (verificaErro(None)!=0 or(listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos) and
+                         tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]))):
                         continue
                     else:
                         clickMouseEsquerdo(1,2,35)
-                        deslogaPersonagem(dicionarioPersonagemReconhecido[CHAVE_EMAIL],dicionarioPersonagem)
-                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
-                        dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
+                        deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL],dicionarioPersonagemAtributos)
                 else:
-                    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
-                    dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
-                    continue
+                    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
+                    dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
             else:#se o nome reconhecido não estiver na lista de ativos
-                if (not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])and
-                    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]==dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][0][CHAVE_EMAIL]):
-                    dicionarioPersonagem=entraPersonagemAtivo(dicionarioPersonagem)
-                elif configuraLoginPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
-                    dicionarioPersonagem=entraPersonagemAtivo(dicionarioPersonagem)
-                    if dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]!=None and dicionarioPersonagemReconhecido!=None:
-                        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemReconhecido)
-                        dicionarioPersonagem=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem)
+                if tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]):
+                    if configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
+                        dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
+                else:
+                    if textoEhIgual(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][0][CHAVE_EMAIL]):
+                        dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
+                    elif configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
+                        dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
 
+def listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos):
+    return len(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1
+                    
 def retornaTextoMenuReconhecido(x,y,largura):
     telaInteira=retornaAtualizacaoTela()
     # print(centroAltura,centroMetade)# 384 341
@@ -1101,7 +1077,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
         if variavelExiste(texto):
             texto=limpaRuidoTexto(texto)
             # print(f'{D}:Texto reconhecimento de menus: {texto}.')
-    # print(f'{D} :{texto}')
+    print(f'{D}:{texto}')
     return texto
 
 def existePixelPretoSuficiente(contadorPixelPreto):
@@ -1282,7 +1258,7 @@ def retornaMenu():
     verificaErro(None)
     return menu_desconhecido
 
-def deslogaPersonagem(personagemEmail,dicionarioPersonagem):
+def deslogaPersonagem(personagemEmail,dicionarioPersonagemAtributos):
     menu=retornaMenu()
     while menu!=menu_jogar:
         if menu==menu_inicial:
@@ -1293,42 +1269,32 @@ def deslogaPersonagem(personagemEmail,dicionarioPersonagem):
         else:
             clickMouseEsquerdo(1,2,35)
         menu=retornaMenu()
-    if personagemEmail!=None or dicionarioPersonagem!=None:
-        listaPersonagemId=defineListaIdPersonagemMesmoEmail(dicionarioPersonagem,personagemEmail)
-        modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagemId,CHAVE_USO,False)
+    if personagemEmail!=None or dicionarioPersonagemAtributos!=None:
+        listaPersonagemId=defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,personagemEmail)
+        modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,CHAVE_USO,False)
 
-def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioPersonagem)
-    dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
-    print(f'Lista de personagens ativos atualizada!')
+def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
+    dicionarioPersonagemAtributos=defineListaDicionarioPersonagem(dicionarioPersonagemAtributos)
     linhaSeparacao()
-    for dicionarioPersonagemRemovido in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:#percorre lista de personagem retirado
+    dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
+    for dicionarioPersonagemRemovido in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:#percorre lista de personagem retirado
         posicao=0
-        for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:#percorre lista de personagem ativo
-            if not tamanhoIgualZero(dicionarioPersonagemRemovido):
-                if dicionarioPersonagemAtivo[CHAVE_NOME] in dicionarioPersonagemRemovido[CHAVE_NOME]:#compara nome na lista de ativo com nome na lista de retirado
-                    print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
-                    linhaSeparacao()
-                    del dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao]
-                    posicao-=1
-                else:
-                    posicao+=1
-            else:
-                print(f'{dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
+        for dicionarioPersonagemAtivo in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:#percorre lista de personagem ativo
+            if textoEhIgual(dicionarioPersonagemAtivo[CHAVE_NOME],dicionarioPersonagemRemovido[CHAVE_NOME]):#compara nome na lista de ativo com nome na lista de retirado
+                print(f'{dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao][CHAVE_NOME]} foi retirado da lista de ativos!')
                 linhaSeparacao()
-                del dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao]
-                posicao-=1
-    return dicionarioPersonagem
+                del dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][posicao]
+                break
+            else:
+                posicao+=1
+    print(f'{D}:Lista de personagem ativo após retirarverificado:')
+    for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
+        print(f'{D}:{personagem[CHAVE_NOME]}.')
+    linhaSeparacao()
+    return dicionarioPersonagemAtributos
 
-def verificaListaVazia(lista_personagem_ativo):
-    if len(lista_personagem_ativo)==0:
-        print(f'Lista vazia. Buscando nova lista no servidor.')
-        linhaSeparacao()
-        return True
-    return False
-
-def verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem):
-    dicionarioPersonagemReconhecido={}
+def defineDicionarioPersonagemEmUso(dicionarioPersonagem):
+    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
     nomePersonagemReconhecidoTratado=retornaNomePersonagem(0)
     # print(f'{D}:Nome personagem na posição 0:{nomePersonagemReconhecidoTratado}')
     if variavelExiste(nomePersonagemReconhecidoTratado):
@@ -1336,14 +1302,15 @@ def verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem):
             if textoEhIgual(nomePersonagemReconhecidoTratado,dicionarioPersonagemVerificado[CHAVE_NOME]):
                 print(f'Personagem {nomePersonagemReconhecidoTratado} confirmado!')
                 linhaSeparacao()
-                dicionarioPersonagemReconhecido=dicionarioPersonagemVerificado
+                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=dicionarioPersonagemVerificado
     else:
         print(f'Nome personagem diferente!')
         linhaSeparacao()
-    return dicionarioPersonagemReconhecido
+    print(f'{D}:Personagem ativo reconhecido: {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]}.')
+    linhaSeparacao()
+    return dicionarioPersonagem
 
 def configuraLoginPersonagem(listaDicionarioPersonagensAtivos):
-    login=False
     menu=retornaMenu()
     while menu!=menu_jogar:
         if menu==menu_noticias or menu==menu_escolha_p:
@@ -1418,19 +1385,24 @@ def defineDicionarioTrabalhoRaroEspecial(dicionarioTrabalho):
                 dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,dicionarioTrabalhoDesejado)
                 if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                     dicionarioTrabalho=confirmaNomeTrabalho(dicionarioTrabalho,1)
-                break
+                    print(f'{D}:CHAVE_DICIONARIO_TRABALHO_DESEJADO:{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]}.')
+                    if variavelExiste(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]):
+                        break
+                    else:    
+                        clickEspecifico(1,'f1')
+                        clickContinuo(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]+1,'up')
     else:
         dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]=4
     return dicionarioTrabalho
 
-def iniciaBuscaTrabalho(dicionarioPersonagem):
-    listaDicionariosTrabalhosDesejados=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
+def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
+    listaDicionariosTrabalhosDesejados=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
     dicionarioTrabalho={CHAVE_LISTA_DESEJO:listaDicionariosTrabalhosDesejados,
                         CHAVE_DICIONARIO_TRABALHO_DESEJADO:None}
     if not tamanhoIgualZero(listaDicionariosTrabalhosDesejados):#verifica se a lista está vazia
-        dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
-        for profissaoVerificada in dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
-            if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
+        dicionarioPersonagemAtributos=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
+        for profissaoVerificada in dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
+            if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                 continue
             erro=verificaErro(None)
             if not erroEncontrado(erro):
@@ -1438,16 +1410,16 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                 if estaMenuInicial(menu):
                     if existePixelCorrespondencia():
                         vaiParaMenuCorrespondencia()
-                        recuperaCorrespondencia(dicionarioPersonagem)
+                        recuperaCorrespondencia(dicionarioPersonagemAtributos)
                 while naoEstiverMenuProduzir(menu):
-                    dicionarioPersonagem=trataMenu(menu,dicionarioPersonagem)
-                    if not chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
-                        return dicionarioPersonagem
+                    dicionarioPersonagemAtributos=trataMenu(menu,dicionarioPersonagemAtributos)
+                    if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
+                        return dicionarioPersonagemAtributos
                     menu=retornaMenu()
                 else:
                     # print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
-                    if listaProfissoesFoiModificada(dicionarioPersonagem):
-                        dicionarioPersonagem=atualizaListaProfissao(dicionarioPersonagem)
+                    if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
+                        dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
                     print(f'Verificando profissão: {profissaoVerificada[CHAVE_NOME]}')
                     linhaSeparacao()
                     dicionarioTrabalho[CHAVE_PROFISSAO]=profissaoVerificada[CHAVE_NOME]
@@ -1462,7 +1434,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                             while naoFizerQuatroVerificacoes(dicionarioTrabalho)and dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
                                 dicionarioTrabalho=defineDicionarioTrabalhoRaroEspecial(dicionarioTrabalho)
                                 if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
-                                    dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
+                                    dicionarioTrabalho,dicionarioPersonagemAtributos=iniciaProducao(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
                                 incrementaChavePosicaoTrabalho(dicionarioTrabalho)
@@ -1472,38 +1444,38 @@ def iniciaBuscaTrabalho(dicionarioPersonagem):
                                     if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]):
                                         saiProfissaoVerificada(dicionarioTrabalho)
                                     else:
-                                        dicionarioPersonagem,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagem, dicionarioTrabalho)
+                                        dicionarioPersonagemAtributos,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
                         else:
-                            dicionarioPersonagem,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagem, dicionarioTrabalho)
-                        if chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
-                            if chaveEspacoBolsaForVerdadeira(dicionarioPersonagem):
+                            dicionarioPersonagemAtributos,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                        if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
+                            if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                                 if retornaEstadoTrabalho()==concluido:
-                                    dicionarioPersonagem=verificaTrabalhoConcluido(dicionarioPersonagem)
-                                elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagem):
+                                    dicionarioPersonagemAtributos=verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
+                                elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
                                     break
                             dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
                             clickEspecifico(1,'left')
                             linhaSeparacao()
                         else:
                             break
-                    if not chaveEspacoProducaoForVerdadeira(dicionarioPersonagem):
+                    if not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
                         break
             elif existeOutraConexao(erro):
-                dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
+                dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
             else:
                 print(f'Erro ao percorrer lista de profissões...')
                 linhaSeparacao()
                 break
         else:
             # print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
-            if listaProfissoesFoiModificada(dicionarioPersonagem):
-                dicionarioPersonagem=atualizaListaProfissao(dicionarioPersonagem)
+            if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
+                dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
             print(f'Fim da lista de profissões...')
             linhaSeparacao()
     else:
         print(f'Lista de trabalhos desejados vazia.')
         linhaSeparacao()
-    return dicionarioPersonagem
+    return dicionarioPersonagemAtributos
 
 def saiProfissaoVerificada(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
@@ -1524,9 +1496,9 @@ def reconheceTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,0)
     return nomeTrabalhoReconhecido
 
-def chaveEspacoProducaoForVerdadeira(dicionarioPersonagem):
-    # print(f'{D}:CHAVE_ESPACO_PRODUCAO={dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]}.')
-    return dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]
+def chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
+    # print(f'{D}:CHAVE_ESPACO_PRODUCAO={dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]}.')
+    return dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
 
 def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]+=1
@@ -1573,7 +1545,7 @@ def estaMenuInicial(menu):
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem,dicionarioTrabalho=recuperaTrabalhoConcluido(dicionarioPersonagem)
     if not tamanhoIgualZero(dicionarioTrabalho):
-        listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
+        listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
         if dicionarioTrabalho[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
             excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho)
@@ -1584,9 +1556,9 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
                                     dicionarioTrabalho,
                                     2)
             linhaSeparacao()
-        if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
+        if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
             modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
-            dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=True
+            dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
     return dicionarioPersonagem
 
 def recuperaTrabalhoConcluido(dicionarioPersonagem):
@@ -1634,16 +1606,17 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
             dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
             if erro==erroSemEspacosProducao:
-                listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
+                listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
                 modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,False)
-                dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
+                linhaSeparacao()
+                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=False
             elif erro==erroOutraConexao:
                 dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
         erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     return dicionarioTrabalho,dicionarioPersonagem
 
-def trataMenus(dicionarioTrabalho,dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
+    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     while True:
         menu=retornaMenu()
         if naoReconheceMenu(menu):
@@ -1651,7 +1624,7 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagem):
         elif menuTrabalhoEspecificoReconhecido(menu):
             clickEspecifico(1,'f2')
             if naoHaRecursosSuficientes(dicionarioTrabalho):
-                excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+                excluiTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
                 break
         elif menuEscolhaEquipamentoReconhecido(menu):
             clickEspecifico(1,'f2')
@@ -1661,18 +1634,18 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagem):
             if trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está ligada.')
                 cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
-                cloneDicionarioTrabalho=adicionaTrabalhoDesejo(dicionarioPersonagem,cloneDicionarioTrabalho)
+                cloneDicionarioTrabalho=adicionaTrabalhoDesejo(dicionarioPersonagemAtributos,cloneDicionarioTrabalho)
                 linhaSeparacao()
             elif not trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está desligada.')
-                modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
+                modificaEstadoTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
                 linhaSeparacao()
             clickContinuo(12,'up')
-            dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
+            dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=True
             break
         else:
             break
-    return dicionarioPersonagem
+    return dicionarioPersonagemAtributos
 
 def defineCloneDicionarioTrabalho(dicionarioTrabalho):
     cloneDicionarioTrabalho={CHAVE_ID:None,
@@ -2017,28 +1990,28 @@ def retornaAtualizacaoTela():
     screenshot = tira_screenshot()
     return retorna_imagem_colorida(screenshot)
 
-def trataMenu(menu,dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
+def trataMenu(menu,dicionarioPersonagemAtributos):
+    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=True
     if menu==menu_desconhecido:
         pass
     elif menu==menu_trab_atuais:
         estado_trabalho=retornaEstadoTrabalho()
         if estado_trabalho==concluido:
-            dicionarioPersonagem=verificaTrabalhoConcluido(dicionarioPersonagem)
+            dicionarioPersonagemAtributos=verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
-            if not dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]:
+            if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
                 print(f'Todos os espaços de produção ocupados.')
                 linhaSeparacao()
-                dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+                dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
             else:
                clickEspecifico(1,'left')
         elif estado_trabalho==0:
             clickEspecifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
         recebeTodasRecompensas(menu)
-        dicionarioPersonagem[CHAVE_ESPACO_PRODUCAO]=False
-        dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+        dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=False
+        dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     elif menu==menu_principal:
         #menu principal
         clickEspecifico(1,'num1')
@@ -2064,12 +2037,12 @@ def trataMenu(menu,dicionarioPersonagem):
         clickEspecifico(1,'num1')
         clickEspecifico(1,'num7')
     else:
-        dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
+        dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     erro=verificaErro(None)
     if erro==erroOutraConexao:
-        dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
-        dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
-    return dicionarioPersonagem
+        dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
+        dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
+    return dicionarioPersonagemAtributos
     
 def configuraLicenca(dicionarioTrabalho):
     if dicionarioTrabalho==None:
@@ -2090,7 +2063,7 @@ def verificaCaixaCorreio():
         return True
     return False
 
-def retornaConteudoCorrespondencia(dicionarioPersonagem):
+def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
     telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[231:231+50,168:168+343]
     textoCarta=reconheceTexto(frameTela)
@@ -2111,12 +2084,12 @@ def retornaConteudoCorrespondencia(dicionarioPersonagem):
                     ouro=int(ouro)
                 dataAtual=str(datetime.date.today())
                 listaTextoCarta=' '.join(listaTextoCarta)
-                dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagem[CHAVE_NOME_PERSONAGEM],
+                dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
                                  'nomeProduto':listaTextoCarta,
                                  'quantidadeProduto':quantidadeProduto,
                                  'valorProduto':ouro,
                                  'dataVenda':dataAtual}
-                adicionaVenda(dicionarioPersonagem,dicionarioVenda)
+                adicionaVenda(dicionarioPersonagemAtributos,dicionarioVenda)
                 # print(dicionarioVenda)
                 linhaSeparacao()
             else:
@@ -2158,10 +2131,10 @@ def verificaVendaProduto(texto):
         return False
     return None
 
-def recuperaCorrespondencia(dicionarioPersonagem):
+def recuperaCorrespondencia(dicionarioPersonagemAtributos):
     while verificaCaixaCorreio():
         clickEspecifico(1,'enter')
-        conteudoCorrespondencia=retornaConteudoCorrespondencia(dicionarioPersonagem)
+        conteudoCorrespondencia=retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)
         clickEspecifico(1,'f2')
     else:
         print(f'Caixa de correio vazia!')
@@ -2251,9 +2224,9 @@ def retornaTextoSair():
     frameTelaTratado=retornaImagemCinza(frameTela)
     frameTelaTratado=retornaImagemBinarizada(frameTelaTratado)
     contadorPixelPreto=np.sum(frameTelaTratado==0)
-    # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
+    print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
     # mostraImagem(0,frameTelaTratado,None)
-    if contadorPixelPreto>350 and contadorPixelPreto<400:
+    if contadorPixelPreto>100 and contadorPixelPreto<400:
         texto=reconheceTexto(frameTelaTratado)
         if variavelExiste(texto):
             texto=limpaRuidoTexto(texto)
@@ -2354,14 +2327,15 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
-        print(retornaTextoSair())
+        # print(retornaTextoSair())
+        dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
+        linhaSeparacao()
+        dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
+        defineDicionarioPersonagemEmUso(dicionarioPersonagem)
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
         # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-        # dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=defineListaDicionarioPersonagem(dicionarioUsuario)
-        # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
-        # dicionarioPersonagemReconhecido=verificaNomePersonagemAtivoReconhecido(dicionarioPersonagem)
         # retornaTipoErro()
         # telaInteira=retornaAtualizacaoTela()
         # frameTela=telaInteira[263:263+46,284:284+46]

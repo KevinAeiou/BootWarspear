@@ -100,7 +100,7 @@ def retornaImagemCinza(screenshot):
     return imagem
 
 def retorna_imagem_concatenada(imagem,imagem2):
-    imagem_concatenada = cv2.hconcat([imagem,imagem2])
+    imagem_concatenada = cv2.vconcat([imagem,imagem2])
     return imagem_concatenada
 
 def vconcat_resize(img_list, interpolation  
@@ -217,8 +217,10 @@ def retornaImagemBinarizada(image):
     inicio = time.time()
     blur = cv2.GaussianBlur(image, (1, 1), 
                         cv2.BORDER_DEFAULT)
-    ret, thresh = cv2.threshold(blur, 180, 600,
+    ret, thresh = cv2.threshold(blur, 180, 255,
                             cv2.THRESH_BINARY_INV)
+    # ret, thresh = cv2.threshold(blur,120, 255,
+    #                         cv2.THRESH_BINARY)
     fim = time.time()
     # print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
     return thresh
@@ -272,33 +274,35 @@ def encontraContornoMenu():
         cv2.imshow('Metade da tela',metadeTela)
         cv2.waitKey(1)
 
-
 def temporario():
-    cap = cv2.VideoCapture('DG_MINAS_ABANDONADAS.mp4') 
+    cap = cv2.VideoCapture('/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS.mp4') 
     porcentagem=50
+
     if (cap.isOpened()== False):  
         print("Error opening video  file") 
-        
     while(cap.isOpened()): 
         ret, frame = cap.read()
         alturaDesejada=frame.shape[0]*porcentagem/100
         larguraDesejada=frame.shape[1]*porcentagem/100
         frame=cv2.resize(frame,(int(larguraDesejada),int(alturaDesejada)))
-        frameCinza=retornaImagemCinza(frame)
-        frameLimiar=retornaImagemBinarizada(frameCinza)
-        imagemPreprocessada=preProcessamento(frame)
-        contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        imagemPreProcessada=retornaImagemCinza(frame)
+        imagemPreProcessada=retornaImagemBinarizada(imagemPreProcessada)
+        kernel=np.ones((13,13),np.uint8)
+        imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=4)
+        imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=3)
+        # imagemPreprocessada=preProcessamento(frame)
+        contornos,h1=cv2.findContours(imagemPreProcessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            if area>400 and area<800:#14500 de boa
-                x,y,l,a=cv2.boundingRect(cnt)
-                cv2.rectangle(frame,(x,y),(x+l,y+a),(0,255,0),2)
+            # if area>400 and area<800:#14500 de boa
+            x,y,l,a=cv2.boundingRect(cnt)
+            cv2.rectangle(frame,(x,y),(x+l,y+a),(0,255,0),2)
         # frameConcatenado=vconcat_resize([frame,imagemPreprocessada])
         if ret == True: 
             cv2.imshow('Frame', frame) 
-            cv2.imshow('Frame tratado', imagemPreprocessada) 
+            cv2.imshow('Frame tratado', imagemPreProcessada) 
             # cv2.imshow('Frame limiar', frameLimiar) 
-            if cv2.waitKey(25) & 0xFF == ord('q'): 
+            if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
                 break
         else:  
             break
@@ -307,4 +311,36 @@ def temporario():
     
     cv2.destroyAllWindows() 
 
-# temporario()
+def temporario2():
+    porcentagem=50
+    imagem=abre_imagem('/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS - frame.jpg')
+    alturaDesejada=imagem.shape[0]*porcentagem/100
+    larguraDesejada=imagem.shape[1]*porcentagem/100
+    imagem=cv2.resize(imagem,(int(larguraDesejada),int(alturaDesejada)))
+    while True:
+        nucleoBlur=int(input(f'Núcleo de desfoque:'))
+        nucleoDilate=int(input(f'Núcleo de dilate:'))
+        mix=int(input(f'Mínimo threshhold:'))
+        imagemCinza=retornaImagemCinza(imagem)
+        blur = cv2.GaussianBlur(imagemCinza, (nucleoBlur,nucleoBlur), 
+                        cv2.BORDER_DEFAULT)
+        ret, thresh = cv2.threshold(blur,mix, 255,
+                                cv2.THRESH_BINARY)
+        kernel=np.ones((nucleoDilate,nucleoDilate),np.uint8)
+        imagemPreProcessada=cv2.dilate(thresh,kernel,iterations=4)
+        imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=3)
+        # imagemPreprocessada=preProcessamento(frame)
+        contornos,h1=cv2.findContours(imagemPreProcessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        for cnt in contornos:
+            area=cv2.contourArea(cnt)
+            # if area>400 and area<800:#14500 de boa
+            x,y,l,a=cv2.boundingRect(cnt)
+            cv2.rectangle(imagemCinza,(x,y),(x+l,y+a),(0,255,0),2)
+
+        concatenada=retorna_imagem_concatenada(imagemCinza,imagemPreProcessada)
+        mostraImagem(0,concatenada,None)
+        # mostraImagem(0,imagemPreProcessada,None)
+        if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
+            break
+
+# temporario2()
