@@ -2107,19 +2107,15 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
 
 def retornaQuantidadeProdutoVendido(listaTextoCarta):
     x=0
+    quantidadeProduto=0
     for texto in listaTextoCarta:
-        if 'un' in texto.lower():
-            # print(f'un encontrado na posição: {x}, {listaTextoCarta[x]}')
+        if texto1PertenceTexto2('un',texto):
             quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x])
             if not quantidadeProduto.isdigit():
                 quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x-1])
-                if quantidadeProduto.isdigit():
-                    print(f'Digito encontrado em: {listaTextoCarta[x-1]}')
-                else:
+                if not quantidadeProduto.isdigit():
                     print(f'Não foi possível reconhecer a quantidade do produto.')
                     linhaSeparacao()
-            # else:
-                # print(f'Digito encontrado em: {listaTextoCarta[x]}')
             print(f'quantidadeProduto:{quantidadeProduto}')
         x+=1
     return int(quantidadeProduto)
