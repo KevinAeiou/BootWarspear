@@ -996,9 +996,9 @@ def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
             personagem[CHAVE_ESTADO]==1):
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(personagem)
     # print(f'{D}:Lista de personagens ativos:')
-    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-        # print(f'{D}:{personagem[CHAVE_NOME]}.')
-    linhaSeparacao()
+    # for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
+    #     # print(f'{D}:{personagem[CHAVE_NOME]}.')
+    # linhaSeparacao()
     return dicionarioPersonagem
 
 def buscaListaPersonagemAtivo(dicionarioUsuario):
@@ -1017,9 +1017,9 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
             dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
             dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
             # print(f'{D}:Atributos do dicionarioPersonagemAtributos:')
-            for chave in dicionarioPersonagemAtributos:
-                # print(f'{D}:{chave}.')
-            linhaSeparacao()
+            # for chave in dicionarioPersonagemAtributos:
+            #     # print(f'{D}:{chave}.')
+            # linhaSeparacao()
         else:#se houver pelo menos um personagem ativo
             dicionarioPersonagemAtributos=defineDicionarioPersonagemEmUso(dicionarioPersonagemAtributos)
             if variavelExiste(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
@@ -1033,9 +1033,9 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
                     dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
                     # print(f'{D}:Lista de personagem retirado:')
-                    for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:
-                        # print(f'{D}:{personagem[CHAVE_NOME]}.')
-                    linhaSeparacao()
+                    # for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:
+                    #     # print(f'{D}:{personagem[CHAVE_NOME]}.')
+                    # linhaSeparacao()
                     if (verificaErro(None)!=0 or(listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos) and
                          tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]))):
                         continue
@@ -1288,9 +1288,9 @@ def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
             else:
                 posicao+=1
     # print(f'{D}:Lista de personagem ativo após retirarverificado:')
-    for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
+    # for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
         # print(f'{D}:{personagem[CHAVE_NOME]}.')
-    linhaSeparacao()
+    # linhaSeparacao()
     return dicionarioPersonagemAtributos
 
 def defineDicionarioPersonagemEmUso(dicionarioPersonagem):

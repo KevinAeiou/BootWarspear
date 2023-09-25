@@ -225,57 +225,43 @@ def retornaImagemBinarizada(image):
     # print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
     return thresh
 
-def encontraContorno():
-    image = cv2.imread("modelo ps.jpg")
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    blur = cv2.GaussianBlur(gray, (5, 5), 
-                        cv2.BORDER_DEFAULT)
-    ret, thresh = cv2.threshold(blur, 200, 255,
-                            cv2.THRESH_BINARY_INV)
-    contours, heirarchies = cv2.findContours(
-    thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    blank = np.zeros(thresh.shape[:2], 
-                 dtype='uint8')
-    cv2.drawContours(blank, contours, -1, 
-                    (255, 0, 0), 1)
-    invertido=retornaImagemCoresInvertidas(blank)
-    cv2.imwrite("Invertido.png", invertido)
-
 def preProcessamento(imagem):
-    imagemPreProcessada=cv2.GaussianBlur(imagem,(1,1),0)
-    t_lower = 150  # Lower Threshold
-    t_upper = 300  # Upper threshold
-    imagemPreProcessada=cv2.Canny(imagemPreProcessada,t_lower,t_upper)
-    kernel=np.ones((3,3),np.uint8)
-    imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=1)
-    imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=1)
-    return imagemPreProcessada
+    imagem=retornaImagemCinza(imagem)
+    # imagem=cv2.GaussianBlur(imagem,(1,1),0)
+    # t_lower = 254  # Lower Threshold
+    # t_upper = 255  # Upper threshold
+    imagem=cv2.GaussianBlur(imagem,(3,3),0)
+    t_lower = 254  # Lower Threshold
+    t_upper = 255  # Upper threshold
+    imagem=cv2.Canny(imagem,t_lower,t_upper)
+    # kernel=np.ones((2,2),np.uint8)
+    # imagem=cv2.dilate(imagem,kernel,iterations=7)
+    # imagem=cv2.erode(imagem,kernel,iterations=7)
+    kernel=np.ones((2,2),np.uint8)
+    imagem=cv2.dilate(imagem,kernel,iterations=7)
+    imagem=cv2.erode(imagem,kernel,iterations=7)
+    return imagem
 
-def encontraContornoMenu():
-    porcentagem=20
+def encontraPersonagem():
     while True:
         screenshot=tira_screenshot()
         telaInteira=retorna_imagem_colorida(screenshot)
         metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
-        altura=telaInteira.shape[0]-(telaInteira.shape[0]*(porcentagem/100))
-        largura=telaInteira.shape[1]/2-(telaInteira.shape[1]/2*(porcentagem/100))
-        metadeTela=cv2.resize(metadeTela,(int(altura),int(largura)))
         imagemPreprocessada=preProcessamento(metadeTela)
-        imagemPreprocessada=cv2.resize(imagemPreprocessada,(int(altura),int(largura)))
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            if area>100 and area<2000:#14500 de boa
+            if area>100 and area<3000:#14500 de boa
                 x,y,l,a=cv2.boundingRect(cnt)
                 cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
-
         cv2.imshow('Metade da tela processada',imagemPreprocessada)
         cv2.imshow('Metade da tela',metadeTela)
-        cv2.waitKey(1)
+        if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
+            break
+    cv2.destroyAllWindows()
 
 def temporario():
-    cap = cv2.VideoCapture('/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS.mp4') 
+    cap = cv2.VideoCapture('/Users/HOZANA SOUZA/Videos/Captures/DG_TÚNEL_PROIBIDO.mp4') 
     porcentagem=50
 
     if (cap.isOpened()== False):  
@@ -285,22 +271,24 @@ def temporario():
         alturaDesejada=frame.shape[0]*porcentagem/100
         larguraDesejada=frame.shape[1]*porcentagem/100
         frame=cv2.resize(frame,(int(larguraDesejada),int(alturaDesejada)))
-        imagemPreProcessada=retornaImagemCinza(frame)
-        imagemPreProcessada=retornaImagemBinarizada(imagemPreProcessada)
-        kernel=np.ones((13,13),np.uint8)
-        imagemPreProcessada=cv2.dilate(imagemPreProcessada,kernel,iterations=4)
-        imagemPreProcessada=cv2.erode(imagemPreProcessada,kernel,iterations=3)
+        imagem=retornaImagemCinza(frame)
+        t_lower = 160  # Lower Threshold
+        t_upper = 255  # Upper threshold
+        imagem=cv2.Canny(imagem,t_lower,t_upper)
+        kernel=np.ones((2,2),np.uint8)
+        imagem=cv2.dilate(imagem,kernel,iterations=9)
+        imagem=cv2.erode(imagem,kernel,iterations=9)
         # imagemPreprocessada=preProcessamento(frame)
-        contornos,h1=cv2.findContours(imagemPreProcessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        contornos,h1=cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            # if area>400 and area<800:#14500 de boa
-            x,y,l,a=cv2.boundingRect(cnt)
-            cv2.rectangle(frame,(x,y),(x+l,y+a),(0,255,0),2)
+            if area>300 and area<1000:#14500 de boa
+                x,y,l,a=cv2.boundingRect(cnt)
+                cv2.rectangle(frame,(x,y),(x+l,y+a),(0,255,0),2)
         # frameConcatenado=vconcat_resize([frame,imagemPreprocessada])
         if ret == True: 
             cv2.imshow('Frame', frame) 
-            cv2.imshow('Frame tratado', imagemPreProcessada) 
+            cv2.imshow('Frame tratado', imagem) 
             # cv2.imshow('Frame limiar', frameLimiar) 
             if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
                 break
@@ -343,4 +331,4 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# temporario2()
+encontraPersonagem()
