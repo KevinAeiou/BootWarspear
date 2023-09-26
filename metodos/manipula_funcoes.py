@@ -1030,16 +1030,16 @@ def buscaListaPersonagemAtivo(dicionarioUsuario):
                 linhaSeparacao()
                 dicionarioPersonagemAtributos=iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
                 if dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]:
-                    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
-                    dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
                     # print(f'{D}:Lista de personagem retirado:')
                     # for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:
                     #     # print(f'{D}:{personagem[CHAVE_NOME]}.')
                     # linhaSeparacao()
                     if (verificaErro(None)!=0 or(listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos) and
-                         tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]))):
+                        tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]))):
                         continue
                     else:
+                        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
+                        dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
                         clickMouseEsquerdo(1,2,35)
                         deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL],dicionarioPersonagemAtributos)
                 else:
