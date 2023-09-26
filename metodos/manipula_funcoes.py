@@ -1445,8 +1445,12 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                         saiProfissaoVerificada(dicionarioTrabalho)
                                     else:
                                         dicionarioPersonagemAtributos,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                                    if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
+                                        break
                         else:
                             dicionarioPersonagemAtributos,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                            if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
+                                break
                         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                                 if retornaEstadoTrabalho()==concluido:
