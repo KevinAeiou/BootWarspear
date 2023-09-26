@@ -574,7 +574,7 @@ def primeiraBusca(dicionarioTrabalho):
     return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]==-1
 
 def limpaRuidoTexto(texto):
-    return unidecode(texto).replace(' ','').lower()
+    return unidecode(texto).replace(' ','').replace('-','').lower()
 
 def retiraDigitos(texto):
     listaDigitos=['0','1','2','3','4','5','6','7','8','9']
@@ -2315,7 +2315,16 @@ def deleta_item_lista():
     print(f'{lista}')
 
 def funcao_teste(dicionarioUsuario):
-    dicionarioTrabalho={CHAVE_LICENCA:None}
+    trabalhoComumDesejado={CHAVE_NOME:'Anel-sinete sombrio',
+                           CHAVE_RARIDADE:'comum',
+                           CHAVE_PROFISSAO:'aneis',
+                           CHAVE_ESTADO:0}
+    dicionarioTrabalho={CHAVE_CONFIRMACAO:True,
+    CHAVE_POSICAO_TRABALHO_COMUM:-1,
+    CHAVE_PROFISSAO:'aneis',
+    CHAVE_LISTA_TRABALHO_COMUM:[trabalhoComumDesejado],
+    CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
+    }
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
@@ -2324,14 +2333,14 @@ def funcao_teste(dicionarioUsuario):
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
         # print(retornaTextoSair())
-        dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
-        linhaSeparacao()
-        dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
-        defineDicionarioPersonagemEmUso(dicionarioPersonagem)
+        # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
+        # linhaSeparacao()
+        # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
+        # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
+        defineChaveDicionarioTrabalhoComum(dicionarioTrabalho)
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
         # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
-        # dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
         # retornaTipoErro()
         # telaInteira=retornaAtualizacaoTela()
         # frameTela=telaInteira[263:263+46,284:284+46]
@@ -2413,8 +2422,6 @@ def funcao_teste(dicionarioUsuario):
         # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
-        # retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-        # dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         # confirmaNomeTrabalho(dicionarioTrabalho,1)
         click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
