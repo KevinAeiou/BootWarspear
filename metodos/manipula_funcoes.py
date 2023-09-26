@@ -1525,8 +1525,8 @@ def tamanhoIgualZero(lista):
 def chaveUnicaConexaoForVerdadeira(dicionarioPersonagem):
     return dicionarioPersonagem[CHAVE_UNICA_CONEXAO]
 
-def chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
-    return dicionarioPersonagem[CHAVE_CONFIRMACAO]
+def chaveConfirmacaoForVerdadeira(dicionario):
+    return dicionario[CHAVE_CONFIRMACAO]
 
 def naoEstiverMenuProduzir(menu):
     return menu!=menu_produzir
@@ -1600,7 +1600,6 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
             dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
             if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
                 dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-                # # print(f'{D}:trataErros:CHAVE_CONFIRMACAO=False')
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
         elif erro==erroSemEspacosProducao or erro==erroOutraConexao or erro==erroConectando or erro==erroRestaurandoConexao:
             dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
