@@ -249,9 +249,9 @@ def defineListaDicionarioPersonagem(dicionarioPersonagem):
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    print(f'{D}:Lista de personagens:')
-    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        print(f'{D}:{personagem[CHAVE_NOME]}.')
+    # print(f'{D}:Lista de personagens:')
+    # for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+    #     print(f'{D}:{personagem[CHAVE_NOME]}.')
     return dicionarioPersonagem
 
 def modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,novoEstado):
