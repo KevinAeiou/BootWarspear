@@ -1443,11 +1443,11 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                         if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]):
                                             saiProfissaoVerificada(dicionarioTrabalho)
                                         else:
-                                            dicionarioPersonagemAtributos,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                                            dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
                                             if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                                 break
                             else:
-                                dicionarioPersonagemAtributos,dicionarioTrabalho=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                                dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
                         else:
@@ -1489,12 +1489,12 @@ def saiProfissaoVerificada(dicionarioTrabalho):
     clickEspecifico(1,'left')
     linhaSeparacao()
 
-def buscaTrabalhoComum(dicionarioPersonagem, dicionarioTrabalho):
+def buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagem):
     dicionarioTrabalho=defineChaveDicionarioTrabalhoComum(dicionarioTrabalho)
     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
         dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
         linhaSeparacao()
-    return dicionarioPersonagem,dicionarioTrabalho
+    return dicionarioTrabalho,dicionarioPersonagem
 
 def reconheceTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     yinicialNome=(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]*70)+285
@@ -1622,6 +1622,7 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
     return dicionarioTrabalho,dicionarioPersonagem
 
 def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
+    print(f'Tratando possíveis menus...')
     dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     while True:
         menu=retornaMenu()
@@ -1743,7 +1744,7 @@ def recebeTodasRecompensas(menu):
 def recuperaPresente():
     evento=0
     print(f'Buscando recompensa diária...')
-    while evento<1:
+    while evento<2:
         telaInteira=retornaAtualizacaoTela()
         metadeAltura=telaInteira.shape[0]//2
         metadeLargura=telaInteira.shape[1]//4
