@@ -2,6 +2,7 @@ import socket
 import requests
 import json
 import time
+import uuid 
 from lista_chaves import *
 
 link_database = 'https://bootwarspear-default-rtdb.firebaseio.com/'
@@ -345,6 +346,17 @@ def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
                 print('____________________________________________')
         else:
             print(f'Fim da lista.')
+
+def adicionaNovaProfissao(dicionarioPersonagem,novaProfissao):
+    tamanho=len(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO])
+    random=uuid.uuid1()
+    id=str(tamanho)+random.hex
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
+    requisicao=retornaRequisicao(POST,caminhoRequisicao,novaProfissao)
+    if requisicao:
+        print(f'{novaProfissao[CHAVE_NOME]} foi adicionada ao personagem {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME]} com sucesso.')
+    else:
+        print(f'Erro ao adicionar nova profissão!')
 # 0iQB1H7srqXMiufTR4HzqYQPj71hz
 # adicionaAtributoRecorrencia()
 # print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))

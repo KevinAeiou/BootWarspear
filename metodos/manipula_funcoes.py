@@ -1568,8 +1568,8 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
 
 def recuperaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioTrabalho={}
-    tela_inteira=retornaAtualizacaoTela()
-    frameNomeTrabalho=tela_inteira[285:285+37, 233:486]
+    telaInteira=retornaAtualizacaoTela()
+    frameNomeTrabalho=telaInteira[285:285+37, 233:486]
     if verificaErro(None)==0:
         nomeTrabalhoConcluido=reconheceTexto(frameNomeTrabalho)
         clickEspecifico(1,'down')
@@ -2297,6 +2297,22 @@ def salva_imagem():
     imagem_trabalho = tela_inteira[486:486+45,181:181+43]
     cv2.imwrite('imagem_produzir.png', imagem_trabalho)
 
+def implementaNovaProfissao(dicionarioPersonagem):
+    novaProfissao={CHAVE_NOME:'Braceletes'}
+    print(f'Implementando profissao: {novaProfissao[CHAVE_NOME]}.')
+    dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioPersonagem)
+    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+        dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
+        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+        for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+            if textoEhIgual(profissao[CHAVE_NOME],'Braceletes'):
+                break
+        else:
+            adicionaNovaProfissao(dicionarioPersonagem,novaProfissao)
+    else:
+        print(f'Processo concluído com sucesso!!')
+    linhaSeparacao()
+
 def verifica_valor_numerico(valor):
     return valor.isdigit()
 
@@ -2338,12 +2354,13 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
+        implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
         # linhaSeparacao()
         # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
         # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
-        defineChaveDicionarioTrabalhoComum(dicionarioTrabalho)
+        # defineChaveDicionarioTrabalhoComum(dicionarioTrabalho)
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
         # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
