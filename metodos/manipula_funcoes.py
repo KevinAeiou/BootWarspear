@@ -470,19 +470,19 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
         dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
     return dicionarioTrabalho
 
-def retornaListaDicionarioTrabalhoComum(dicionarioTrabalho):
-    listaDicionariosTrabalhosComunsDesejados=[]
+def retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
+    listaDicionariosTrabalhosComunsMelhoradosDesejados=[]
     print(f'Buscando trabalho comum na lista...')
     for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-        if raridadeTrabalhoEComum(trabalhoDesejado):
-            print(f'Trabalho comum encontado: {trabalhoDesejado[CHAVE_NOME]}.')
+        if raridadeTrabalhoEhComum(trabalhoDesejado)or raridadeTrabalhoEhMelhorado(trabalhoDesejado):
+            print(f'Trabalho comum/melhorado encontado: {trabalhoDesejado[CHAVE_NOME]}.')
             linhaSeparacao()
-            listaDicionariosTrabalhosComunsDesejados.append(trabalhoDesejado)
-    if tamanhoIgualZero(listaDicionariosTrabalhosComunsDesejados):
+            listaDicionariosTrabalhosComunsMelhoradosDesejados.append(trabalhoDesejado)
+    if tamanhoIgualZero(listaDicionariosTrabalhosComunsMelhoradosDesejados):
         print(f'Nem um trabaho comum na lista!')
         linhaSeparacao()
-    dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]=listaDicionariosTrabalhosComunsDesejados
+    dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM_MELHORADO]=listaDicionariosTrabalhosComunsMelhoradosDesejados
     return dicionarioTrabalho
 
 def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade):
@@ -516,7 +516,7 @@ def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
             nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(530,1)
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
-            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]:
+            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM_MELHORADO]:
                 if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, dicionarioTrabalhoDesejado):
                     print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
                     if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
@@ -549,7 +549,7 @@ def textoReconhecidoPertenceTextoDicionario(textoReconhecido, dicionario):
     return texto1PertenceTexto2(textoReconhecido[3:-3],dicionario[CHAVE_NOME].replace('-',''))
 
 def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
-    return raridadeTrabalhoEComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
+    return raridadeTrabalhoEhComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
 
 def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
     return trabalhoListaDesejo[CHAVE_ESTADO]==para_produzir
@@ -557,8 +557,11 @@ def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
 def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
     return textoEhIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
 
-def raridadeTrabalhoEComum(trabalhoListaDesejo):
+def raridadeTrabalhoEhComum(trabalhoListaDesejo):
     return textoEhIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'comum')
+
+def raridadeTrabalhoEhMelhorado(trabalhoListaDesejo):
+    return textoEhIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'melhorado')
 
 def texto1PertenceTexto2(texto1,texto2):
     # # print(f'{D}:{texto1} pertence a {texto2}?')
@@ -1427,7 +1430,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                         entraProfissaoEspecifica(profissaoVerificada[CHAVE_POSICAO])
                         dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
                         if not tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]):
-                            dicionarioTrabalho=retornaListaDicionarioTrabalhoComum(dicionarioTrabalho)
+                            dicionarioTrabalho=retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
                             if not textoEhIgual(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE],'comum'):
                                 dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]=0
                                 while naoFizerQuatroVerificacoes(dicionarioTrabalho)and dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
@@ -1440,14 +1443,14 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                     linhaSeparacao()
                                 else:
                                     if dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]==None:
-                                        if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM]):
+                                        if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM_MELHORADO]):
                                             saiProfissaoVerificada(dicionarioTrabalho)
                                         else:
-                                            dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                                            dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                             if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                                 break
                             else:
-                                dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                                dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
                         else:
@@ -1756,39 +1759,50 @@ def recuperaPresente():
         y=metadeAltura-aux
         larguraFrame=150
         for x in range(8):
-            frameTela=telaInteira[y:y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
+            # frameTela=telaInteira[y:y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
+            frameTela=telaInteira[123:754,331:488]
             frameTratado=retornaImagemCinza(frameTela)
             frameTratado=retornaImagemBinarizada(frameTratado)
-            contadorPixelPreto=np.sum(frameTratado==0)
-            print(f'Contador pixel preto: {contadorPixelPreto}.')
-            mostraImagem(0,frameTratado,None)
-            if existemPixelsSuficientes(contadorPixelPreto):
-                textoReconhecido=reconheceTexto(frameTratado)
-                # mostra_imagem(0,frameTratado,None)
-                if variavelExiste(textoReconhecido):
-                    print(f'Texto reconhecido: {textoReconhecido}.')
-                    if textoEhIgual(textoReconhecido,'pegar'):
-                        centroX=metadeLargura+larguraFrame//2
-                        centroY=y+alturaFrame//2
-                        clickMouseEsquerdo(1,centroX,centroY)
-                        posicionaMouseEsquerdo(telaInteira.shape[1]//2,metadeAltura)
-                        if verificaErro(None)!=0:
-                            evento=2
-                            break
-                        clickEspecifico(1,'f2')
-                        clickContinuo(8,'up')
-                        clickEspecifico(1,'left')
-                        linhaSeparacao()
-                        break
-                    elif texto1PertenceTexto2('pegarem',textoReconhecido):
-                        clickContinuo(8,'up')
-                        clickEspecifico(1,'left')
-                        linhaSeparacao()
-                        break
-                else:
-                    print(f'Ocorreu algum erro ao reconhecer presente!')
-                    linhaSeparacao()
-            y+=80
+            kernel=np.ones((2,2),np.uint8)
+            frameTratado=retornaImagemDitalata(frameTratado,kernel,5)
+            # frameTratado=retornaImagemErodida(frameTratado,kernel,1)
+            contornos,h1=cv2.findContours(frameTratado,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+            for cnt in contornos:
+                area=cv2.contourArea(cnt)
+                # if area>100 and area<3000:#14500 de boa
+                x,y,l,a=cv2.boundingRect(cnt)
+                cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
+            mostraImagem(0,frameTratado,'Frame tela binarizado')
+            mostraImagem(0,frameTela,'Frame tela')
+            # contadorPixelPreto=np.sum(frameTratado==0)
+            # print(f'Contador pixel preto: {contadorPixelPreto}.')
+            # if existemPixelsSuficientes(contadorPixelPreto):
+            #     textoReconhecido=reconheceTexto(frameTratado)
+            #     # mostra_imagem(0,frameTratado,None)
+            #     if variavelExiste(textoReconhecido):
+            #         print(f'Texto reconhecido: {textoReconhecido}.')
+            #         if textoEhIgual(textoReconhecido,'pegar'):
+            #             centroX=metadeLargura+larguraFrame//2
+            #             centroY=y+alturaFrame//2
+            #             clickMouseEsquerdo(1,centroX,centroY)
+            #             posicionaMouseEsquerdo(telaInteira.shape[1]//2,metadeAltura)
+            #             if verificaErro(None)!=0:
+            #                 evento=2
+            #                 break
+            #             clickEspecifico(1,'f2')
+            #             clickContinuo(8,'up')
+            #             clickEspecifico(1,'left')
+            #             linhaSeparacao()
+            #             break
+            #         elif texto1PertenceTexto2('pegarem',textoReconhecido):
+            #             clickContinuo(8,'up')
+            #             clickEspecifico(1,'left')
+            #             linhaSeparacao()
+            #             break
+            #     else:
+            #         print(f'Ocorreu algum erro ao reconhecer presente!')
+            #         linhaSeparacao()
+            # y+=80
         evento+=1
     clickEspecifico(2,'f1')
 
@@ -2364,7 +2378,7 @@ def funcao_teste(dicionarioUsuario):
     dicionarioTrabalho={CHAVE_CONFIRMACAO:True,
     CHAVE_POSICAO_TRABALHO_COMUM:-1,
     CHAVE_PROFISSAO:'aneis',
-    CHAVE_LISTA_TRABALHO_COMUM:[trabalhoComumDesejado],
+    CHAVE_LISTA_TRABALHO_COMUM_MELHORADO:[trabalhoComumDesejado],
     CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
     }
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],

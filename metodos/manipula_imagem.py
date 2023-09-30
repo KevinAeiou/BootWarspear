@@ -219,11 +219,17 @@ def retornaImagemBinarizada(image):
                         cv2.BORDER_DEFAULT)
     ret, thresh = cv2.threshold(blur, 180, 255,
                             cv2.THRESH_BINARY_INV)
-    # ret, thresh = cv2.threshold(blur,120, 255,
+    # ret, thresh = cv2.threshold(blur,180, 255,
     #                         cv2.THRESH_BINARY)
     fim = time.time()
     # print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
     return thresh
+
+def retornaImagemDitalata(imagem,kernel,iteracoes):
+    return cv2.dilate(imagem,kernel,iterations=iteracoes)
+
+def retornaImagemErodida(imagem,kernel,iteracoes):
+    return cv2.erode(imagem,kernel,iterations=iteracoes)
 
 def preProcessamento(imagem):
     imagem=retornaImagemCinza(imagem)
@@ -238,8 +244,8 @@ def preProcessamento(imagem):
     # imagem=cv2.dilate(imagem,kernel,iterations=7)
     # imagem=cv2.erode(imagem,kernel,iterations=7)
     kernel=np.ones((2,2),np.uint8)
-    imagem=cv2.dilate(imagem,kernel,iterations=7)
-    imagem=cv2.erode(imagem,kernel,iterations=7)
+    imagem=retornaImagemDitalata(imagem,kernel,7)
+    imagem=retornaImagemErodida(imagem,kernel,7)
     return imagem
 
 def encontraPersonagem():
