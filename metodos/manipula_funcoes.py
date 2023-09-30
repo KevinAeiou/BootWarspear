@@ -89,7 +89,7 @@ def atualizaListaProfissao(dicionarioPersonagem):
     yinicialProfissao=285
     print(f'Atualizando lista de profissões...')
     linhaSeparacao()
-    for x in range(8):
+    for x in range(9):
         if ehQuartaVerificacao(x):
             clickEspecifico(5,'down')
             yinicialProfissao=529
@@ -1750,7 +1750,8 @@ def recuperaPresente():
         metadeLargura=telaInteira.shape[1]//4
         alturaFrame=80
         y=123
-        y=95
+        # y=95
+        y=71
         aux=metadeAltura-y
         y=metadeAltura-aux
         larguraFrame=150
@@ -1759,8 +1760,8 @@ def recuperaPresente():
             frameTratado=retornaImagemCinza(frameTela)
             frameTratado=retornaImagemBinarizada(frameTratado)
             contadorPixelPreto=np.sum(frameTratado==0)
-            # print(f'Contador pixel preto: {contadorPixelPreto}.')
-            # mostraImagem(0,frameTratado,None)
+            print(f'Contador pixel preto: {contadorPixelPreto}.')
+            mostraImagem(0,frameTratado,None)
             if existemPixelsSuficientes(contadorPixelPreto):
                 textoReconhecido=reconheceTexto(frameTratado)
                 # mostra_imagem(0,frameTratado,None)
@@ -2313,6 +2314,25 @@ def implementaNovaProfissao(dicionarioPersonagem):
         print(f'Processo concluído com sucesso!!')
     linhaSeparacao()
 
+def defineRaridadeTrabalho(raridade='Melhorado'):
+    listaPalavraChave=[]
+    palavraChave=''
+    listaTrabalhos=retornaListaDicionariosTrabalhos()
+    listaTrabalhos=sorted(listaTrabalhos,key=lambda dicionario:(dicionario[CHAVE_PROFISSAO],dicionario[CHAVE_NOME]))
+    while not textoEhIgual(palavraChave,'p'):
+        palavraChave=input(f'Palavra chave ["p" para parar]:')
+        if textoEhIgual(palavraChave,'p'):
+            continue
+        listaPalavraChave.append(palavraChave)
+    if not tamanhoIgualZero(listaPalavraChave):
+        for trabalho in listaTrabalhos:
+            if not textoEhIgual(trabalho[CHAVE_RARIDADE],raridade):
+                for palavraChave in listaPalavraChave:
+                    if texto1PertenceTexto2(palavraChave,trabalho[CHAVE_NOME]):
+                        modificaRaridadeTrabalho(trabalho,raridade)
+            # print(f'{D}:{trabalho[CHAVE_PROFISSAO]}-{trabalho[CHAVE_NOME]}.')
+    linhaSeparacao()
+
 def verifica_valor_numerico(valor):
     return valor.isdigit()
 
@@ -2354,7 +2374,8 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
-        implementaNovaProfissao(dicionarioPersonagem)
+        # defineRaridadeTrabalho()
+        # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
         # linhaSeparacao()
@@ -2442,7 +2463,7 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        # recuperaPresente()
+        recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
         # confirmaNomeTrabalho(dicionarioTrabalho,1)

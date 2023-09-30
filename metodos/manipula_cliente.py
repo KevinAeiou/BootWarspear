@@ -313,7 +313,7 @@ def muda_quantidade_personagem(usuario_id,nova_quantidade):
     dados={'personagem_ativo':nova_quantidade}
     caminhoRequisicao=f'{link_database}/Usuarios/{usuario_id}/.json'
     requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-    if requisicao!=None:
+    if requisicao:
         return True
     return False
 
@@ -357,6 +357,15 @@ def adicionaNovaProfissao(dicionarioPersonagem,novaProfissao):
         print(f'{novaProfissao[CHAVE_NOME]} foi adicionada ao personagem {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME]} com sucesso.')
     else:
         print(f'Erro ao adicionar nova profissão!')
+
+def modificaRaridadeTrabalho(dicionarioTrabalho,raridade):
+    caminhoRequisicao=f'{link_database}/Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+    dados={'raridade':raridade}
+    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+    if requisicao:
+        print(f'Raridade de {dicionarioTrabalho[CHAVE_PROFISSAO]}:{dicionarioTrabalho[CHAVE_NOME]} modificado para {raridade}.')
+    else:
+        print(f'Erro ao modificar raridade de {dicionarioTrabalho[CHAVE_NOME]}.')
 # 0iQB1H7srqXMiufTR4HzqYQPj71hz
 # adicionaAtributoRecorrencia()
 # print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))
