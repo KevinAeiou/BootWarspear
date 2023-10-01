@@ -291,6 +291,7 @@ def detecta_movimento_teste():
 def mostraLista(listaDicionarios):
     x=1
     for dicionario in listaDicionarios:
+        # print(f'{x} - {dicionario[CHAVE_NIVEL]}:{dicionario[CHAVE_NOME]}.')
         print(f'{x} - {dicionario[CHAVE_NOME]}.')
         x+=1
     print(f'0 - Voltar.')
@@ -486,11 +487,13 @@ def retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
 
 def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade):
     listaDicionariosTrabalhosBuscados=[]
+    listaDicionariosTrabalhosBuscadosOrdenados=[]
     for dicionarioTrabalho in listaDicionariosTrabalhos:
         if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO],profissao)and
             textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],raridade)):
             listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
-    return listaDicionariosTrabalhosBuscados
+    listaDicionariosTrabalhosBuscadosOrdenados=sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
+    return listaDicionariosTrabalhosBuscadosOrdenados
 
 def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
@@ -2331,23 +2334,67 @@ def implementaNovaProfissao(dicionarioPersonagem):
         print(f'Processo concluído com sucesso!!')
     linhaSeparacao()
 
-def defineRaridadeTrabalho(raridade='Melhorado'):
-    listaPalavraChave=[]
-    palavraChave=''
-    listaTrabalhos=retornaListaDicionariosTrabalhos()
-    listaTrabalhos=sorted(listaTrabalhos,key=lambda dicionario:(dicionario[CHAVE_PROFISSAO],dicionario[CHAVE_NOME]))
-    while not textoEhIgual(palavraChave,'p'):
-        palavraChave=input(f'Palavra chave ["p" para parar]:')
-        if textoEhIgual(palavraChave,'p'):
-            continue
-        listaPalavraChave.append(palavraChave)
-    if not tamanhoIgualZero(listaPalavraChave):
-        for trabalho in listaTrabalhos:
-            if not textoEhIgual(trabalho[CHAVE_RARIDADE],raridade):
-                for palavraChave in listaPalavraChave:
-                    if texto1PertenceTexto2(palavraChave,trabalho[CHAVE_NOME]):
-                        modificaRaridadeTrabalho(trabalho,raridade)
-            # print(f'{D}:{trabalho[CHAVE_PROFISSAO]}-{trabalho[CHAVE_NOME]}.')
+def defineRaridadeTrabalho(dicionarioUsuario,raridade='Melhorado'):
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
+    if not tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]):  
+        mostraLista(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO])
+        opcaoProfissao=input('Profissão escolhida: ')
+        linhaSeparacao()
+        while not opcaoProfissao.isdigit() or int(opcaoProfissao)<0 or int(opcaoProfissao)>len(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]):
+            print(f'Opção inválida! Selecione uma das opções.')
+            opcaoProfissao=input(f'Sua escolha: ')
+            linhaSeparacao()
+        else:
+            opcaoProfissao=int(opcaoProfissao)
+            if opcaoProfissao==0:
+                return None
+            else:
+                x=1
+                for profissao in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+                    if x==opcaoProfissao:
+                        profissaoEscolhida=profissao[CHAVE_NOME]
+                        break
+                    x+=1
+                while True:
+                    dicionarioTrabalho={}
+                    listaDicionariosTrabalhos=retornaListaDicionariosTrabalhos()
+                    if not tamanhoIgualZero(listaDicionariosTrabalhos):
+                        listaDicionariosTrabalhosBuscados=retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissaoEscolhida,'comum')
+                        if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
+                            x=1
+                            for dicionario in listaDicionariosTrabalhosBuscados:
+                                print(f'{x} - {dicionario[CHAVE_NIVEL]}:{dicionario[CHAVE_NOME]}.')
+                                x+=1
+                            print(f'0 - Voltar.')
+                            opcaoTrabalho=input(f'Trabalho escolhido: ')
+                            linhaSeparacao()
+                            while not opcaoTrabalho.isdigit() or int(opcaoTrabalho)<0 or int(opcaoTrabalho)>len(listaDicionariosTrabalhosBuscados):
+                                print(f'Opção inválida! Selecione uma das opções.')
+                                opcaoTrabalho=input(f'Sua escolha: ')
+                                linhaSeparacao()
+                            else:
+                                opcaoTrabalho=int(opcaoTrabalho)
+                                if opcaoTrabalho==0:
+                                    dicionarioTrabalho={}
+                                    break
+                                else:
+                                    x=1
+                                    for trabalho in listaDicionariosTrabalhosBuscados:
+                                        if x==opcaoTrabalho:
+                                            dicionarioTrabalho=trabalho
+                                            dicionarioTrabalho[CHAVE_RARIDADE]='comum'
+                                            dicionarioTrabalho[CHAVE_PROFISSAO]=profissaoEscolhida
+                                            break
+                                        x+=1
+                                    modificaRaridadeTrabalho(dicionarioTrabalho,raridade='Melhorado')
+                                    # print(f'Modifica raridade de {dicionarioTrabalho[CHAVE_NOME]} para "Melhorado".')
+                                    linhaSeparacao()
+                        else:
+                            print(f'Lista de vazia!')
+                            linhaSeparacao()
+                    else:
+                        print(f'Lista de vazia!')
+                        linhaSeparacao()
     linhaSeparacao()
 
 def adicionaAtributoIdTrabalho():
@@ -2400,7 +2447,7 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
-        # defineRaridadeTrabalho()
+        defineRaridadeTrabalho(dicionarioUsuario)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
@@ -2489,7 +2536,7 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        adicionaAtributoIdTrabalho()
+        # adicionaAtributoIdTrabalho()
         # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
