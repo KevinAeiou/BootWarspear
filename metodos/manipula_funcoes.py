@@ -1553,7 +1553,7 @@ def estaMenuInicial(menu):
 def melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho):
     if not trabalhoEProducaoRecursos(dicionarioTrabalho):
         if raridadeTrabalhoEhComum(dicionarioTrabalho)or raridadeTrabalhoEhMelhorado(dicionarioTrabalho):
-
+            
             pass
 
 def verificaTrabalhoConcluido(dicionarioPersonagem):
@@ -1570,7 +1570,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
             modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
             dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
-        melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
+        # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
     return dicionarioPersonagem
 
 def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
