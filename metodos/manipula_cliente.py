@@ -136,7 +136,15 @@ def cadastraNovoTrabalho(dicionarioTrabalho):
     if requisicao!=None:
         dicionarioRequisicao=requisicao.json()
         if dicionarioRequisicao!=None:
-            print(f'{dicionarioTrabalho} foi adicionado.')
+            dados={'id':dicionarioRequisicao['name']}
+            caminhoRequisicao=f'{link_database}/Lista_trabalhos/{dicionarioRequisicao["name"]}/.json'
+            requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+            if requisicao!=None:
+                print(f'{dicionarioTrabalho} foi adicionado.')
+            else:
+                print(f'Erro ao cadastrar novo trabalho!')
+                caminhoRequisicao=f'{link_database}/Lista_trabalhos/{dicionarioRequisicao["name"]}/.json'
+                requisicao=retornaRequisicao(DELETE,caminhoRequisicao,None)
         else:
             print(f'Resultado da dicionario: {dicionarioRequisicao}.')
     else:
@@ -199,13 +207,15 @@ def retornaListaDicionariosTrabalhos():
         dicionarioRequisicao=requisicao.json()
         if dicionarioRequisicao!=None:
             for trabalhoId in dicionarioRequisicao:
-                listaDicionariosTrabalhos.append(dicionarioRequisicao[trabalhoId])
+                dicionarioTrabalho=dicionarioRequisicao[trabalhoId]
+                dicionarioTrabalho[CHAVE_ID]=trabalhoId
+                listaDicionariosTrabalhos.append(dicionarioTrabalho)
             listaDicionariosOrdenada=sorted(listaDicionariosTrabalhos,key=lambda dicionario:dicionario[CHAVE_NOME])
         else:
             print(f'Resultado do dicionário: {dicionarioRequisicao}.')
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    return listaDicionariosOrdenada
+    return listaDicionariosTrabalhos
 
 def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
     listaDicionarioTrabalhoDesejado=[]
@@ -346,6 +356,14 @@ def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
                 print('____________________________________________')
         else:
             print(f'Fim da lista.')
+def adicionaAtributoId(trabalho):
+    dados={'id':trabalho[CHAVE_ID]}
+    caminhoRequisicao=f'{link_database}/Lista_trabalhos/{trabalho[CHAVE_ID]}/.json'
+    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+    if requisicao:
+        print(f'Adicionado com sucesso!')
+    else:
+        print(f'Erro ao adicionar atributo id!')
 
 def adicionaNovaProfissao(dicionarioPersonagem,novaProfissao):
     tamanho=len(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO])

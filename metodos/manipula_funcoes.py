@@ -612,7 +612,9 @@ def trabalhoEProducaoRecursos(dicionarioTrabalhoLista):
         'adquirirpinçadoaprendiz','extraçãodejadebruta','recebendoenergiainicial',
         'adquirirpinçasdoprincipiante','extraçãodeônixextraordinária','recebendoéterinicial',
         'adquirirfuradordoaprendiz','produzindotecidodelicado','extraçãodesubstânciainstável',
-        'adquirirfuradordoprincipiante','produzindotecidodenso','extraçãodesubstânciaestável']
+        'adquirirfuradordoprincipiante','produzindotecidodenso','extraçãodesubstânciaestável',
+        'recebendofibradebronze','recebendoprata','recebendoinsígniadeestudante',
+        'recebendofibradeplatina','recebendoâmbar','recebendodistinticodeaprendiz']
     for recurso in listaProducaoRecurso:
         if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME]):
             confirmacao=True
@@ -1548,26 +1550,30 @@ def vaiParaMenuCorrespondencia():
 def estaMenuInicial(menu):
     return menu==menu_inicial
 
+def melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho):
+    if not trabalhoEProducaoRecursos(dicionarioTrabalho):
+        if raridadeTrabalhoEhComum(dicionarioTrabalho)or raridadeTrabalhoEhMelhorado(dicionarioTrabalho):
+
+            pass
+
 def verificaTrabalhoConcluido(dicionarioPersonagem):
-    dicionarioPersonagem,dicionarioTrabalho=recuperaTrabalhoConcluido(dicionarioPersonagem)
+    dicionarioPersonagem,dicionarioTrabalho=defineDicionarioTrabalhoConcluido(dicionarioPersonagem)
     if not tamanhoIgualZero(dicionarioTrabalho):
         listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
         if dicionarioTrabalho[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
             excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho)
-            linhaSeparacao()
         else:
             print(f'Trabalho sem recorrencia.')
-            modificaEstadoTrabalho(dicionarioPersonagem,
-                                    dicionarioTrabalho,
-                                    2)
-            linhaSeparacao()
+            modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,2)
+        linhaSeparacao()
         if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
             modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
             dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
+        melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
     return dicionarioPersonagem
 
-def recuperaTrabalhoConcluido(dicionarioPersonagem):
+def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
     dicionarioTrabalho={}
     telaInteira=retornaAtualizacaoTela()
     frameNomeTrabalho=telaInteira[285:285+37, 233:486]
@@ -1580,14 +1586,13 @@ def recuperaTrabalhoConcluido(dicionarioPersonagem):
             if verificaErro(None)==0:
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
-                    # # print(f'{D}:CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
                 listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
-                    for dicionarioTrabalhoProduzindo in listaDicionarioTrabalhoDesejado:
-                        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],dicionarioTrabalhoProduzindo[CHAVE_NOME])and
-                            dicionarioTrabalhoProduzindo[CHAVE_ESTADO]==produzindo):
-                            dicionarioTrabalho=dicionarioTrabalhoProduzindo
-                            print(f'{dicionarioTrabalhoProduzindo[CHAVE_NOME]} recuperado.')
+                    for dicionarioTrabalhoDesejado in listaDicionarioTrabalhoDesejado:
+                        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],dicionarioTrabalhoDesejado[CHAVE_NOME])and
+                            dicionarioTrabalhoDesejado[CHAVE_ESTADO]==produzindo):
+                            dicionarioTrabalho=dicionarioTrabalhoDesejado
+                            print(f'{dicionarioTrabalhoDesejado[CHAVE_NOME]} recuperado.')
                             break
                 clickContinuo(1,'up')
                 linhaSeparacao()
@@ -2345,6 +2350,15 @@ def defineRaridadeTrabalho(raridade='Melhorado'):
             # print(f'{D}:{trabalho[CHAVE_PROFISSAO]}-{trabalho[CHAVE_NOME]}.')
     linhaSeparacao()
 
+def adicionaAtributoIdTrabalho():
+    listaTrabalho=retornaListaDicionariosTrabalhos()
+    trabalho1=listaTrabalho[0]
+    adicionaAtributoId(trabalho1)
+    linhaSeparacao()
+    for trabalho in listaTrabalho:
+        adicionaAtributoId(trabalho)
+        linhaSeparacao()
+
 def verifica_valor_numerico(valor):
     return valor.isdigit()
 
@@ -2475,7 +2489,8 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        recuperaPresente()
+        adicionaAtributoIdTrabalho()
+        # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
         # confirmaNomeTrabalho(dicionarioTrabalho,1)
