@@ -517,15 +517,14 @@ def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM_MELHORADO]:
-                if requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, dicionarioTrabalhoDesejado):
-                    print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
-                    if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
-                        clickEspecifico(1,'enter')
-                        dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
-                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
-                        contadorParaBaixo+=1
-                        linhaSeparacao()
-                        break
+                print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
+                if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
+                    clickEspecifico(1,'enter')
+                    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
+                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
+                    contadorParaBaixo+=1
+                    linhaSeparacao()
+                    break
             else:
                 linhaSeparacao()
                 clickEspecifico(1,'down')
@@ -1763,46 +1762,46 @@ def recuperaPresente():
             frameTela=telaInteira[123:754,331:488]
             frameTratado=retornaImagemCinza(frameTela)
             frameTratado=retornaImagemBinarizada(frameTratado)
-            kernel=np.ones((2,2),np.uint8)
-            frameTratado=retornaImagemDitalata(frameTratado,kernel,5)
-            # frameTratado=retornaImagemErodida(frameTratado,kernel,1)
-            contornos,h1=cv2.findContours(frameTratado,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-            for cnt in contornos:
-                area=cv2.contourArea(cnt)
-                # if area>100 and area<3000:#14500 de boa
-                x,y,l,a=cv2.boundingRect(cnt)
-                cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
-            mostraImagem(0,frameTratado,'Frame tela binarizado')
-            mostraImagem(0,frameTela,'Frame tela')
-            # contadorPixelPreto=np.sum(frameTratado==0)
-            # print(f'Contador pixel preto: {contadorPixelPreto}.')
-            # if existemPixelsSuficientes(contadorPixelPreto):
-            #     textoReconhecido=reconheceTexto(frameTratado)
-            #     # mostra_imagem(0,frameTratado,None)
-            #     if variavelExiste(textoReconhecido):
-            #         print(f'Texto reconhecido: {textoReconhecido}.')
-            #         if textoEhIgual(textoReconhecido,'pegar'):
-            #             centroX=metadeLargura+larguraFrame//2
-            #             centroY=y+alturaFrame//2
-            #             clickMouseEsquerdo(1,centroX,centroY)
-            #             posicionaMouseEsquerdo(telaInteira.shape[1]//2,metadeAltura)
-            #             if verificaErro(None)!=0:
-            #                 evento=2
-            #                 break
-            #             clickEspecifico(1,'f2')
-            #             clickContinuo(8,'up')
-            #             clickEspecifico(1,'left')
-            #             linhaSeparacao()
-            #             break
-            #         elif texto1PertenceTexto2('pegarem',textoReconhecido):
-            #             clickContinuo(8,'up')
-            #             clickEspecifico(1,'left')
-            #             linhaSeparacao()
-            #             break
-            #     else:
-            #         print(f'Ocorreu algum erro ao reconhecer presente!')
-            #         linhaSeparacao()
-            # y+=80
+            # kernel=np.ones((2,2),np.uint8)
+            # frameTratado=retornaImagemDitalata(frameTratado,kernel,5)
+            # # frameTratado=retornaImagemErodida(frameTratado,kernel,1)
+            # contornos,h1=cv2.findContours(frameTratado,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+            # for cnt in contornos:
+            #     area=cv2.contourArea(cnt)
+            #     # if area>100 and area<3000:#14500 de boa
+            #     x,y,l,a=cv2.boundingRect(cnt)
+            #     cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
+            # mostraImagem(0,frameTratado,'Frame tela binarizado')
+            # mostraImagem(0,frameTela,'Frame tela')
+            contadorPixelPreto=np.sum(frameTratado==0)
+            print(f'Contador pixel preto: {contadorPixelPreto}.')
+            if existemPixelsSuficientes(contadorPixelPreto):
+                textoReconhecido=reconheceTexto(frameTratado)
+                # mostra_imagem(0,frameTratado,None)
+                if variavelExiste(textoReconhecido):
+                    print(f'Texto reconhecido: {textoReconhecido}.')
+                    if textoEhIgual(textoReconhecido,'pegar'):
+                        centroX=metadeLargura+larguraFrame//2
+                        centroY=y+alturaFrame//2
+                        clickMouseEsquerdo(1,centroX,centroY)
+                        posicionaMouseEsquerdo(telaInteira.shape[1]//2,metadeAltura)
+                        if verificaErro(None)!=0:
+                            evento=2
+                            break
+                        clickEspecifico(1,'f2')
+                        clickContinuo(8,'up')
+                        clickEspecifico(1,'left')
+                        linhaSeparacao()
+                        break
+                    elif texto1PertenceTexto2('pegarem',textoReconhecido):
+                        clickContinuo(8,'up')
+                        clickEspecifico(1,'left')
+                        linhaSeparacao()
+                        break
+                else:
+                    print(f'Ocorreu algum erro ao reconhecer presente!')
+                    linhaSeparacao()
+            y+=80
         evento+=1
     clickEspecifico(2,'f1')
 
