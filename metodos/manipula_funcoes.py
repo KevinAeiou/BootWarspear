@@ -358,19 +358,18 @@ def verifica_porcentagem_vida():
         print(f'Vida abaixo de {porcentagem_vida}%.')
         return True
     return False
-#Codigo modificado 23/01 11:20
+
 def retornaEstadoTrabalho():
     estadoTrabalho=para_produzir
     #icone do primeiro espaço de produç 181,295 228,342
-    tela_inteira = retornaAtualizacaoTela()
-    frame_trabalho_concluido = tela_inteira[311:311+43, 233:486]
-    texto=reconheceTexto(frame_trabalho_concluido)
-    if texto!=None:
-        texto=texto.replace(' ','').lower()
-        if "trabalhoconcluído"==texto:
+    telaInteira=retornaAtualizacaoTela()
+    frameTelaInteira=telaInteira[311:311+43, 233:486]
+    texto=reconheceTexto(frameTelaInteira)
+    if variavelExiste(texto):
+        if textoEhIgual("trabalhoconcluído",texto):
             print(f'Trabalho concluído!')
             estadoTrabalho=concluido
-        elif 'adicionarnovo' in texto:
+        elif texto1PertenceTexto2('adicionarnovo',texto):
             print(f'Nem um trabalho!')
             estadoTrabalho=para_produzir
         else:
