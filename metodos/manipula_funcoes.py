@@ -381,7 +381,7 @@ def retornaEstadoTrabalho():
     linhaSeparacao()
     return estadoTrabalho
 
-def verificaLicenca(licencaTrabalho):
+def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
     confirmacao=False
     print(f"Buscando: {licencaTrabalho}")
     linhaSeparacao()
@@ -414,6 +414,10 @@ def verificaLicenca(licencaTrabalho):
                 else:
                     clickEspecifico(1,"f2")
                 confirmacao=True
+        else:
+            print(f'Modifica atributo estado do personagem.')
+            listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
+            modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESTADO,False)
     else:
         print(f'Erro ao reconhecer licença!')
         linhaSeparacao()
@@ -658,7 +662,7 @@ def verificaErro(dicionarioTrabalho):
     if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
         clickEspecifico(2,"enter")
         if erro==erroPrecisaLicenca:
-            verificaLicenca(licenca)
+            verificaLicenca(licenca,None)
         elif erro==erroFalhaConectar:
             print(f'Erro na conexão...')
         elif erro==erroConexaoInterrompida:
@@ -1696,7 +1700,7 @@ def naoReconheceMenu(menu):
 def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
     dicionarioPersonagem=entraLicenca(dicionarioPersonagem)
     if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
-        if verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]):#verifica tipo de licença de produção
+        if verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],dicionarioPersonagem):#verifica tipo de licença de produção
             clickEspecifico(1,'f2')#click que definitivamente começa a produção
             dicionarioTrabalho,dicionarioPersonagem=trataErros(dicionarioTrabalho,dicionarioPersonagem)
             linhaSeparacao()
