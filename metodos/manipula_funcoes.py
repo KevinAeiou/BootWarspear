@@ -389,7 +389,7 @@ def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
     if variavelExiste(textoReconhecido) and variavelExiste(licencaTrabalho):
         print(f'Licença reconhecida: {textoReconhecido}.')
         linhaSeparacao()
-        if not texto1PertenceTexto2('licençasdeproduçaomaspode',textoReconhecido):
+        if not texto1PertenceTexto2('licençasdeproduçao',textoReconhecido):
             primeiraBusca=True
             listaCiclo=[]
             while not texto1PertenceTexto2(textoReconhecido,licencaTrabalho):
@@ -415,9 +415,11 @@ def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
                     clickEspecifico(1,"f2")
                 confirmacao=True
         else:
-            print(f'Modifica atributo estado do personagem.')
+            print(f'Sem licenças de produção...')
+            clickEspecifico(1,'f1')
             listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
             modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESTADO,False)
+            linhaSeparacao()
     else:
         print(f'Erro ao reconhecer licença!')
         linhaSeparacao()
@@ -425,12 +427,14 @@ def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
 
 def retornaLicencaReconhecida():
     licencaRetornada=None
-    listaLicencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçaomaspode']
+    listaLicencas=['iniciante','principiante','aprendiz','mestre','nenhumitem','licençasdeproduçao']
     telaInteira=retornaAtualizacaoTela()
     frameTela=telaInteira[275:317,169:512]
     frameTelaCinza=retornaImagemCinza(frameTela)
     frameTelaEqualizado=retornaImagemEqualizada(frameTelaCinza)
     textoReconhecido=reconheceTexto(frameTelaEqualizado)
+    # print(f'{D}:{textoReconhecido}.')
+    # linhaSeparacao()
     # mostraImagem(0,frameTelaEqualizado,textoReconhecido)
     if variavelExiste(textoReconhecido):
         for licenca in listaLicencas:
@@ -1000,6 +1004,7 @@ def preparaPersonagem(dicionarioUsuario):
         linhaSeparacao()
 
 def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
+    print(f'Definindo lista de personagem ativo.')
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]=[]
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         if (personagem[CHAVE_ESTADO]or
@@ -1008,7 +1013,7 @@ def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
     # print(f'{D}:Lista de personagens ativos:')
     # for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
     #     # print(f'{D}:{personagem[CHAVE_NOME]}.')
-    # linhaSeparacao()
+    linhaSeparacao()
     return dicionarioPersonagem
 
 def iniciaProcessoBusca(dicionarioUsuario):
@@ -2485,7 +2490,7 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
-        defineAtributoTrabalhoNecessario(dicionarioUsuario)
+        # defineAtributoTrabalhoNecessario(dicionarioUsuario)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
@@ -2545,7 +2550,7 @@ def funcao_teste(dicionarioUsuario):
         # modifica_quantidade_personagem_ativo()
         # while True:
         #     verifica_habilidade_central(lista_habilidade)
-        # print(retornaLicencaReconhecida())
+        print(retornaLicencaReconhecida())
         # print(verifica_licenca('principiante'))
         # linhaSeparacao()
         # valor=True

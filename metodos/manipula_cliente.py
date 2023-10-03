@@ -237,6 +237,7 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
     return listaDicionariosOrdenada
 
 def defineListaDicionarioPersonagem(dicionarioPersonagem):
+    print(f'Definindo lista de personagem.')
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=[]
     listaPersonagem=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
