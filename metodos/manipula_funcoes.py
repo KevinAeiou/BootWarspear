@@ -1606,7 +1606,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                             dicionarioTrabalho=dicionarioTrabalhoDesejado
                             print(f'{dicionarioTrabalhoDesejado[CHAVE_NOME]} recuperado.')
                             break
-                clickContinuo(1,'up')
+                clickContinuo(3,'up')
                 linhaSeparacao()
             else:
                 dicionarioPersonagem[CHAVE_ESPACO_BOLSA]=False
