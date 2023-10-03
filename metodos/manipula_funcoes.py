@@ -2397,8 +2397,8 @@ def defineTrabalho(dicionarioUsuario):
 def defineTrabalhoNecessario(dicionarioUsuario):
     x=1
     listaDicionarioTrabalho=[]
-    for trabalho in dicionarioUsuario[CHAVE_LISTA_DESEJO]:
-        if raridadeTrabalhoEhComum(trabalho) and trabalho[CHAVE_NIVEL]==dicionarioUsuario[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL]:
+    for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
+        if raridadeTrabalhoEhComum(trabalho) and trabalho[CHAVE_NIVEL]==dicionarioUsuario[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL]and trabalho[CHAVE_PROFISSAO]==dicionarioUsuario[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_PROFISSAO]:
             print(f'{x} - {trabalho[CHAVE_NIVEL]}:{trabalho[CHAVE_NOME]}.')
             x+=1
             listaDicionarioTrabalho.append(trabalho)
@@ -2422,7 +2422,7 @@ def defineTrabalhoNecessario(dicionarioUsuario):
                 y+=1
     return dicionarioUsuario
 
-def defineAtributoTrabalhoNecessario(dicionarioUsuario,raridade='Melhorado'):
+def defineAtributoTrabalhoNecessario(dicionarioUsuario):
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     dicionarioUsuario=defineProfissaoEscolhida(dicionarioUsuario)
     if not tamanhoIgualZero(dicionarioUsuario[CHAVE_PROFISSAO]):
@@ -2435,9 +2435,10 @@ def defineAtributoTrabalhoNecessario(dicionarioUsuario,raridade='Melhorado'):
                 if tamanhoIgualZero(dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO]):
                     break
                 else:
+                    # for chave in dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO]:
+                    #     print(f'{chave}:{dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO][chave]}.')
                     adicionaAtributoTrabalhoNecessario(dicionarioUsuario)
                 # modificaRaridadeTrabalho(dicionarioTrabalho,raridade='Melhorado')
-                    print(f'Modifica raridade de {dicionarioTrabalho[CHAVE_NOME]} para "Melhorado".')
     linhaSeparacao()
 
 def adicionaAtributoIdTrabalho():
@@ -2490,7 +2491,7 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
-        # defineAtributoTrabalhoNecessario(dicionarioUsuario)
+        defineAtributoTrabalhoNecessario(dicionarioUsuario)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
@@ -2550,7 +2551,7 @@ def funcao_teste(dicionarioUsuario):
         # modifica_quantidade_personagem_ativo()
         # while True:
         #     verifica_habilidade_central(lista_habilidade)
-        print(retornaLicencaReconhecida())
+        # print(retornaLicencaReconhecida())
         # print(verifica_licenca('principiante'))
         # linhaSeparacao()
         # valor=True

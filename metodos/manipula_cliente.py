@@ -378,11 +378,14 @@ def adicionaNovaProfissao(dicionarioPersonagem,novaProfissao):
         print(f'Erro ao adicionar nova profissão!')
 
 def adicionaAtributoTrabalhoNecessario(dicionarioUsuario):
-    caminhoRequisicao=f'{link_database}/Lista_trabalhos/{dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO][CHAVE_ID]}/.json'
-    dados={CHAVE_TRABALHO_NECESSARIO:CHAVE_TRABALHO_NECESSARIO[CHAVE_NOME]}
+    caminhoRequisicao=f'{link_database}/Lista_trabalhos/{dicionarioUsuario[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_ID]}/.json'
+    trabalhoNecessario=dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO][CHAVE_NOME]
+    if CHAVE_TRABALHO_NECESSARIO in dicionarioUsuario[CHAVE_DICIONARIO_TRABALHO_DESEJADO]:
+        trabalhoNecessario=dicionarioUsuario[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_TRABALHO_NECESSARIO]+','+dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO][CHAVE_NOME]
+    dados={CHAVE_TRABALHO_NECESSARIO:trabalhoNecessario}
     requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
     if requisicao:
-        print(f'Raridade de {dicionarioUsuario[CHAVE_PROFISSAO]}:{dicionarioUsuario[CHAVE_NOME]} modificado para {raridade}.')
+        print(f'Raridade de {dicionarioUsuario[CHAVE_PROFISSAO]}:{dicionarioUsuario[CHAVE_NOME]}.')
     else:
         print(f'Erro ao modificar raridade de {dicionarioUsuario[CHAVE_NOME]}.')
 # 0iQB1H7srqXMiufTR4HzqYQPj71hz
