@@ -1,4 +1,5 @@
 import cv2
+import os
 import numpy as np
 import pytesseract
 from PIL import Image
@@ -6,12 +7,18 @@ from manipula_teclado import *
 from lista_chaves import *
 # import mahotas
 import time
-from PIL import ImageChops
 
 tela = 'atualizacao_tela.png'
 testeDigitos='testeDigitos.png'
 
 #cor letras voltar, avançar, fechar, jogar (93,218,254)
+
+def salvaImagem(caminho,titulo,imagem):
+    if os.path.isdir(caminho):
+         cv2.imwrite('{caminho}/{}'.format(titulo),imagem)
+    else:
+        os.makedirs('{caminho}')
+        cv2.imwrite('{caminho}/{}'.format(titulo),imagem)
 
 def salvaNovaTela(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
@@ -236,19 +243,22 @@ def preProcessamento(imagem):
     # imagem=cv2.GaussianBlur(imagem,(1,1),0)
     # t_lower = 254  # Lower Threshold
     # t_upper = 255  # Upper threshold
-    imagem=cv2.GaussianBlur(imagem,(3,3),0)
-    t_lower = 254  # Lower Threshold
+    imagem=cv2.GaussianBlur(imagem,(5,5),0)
+    t_lower = 180  # Lower Threshold
     t_upper = 255  # Upper threshold
     imagem=cv2.Canny(imagem,t_lower,t_upper)
     # kernel=np.ones((2,2),np.uint8)
     # imagem=cv2.dilate(imagem,kernel,iterations=7)
     # imagem=cv2.erode(imagem,kernel,iterations=7)
-    kernel=np.ones((2,2),np.uint8)
-    imagem=retornaImagemDitalata(imagem,kernel,7)
-    imagem=retornaImagemErodida(imagem,kernel,7)
+    kernel=np.ones((3,3),np.uint8)
+    imagem=retornaImagemDitalata(imagem,kernel,4)
+    imagem=retornaImagemErodida(imagem,kernel,4)
     return imagem
 
 def encontraPersonagem():
+    maximoImagem=200
+    contador=150
+    time.sleep(5)
     while True:
         screenshot=tira_screenshot()
         telaInteira=retorna_imagem_colorida(screenshot)
@@ -257,12 +267,20 @@ def encontraPersonagem():
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
             area=cv2.contourArea(cnt)
-            if area>100 and area<3000:#14500 de boa
+            if area>1600 and area<3000:#2400/2600 area personagem de boa
+                print(f'Area: {area}.')
                 x,y,l,a=cv2.boundingRect(cnt)
+                print(f'Largura: {l}.')
+                print(f'Altura: {a}.')
+                imagem=metadeTela[y:y+80,x:x+60]
+                # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',imagem)
                 cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
-        cv2.imshow('Metade da tela processada',imagemPreprocessada)
+                contador+=1
+
+        print(f'____________________________________________________________________________')
+        # cv2.imshow('Metade da tela processada',imagemPreprocessada)
         cv2.imshow('Metade da tela',metadeTela)
-        if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
+        if cv2.waitKey(25) &0xFF==ord('q'):
             break
     cv2.destroyAllWindows()
 
@@ -337,4 +355,4 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# encontraPersonagem()
+encontraPersonagem()
