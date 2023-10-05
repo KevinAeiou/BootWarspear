@@ -1582,8 +1582,25 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
             modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
             dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
+        # if not trabalhoEProducaoRecursos():
+        modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho)
         # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
+    else:
+        
     return dicionarioPersonagem
+
+def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
+    for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+        if textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO]):
+            if CHAVE_EXPERIENCIA in dicionarioTrabalho:
+                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json'
+                experiencia=profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
+                dados={CHAVE_EXPERIENCIA:experiencia}
+                modificaAtributo(caminhoRequisicao,dados)
+                break
+            else:
+                print(f'Trabalho concluido não possui atributo "experiência".')
+    linhaSeparacao()
 
 def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
     dicionarioTrabalho={}
@@ -2366,7 +2383,6 @@ def defineProfissaoEscolhida(dicionarioUsuario):
     return dicionarioUsuario
 
 def defineTrabalho(dicionarioUsuario):
-    dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
     if not tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_TRABALHO]):
         listaDicionariosTrabalhosBuscados=retornaListaDicionariosTrabalhosBuscados(dicionarioUsuario[CHAVE_LISTA_TRABALHO],dicionarioUsuario[CHAVE_PROFISSAO][CHAVE_NOME],'melhorado')
         if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
@@ -2423,7 +2439,6 @@ def defineTrabalhoNecessario(dicionarioUsuario):
     return dicionarioUsuario
 
 def defineAtributoTrabalhoNecessario(dicionarioUsuario):
-    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     dicionarioUsuario=defineProfissaoEscolhida(dicionarioUsuario)
     if not tamanhoIgualZero(dicionarioUsuario[CHAVE_PROFISSAO]):
         while True:
@@ -2439,6 +2454,20 @@ def defineAtributoTrabalhoNecessario(dicionarioUsuario):
                     #     print(f'{chave}:{dicionarioUsuario[CHAVE_TRABALHO_NECESSARIO][chave]}.')
                     adicionaAtributoTrabalhoNecessario(dicionarioUsuario)
                 # modificaRaridadeTrabalho(dicionarioTrabalho,raridade='Melhorado')
+    linhaSeparacao()
+
+def defineAtributoExperienciaTrabalho(dicionarioUsuario):
+    raridade=input(f'Raridade: ')
+    nivel=int(input(f'Nível: '))
+    experiencia=int(input(f'Experiência: '))
+    for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
+        if textoEhIgual(trabalho[CHAVE_RARIDADE],raridade)and trabalho[CHAVE_NIVEL]==(nivel):
+            caminhoRequisicao=f'Lista_trabalhos/{trabalho[CHAVE_ID]}/.json'
+            dados={CHAVE_EXPERIENCIA:experiencia}
+            modificaAtributo(caminhoRequisicao,dados)
+            print(f'ID: {trabalho[CHAVE_ID]}')
+            print(f'NOME: {trabalho[CHAVE_NOME]}')
+            linhaSeparacao()
     linhaSeparacao()
 
 def adicionaAtributoIdProfissao(dicionarioPersonagem):
@@ -2485,11 +2514,14 @@ def funcao_teste(dicionarioUsuario):
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
+    dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
     dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
-    while input(f'Continuar?')!='n':
-        click_atalho_especifico('alt','tab')
+    while not textoEhIgual(input(f'Continuar?'),'n'):
+        # click_atalho_especifico('alt','tab')
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
+        defineAtributoExperienciaTrabalho(dicionarioUsuario)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # linhaSeparacao()
@@ -2576,12 +2608,12 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        adicionaAtributoIdProfissao(dicionarioPersonagem)
+        # adicionaAtributoIdProfissao(dicionarioPersonagem)
         # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
         # confirmaNomeTrabalho(dicionarioTrabalho,1)
-        click_atalho_especifico('alt','tab')
+        # click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
 # entraPersonagem(['tobraba','gunsa','totiste'])

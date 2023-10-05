@@ -106,9 +106,9 @@ def retornaListaDicionarioProfissao(dicionarioPersonagem):
             for idProfissao in dicionarioProfissoes:
                 dicionarioProfissao={CHAVE_ID:idProfissao,
                                      CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
-                caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}.json'
-                dados={CHAVE_ID:idProfissao}
-                adicionaAtributoId(caminhoRequisicao,dados)
+                # caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
+                # dados={CHAVE_EXPERIENCIA:0}
+                # adicionaAtributo(caminhoRequisicao,dados)
                 listaDicionarioProfissao.append(dicionarioProfissao)
     return listaDicionarioProfissao
 #modificado 16/01
@@ -360,12 +360,14 @@ def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
                 print('____________________________________________')
         else:
             print(f'Fim da lista.')
-def adicionaAtributoId(caminhoRequisicao,dados):
+
+def modificaAtributo(caminhoRequisicao,dados):
+    caminhoRequisicao=f'{link_database}/{caminhoRequisicao}'
     requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
     if requisicao:
         print(f'Adicionado com sucesso!')
     else:
-        print(f'Erro ao adicionar atributo id!')
+        print(f'Erro ao adicionar atributo {dados}!')
 
 def adicionaNovaProfissao(dicionarioPersonagem,novaProfissao):
     tamanho=len(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO])
