@@ -106,6 +106,9 @@ def retornaListaDicionarioProfissao(dicionarioPersonagem):
             for idProfissao in dicionarioProfissoes:
                 dicionarioProfissao={CHAVE_ID:idProfissao,
                                      CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
+                caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}.json'
+                dados={CHAVE_ID:idProfissao}
+                adicionaAtributoId(caminhoRequisicao,dados)
                 listaDicionarioProfissao.append(dicionarioProfissao)
     return listaDicionarioProfissao
 #modificado 16/01
@@ -357,9 +360,7 @@ def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
                 print('____________________________________________')
         else:
             print(f'Fim da lista.')
-def adicionaAtributoId(trabalho):
-    dados={'id':trabalho[CHAVE_ID]}
-    caminhoRequisicao=f'{link_database}/Lista_trabalhos/{trabalho[CHAVE_ID]}/.json'
+def adicionaAtributoId(caminhoRequisicao,dados):
     requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
     if requisicao:
         print(f'Adicionado com sucesso!')

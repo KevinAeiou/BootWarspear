@@ -5,6 +5,7 @@ import pytesseract
 from PIL import Image
 from manipula_teclado import *
 from lista_chaves import *
+from keras.models import load_model
 # import mahotas
 import time
 
@@ -12,6 +13,10 @@ tela = 'atualizacao_tela.png'
 testeDigitos='testeDigitos.png'
 
 #cor letras voltar, avançar, fechar, jogar (93,218,254)
+
+# model = load_model("modelos/keras_Model.h5", compile=False)
+# classes=['ToBraba']
+# data = np.ndarray(shape=(1, 80, 60, 3),dtype=np.float32)
 
 def salvaImagem(caminho,titulo,imagem):
     if os.path.isdir(caminho):
@@ -255,6 +260,17 @@ def preProcessamento(imagem):
     imagem=retornaImagemErodida(imagem,kernel,4)
     return imagem
 
+def detectarPersonagem(imagem):
+    imagemPersonagem=cv2.resize(imagem,(60,80))
+    imagemPersonagem=np.asarray(imagemPersonagem)
+    imagemNormalizada=(imagemPersonagem.astype(np.float32)/127.0)-1
+    data[0]=imagemNormalizada
+    predicao=model.predict(data)
+    index=np.argmax(predicao)
+    porcentagem=predicao[0][index]
+    classe=classes[index]
+    return classe,porcentagem
+
 def encontraPersonagem():
     maximoImagem=200
     contador=150
@@ -272,9 +288,11 @@ def encontraPersonagem():
                 x,y,l,a=cv2.boundingRect(cnt)
                 print(f'Largura: {l}.')
                 print(f'Altura: {a}.')
-                imagem=metadeTela[y:y+80,x:x+60]
-                # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',imagem)
-                cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
+                recorte=metadeTela[y:y+a,x:x+l]
+                classe,confianca=detectarPersonagem(recorte)
+                cv2.putText(metadeTela,str(classe),(x,y),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
+                # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',recorte)
+                # cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
                 contador+=1
 
         print(f'____________________________________________________________________________')
@@ -355,4 +373,4 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-encontraPersonagem()
+# encontraPersonagem()

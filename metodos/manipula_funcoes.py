@@ -2441,13 +2441,10 @@ def defineAtributoTrabalhoNecessario(dicionarioUsuario):
                 # modificaRaridadeTrabalho(dicionarioTrabalho,raridade='Melhorado')
     linhaSeparacao()
 
-def adicionaAtributoIdTrabalho():
-    listaTrabalho=retornaListaDicionariosTrabalhos()
-    trabalho1=listaTrabalho[0]
-    adicionaAtributoId(trabalho1)
-    linhaSeparacao()
-    for trabalho in listaTrabalho:
-        adicionaAtributoId(trabalho)
+def adicionaAtributoIdProfissao(dicionarioPersonagem):
+    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+        dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
+        listaDicionarioProfissao=retornaListaDicionarioProfissao(dicionarioPersonagem)
         linhaSeparacao()
 
 def verifica_valor_numerico(valor):
@@ -2488,13 +2485,13 @@ def funcao_teste(dicionarioUsuario):
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
+    dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     while input(f'Continuar?')!='n':
         click_atalho_especifico('alt','tab')
-        defineAtributoTrabalhoNecessario(dicionarioUsuario)
+        # defineAtributoTrabalhoNecessario(dicionarioUsuario)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
-        # dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
         # linhaSeparacao()
         # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
         # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
@@ -2520,7 +2517,6 @@ def funcao_teste(dicionarioUsuario):
         # dataAtual=datetime.date.today()
         # print(dataAtual.ctime())
         # percorreFrameItemBolsa()
-        # dicionarioPersonagens=retornaDicionarioPersonagens(dicionarioUsuario)
         # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
         # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
         # linhaSeparacao()
@@ -2580,7 +2576,7 @@ def funcao_teste(dicionarioUsuario):
         # verifica_trabalho_comum(trabalho,'profissaoteste')
         # while inicia_busca_trabalho():
         #     continue
-        # adicionaAtributoIdTrabalho()
+        adicionaAtributoIdProfissao(dicionarioPersonagem)
         # recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
