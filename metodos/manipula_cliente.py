@@ -104,8 +104,10 @@ def retornaListaDicionarioProfissao(dicionarioPersonagem):
         dicionarioProfissoes=requisicao.json()
         if dicionarioProfissoes!=None:
             for idProfissao in dicionarioProfissoes:
-                dicionarioProfissao={CHAVE_ID:idProfissao,
-                                     CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
+                dicionarioProfissao={
+                    CHAVE_ID:idProfissao,
+                    CHAVE_EXPERIENCIA:dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA],
+                    CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
                 # caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
                 # dados={CHAVE_EXPERIENCIA:0}
                 # adicionaAtributo(caminhoRequisicao,dados)

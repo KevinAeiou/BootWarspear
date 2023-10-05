@@ -1585,8 +1585,6 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         # if not trabalhoEProducaoRecursos():
         modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho)
         # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
-    else:
-        
     return dicionarioPersonagem
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
@@ -1597,6 +1595,7 @@ def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
                 experiencia=profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
                 dados={CHAVE_EXPERIENCIA:experiencia}
                 modificaAtributo(caminhoRequisicao,dados)
+                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
                 break
             else:
                 print(f'Trabalho concluido não possui atributo "experiência".')
@@ -2500,28 +2499,34 @@ def deleta_item_lista():
     print(f'{lista}')
 
 def funcao_teste(dicionarioUsuario):
-    trabalhoComumDesejado={CHAVE_NOME:'Anel-sinete sombrio',
-                           CHAVE_RARIDADE:'comum',
-                           CHAVE_PROFISSAO:'aneis',
-                           CHAVE_ESTADO:0}
+    trabalhoComumDesejado={
+        CHAVE_NOME:'Anel-sinete sombrio',
+        CHAVE_EXPERIENCIA:750,
+        CHAVE_RARIDADE:'comum',
+        CHAVE_PROFISSAO:'aneis',
+        CHAVE_ESTADO:0
+        }
     dicionarioTrabalho={CHAVE_CONFIRMACAO:True,
-    CHAVE_POSICAO_TRABALHO_COMUM:-1,
-    CHAVE_PROFISSAO:'aneis',
-    CHAVE_LISTA_TRABALHO_COMUM_MELHORADO:[trabalhoComumDesejado],
-    CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
-    }
+        CHAVE_POSICAO_TRABALHO_COMUM:-1,
+        CHAVE_PROFISSAO:'aneis',
+        CHAVE_LISTA_TRABALHO_COMUM_MELHORADO:[trabalhoComumDesejado],
+        CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
+        }
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
                           CHAVE_NOME_PERSONAGEM:'Nome teste',
+                          CHAVE_DICIONARIO_PERSONAGEM_EM_USO:dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO],
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
-    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
-    dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
+    dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
     while not textoEhIgual(input(f'Continuar?'),'n'):
         # click_atalho_especifico('alt','tab')
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        defineAtributoExperienciaTrabalho(dicionarioUsuario)
+        # defineAtributoExperienciaTrabalho(dicionarioUsuario)
+        modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # linhaSeparacao()

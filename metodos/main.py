@@ -371,10 +371,10 @@ def menuPersonagem(dicionarioUsuario):
             if opcaoPersonagem==0:
                 menuTeste()
             else:
-                dicionarioUsuario=defineChaveIdPersonagem(dicionarioUsuario,opcaoPersonagem)
+                dicionarioUsuario=defineChavePersonagemEmUso(dicionarioUsuario,opcaoPersonagem)
                 menu(dicionarioUsuario)
 
-def defineChaveIdPersonagem(dicionarioUsuario,opcaoPersonagem):
+def defineChavePersonagemEmUso(dicionarioUsuario,opcaoPersonagem):
     x=1
     for personagem in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         if x==opcaoPersonagem:
