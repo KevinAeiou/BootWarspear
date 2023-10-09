@@ -1077,6 +1077,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
     alturaFrame=30
     texto=None
     frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
+    # mostraImagem(0,frameTela,None)
     if y>30:
         frameTela=retornaImagemCinza(frameTela)
         frameTela=retornaImagemEqualizada(frameTela)
@@ -1084,12 +1085,11 @@ def retornaTextoMenuReconhecido(x,y,largura):
         # mostraImagem(0,frameTela,None)
     contadorPixelPreto=np.sum(frameTela==0)
     print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
-    # mostraImagem(0,frameTela,'Frame tela')
     if existePixelPretoSuficiente(contadorPixelPreto):
         texto=reconheceTexto(frameTela)
         if variavelExiste(texto):
             texto=limpaRuidoTexto(texto)
-            # # print(f'{D}:Texto reconhecimento de menus: {texto}.')
+            # print(f'{D}:Texto reconhecimento de menus: {texto}.')
     # print(f'{D}:{texto}')
     return texto
 
@@ -1225,7 +1225,7 @@ def retornaMenu():
                     return menu_loja_milagrosa
             textoMenu=retornaTextoMenuReconhecido(180,40,300)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('recompensasdiárias',textoMenu):
+                if texto1PertenceTexto2('recompensasdiarias',textoMenu):
                     # # print(f'{D}:Menu recompensas diárias...')
                     linhaSeparacao()
                     fim = time.time()
@@ -1234,7 +1234,7 @@ def retornaMenu():
                     return menu_rec_diarias
             textoMenu=retornaTextoMenuReconhecido(180,60,300)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('recompensasdiárias',textoMenu):
+                if texto1PertenceTexto2('recompensasdiarias',textoMenu):
                     print(f'Menu recompensas diárias...')
                     linhaSeparacao()
                     fim = time.time()
@@ -1802,65 +1802,52 @@ def recuperaPresente():
     print(f'Buscando recompensa diária...')
     while evento<2:
         telaInteira=retornaAtualizacaoTela()
-        metadeAltura=telaInteira.shape[0]//2
-        metadeLargura=telaInteira.shape[1]//4
-        alturaFrame=80
-        y=123
-        # y=95
-        y=71
-        aux=metadeAltura-y
-        y=metadeAltura-aux
-        larguraFrame=150
-        for x in range(8):
-            # frameTela=telaInteira[y:y+alturaFrame,metadeLargura:metadeLargura+larguraFrame]
-            frameTela=telaInteira[123:754,331:488]
-            frameTratado=retornaImagemCinza(frameTela)
-            frameTratado=retornaImagemBinarizada(frameTratado)
-            # kernel=np.ones((2,2),np.uint8)
-            # frameTratado=retornaImagemDitalata(frameTratado,kernel,5)
-            # # frameTratado=retornaImagemErodida(frameTratado,kernel,1)
-            # contornos,h1=cv2.findContours(frameTratado,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-            # for cnt in contornos:
-            #     area=cv2.contourArea(cnt)
-            #     # if area>100 and area<3000:#14500 de boa
-            #     x,y,l,a=cv2.boundingRect(cnt)
-            #     cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
-            # mostraImagem(0,frameTratado,'Frame tela binarizado')
-            # mostraImagem(0,frameTela,'Frame tela')
-            contadorPixelPreto=np.sum(frameTratado==0)
-            print(f'Contador pixel preto: {contadorPixelPreto}.')
-            if existemPixelsSuficientes(contadorPixelPreto):
-                textoReconhecido=reconheceTexto(frameTratado)
-                # mostra_imagem(0,frameTratado,None)
-                if variavelExiste(textoReconhecido):
-                    print(f'Texto reconhecido: {textoReconhecido}.')
-                    if textoEhIgual(textoReconhecido,'pegar'):
-                        centroX=metadeLargura+larguraFrame//2
-                        centroY=y+alturaFrame//2
-                        clickMouseEsquerdo(1,centroX,centroY)
-                        posicionaMouseEsquerdo(telaInteira.shape[1]//2,metadeAltura)
-                        if verificaErro(None)!=0:
-                            evento=2
-                            break
-                        clickEspecifico(1,'f2')
-                        clickContinuo(8,'up')
-                        clickEspecifico(1,'left')
-                        linhaSeparacao()
-                        break
-                    elif texto1PertenceTexto2('pegarem',textoReconhecido):
-                        clickContinuo(8,'up')
-                        clickEspecifico(1,'left')
-                        linhaSeparacao()
-                        break
-                else:
-                    print(f'Ocorreu algum erro ao reconhecer presente!')
-                    linhaSeparacao()
-            y+=80
+        frameTela=telaInteira[0:telaInteira.shape[0],330:488]
+        imagem=retornaImagemCinza(frameTela)
+        imagem=cv2.GaussianBlur(imagem,(1,1),0)
+        imagem=cv2.Canny(imagem,150,180)
+        kernel=np.ones((2,2),np.uint8)
+        imagem=retornaImagemDitalata(imagem,kernel,1)
+        imagem=retornaImagemErodida(imagem,kernel,1)
+        contornos,h1=cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        for cnt in contornos:
+            area=cv2.contourArea(cnt)
+            if area>4500 and area<5700:
+                x,y,l,a=cv2.boundingRect(cnt)
+                print(f'Area:{area}, x:{x}, y:{y}.')
+                cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
+                frameTratado=frameTela[y:y+a,x:x+l]
+                # mostraImagem(0,frameTratado,None)
+                # contadorPixelPreto=np.sum(frameTela==0)
+                # print(f'Contador pixel preto: {contadorPixelPreto}.')
+                # if existemPixelsSuficientes(contadorPixelPreto):
+                    # textoReconhecido=reconheceTexto(frameTratado)
+                    # print(f'{D}:{textoReconhecido}')
+                    # if variavelExiste(textoReconhecido):
+                    #     print(f'Texto reconhecido: {textoReconhecido}.')
+                    #     if textoEhIgual(textoReconhecido,'pegar'):
+                centroX=330+x+(l/2)
+                centroY=y+(a/2)
+                clickMouseEsquerdo(1,centroX,centroY)
+                posicionaMouseEsquerdo(telaInteira.shape[1]//2,telaInteira.shape[0]//2)
+                if verificaErro(None)!=0:
+                    evento=2
+                    break
+                clickEspecifico(1,'f2')
+                break
+                    # else:
+                    #     print(f'Ocorreu algum erro ao reconhecer presente!')
+                    #     linhaSeparacao()
+        # mostraImagem(0,frameTela,None)
+        clickContinuo(8,'up')
+        clickEspecifico(1,'left')
+        linhaSeparacao()
+        # mostraImagem(0,frameTela,None)
         evento+=1
     clickEspecifico(2,'f1')
 
 def existemPixelsSuficientes(contadorPixelPreto):
-    return contadorPixelPreto>500 and contadorPixelPreto<1100
+    return contadorPixelPreto>7000 and contadorPixelPreto<11000.
 
 def reconheceMenuRecompensa(menu):
     print(f'Entrou em recuperaPresente.')
@@ -2545,7 +2532,7 @@ def funcao_teste(dicionarioUsuario):
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
     while not textoEhIgual(input(f'Continuar?'),'n'):
-        # click_atalho_especifico('alt','tab')
+        click_atalho_especifico('alt','tab')
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
@@ -2625,7 +2612,7 @@ def funcao_teste(dicionarioUsuario):
         # retorna_tipo_erro()
         # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
         # atualiza_lista_profissao(dicionarioPersonagem)
-        retornaMenu()
+        # print(retornaMenu())
         # verificaPixelCorrespondencia()
         # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
         # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
@@ -2636,11 +2623,11 @@ def funcao_teste(dicionarioUsuario):
         # while inicia_busca_trabalho():
         #     continue
         # adicionaAtributoIdProfissao(dicionarioPersonagem)
-        # recuperaPresente()
+        recuperaPresente()
         # entra_personagem_ativo('mrninguem')
         # inicia_busca_trabalho()
         # confirmaNomeTrabalho(dicionarioTrabalho,1)
-        # click_atalho_especifico('alt','tab')
+        click_atalho_especifico('alt','tab')
 # entra_personagem_ativo('Raulssauro')
 # recebeTodasRecompensas(menu)
 # entraPersonagem(['tobraba','gunsa','totiste'])

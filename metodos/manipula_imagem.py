@@ -418,4 +418,4 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# temporario()
+# encontraMenu()
