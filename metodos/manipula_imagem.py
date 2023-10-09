@@ -15,7 +15,7 @@ testeDigitos='testeDigitos.png'
 #cor letras voltar, avançar, fechar, jogar (93,218,254)
 
 # model = load_model("modelos/keras_Model.h5", compile=False)
-# classes=['ToBraba']
+classes=['Desconhecido','ToBraba']
 # data = np.ndarray(shape=(1, 80, 60, 3),dtype=np.float32)
 
 def salvaImagem(caminho,titulo,imagem):
@@ -261,20 +261,29 @@ def preProcessamento(imagem):
     return imagem
 
 def detectarPersonagem(imagem):
-    imagemPersonagem=cv2.resize(imagem,(60,80))
-    imagemPersonagem=np.asarray(imagemPersonagem)
-    imagemNormalizada=(imagemPersonagem.astype(np.float32)/127.0)-1
-    data[0]=imagemNormalizada
-    predicao=model.predict(data)
-    index=np.argmax(predicao)
-    porcentagem=predicao[0][index]
+    index=0
+    coresToBraba=[(255,0,197),(66,247,255),(170,66,70),(58,206,239),(173,0,148),(58,0,58),(16,74,140)]
+    if encontraPixelCor(imagem,coresToBraba):
+        index=1
+    # imagemPersonagem=cv2.resize(imagem,(60,80))
+    # imagemPersonagem=np.asarray(imagemPersonagem)
+    # imagemNormalizada=(imagemPersonagem.astype(np.float32)/127.0)-1
+    # data[0]=imagemNormalizada
+    # predicao=model.predict(data)
+    # index=np.argmax(predicao)
+    # porcentagem=predicao[0][index]
     classe=classes[index]
-    return classe,porcentagem
+    return classe
+
+def encontraPixelCor(imagem,cores):
+    for y in range(0,imagem.shape[0]):
+        for x in range(0, imagem.shape[1]):
+            for cor in cores:
+                if (imagem[y,x]==cor).all():
+                    return True
+    return False
 
 def encontraPersonagem():
-    maximoImagem=200
-    contador=150
-    time.sleep(5)
     while True:
         screenshot=tira_screenshot()
         telaInteira=retorna_imagem_colorida(screenshot)
@@ -284,28 +293,67 @@ def encontraPersonagem():
         for cnt in contornos:
             area=cv2.contourArea(cnt)
             if area>1600 and area<3000:#2400/2600 area personagem de boa
-                print(f'Area: {area}.')
                 x,y,l,a=cv2.boundingRect(cnt)
-                print(f'Largura: {l}.')
-                print(f'Altura: {a}.')
                 recorte=metadeTela[y:y+a,x:x+l]
-                classe,confianca=detectarPersonagem(recorte)
+                classe=detectarPersonagem(recorte)
                 cv2.putText(metadeTela,str(classe),(x,y),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
                 # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',recorte)
-                # cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
-                contador+=1
-
-        print(f'____________________________________________________________________________')
-        # cv2.imshow('Metade da tela processada',imagemPreprocessada)
-        cv2.imshow('Metade da tela',metadeTela)
-        if cv2.waitKey(25) &0xFF==ord('q'):
+                cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
+        cv2.imshow('Metade da tela processada',imagemPreprocessada)
+        # cv2.imshow('Metade da tela',metadeTela)
+        if cv2.waitKey(3) &0xFF==ord('q'):
             break
     cv2.destroyAllWindows()
 
-def temporario():
-    cap = cv2.VideoCapture('/Users/HOZANA SOUZA/Videos/Captures/DG_TÚNEL_PROIBIDO.mp4') 
-    porcentagem=50
+def encontraMenu():
+    # 
+    #  nucleoBlur=1,nucleoDilate=2,interation=1,t_lower = 70  # Lower Threshold,t_upper = 180  # Upper threshold
+    nucleoBlur=1
+    nucleoDilate=2
+    interation=1
+    t_lower = 150  # Lower Threshold
+    t_upper = 180  # Upper threshold
+    while True:
+        screenshot=tira_screenshot()
+        telaInteira=retorna_imagem_colorida(screenshot)
+        metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
+        imagem=retornaImagemCinza(metadeTela)
+        imagem=cv2.GaussianBlur(imagem,(nucleoBlur,nucleoBlur),0)
+        imagem=cv2.Canny(imagem,t_lower,t_upper)
+        kernel=np.ones((nucleoDilate,nucleoDilate),np.uint8)
+        imagem=retornaImagemDitalata(imagem,kernel,interation)
+        imagem=retornaImagemErodida(imagem,kernel,interation)
+        contornos,h1=cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        for cnt in contornos:
+            area=cv2.contourArea(cnt)
+            if area>500:#2400/2600 area personagem de boa
+                # print(f'Area: {area}.')
+                x,y,l,a=cv2.boundingRect(cnt)
+                # print(f'Largura: {l}.')
+                # print(f'Altura: {a}.')
+                # recorte=metadeTela[y:y+a,x:x+l]
+                # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',recorte)
+                cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
+        cv2.imshow('Metade da tela processada',imagem)
+        cv2.imshow('Metade da tela',metadeTela)
+        if cv2.waitKey(25) &0xFF==ord('q'):
+            break
+        # nucleoBlur=int(input(f'nucleoblur: '))
+        # nucleoDilate=int(input(f'nucleoDilate: '))
+        # interation=int(input(f'interation: '))
+        # t_lower = int(input(f't_lower: '))
+        # t_upper = int(input(f't_upper: '))
+        # print(f'_____________________________________________')
+    cv2.destroyAllWindows()
 
+def temporario():
+    cap = cv2.VideoCapture('C:/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS.mp4') 
+    porcentagem=50
+    nucleoBlur=1
+    nucleoDilate=3
+    interation=9
+    t_lower=254
+    t_upper=255
     if (cap.isOpened()== False):  
         print("Error opening video  file") 
     while(cap.isOpened()): 
@@ -314,12 +362,11 @@ def temporario():
         larguraDesejada=frame.shape[1]*porcentagem/100
         frame=cv2.resize(frame,(int(larguraDesejada),int(alturaDesejada)))
         imagem=retornaImagemCinza(frame)
-        t_lower = 160  # Lower Threshold
-        t_upper = 255  # Upper threshold
+        imagem=cv2.GaussianBlur(imagem,(nucleoBlur,nucleoBlur),0)
         imagem=cv2.Canny(imagem,t_lower,t_upper)
-        kernel=np.ones((2,2),np.uint8)
-        imagem=cv2.dilate(imagem,kernel,iterations=9)
-        imagem=cv2.erode(imagem,kernel,iterations=9)
+        kernel=np.ones((nucleoDilate,nucleoDilate),np.uint8)
+        imagem=cv2.dilate(imagem,kernel,iterations=interation)
+        imagem=cv2.erode(imagem,kernel,iterations=interation)
         # imagemPreprocessada=preProcessamento(frame)
         contornos,h1=cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
@@ -336,9 +383,7 @@ def temporario():
                 break
         else:  
             break
-    
     cap.release() 
-    
     cv2.destroyAllWindows() 
 
 def temporario2():
@@ -373,4 +418,4 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# encontraPersonagem()
+# temporario()

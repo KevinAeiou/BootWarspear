@@ -70,16 +70,32 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
 def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioVenda)
-    if requisicao!=None:
+    if requisicao:
         print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
     else:
         print(f'Limite de tentativas de conexão atingido.')
     return dicionarioVenda
 
+def adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho):
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
+    requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
+    if requisicao:
+        dicionarioRequisicao=requisicao.json()
+        dados={'id':dicionarioRequisicao['name']}
+        caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
+        requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+        if requisicao:
+            dicionarioRequisicao=requisicao.json()
+            # for id in dicionarioRequisicao:
+            #     print(f'Novo trabalho foi adicionado: {dicionarioRequisicao[id][CHAVE_NOME]}.')
+        else:
+            caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
+            requisicao=retornaRequisicao(DELETE,caminhoRequisicao,None)
+
 def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
-    if requisicao!=None:
+    if requisicao:
         dicionarioRequisicao=requisicao.json()
         dados={'id':dicionarioRequisicao['name']}
         caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
@@ -104,29 +120,17 @@ def retornaListaDicionarioProfissao(dicionarioPersonagem):
         dicionarioProfissoes=requisicao.json()
         if dicionarioProfissoes!=None:
             for idProfissao in dicionarioProfissoes:
+                if not CHAVE_EXPERIENCIA in dicionarioProfissoes[idProfissao]:
+                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
+                    dados={CHAVE_EXPERIENCIA:0}
+                    modificaAtributo(caminhoRequisicao,dados)
+                    dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA]=0
                 dicionarioProfissao={
                     CHAVE_ID:idProfissao,
                     CHAVE_EXPERIENCIA:dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA],
                     CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
-                # caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
-                # dados={CHAVE_EXPERIENCIA:0}
-                # adicionaAtributo(caminhoRequisicao,dados)
                 listaDicionarioProfissao.append(dicionarioProfissao)
     return listaDicionarioProfissao
-#modificado 16/01
-def modificarProfissao(personagemId,profissaoId,profissao):
-    dados={'nome':profissao}
-    caminhoRequisicao=f'{link_database}/Usuarios/eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagemId}/Lista_profissoes/{profissaoId}/.json'
-    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-    if requisicao!=None:
-        dicionarioTrabalho=requisicao.json()
-        if dicionarioTrabalho!=None:
-            print(f'Novo trabalho foi adicionado: {dicionarioTrabalho}')
-        else:
-            print(f'Resultado da dicionario: {dicionarioTrabalho}.')
-    else:
-        print(f'Erro ao adicionar novo trabalho!')
-    return dicionarioTrabalho
 
 def modificaProfissao(dicionarioPersonagem,dicionarioProfissao):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'

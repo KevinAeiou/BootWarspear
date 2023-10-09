@@ -1582,10 +1582,22 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
             modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
             dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
-        # if not trabalhoEProducaoRecursos():
         modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho)
+        # if not trabalhoEProducaoRecursos():
+        dicionarioTrabalho=defineDicionarioTrabalhoEstoque(dicionarioTrabalho)
+        # adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho)
         # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
     return dicionarioPersonagem
+
+def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
+    dicionarioTrabalhoEstoque={
+        CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
+        CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+        CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
+        CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE]
+    }
+
+    return dicionarioTrabalhoEstoque
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
@@ -1595,6 +1607,7 @@ def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
                 experiencia=profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
                 dados={CHAVE_EXPERIENCIA:experiencia}
                 modificaAtributo(caminhoRequisicao,dados)
+                print(f'Experiência de {profissao[CHAVE_NOME]} atualizada para {experiencia}.')
                 dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
                 break
             else:
@@ -1616,12 +1629,11 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
                 listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
-                    for dicionarioTrabalhoDesejado in listaDicionarioTrabalhoDesejado:
-                        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],dicionarioTrabalhoDesejado[CHAVE_NOME])and
-                            dicionarioTrabalhoDesejado[CHAVE_ESTADO]==produzindo):
-                            dicionarioTrabalho=dicionarioTrabalhoDesejado
-                            print(f'{dicionarioTrabalhoDesejado[CHAVE_NOME]} recuperado.')
-                            break
+                    dicionarioTrabalho=retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalhoDesejado,produzindo)
+                if tamanhoIgualZero(dicionarioTrabalho):
+                    listaDicionarioTrabalho=retornaListaDicionariosTrabalhos()
+                    if not tamanhoIgualZero(listaDicionarioTrabalho):
+                        dicionarioTrabalho=retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalho,para_produzir)
                 clickContinuo(3,'up')
                 linhaSeparacao()
             else:
@@ -1629,6 +1641,16 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 clickContinuo(1,'up')
                 clickEspecifico(1,'left')
     return dicionarioPersonagem,dicionarioTrabalho
+
+def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalho,estado):
+    dicionarioTrabalho={}
+    for trabalho in listaDicionarioTrabalho:
+        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],trabalho[CHAVE_NOME])and
+                            trabalho[CHAVE_ESTADO]==estado):
+            print(f'{trabalho[CHAVE_NOME]} recuperado.')
+            dicionarioTrabalho=trabalho
+            break
+    return dicionarioTrabalho
 
 def trataErros(dicionarioTrabalho,dicionarioPersonagem):
     print(f'Tratando possíveis erros...')
@@ -2526,7 +2548,7 @@ def funcao_teste(dicionarioUsuario):
         # click_atalho_especifico('alt','tab')
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
-        modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
+        # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
         # linhaSeparacao()
@@ -2603,7 +2625,7 @@ def funcao_teste(dicionarioUsuario):
         # retorna_tipo_erro()
         # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
         # atualiza_lista_profissao(dicionarioPersonagem)
-            # retornaMenu()
+        retornaMenu()
         # verificaPixelCorrespondencia()
         # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
         # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
