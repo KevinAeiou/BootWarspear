@@ -114,6 +114,7 @@ def atualizaListaProfissao(dicionarioPersonagem):
                         break
         else:
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+            dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
             print(f'Processo concluído com sucesso!')
     else:
         print(f'Erro ao definir lista de profissões reconhecidas.')
@@ -150,7 +151,7 @@ def defineListaProfissaoReconhecida():
             print(f'Processo interrompido!')
             break
     else:
-        clickContinuo(8,'up')
+        clickContinuo(10,'up')
         print(f'Processo concluído!')
     return listaProfissaoReconhecida
 
@@ -396,18 +397,18 @@ def retornaEstadoTrabalho():
     linhaSeparacao()
     return estadoTrabalho
 
-def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
+def verificaLicenca(dicionarioTrabalho,dicionarioPersonagem):
     confirmacao=False
-    print(f"Buscando: {licencaTrabalho}")
+    print(f"Buscando: {dicionarioTrabalho[CHAVE_LICENCA]}")
     linhaSeparacao()
     textoReconhecido=retornaLicencaReconhecida()
-    if variavelExiste(textoReconhecido) and variavelExiste(licencaTrabalho):
+    if variavelExiste(textoReconhecido) and variavelExiste(dicionarioTrabalho[CHAVE_LICENCA]):
         print(f'Licença reconhecida: {textoReconhecido}.')
         linhaSeparacao()
         if not texto1PertenceTexto2('licençasdeproduçao',textoReconhecido):
             primeiraBusca=True
             listaCiclo=[]
-            while not texto1PertenceTexto2(textoReconhecido,licencaTrabalho):
+            while not texto1PertenceTexto2(textoReconhecido,dicionarioTrabalho[CHAVE_LICENCA]):
                 primeiraBusca=False
                 clickEspecifico(1,"right")
                 listaCiclo.append(textoReconhecido)
@@ -416,8 +417,8 @@ def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
                     print(f'Licença reconhecida: {textoReconhecido}.')
                     linhaSeparacao()
                     if verifica_ciclo(listaCiclo)or texto1PertenceTexto2('nenhumitem',textoReconhecido):
-                        licencaTrabalho='licençadeproduçãodoiniciante'
-                        print(f'Licença para trabalho agora é: {licencaTrabalho}.')
+                        dicionarioTrabalho[CHAVE_LICENCA]='Licença de produção do iniciante'
+                        print(f'Licença para trabalho agora é: {dicionarioTrabalho[CHAVE_LICENCA]}.')
                         linhaSeparacao()
                 else:
                     print(f'Erro ao reconhecer licença!')
@@ -438,7 +439,7 @@ def verificaLicenca(licencaTrabalho,dicionarioPersonagem):
     else:
         print(f'Erro ao reconhecer licença!')
         linhaSeparacao()
-    return confirmacao
+    return confirmacao,dicionarioTrabalho
 
 def retornaLicencaReconhecida():
     licencaRetornada=None
@@ -518,7 +519,7 @@ def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao
     listaDicionariosTrabalhosBuscadosOrdenados=sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
     return listaDicionariosTrabalhosBuscadosOrdenados
 
-def defineChaveDicionarioTrabalhoComum(dicionarioTrabalho):
+def defineDicionarioTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
     contadorParaBaixo=0
     if not primeiraBusca(dicionarioTrabalho):
@@ -592,6 +593,8 @@ def texto1PertenceTexto2(texto1,texto2):
     return limpaRuidoTexto(texto1)in limpaRuidoTexto(texto2)
 
 def textoEhIgual(texto1,texto2):
+    # print(f'{D}:{limpaRuidoTexto(texto1)}.')
+    # print(f'{D}:{limpaRuidoTexto(texto2)}.')
     return limpaRuidoTexto(texto1)==limpaRuidoTexto(texto2)
 
 def variavelExiste(variavelVerificada):
@@ -674,14 +677,14 @@ def sai_trabalho_encontrado(x,tipo_trabalho):
     clickEspecifico(2,'left')
 
 def verificaErro(dicionarioTrabalho):
-    licenca=configuraLicenca(dicionarioTrabalho)
+    dicionarioTrabalho=configuraLicenca(dicionarioTrabalho)
     time.sleep(0.5)
     print(f'Verificando erro...')
     erro=retornaTipoErro()
     if erro==erroPrecisaLicenca or erro==erroFalhaConectar or erro==erroConexaoInterrompida or erro==erroManutencaoServidor or erro==erroReinoIndisponivel:
         clickEspecifico(2,"enter")
         if erro==erroPrecisaLicenca:
-            verificaLicenca(licenca,None)
+            verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],None)
         elif erro==erroFalhaConectar:
             print(f'Erro na conexão...')
         elif erro==erroConexaoInterrompida:
@@ -1489,6 +1492,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                 elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
                                     break
                             dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
+                            clickContinuo(3,'up')
                             clickEspecifico(1,'left')
                             linhaSeparacao()
                         else:
@@ -1520,7 +1524,7 @@ def saiProfissaoVerificada(dicionarioTrabalho):
     linhaSeparacao()
 
 def buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagem):
-    dicionarioTrabalho=defineChaveDicionarioTrabalhoComum(dicionarioTrabalho)
+    dicionarioTrabalho=defineDicionarioTrabalhoComum(dicionarioTrabalho)
     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
         dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
         linhaSeparacao()
@@ -1711,11 +1715,13 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
         elif menuTrabalhosAtuais(menu):
             if trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está ligada.')
-                cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
+                cloneDicionarioTrabalho=defineCloneDicionarioTrabalho(dicionarioTrabalho)
                 cloneDicionarioTrabalho=adicionaTrabalhoDesejo(dicionarioPersonagemAtributos,cloneDicionarioTrabalho)
                 linhaSeparacao()
             elif not trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está desligada.')
+                if textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'Licença de produção do principiante'):
+                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
                 modificaEstadoTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
                 linhaSeparacao()
             clickContinuo(12,'up')
@@ -1726,15 +1732,18 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
     return dicionarioPersonagemAtributos
 
 def defineCloneDicionarioTrabalho(dicionarioTrabalho):
-    cloneDicionarioTrabalho={CHAVE_ID:None,
-                            CHAVE_NOME:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NOME],
-                            CHAVE_ESTADO:1,
-                            CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA],
-                            CHAVE_NIVEL:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL],
-                            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_PROFISSAO],
-                            CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RARIDADE],
-                            CHAVE_RECORRENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA],
-                            CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
+    cloneDicionarioTrabalho={
+        CHAVE_ID:None,
+        CHAVE_NOME:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NOME],
+        CHAVE_ESTADO:1,
+        CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA],
+        CHAVE_NIVEL:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_NIVEL],
+        CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_PROFISSAO],
+        CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RARIDADE],
+        CHAVE_RECORRENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA],
+        CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
+    if textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'Licença de produção do principiante'):
+        cloneDicionarioTrabalho[CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
     return cloneDicionarioTrabalho
 
 def trabalhoERecorrente(dicionarioTrabalho):
@@ -1758,7 +1767,8 @@ def naoReconheceMenu(menu):
 def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
     dicionarioPersonagem=entraLicenca(dicionarioPersonagem)
     if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
-        if verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],dicionarioPersonagem):#verifica tipo de licença de produção
+        confirmacao,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],dicionarioPersonagem)
+        if confirmacao:#verifica tipo de licença de produção
             clickEspecifico(1,'f2')#click que definitivamente começa a produção
             dicionarioTrabalho,dicionarioPersonagem=trataErros(dicionarioTrabalho,dicionarioPersonagem)
             linhaSeparacao()
@@ -2123,7 +2133,7 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
 def configuraLicenca(dicionarioTrabalho):
     if dicionarioTrabalho==None:
         return None
-    return dicionarioTrabalho[CHAVE_LICENCA]
+    return dicionarioTrabalho
 
 def abreCaixaCorreio():
     clickEspecifico(1,'f2')
@@ -2524,17 +2534,22 @@ def deleta_item_lista():
 
 def funcao_teste(dicionarioUsuario):
     trabalhoComumDesejado={
-        CHAVE_NOME:'Anel-sinete sombrio',
-        CHAVE_EXPERIENCIA:750,
-        CHAVE_RARIDADE:'comum',
-        CHAVE_PROFISSAO:'aneis',
+        CHAVE_ID:None,
+        CHAVE_NOME:'Bracelete de ônix artístico',
+        CHAVE_EXPERIENCIA:250,
+        CHAVE_NIVEL:16,
+        CHAVE_RARIDADE:'melhorado',
+        CHAVE_PROFISSAO:'Braceletes',
+        CHAVE_RECORRENCIA:True,
+        CHAVE_LICENCA:'Licença de produção do principiante',
         CHAVE_ESTADO:0
         }
-    dicionarioTrabalho={CHAVE_CONFIRMACAO:True,
+    dicionarioTrabalho={
+        CHAVE_CONFIRMACAO:True,
         CHAVE_POSICAO_TRABALHO_COMUM:-1,
-        CHAVE_PROFISSAO:'aneis',
+        CHAVE_PROFISSAO:'Braceletes',
         CHAVE_LISTA_TRABALHO_COMUM_MELHORADO:[trabalhoComumDesejado],
-        CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
+        CHAVE_DICIONARIO_TRABALHO_DESEJADO:trabalhoComumDesejado
         }
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
@@ -2548,7 +2563,7 @@ def funcao_teste(dicionarioUsuario):
     dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
     while not textoEhIgual(input(f'Continuar?'),'n'):
         click_atalho_especifico('alt','tab')
-        atualizaListaProfissao(dicionarioPersonagem)
+        # atualizaListaProfissao(dicionarioPersonagem)
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
@@ -2557,7 +2572,10 @@ def funcao_teste(dicionarioUsuario):
         # linhaSeparacao()
         # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
         # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
-        # defineChaveDicionarioTrabalhoComum(dicionarioTrabalho)
+        # defineDicionarioTrabalhoComum(dicionarioTrabalho)
+        clone=defineCloneDicionarioTrabalho(dicionarioTrabalho)
+        for chave in clone:
+            print(clone[chave])
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
         # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
