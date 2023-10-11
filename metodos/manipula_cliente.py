@@ -132,13 +132,6 @@ def retornaListaDicionarioProfissao(dicionarioPersonagem):
                 listaDicionarioProfissao.append(dicionarioProfissao)
     return listaDicionarioProfissao
 
-def modificaProfissao(dicionarioPersonagem,dicionarioProfissao):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'
-    dicionarioNomeProfissao={CHAVE_NOME:dicionarioProfissao[CHAVE_NOME]}
-    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dicionarioNomeProfissao)
-    if requisicao!=None:
-        print(f'{dicionarioNomeProfissao} foi modificado!')
-
 def cadastraNovoTrabalho(dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Lista_trabalhos/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
