@@ -5,7 +5,7 @@ import pytesseract
 from PIL import Image
 from manipula_teclado import *
 from lista_chaves import *
-from keras.models import load_model
+# from keras.models import load_model
 # import mahotas
 import time
 
