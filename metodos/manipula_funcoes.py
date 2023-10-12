@@ -1601,6 +1601,13 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         # if not trabalhoEProducaoRecursos():
         dicionarioTrabalho=defineDicionarioTrabalhoEstoque(dicionarioTrabalho)
         dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
+        if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
+            for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
+                if textoEhIgual(dicionarioTrabalho[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
+                    dicionarioTrabalho[CHAVE_QUANTIDADE]=dicionarioTrabalho[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
+                    
+            else:
+                pass
         # adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho)
         # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
     return dicionarioPersonagem
@@ -1618,6 +1625,7 @@ def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
         dicionarioTrabalhoEstoque={
             CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
             CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+            CHAVE_QUANTIDADE:1,
             CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
             CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE]
         }
@@ -2571,7 +2579,8 @@ def funcao_teste(dicionarioUsuario):
         click_atalho_especifico('alt','tab')
         # atualizaListaProfissao(dicionarioPersonagem)
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
+        defineListaDicionarioEstoque(dicionarioPersonagem)
+        # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())

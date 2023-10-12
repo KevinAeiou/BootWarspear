@@ -82,8 +82,12 @@ def defineListaDicionarioEstoque(dicionarioPersonagem):
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dicionarioRequisicao=requisicao.json()
-        for chave in dicionarioRequisicao:
-            print(f'{D}:{dicionarioRequisicao[chave]}')
+        if dicionarioRequisicao:
+            for chave in dicionarioRequisicao:
+                print(f'{D}:{dicionarioRequisicao[chave]}')
+                listaDicionarioEstoque.append(dicionarioRequisicao[chave])
+        else:
+            print(f'Resultado dicionario: {dicionarioRequisicao}.')
     else:
         print(f'Resultado requisição: {requisicao}.')
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]=listaDicionarioEstoque
