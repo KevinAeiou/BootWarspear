@@ -312,8 +312,8 @@ def menu(dicionarioUsuario):
                 print(f'Voltar.')
                 linhaSeparacao()
             elif opcao_configuracao==1:
-                modifica_quantidade_personagem_ativo()
-        elif opcaoEscolha==7:#Menu teste
+                pass
+        elif opcaoEscolha==7:
             funcao_teste(dicionarioUsuario)
             linhaSeparacao()
         menu(dicionarioUsuario)

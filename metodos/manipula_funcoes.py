@@ -68,7 +68,6 @@ para_produzir=0
 produzindo=1
 concluido=2
 
-dicionarioPersonagem = 'eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
 tela = 'atualizacao_tela.png'
 
 def atualiza_nova_tela():
@@ -76,14 +75,6 @@ def atualiza_nova_tela():
     salvaNovaTela(imagem)
     print(f'Atualizou a tela.')
     linhaSeparacao()
-
-def profissaoExiste(profissaoReconhecida,listaProfissao):
-    confirmacao=False
-    for profissao in listaProfissao:
-        if profissao[CHAVE_NOME].lower()in profissaoReconhecida.lower():
-            confirmacao=True
-            break
-    return confirmacao
 
 def atualizaListaProfissao(dicionarioPersonagem):
     print(f'Atualizando lista de profissões...')
@@ -307,7 +298,6 @@ def detecta_movimento_teste():
 def mostraLista(listaDicionarios):
     x=1
     for dicionario in listaDicionarios:
-        # print(f'{x} - {dicionario[CHAVE_NIVEL]}:{dicionario[CHAVE_NOME]}.')
         print(f'{x} - {dicionario[CHAVE_NOME]}.')
         x+=1
     print(f'0 - Voltar.')
@@ -669,12 +659,6 @@ def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
         nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
     # # print(f'{D}:Trabalho reconhecido {nomeTrabalhoReconhecido}.')
     return nomeTrabalhoReconhecido
-
-def sai_trabalho_encontrado(x,tipo_trabalho):
-    clicks=[2,1]
-    clickEspecifico(clicks[tipo_trabalho],'f1')
-    clickContinuo(x+1,'up')
-    clickEspecifico(2,'left')
 
 def verificaErro(dicionarioTrabalho):
     dicionarioTrabalho=configuraLicenca(dicionarioTrabalho)
@@ -1616,6 +1600,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
         modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho)
         # if not trabalhoEProducaoRecursos():
         dicionarioTrabalho=defineDicionarioTrabalhoEstoque(dicionarioTrabalho)
+        dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
         # adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho)
         # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
     return dicionarioPersonagem
@@ -1627,13 +1612,15 @@ def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
-    dicionarioTrabalhoEstoque={
-        CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
-        CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
-        CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-        CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE]
-    }
-
+    if trabalhoEProducaoRecursos(dicionarioTrabalho):
+        pass
+    else:
+        dicionarioTrabalhoEstoque={
+            CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
+            CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
+            CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE]
+        }
     return dicionarioTrabalhoEstoque
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
@@ -2071,18 +2058,6 @@ def recorta_novo_modelo_habilidade():
                 linhaSeparacao()
         else:
             print(f'Voltar.')
-            linhaSeparacao()
-
-def modifica_quantidade_personagem_ativo():
-    nova_quantidade = input(f'Digite a nova quantidade: ')
-    linhaSeparacao()
-    while not nova_quantidade.isdigit() or int(nova_quantidade)<=0:
-        print(f'Quantidade inválida! Tente novamente...')
-        nova_quantidade = input(f'Sua escolha: ')
-        linhaSeparacao()
-    else:
-        if (muda_quantidade_personagem(dicionarioPersonagem,nova_quantidade)):
-            print(f'Quantidade de personagens ativos modificada com sucesso!')
             linhaSeparacao()
 
 def retornaAtualizacaoTela():
@@ -2644,7 +2619,6 @@ def funcao_teste(dicionarioUsuario):
         # click_continuo(9,'up')
         # recupera_trabalho_concluido(dicionarioPersonagem)
         # while True:
-        # atualiza_nova_tela()
         # click_continuo(8,'up')
         # confirma_nome_trabalho('Melhorar licença comum',1)
         #     menu=retorna_menu()
@@ -2655,7 +2629,6 @@ def funcao_teste(dicionarioUsuario):
         # lista_habilidade = retorna_lista_habilidade_verificada()
         # lista_ativos = consulta_lista_personagem(usuario_id)
         # print(lista_ativos)
-        # modifica_quantidade_personagem_ativo()
         # while True:
         #     verifica_habilidade_central(lista_habilidade)
         # print(retornaLicencaReconhecida())
