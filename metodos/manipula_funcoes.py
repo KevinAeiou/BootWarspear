@@ -762,7 +762,7 @@ def verificaErro(dicionarioTrabalho):
 def entraLicenca(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
     erro=verificaErro(None)
-    if erro==0:
+    if not erroEncontrado(erro):
         dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
         clickEspecifico(1,'up')
         clickEspecifico(1,'enter')
@@ -946,8 +946,14 @@ def entraPersonagemAtivo(dicionarioPersonagem):
     print(f'Buscando personagem ativo...')
     clickEspecifico(1,'enter')
     time.sleep(1)
-    while verificaErro(None)!=0:
-        continue
+    tentativas=1
+    erro=verificaErro(None)
+    while erroEncontrado(erro):
+        if erro==erroConectando:
+            if tentativas>10:
+                clickEspecifico(2,'enter')
+            tentativas+=1
+        erro=verificaErro(None)
     else:
         clickEspecifico(1,'f2')
         clickContinuo(8,'left')   
@@ -960,12 +966,17 @@ def entraPersonagemAtivo(dicionarioPersonagem):
                 ativaAtributoUso(dicionarioPersonagem)
                 clickEspecifico(1,'f2')
                 time.sleep(1)
+                tentativas=1
                 erro=verificaErro(None)
-                while erro!=0:
+                while erroEncontrado(erro):
                     if erro==erroOutraConexao:
                         dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
                         contadorPersonagem=14
                         break
+                    elif erro==erroConectando:
+                        if tentativas>10:
+                            clickEspecifico(2,'enter')
+                        tentativas+=1
                     erro=verificaErro(None)
                 else:
                     print(f'Login efetuado com sucesso!')
@@ -1362,10 +1373,13 @@ def logaContaPersonagem(listaDicionarioPersonagensAtivos):
     senha=listaDicionarioPersonagensAtivos[0][CHAVE_SENHA]
     print(f'Tentando logar conta personagem...')
     preencheCamposLogin(email,senha)
+    tentativas=1
     erro=verificaErro(None)
-    while erro!=0:
+    while erroEncontrado(erro):
         if erro==erroConectando or erro==erroRestaurandoConexao:
-            time.sleep(1)
+            if tentativas>10:
+                clickEspecifico(2,'enter')
+            tentativas+=1
         elif erro==erroEmailSenhaIncorreta:
             break
         else:
@@ -1590,7 +1604,6 @@ def melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho):
 def verificaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioPersonagem,dicionarioTrabalho=defineDicionarioTrabalhoConcluido(dicionarioPersonagem)
     if not tamanhoIgualZero(dicionarioTrabalho):
-        listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
         if dicionarioTrabalho[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
             excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho)
@@ -1599,13 +1612,18 @@ def verificaTrabalhoConcluido(dicionarioPersonagem):
             modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,2)
         linhaSeparacao()
         if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
-            modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
-            dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
+            dicionarioPersonagem=defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem)
         modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho)
         # if not trabalhoEProducaoRecursos():
         dicionarioTrabalho=defineDicionarioTrabalhoEstoque(dicionarioTrabalho)
         # adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho)
         # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
+    return dicionarioPersonagem
+
+def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
+    listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
+    modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
+    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
     return dicionarioPersonagem
 
 def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
@@ -1842,15 +1860,6 @@ def recuperaPresente():
                 print(f'Area:{area}, x:{x}, y:{y}.')
                 cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
                 frameTratado=frameTela[y:y+a,x:x+l]
-                # mostraImagem(0,frameTratado,None)
-                # contadorPixelPreto=np.sum(frameTela==0)
-                # print(f'Contador pixel preto: {contadorPixelPreto}.')
-                # if existemPixelsSuficientes(contadorPixelPreto):
-                    # textoReconhecido=reconheceTexto(frameTratado)
-                    # print(f'{D}:{textoReconhecido}')
-                    # if variavelExiste(textoReconhecido):
-                    #     print(f'Texto reconhecido: {textoReconhecido}.')
-                    #     if textoEhIgual(textoReconhecido,'pegar'):
                 centroX=330+x+(l/2)
                 centroY=y+(a/2)
                 clickMouseEsquerdo(1,centroX,centroY)
@@ -1860,10 +1869,6 @@ def recuperaPresente():
                     break
                 clickEspecifico(1,'f2')
                 break
-                    # else:
-                    #     print(f'Ocorreu algum erro ao reconhecer presente!')
-                    #     linhaSeparacao()
-        # mostraImagem(0,frameTela,None)
         clickContinuo(8,'up')
         clickEspecifico(1,'left')
         linhaSeparacao()
@@ -1915,10 +1920,13 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
     print(f'Buscando próximo personagem...')
     clickEspecifico(1,'enter')
     time.sleep(1)
+    tentativas=1
     erro=verificaErro(None)
-    while erro!=0:
-        if erro==5:
-            time.sleep(1)
+    while erroEncontrado(erro):
+        if erro==erroConectando:
+            if tentativas>10:
+                clickEspecifico(2,'enter')
+            tentativas+=1
         erro=verificaErro(None)
     else:
         clickEspecifico(1,'f2')
@@ -1944,10 +1952,15 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
             else:
                 clickEspecifico(1,'f2')
                 time.sleep(1)
+                tentativas=1
                 erro=verificaErro(None)
-                while erro!=0:
-                    if erro==7:
+                while erroEncontrado(erro):
+                    if erro==erroReceberRecompensas:
                         break
+                    elif erro==erroConectando:
+                        if tentativas>10:
+                            clickEspecifico(1,'enter')
+                        tentativas+=1
                     time.sleep(1.5)
                     erro=verificaErro(None)
                 confirmacao=True
@@ -2489,6 +2502,24 @@ def defineAtributoTrabalhoNecessario(dicionarioUsuario):
                 # modificaRaridadeTrabalho(dicionarioTrabalho,raridade='Melhorado')
     linhaSeparacao()
 
+def mostraListaTrabalhoSemExperiencia(dicionarioUsuario):
+    x=1
+    listaDicionarioTrabalhoSemXp=[]
+    for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
+        if not CHAVE_EXPERIENCIA in trabalho:
+            if not textoEhIgual(trabalho[CHAVE_RARIDADE],'especial'):
+                listaDicionarioTrabalhoSemXp.append(trabalho)
+                print(f'{x} - {trabalho[CHAVE_PROFISSAO]}:{trabalho[CHAVE_NOME]}')
+                x+=1
+    print(f'0 - Voltar')
+    opcao=int(input(f'Opção:'))
+    trabalhoEscolhido=listaDicionarioTrabalhoSemXp[opcao-1]
+    experiencia=int(input(f'XP:'))
+    caminhoRequisicao=f'Lista_trabalhos/{trabalhoEscolhido[CHAVE_ID]}/.json'
+    dados={CHAVE_EXPERIENCIA:experiencia}
+    modificaAtributo(caminhoRequisicao,dados)
+    return
+
 def defineAtributoExperienciaTrabalho(dicionarioUsuario):
     raridade=input(f'Raridade: ')
     nivel=int(input(f'Nível: '))
@@ -2560,12 +2591,12 @@ def funcao_teste(dicionarioUsuario):
     dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
     listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
-    dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
     while not textoEhIgual(input(f'Continuar?'),'n'):
+        dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
         click_atalho_especifico('alt','tab')
         # atualizaListaProfissao(dicionarioPersonagem)
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        # defineAtributoExperienciaTrabalho(dicionarioUsuario)
+        mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
@@ -2573,9 +2604,9 @@ def funcao_teste(dicionarioUsuario):
         # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
         # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
         # defineDicionarioTrabalhoComum(dicionarioTrabalho)
-        clone=defineCloneDicionarioTrabalho(dicionarioTrabalho)
-        for chave in clone:
-            print(clone[chave])
+        # clone=defineCloneDicionarioTrabalho(dicionarioTrabalho)
+        # for chave in clone:
+        #     print(clone[chave])
         # texto_menu=retornaTextoMenuReconhecido(26,1,100)
         # verificaErro(dicionarioTrabalho)
         # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'

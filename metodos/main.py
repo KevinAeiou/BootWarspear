@@ -2,9 +2,6 @@ import time, sys
 from manipula_funcoes import *
 from manipula_cliente import *
 
-nome_arquivo_lista_profissoes = 'arquivos/lista_profissoes.txt'
-nome_arquivo_lista_trabalho = 'arquivos\lista_trabalho_desejado.txt'
-
 def mostraMenuListaDesejo(dicionarioUsuario):
     print(f'Lista de trabalhos desejados:')
     dicionarioUsuario=defineListaDesejo(dicionarioUsuario)
