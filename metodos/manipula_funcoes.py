@@ -1362,7 +1362,7 @@ def logaContaPersonagem(listaDicionarioPersonagensAtivos):
     while erroEncontrado(erro):
         if erro==erroConectando or erro==erroRestaurandoConexao:
             if tentativas>10:
-                clickEspecifico(2,'enter')
+                clickEspecifico(1,'enter')
             tentativas+=1
         elif erro==erroEmailSenhaIncorreta:
             break
@@ -1486,7 +1486,10 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                                 if retornaEstadoTrabalho()==concluido:
-                                    dicionarioPersonagemAtributos=verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
+                                    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido=verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
+                                    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                                        modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                                        atualizaEstoquePersonagem(dicionarioTrabalhoConcluido,dicionarioPersonagemAtributos)
                                 elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
                                     break
                             dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=None
@@ -1579,38 +1582,19 @@ def vaiParaMenuCorrespondencia():
 def estaMenuInicial(menu):
     return menu==menu_inicial
 
-def melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho):
-    if not trabalhoEProducaoRecursos(dicionarioTrabalho):
-        if raridadeTrabalhoEhComum(dicionarioTrabalho)or raridadeTrabalhoEhMelhorado(dicionarioTrabalho):
-            
-            pass
-
 def verificaTrabalhoConcluido(dicionarioPersonagem):
-    dicionarioPersonagem,dicionarioTrabalho=defineDicionarioTrabalhoConcluido(dicionarioPersonagem)
-    if not tamanhoIgualZero(dicionarioTrabalho):
-        if dicionarioTrabalho[CHAVE_RECORRENCIA]:
+    dicionarioPersonagem,dicionarioTrabalhoConcluido=defineDicionarioTrabalhoConcluido(dicionarioPersonagem)
+    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+        if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
-            excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho)
+            excluiTrabalho(dicionarioPersonagem,dicionarioTrabalhoConcluido)
         else:
             print(f'Trabalho sem recorrencia.')
-            modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,2)
+            modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalhoConcluido,2)
         linhaSeparacao()
         if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
             dicionarioPersonagem=defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem)
-        modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho)
-        # if not trabalhoEProducaoRecursos():
-        dicionarioTrabalho=defineDicionarioTrabalhoEstoque(dicionarioTrabalho)
-        dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
-        if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
-            for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-                if textoEhIgual(dicionarioTrabalho[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
-                    dicionarioTrabalho[CHAVE_QUANTIDADE]=dicionarioTrabalho[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
-                    
-            else:
-                pass
-        # adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho)
-        # melhoraTrabalhoConcluido(dicionarioPersonagem,dicionarioTrabalho)
-    return dicionarioPersonagem
+    return dicionarioPersonagem,dicionarioTrabalhoConcluido
 
 def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
     listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
@@ -2079,7 +2063,10 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
     elif menu==menu_trab_atuais:
         estado_trabalho=retornaEstadoTrabalho()
         if estado_trabalho==concluido:
-            dicionarioPersonagemAtributos=verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
+            dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido=verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
+            if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                atualizaEstoquePersonagem(dicionarioTrabalhoConcluido,dicionarioPersonagemAtributos)
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
             if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
@@ -2125,6 +2112,22 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
         dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
         dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
     return dicionarioPersonagemAtributos
+
+def atualizaEstoquePersonagem(dicionarioTrabalhoConcluido,dicionarioPersonagem):
+    dicionarioTrabalhoConcluido=defineDicionarioTrabalhoEstoque(dicionarioTrabalhoConcluido)
+    dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
+    if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
+        for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
+            if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
+                novaQuantidade=dicionarioTrabalhoConcluido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
+                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                dados={CHAVE_QUANTIDADE:novaQuantidade}
+                modificaAtributo(caminhoRequisicao,dados)
+                break
+        else:
+            adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalhoConcluido)
+    else:
+        adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalhoConcluido)
     
 def configuraLicenca(dicionarioTrabalho):
     if dicionarioTrabalho==None:
@@ -2579,7 +2582,8 @@ def funcao_teste(dicionarioUsuario):
         click_atalho_especifico('alt','tab')
         # atualizaListaProfissao(dicionarioPersonagem)
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        defineListaDicionarioEstoque(dicionarioPersonagem)
+        atualizaEstoquePersonagem(trabalhoComumDesejado,dicionarioPersonagem)
+        # defineListaDicionarioEstoque(dicionarioPersonagem)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
