@@ -1604,6 +1604,7 @@ def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
 
 def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
     if trabalhoEProducaoRecursos(dicionarioTrabalho):
+        dicionarioTrabalhoEstoque={}
         pass
     else:
         dicionarioTrabalhoEstoque={
@@ -2115,19 +2116,20 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
 
 def atualizaEstoquePersonagem(dicionarioTrabalhoConcluido,dicionarioPersonagem):
     dicionarioTrabalhoConcluido=defineDicionarioTrabalhoEstoque(dicionarioTrabalhoConcluido)
-    dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
-    if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
-        for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-            if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
-                novaQuantidade=dicionarioTrabalhoConcluido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
-                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-                dados={CHAVE_QUANTIDADE:novaQuantidade}
-                modificaAtributo(caminhoRequisicao,dados)
-                break
+    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+        dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
+        if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
+            for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
+                if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
+                    novaQuantidade=dicionarioTrabalhoConcluido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
+                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                    dados={CHAVE_QUANTIDADE:novaQuantidade}
+                    modificaAtributo(caminhoRequisicao,dados)
+                    break
+            else:
+                adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalhoConcluido)
         else:
             adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalhoConcluido)
-    else:
-        adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalhoConcluido)
     
 def configuraLicenca(dicionarioTrabalho):
     if dicionarioTrabalho==None:
