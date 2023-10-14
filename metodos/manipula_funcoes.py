@@ -2075,8 +2075,10 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
                 linhaSeparacao()
                 dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
             else:
-               clickEspecifico(1,'left')
+                clickContinuo(3,'up')
+                clickEspecifico(1,'left')
         elif estado_trabalho==0:
+            clickContinuo(3,'up')
             clickEspecifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
         recebeTodasRecompensas(menu)
