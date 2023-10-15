@@ -1598,43 +1598,160 @@ def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
     return dicionarioPersonagem
 
-def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
+def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalho):
     listaDicionarioTrabalhoProduzido=[]
+    dicionarioTrabalhoEstoque={}
     if trabalhoEProducaoRecursos(dicionarioTrabalho):
-        if (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhorarlicençacomum')or
-            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz')):
-            dicionarioLicencaAprendiz={
-                CHAVE_NIVEL:5,
-                CHAVE_NOME:'Lincença de produção do aprendiz',
+        if trabalhoEhProducaoLicenca(dicionarioTrabalho):
+            dicionarioTrabalhoEstoque={
+                CHAVE_NIVEL:0,
+                CHAVE_NOME:'Licença de produção do aprendiz',
                 CHAVE_QUANTIDADE:2,
-                CHAVE_RARIDADE:'Raro'
+                CHAVE_PROFISSAO:None,
+                CHAVE_RARIDADE:'Recurso'
             }
-            listaDicionarioTrabalhoProduzido=[dicionarioLicencaAprendiz]
-        elif (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursoscomuns')and
-              textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO],'braceletes')):
-            dicionarioRecursoPrimario={
-                CHAVE_NIVEL:1,
-                CHAVE_NOME:'Fibra de Bronze',
-                CHAVE_QUANTIDADE:4,
-                CHAVE_PROFISSAO:'Braceletes',
-                CHAVE_RARIDADE:'Comum'
-            }
-            dicionarioRecursoSecundario={
-                CHAVE_NIVEL:1,
-                CHAVE_NOME:'Prata',
-                CHAVE_QUANTIDADE:3,
-                CHAVE_PROFISSAO:'Braceletes',
-                CHAVE_RARIDADE:'Comum'
-            }
-            dicionarioRecursoTerciario={
-                CHAVE_NIVEL:1,
-                CHAVE_NOME:'Pin de Estudante',
-                CHAVE_QUANTIDADE:2,
-                CHAVE_PROFISSAO:'Braceletes',
-                CHAVE_RARIDADE:'Comum'
-            }
-
-            listaDicionarioTrabalhoProduzido=[dicionarioRecursoPrimario,dicionarioRecursoSecundario,dicionarioRecursoTerciario]
+        else:
+            if trabalhoEhMelhoriaEssenciaComum(dicionarioTrabalho):
+                dicionarioTrabalhoEstoque={
+                    CHAVE_NIVEL:0,
+                    CHAVE_NOME:'Essência composta',
+                    CHAVE_QUANTIDADE:5,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Recurso'
+                }
+            elif trabalhoEhMelhoriaEssenciaComposta(dicionarioTrabalho):
+                dicionarioTrabalhoEstoque={
+                    CHAVE_NIVEL:0,
+                    CHAVE_NOME:'Essência de energia',
+                    CHAVE_QUANTIDADE:1,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Recurso'
+                }
+            elif trabalhoEhMelhoriaSubstanciaComum(dicionarioTrabalho):
+                dicionarioTrabalhoEstoque={
+                    CHAVE_NIVEL:0,
+                    CHAVE_NOME:'Substância composta',
+                    CHAVE_QUANTIDADE:5,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Recurso'
+                }
+            elif trabalhoEhMelhoriaSubstanciaComposta(dicionarioTrabalho):
+                dicionarioTrabalhoEstoque={
+                    CHAVE_NIVEL:0,
+                    CHAVE_NOME:'Substância energética',
+                    CHAVE_QUANTIDADE:1,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Recurso'
+                }
+            elif trabalhoEhMelhoriaCatalisadorComum(dicionarioTrabalho):
+                dicionarioTrabalhoEstoque={
+                    CHAVE_NIVEL:0,
+                    CHAVE_NOME:'Catalisador amplificado',
+                    CHAVE_QUANTIDADE:5,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Recurso'
+                }
+            elif trabalhoEhMelhoriaCatalisadorComposto(dicionarioTrabalho):
+                dicionarioTrabalhoEstoque={
+                    CHAVE_NIVEL:0,
+                    CHAVE_NOME:'Catalisador de energia',
+                    CHAVE_QUANTIDADE:1,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Recurso'
+                }
+            if not tamanhoIgualZero(dicionarioTrabalhoEstoque):
+                if textoEhIgual(dicionarioTrabalho[CHAVE_LICENCA],'licençadeproduçãodoaprendiz'):
+                    dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]=dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]*2
+        if not tamanhoIgualZero(dicionarioTrabalhoEstoque):
+            listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
+        if trabalhoEhColecaoRecursosComuns(dicionarioTrabalho):
+                DPC={
+                    CHAVE_NOME:None,
+                    CHAVE_NIVEL:1,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Comum',
+                    CHAVE_QUANTIDADE:4}
+                DSC={
+                    CHAVE_NOME:None,
+                    CHAVE_NIVEL:1,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Comum',
+                    CHAVE_QUANTIDADE:3}
+                DTC={
+                    CHAVE_NOME:None,
+                    CHAVE_NIVEL:1,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Comum',
+                    CHAVE_QUANTIDADE:2}
+                listaDicionarioProfissao=[
+                    {'braceletes':['Fibra de Bronze','Prata','Pin de Estudante']},
+                    {'mantos':['Furador do aprendiz','Tecido delicado','Substância intável']},
+                    {'amuletos':['Pinça do aprendiz','Jade bruta','Energia inicial']},
+                    {'aneis':['Molde do aprendiz','Pepita de cobre','Pedra de sombras']},
+                    {'armadurapesada':['Marretão do aprendiz','Placas de cobre','Anéis de bronze']},
+                    {'armaduraleve':['Faca do aprendiz','Escamas da serpente','Couro resistente']},
+                    {'armaduradetecido':['Tesoura do aprendiz','Fio grosseiro','Tecido de linho']},
+                    {'armacorpoacorpo':['Lascas','Minério de cobre','Mó do aprendiz']},
+                    {'armadelongoalcance':['Esfera do aprendiz','Varinha de madeira','Cabeça do cajado de jade']}]
+                chaveProfissao=limpaRuidoTexto(dicionarioTrabalho[CHAVE_PROFISSAO])
+                for dicionarioProfissao in listaDicionarioProfissao:
+                    if chaveProfissao in dicionarioProfissao:
+                        DPC[CHAVE_NOME]=dicionarioProfissao[chaveProfissao][0]
+                        DPC[CHAVE_PROFISSAO]=dicionarioTrabalho[CHAVE_PROFISSAO]
+                        DSC[CHAVE_NOME]=dicionarioProfissao[chaveProfissao][1]
+                        DSC[CHAVE_PROFISSAO]=dicionarioTrabalho[CHAVE_PROFISSAO]
+                        DTC[CHAVE_NOME]=dicionarioProfissao[chaveProfissao][2]
+                        DTC[CHAVE_PROFISSAO]=dicionarioTrabalho[CHAVE_PROFISSAO]
+                        break
+                if textoEhIgual(dicionarioTrabalho[CHAVE_LICENCA],'licençadeproduçãodoaprendiz'):
+                    DPC[CHAVE_QUANTIDADE]=DPC[CHAVE_QUANTIDADE]*2
+                    DSC[CHAVE_QUANTIDADE]=DSC[CHAVE_QUANTIDADE]*2
+                    DTC[CHAVE_QUANTIDADE]=DTC[CHAVE_QUANTIDADE]*2
+                listaDicionarioTrabalhoProduzido=[DPC,DSC,DTC]
+        if trabalhoEhColecaoRecursosAvancados(dicionarioTrabalho):
+                DPA={
+                    CHAVE_NOME:None,
+                    CHAVE_NIVEL:8,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Avançado',
+                    CHAVE_QUANTIDADE:5}
+                DSA={
+                    CHAVE_NOME:None,
+                    CHAVE_NIVEL:8,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Avançado',
+                    CHAVE_QUANTIDADE:4}
+                DTA={
+                    CHAVE_NOME:None,
+                    CHAVE_NIVEL:8,
+                    CHAVE_PROFISSAO:None,
+                    CHAVE_RARIDADE:'Avançado',
+                    CHAVE_QUANTIDADE:3}
+                listaDicionarioProfissao=[
+                    {'braceletes':['Fibra de Platina','Âmbarito','Pino do Aprendiz']},
+                    {'mantos':['Furador do principiante','Tecido espesso','Substância estável']},
+                    {'amuletos':['Pinça do principiante','Ônix extraordinária','Éter inicial']},
+                    {'aneis':['Molde do principiante','Pepita de prata','Pedra da luz']},
+                    {'armadurapesada':['Marretão do principiante','Placas de ferro','Anéis de aço']},
+                    {'armaduraleve':['Faca do principiante','Escamas de lagarto','Couro grosso']},
+                    {'armaduradetecido':['Tesoura do principiante','Fio grosso','Tecido de cetim']},
+                    {'armacorpoacorpo':['Lascas de quartzo','Minério de ferro','Mó do principiante']},
+                    {'armadelongoalcance':['Esfera do neófito','Varinha de aço','Cabeça do cajado de ônix']}]
+                chaveProfissao=limpaRuidoTexto(dicionarioTrabalho[CHAVE_PROFISSAO])
+                for dicionarioProfissao in listaDicionarioProfissao:
+                    if chaveProfissao in dicionarioProfissao:
+                        DPA[CHAVE_NOME]=dicionarioProfissao[chaveProfissao][0]
+                        DPA[CHAVE_PROFISSAO]=dicionarioTrabalho[CHAVE_PROFISSAO]
+                        DSA[CHAVE_NOME]=dicionarioProfissao[chaveProfissao][1]
+                        DSA[CHAVE_PROFISSAO]=dicionarioTrabalho[CHAVE_PROFISSAO]
+                        DTA[CHAVE_NOME]=dicionarioProfissao[chaveProfissao][2]
+                        DTA[CHAVE_PROFISSAO]=dicionarioTrabalho[CHAVE_PROFISSAO]
+                        break
+                if textoEhIgual(dicionarioTrabalho[CHAVE_LICENCA],'licençadeproduçãodoaprendiz'):
+                    DPA[CHAVE_QUANTIDADE]=DPA[CHAVE_QUANTIDADE]*2
+                    DSA[CHAVE_QUANTIDADE]=DSA[CHAVE_QUANTIDADE]*2
+                    DTA[CHAVE_QUANTIDADE]=DTA[CHAVE_QUANTIDADE]*2
+                listaDicionarioTrabalhoProduzido=[DPA,DSA,DTA]
     else:
         dicionarioTrabalhoEstoque={
             CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
@@ -1645,6 +1762,35 @@ def defineDicionarioTrabalhoEstoque(dicionarioTrabalho):
         }
         listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
     return listaDicionarioTrabalhoProduzido
+
+def trabalhoEhColecaoRecursosAvancados(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursosavançados')or
+            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'coletaemmassaderecursosavançados'))
+
+def trabalhoEhColecaoRecursosComuns(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursoscomuns')
+
+def trabalhoEhMelhoriaCatalisadorComposto(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadocatalizadoramplificado'))
+
+def trabalhoEhMelhoriaCatalisadorComum(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadocatalizadorcomum'))
+
+def trabalhoEhMelhoriaSubstanciaComposta(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadasubstânciacomposta'))
+
+def trabalhoEhMelhoriaSubstanciaComum(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadasubstânciacomum'))
+
+def trabalhoEhMelhoriaEssenciaComposta(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadaessênciacomposta'))
+
+def trabalhoEhMelhoriaEssenciaComum(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadaessênciacomum'))
+
+def trabalhoEhProducaoLicenca(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhorarlicençacomum')or
+            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
@@ -1693,7 +1839,7 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTra
     dicionarioTrabalho={}
     for trabalho in listaDicionarioTrabalho:
         if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],trabalho[CHAVE_NOME])and
-                            trabalho[CHAVE_ESTADO]==estado):
+            trabalho[CHAVE_ESTADO]==estado):
             print(f'{trabalho[CHAVE_NOME]} recuperado.')
             dicionarioTrabalho=trabalho
             break
@@ -2146,28 +2292,36 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
         dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
     return dicionarioPersonagemAtributos
 
-def atualizaEstoquePersonagem(listaDicionarioTrabalhoProduzido,dicionarioPersonagem):
-    listaDicionarioTrabalhoProduzido=defineDicionarioTrabalhoEstoque(listaDicionarioTrabalhoProduzido)
+def atualizaEstoquePersonagem(dicionarioTrabalhoProduzido,dicionarioPersonagem):
+    listaDicionarioTrabalhoProduzido=retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoProduzido)
     if not tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
-        dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
-        if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
-            for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-                if new_func(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
-                    break
+        listaDicionarioTrabalhoEstoque=retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem)
+        if not tamanhoIgualZero(listaDicionarioTrabalhoEstoque):
+            for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
+                if not tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
+                    listaDicionarioTrabalhoProduzido=modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque)
             else:
-                adicionaTrabalhoEstoque(dicionarioPersonagem,listaDicionarioTrabalhoProduzido)
+                if not tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
+                    for trabalhoProduzido in listaDicionarioTrabalhoProduzido:
+                        adicionaTrabalhoEstoque(dicionarioPersonagem,trabalhoProduzido)
         else:
-            adicionaTrabalhoEstoque(dicionarioPersonagem,listaDicionarioTrabalhoProduzido)
+            for trabalhoProduzido in listaDicionarioTrabalhoProduzido:
+                adicionaTrabalhoEstoque(dicionarioPersonagem,trabalhoProduzido)
 
-def new_func(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
+def modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
     for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
         if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
             novaQuantidade=dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
             caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
             dados={CHAVE_QUANTIDADE:novaQuantidade}
             modificaAtributo(caminhoRequisicao,dados)
-            return True
-    return False
+            for indice in range(len(listaDicionarioTrabalhoProduzido)):
+                if listaDicionarioTrabalhoProduzido[indice][CHAVE_NOME]==trabalhoEstoque[CHAVE_NOME]:
+                    del listaDicionarioTrabalhoProduzido[indice]
+                    break
+            if tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
+                break
+    return listaDicionarioTrabalhoProduzido
     
 def configuraLicenca(dicionarioTrabalho):
     if dicionarioTrabalho==None:
@@ -2259,8 +2413,8 @@ def recuperaCorrespondencia(dicionarioPersonagemAtributos):
         clickEspecifico(1,'enter')
         dicionarioVenda=retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)
         if not tamanhoIgualZero(dicionarioVenda):
-            dicionarioPersonagemAtributos=defineListaDicionarioEstoque(dicionarioPersonagemAtributos)
-            for trabalhoEstoque in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
+            listaDicionarioTrabalhoEstoque=retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+            for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
                 if texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME],dicionarioVenda['nomeProduto']):
                     novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]-1
                     caminhoRequisicao=f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
@@ -2604,13 +2758,13 @@ def deleta_item_lista():
 def funcao_teste(dicionarioUsuario):
     trabalhoComumDesejado={
         CHAVE_ID:None,
-        CHAVE_NOME:'Bracelete de ônix artístico',
-        CHAVE_EXPERIENCIA:250,
-        CHAVE_NIVEL:16,
-        CHAVE_RARIDADE:'melhorado',
+        CHAVE_NOME:'Licença de produção do aprendiz',
+        CHAVE_EXPERIENCIA:90,
+        CHAVE_NIVEL:5,
+        CHAVE_RARIDADE:'raro',
         CHAVE_PROFISSAO:'Braceletes',
-        CHAVE_RECORRENCIA:True,
-        CHAVE_LICENCA:'Licença de produção do principiante',
+        CHAVE_RECORRENCIA:False,
+        CHAVE_LICENCA:'Licença de produção do aprendiz',
         CHAVE_ESTADO:0
         }
     dicionarioTrabalho={
@@ -2634,9 +2788,9 @@ def funcao_teste(dicionarioUsuario):
         click_atalho_especifico('alt','tab')
         # atualizaListaProfissao(dicionarioPersonagem)
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        # atualizaEstoquePersonagem(trabalhoComumDesejado,dicionarioPersonagem)
+        atualizaEstoquePersonagem(trabalhoComumDesejado,dicionarioPersonagem)
         # defineListaDicionarioEstoque(dicionarioPersonagem)
-        mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
+        # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
