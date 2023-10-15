@@ -2156,17 +2156,22 @@ def atualizaEstoquePersonagem(listaDicionarioTrabalhoProduzido,dicionarioPersona
         dicionarioPersonagem=defineListaDicionarioEstoque(dicionarioPersonagem)
         if not tamanhoIgualZero(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]):
             for trabalhoEstoque in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-                for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
-                    if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
-                        novaQuantidade=listaDicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
-                        caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-                        dados={CHAVE_QUANTIDADE:novaQuantidade}
-                        modificaAtributo(caminhoRequisicao,dados)
-                        break
+                if new_func(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
+                    break
             else:
                 adicionaTrabalhoEstoque(dicionarioPersonagem,listaDicionarioTrabalhoProduzido)
         else:
             adicionaTrabalhoEstoque(dicionarioPersonagem,listaDicionarioTrabalhoProduzido)
+
+def new_func(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
+    for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
+        if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
+            novaQuantidade=dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
+            caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+            dados={CHAVE_QUANTIDADE:novaQuantidade}
+            modificaAtributo(caminhoRequisicao,dados)
+            return True
+    return False
     
 def configuraLicenca(dicionarioTrabalho):
     if dicionarioTrabalho==None:
