@@ -947,7 +947,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
         while variavelExiste(personagemReconhecido) and contadorPersonagem<13:
             dicionarioPersonagem=confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem)
             if variavelExiste(dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
-                ativaAtributoUso(dicionarioPersonagem)
+                modificaAtributoUso(dicionarioPersonagem,True)
                 clickEspecifico(1,'f2')
                 time.sleep(1)
                 tentativas=1
@@ -996,10 +996,10 @@ def defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,personagemEm
             listaIdPersonagemMesmoEmail.append(dicionarioPersonagem[CHAVE_ID])
     return listaIdPersonagemMesmoEmail
 
-def ativaAtributoUso(dicionarioPersonagemAtributos):
+def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
     listaPersonagemIdMesmoEmail=defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL])
     if not tamanhoIgualZero(listaPersonagemIdMesmoEmail):
-        modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemIdMesmoEmail,CHAVE_USO,True)
+        modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemIdMesmoEmail,CHAVE_USO,Chave)
 #modificado 16/01
 def preparaPersonagem(dicionarioUsuario):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
@@ -1008,7 +1008,7 @@ def preparaPersonagem(dicionarioUsuario):
     click_atalho_especifico('win','left')
     dicionarioDadosPersonagem=retornaDicionarioDadosPersonagem(dicionarioUsuario)
     if not tamanhoIgualZero(dicionarioDadosPersonagem):
-        if not dicionarioDadosPersonagem[CHAVE_USO]:#se o personagem estiver inativo, troca o estado
+        if not dicionarioDadosPersonagem[CHAVE_ESTADO]:#se o personagem estiver inativo, troca o estado
             listaPersonagemId=[dicionarioUsuario[CHAVE_ID_PERSONAGEM]]
             modificaAtributoPersonagem(dicionarioUsuario,listaPersonagemId,CHAVE_ESTADO,True)
         iniciaProcessoBusca(dicionarioUsuario)
@@ -1056,10 +1056,6 @@ def iniciaProcessoBusca(dicionarioUsuario):
                 linhaSeparacao()
                 dicionarioPersonagemAtributos=iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
                 if dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]:
-                    # print(f'{D}:Lista de personagem retirado:')
-                    # for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:
-                    #     # print(f'{D}:{personagem[CHAVE_NOME]}.')
-                    # linhaSeparacao()
                     if (not listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos) and
                         not tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])):
                         clickMouseEsquerdo(1,2,35)
@@ -1067,6 +1063,7 @@ def iniciaProcessoBusca(dicionarioUsuario):
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
                     dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
                 else:
+                    modificaAtributoUso(dicionarioPersonagemAtributos,False)
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
                     dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
             else:#se o nome reconhecido não estiver na lista de ativos
@@ -1296,8 +1293,7 @@ def deslogaPersonagem(personagemEmail,dicionarioPersonagemAtributos):
             clickMouseEsquerdo(1,2,35)
         menu=retornaMenu()
     if personagemEmail!=None or dicionarioPersonagemAtributos!=None:
-        listaPersonagemId=defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,personagemEmail)
-        modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,CHAVE_USO,False)
+        modificaAtributoUso(dicionarioPersonagemAtributos,False)
 
 def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
     dicionarioPersonagemAtributos=defineListaDicionarioPersonagem(dicionarioPersonagemAtributos)
