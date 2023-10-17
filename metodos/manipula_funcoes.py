@@ -71,7 +71,7 @@ concluido=2
 tela = 'atualizacao_tela.png'
 
 def atualiza_nova_tela():
-    imagem = tira_screenshot()
+    imagem = tiraScreenshot()
     salvaNovaTela(imagem)
     print(f'Atualizou a tela.')
     linhaSeparacao()
@@ -199,13 +199,13 @@ def defineNovoTrabalho(raridade,profissao,nivel):
 def detecta_movimento():
     detec = []
     print(f'Atualizou o background.')
-    backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
+    backgroud=retornaBackGround()
     referencia_anterior1, referencia_anterior2 = atualiza_referencias()
     while True:
         if not verifica_referencia_tela(referencia_anterior1):
         # if not verifica_referencia_tela(referencia_anterior1,referencia_anterior2):
             print(f'Atualizou o background.')
-            backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
+            backgroud=retornaBackGround()
         tela_inteira = retornaAtualizacaoTela()
         altura_tela = tela_inteira.shape[0]
         frame_tela = tela_inteira[0:altura_tela,0:674]
@@ -230,13 +230,13 @@ def detecta_movimento():
         #Clicar no centro do objeto em movimento
 
         referencia_anterior1, referencia_anterior2 = atualiza_referencias()
-        # cv2.imshow('Teste',dilatado)
+        cv2.imshow('Teste',dilatado)
         cv2.imshow('Teste2',frame_tela)
         print(centro)
-        clickMouseEsquerdo(1,centro[0],centro[1])
+        # clickMouseEsquerdo(1,centro[0],centro[1])
         frame_nome_objeto = frame_tela[32:32+30,frame_tela.shape[1]-164:frame_tela.shape[1]]
-        nome_objeto_reconhecido=reconheceTexto(frame_nome_objeto)
-        print(f'Nome reconhecido: {nome_objeto_reconhecido}')
+        # nome_objeto_reconhecido=reconheceTexto(frame_nome_objeto)
+        # print(f'Nome reconhecido: {nome_objeto_reconhecido}')
         if cv2.waitKey(1) == 27:
             break
         time.sleep(0.3)
@@ -602,7 +602,7 @@ def retiraDigitos(texto):
         texto=texto.replace(digito,'')
     return texto
 
-def trabalhoEProducaoRecursos(dicionarioTrabalhoLista):
+def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
     confirmacao=False
     listaProducaoRecurso=[
         'melhorarlicençacomum',
@@ -1380,14 +1380,14 @@ def defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho):
                 dicionarioTrabalhoLista[CHAVE_PRIORIDADE]=1
                 listaDicionariosTrabalhosDesejadosPriorizados.append(dicionarioTrabalhoLista)
             elif textoEhIgual(dicionarioTrabalhoLista[CHAVE_RARIDADE],'raro'):
-                if trabalhoEProducaoRecursos(dicionarioTrabalhoLista):
+                if trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
                     dicionarioTrabalhoLista[CHAVE_PRIORIDADE]=3
                     listaDicionariosTrabalhosDesejadosPriorizados.append(dicionarioTrabalhoLista)
                 else:
                     dicionarioTrabalhoLista[CHAVE_PRIORIDADE]=2
                     listaDicionariosTrabalhosDesejadosPriorizados.append(dicionarioTrabalhoLista)
             else:
-                if trabalhoEProducaoRecursos(dicionarioTrabalhoLista):
+                if trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
                     dicionarioTrabalhoLista[CHAVE_PRIORIDADE]=5
                     listaDicionariosTrabalhosDesejadosPriorizados.append(dicionarioTrabalhoLista)
                 else:
@@ -1601,7 +1601,7 @@ def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
 def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalho):
     listaDicionarioTrabalhoProduzido=[]
     dicionarioTrabalhoEstoque={}
-    if trabalhoEProducaoRecursos(dicionarioTrabalho):
+    if trabalhoEhProducaoRecursos(dicionarioTrabalho):
         if trabalhoEhProducaoLicenca(dicionarioTrabalho):
             dicionarioTrabalhoEstoque={
                 CHAVE_NIVEL:0,
@@ -1898,11 +1898,27 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
                 modificaEstadoTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
                 linhaSeparacao()
+                # removeTrabalhoEstoque(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
             clickContinuo(12,'up')
             dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=True
             break
         else:
             break
+    return dicionarioPersonagemAtributos
+
+def removeTrabalhoEstoque(dicionarioPersonagemAtributos,dicionarioTrabalho):
+    listaEstoque=retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    if not tamanhoIgualZero(listaEstoque):
+        for trabalhoEstoque in listaEstoque:
+            if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],'melhorado'):
+                if textoEhIgual(trabalhoEstoque[CHAVE_NOME],dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO]):
+                    if trabalhoEhProducaoRecursos(dicionarioTrabalho):
+                        pass
+                    else:
+                        novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]-dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
+                        caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                        dados={CHAVE_QUANTIDADE:novaQuantidade}
+                        modificaAtributo(caminhoRequisicao,dados)
     return dicionarioPersonagemAtributos
 
 def defineCloneDicionarioTrabalho(dicionarioTrabalho):
@@ -2230,8 +2246,8 @@ def recorta_novo_modelo_habilidade():
             linhaSeparacao()
 
 def retornaAtualizacaoTela():
-    screenshot = tira_screenshot()
-    return retorna_imagem_colorida(screenshot)
+    screenshot = tiraScreenshot()
+    return retornaImagemColorida(screenshot)
 
 def trataMenu(menu,dicionarioPersonagemAtributos):
     dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=True
@@ -2311,7 +2327,7 @@ def atualizaEstoquePersonagem(dicionarioTrabalhoProduzido,dicionarioPersonagem):
 def modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
     for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
         if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
-            novaQuantidade=dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]+trabalhoEstoque[CHAVE_QUANTIDADE]
+            novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]+dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
             caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
             dados={CHAVE_QUANTIDADE:novaQuantidade}
             modificaAtributo(caminhoRequisicao,dados)
@@ -2788,7 +2804,8 @@ def funcao_teste(dicionarioUsuario):
         click_atalho_especifico('alt','tab')
         # atualizaListaProfissao(dicionarioPersonagem)
         # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        atualizaEstoquePersonagem(trabalhoComumDesejado,dicionarioPersonagem)
+        detecta_movimento()
+        # atualizaEstoquePersonagem(trabalhoComumDesejado,dicionarioPersonagem)
         # defineListaDicionarioEstoque(dicionarioPersonagem)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)

@@ -103,7 +103,7 @@ def retorna_comparacao_histogramas(histograma,histograma1):
         i+=1 
     return c1**(1/2)
 
-def retorna_imagem_colorida(screenshot):
+def retornaImagemColorida(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
     return imagem
 
@@ -134,13 +134,12 @@ def retorna_subtracao_imagem(imagem1,imagem2):
     tamanho_imagem2 = imagem2.shape[:2]
     if tamanho_imagem1 == tamanho_imagem2:
         diferenca = cv2.subtract(imagem1, imagem2)
-        #mostra_imagem('Subtração', diferenca)
         b, g, r = cv2.split(diferenca)
         if cv2.countNonZero(b)==0 and cv2.countNonZero(g)==0 and cv2.countNonZero(r)==0:
-            return True
+            return True,diferenca
     else:
         print(f'Imagens com tamanhos diferentes.{tamanho_imagem1}:{tamanho_imagem2}')
-    return False
+    return False,diferenca
 
 def retornaImagemEqualizada(img):
     inicio = time.time()
@@ -243,18 +242,15 @@ def retornaImagemDitalata(imagem,kernel,iteracoes):
 def retornaImagemErodida(imagem,kernel,iteracoes):
     return cv2.erode(imagem,kernel,iterations=iteracoes)
 
+def retornaBackGround():
+    return cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=100,detectShadows=False)
+
 def preProcessamento(imagem):
     imagem=retornaImagemCinza(imagem)
-    # imagem=cv2.GaussianBlur(imagem,(1,1),0)
-    # t_lower = 254  # Lower Threshold
-    # t_upper = 255  # Upper threshold
     imagem=cv2.GaussianBlur(imagem,(5,5),0)
-    t_lower = 180  # Lower Threshold
-    t_upper = 255  # Upper threshold
+    t_lower=180  # Lower Threshold
+    t_upper=255  # Upper threshold
     imagem=cv2.Canny(imagem,t_lower,t_upper)
-    # kernel=np.ones((2,2),np.uint8)
-    # imagem=cv2.dilate(imagem,kernel,iterations=7)
-    # imagem=cv2.erode(imagem,kernel,iterations=7)
     kernel=np.ones((3,3),np.uint8)
     imagem=retornaImagemDitalata(imagem,kernel,4)
     imagem=retornaImagemErodida(imagem,kernel,4)
@@ -285,8 +281,8 @@ def encontraPixelCor(imagem,cores):
 
 def encontraPersonagem():
     while True:
-        screenshot=tira_screenshot()
-        telaInteira=retorna_imagem_colorida(screenshot)
+        screenshot=tiraScreenshot()
+        telaInteira=retornaImagemColorida(screenshot)
         metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
         imagemPreprocessada=preProcessamento(metadeTela)
         contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
@@ -296,11 +292,11 @@ def encontraPersonagem():
                 x,y,l,a=cv2.boundingRect(cnt)
                 recorte=metadeTela[y:y+a,x:x+l]
                 classe=detectarPersonagem(recorte)
-                cv2.putText(metadeTela,str(classe),(x,y),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
+                # cv2.putText(metadeTela,str(classe),(x,y),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
                 # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',recorte)
                 cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
-        cv2.imshow('Metade da tela processada',imagemPreprocessada)
-        # cv2.imshow('Metade da tela',metadeTela)
+        # cv2.imshow('Metade da tela processada',imagemPreprocessada)
+        cv2.imshow('Metade da tela',metadeTela)
         if cv2.waitKey(3) &0xFF==ord('q'):
             break
     cv2.destroyAllWindows()
@@ -314,8 +310,8 @@ def encontraMenu():
     t_lower = 150  # Lower Threshold
     t_upper = 180  # Upper threshold
     while True:
-        screenshot=tira_screenshot()
-        telaInteira=retorna_imagem_colorida(screenshot)
+        screenshot=tiraScreenshot()
+        telaInteira=retornaImagemColorida(screenshot)
         metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
         imagem=retornaImagemCinza(metadeTela)
         imagem=cv2.GaussianBlur(imagem,(nucleoBlur,nucleoBlur),0)
@@ -349,40 +345,92 @@ def encontraMenu():
 def temporario():
     cap = cv2.VideoCapture('C:/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS.mp4') 
     porcentagem=50
-    nucleoBlur=1
-    nucleoDilate=3
-    interation=9
-    t_lower=254
-    t_upper=255
-    if (cap.isOpened()== False):  
+    nucleoBlur=5
+    nucleoDilate=5
+    interation=4
+    t_lower=78
+    t_upper=80
+    referenciaAnterior1=None
+    referenciaAtual1=None
+    referenciaAnterior2=None
+    referenciaAtual2=None
+    primeiraVerificacao=True
+    verificacaoReferencia1=False
+    verificacaoReferencia2=False
+    if (cap.isOpened()==False):  
         print("Error opening video  file") 
     while(cap.isOpened()): 
-        ret, frame = cap.read()
-        alturaDesejada=frame.shape[0]*porcentagem/100
-        larguraDesejada=frame.shape[1]*porcentagem/100
-        frame=cv2.resize(frame,(int(larguraDesejada),int(alturaDesejada)))
-        imagem=retornaImagemCinza(frame)
-        imagem=cv2.GaussianBlur(imagem,(nucleoBlur,nucleoBlur),0)
-        imagem=cv2.Canny(imagem,t_lower,t_upper)
-        kernel=np.ones((nucleoDilate,nucleoDilate),np.uint8)
-        imagem=cv2.dilate(imagem,kernel,iterations=interation)
-        imagem=cv2.erode(imagem,kernel,iterations=interation)
-        # imagemPreprocessada=preProcessamento(frame)
-        contornos,h1=cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-        for cnt in contornos:
-            area=cv2.contourArea(cnt)
-            if area>300 and area<1000:#14500 de boa
-                x,y,l,a=cv2.boundingRect(cnt)
-                cv2.rectangle(frame,(x,y),(x+l,y+a),(0,255,0),2)
-        # frameConcatenado=vconcat_resize([frame,imagemPreprocessada])
-        if ret == True: 
-            cv2.imshow('Frame', frame) 
-            cv2.imshow('Frame tratado', imagem) 
-            # cv2.imshow('Frame limiar', frameLimiar) 
-            if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
+        # print(f'Verificação referencia: {verificacaoReferencia1}.')
+        if not verificacaoReferencia1 and not verificacaoReferencia2:
+            # print(f'Atualizou o background.')
+            background=retornaBackGround()
+
+        ret, imagem = cap.read()
+        if imagem!=None:
+            alturaDesejada=imagem.shape[0]*porcentagem/100
+            larguraDesejada=imagem.shape[1]*porcentagem/100
+            imagem=cv2.resize(imagem,(int(larguraDesejada),int(alturaDesejada)))
+            alturaReferencia=imagem.shape[0]//2
+
+            if not primeiraVerificacao:
+                referenciaAtual1=imagem[alturaReferencia:alturaReferencia+50,0:50]
+                referenciaAtual1Aumentada = cv2.resize(referenciaAtual1,(0,0),fx=5,fy=5)
+                referenciaAtual2=imagem[alturaReferencia:alturaReferencia+50,imagem.shape[1]-50:imagem.shape[1]]
+                # referenciaAtual2Aumentada = cv2.resize(referenciaAtual2,(0,0),fx=5,fy=5)
+                histogramaAtual1=retorna_histograma(referenciaAtual1)
+                histogramaAtual2=retorna_histograma(referenciaAtual2)
+                comparacaoHistograma1=retorna_comparacao_histogramas(histogramaAnterior1,histogramaAtual1)
+                comparacaoHistograma2=retorna_comparacao_histogramas(histogramaAnterior2,histogramaAtual2)
+                # imagemSubtraida,diferenca=retorna_subtracao_imagem(referenciaAtual1,referenciaAnterior1)
+                # print(f'Comparação histograma1: {comparacaoHistograma1}.')
+                # if comparacaoHistograma1==0:
+                #     print(f'Referencia1 confere!')
+                # else:
+                #     print(f'Referencia1 não confere!')
+                # print(f'Subtração: {imagemSubtraida}.')
+                # diferenca = cv2.resize(diferenca,(0,0),fx=5,fy=5)
+                # mostraImagem(0, diferenca,None)
+                # mostraImagem(0,referenciaAnterior1Aumentada,None)
+                # mostraImagem(0,referenciaAtual1Aumentada,None)
+                # print('___________________________________________________________')
+                # if retorna_comparacao_histogramas(histogramaAnterior2,histogramaAtual2)==0:
+                #     print(f'Referencia2 confere!')
+                # else:
+                #     print(f'Referencia2 não confere!')
+                # print('___________________________________________________________')
+                verificacaoReferencia1=comparacaoHistograma1<=70
+                verificacaoReferencia2=comparacaoHistograma2<=70
+            imagemTratada=retornaImagemCinza(imagem)
+            imagemTratada=cv2.GaussianBlur(imagemTratada,(nucleoBlur,nucleoBlur),0)
+            imagemBackGround=background.apply(imagemTratada)
+            imagemTratada=cv2.Canny(imagemBackGround,t_lower,t_upper)
+            kernel=np.ones((nucleoDilate,nucleoDilate),np.uint8)
+            imagemTratada=cv2.dilate(imagemTratada,kernel,iterations=interation)
+            imagemTratada=cv2.erode(imagemTratada,kernel,iterations=interation)
+            contornos,h1=cv2.findContours(imagemTratada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+            for cnt in contornos:
+                area=cv2.contourArea(cnt)
+                if area>300 and area<1000:#14500 de boa
+                    x,y,l,a=cv2.boundingRect(cnt)
+                    cv2.rectangle(imagem,(x,y),(x+l,y+a),(0,255,0),1)
+            # frameConcatenado=vconcat_resize([frame,imagemPreprocessada])
+            referenciaAnterior1=imagem[alturaReferencia:alturaReferencia+50,0:50]
+            referenciaAnterior1Aumentada = cv2.resize(referenciaAnterior1,(0,0),fx=5,fy=5)
+            referenciaAnterior2=imagem[alturaReferencia:alturaReferencia+50,imagem.shape[1]-50:imagem.shape[1]]
+            referenciaAnterior2Aumentada = cv2.resize(referenciaAnterior2,(0,0),fx=5,fy=5)
+            histogramaAnterior1=retorna_histograma(referenciaAnterior1)
+            histogramaAnterior2=retorna_histograma(referenciaAnterior2)
+            primeiraVerificacao=False
+            if ret==True: 
+                cv2.imshow('Imagem background', imagemBackGround) 
+                cv2.imshow('Referencia1', referenciaAnterior1Aumentada) 
+                cv2.imshow('Referencia2', referenciaAnterior2Aumentada) 
+                cv2.imshow('Imagem', imagem) 
+                # cv2.imshow('Frame limiar', frameLimiar) 
+                if cv2.waitKey(50) & 0xFF == ord('q')or 0xFF == 27: 
+                    break
+            else:  
                 break
-        else:  
-            break
     cap.release() 
     cv2.destroyAllWindows() 
 
@@ -418,4 +466,4 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# encontraMenu()
+temporario()

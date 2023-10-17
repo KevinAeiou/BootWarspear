@@ -6,7 +6,7 @@ tela = 'boot_warspear\atualizacao_tela.png'
 lista_profissoes = 'arquivos\lista_profissoes.txt'
 nome_arquivo_trabalho = 'arquivos\lista_trabalho_desejado.txt'
 
-def tira_screenshot():
+def tiraScreenshot():
     return tecla.screenshot()
 #proxima posição yinicial=365, yfinal=412
 def inclui_nome_profissao(nome_profissao,a):
