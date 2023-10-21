@@ -1009,7 +1009,7 @@ def preparaPersonagem(dicionarioUsuario):
     dicionarioDadosPersonagem=retornaDicionarioDadosPersonagem(dicionarioUsuario)
     if not tamanhoIgualZero(dicionarioDadosPersonagem):
         if not dicionarioDadosPersonagem[CHAVE_ESTADO]:#se o personagem estiver inativo, troca o estado
-            listaPersonagemId=[dicionarioUsuario[CHAVE_ID_PERSONAGEM]]
+            listaPersonagemId=[dicionarioDadosPersonagem[CHAVE_ID]]
             modificaAtributoPersonagem(dicionarioUsuario,listaPersonagemId,CHAVE_ESTADO,True)
         iniciaProcessoBusca(dicionarioUsuario)
     else:
@@ -1042,10 +1042,6 @@ def iniciaProcessoBusca(dicionarioUsuario):
             linhaSeparacao()
             dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
             dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-            # print(f'{D}:Atributos do dicionarioPersonagemAtributos:')
-            # for chave in dicionarioPersonagemAtributos:
-            #     # print(f'{D}:{chave}.')
-            # linhaSeparacao()
         else:#se houver pelo menos um personagem ativo
             dicionarioPersonagemAtributos=defineDicionarioPersonagemEmUso(dicionarioPersonagemAtributos)
             if variavelExiste(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
@@ -1056,8 +1052,7 @@ def iniciaProcessoBusca(dicionarioUsuario):
                 linhaSeparacao()
                 dicionarioPersonagemAtributos=iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
                 if dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]:
-                    if (not listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos) and
-                        not tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO])):
+                    if haMaisQueUmPersonagemAtivo(dicionarioPersonagemAtributos):
                         clickMouseEsquerdo(1,2,35)
                         deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL],dicionarioPersonagemAtributos)
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
@@ -1072,14 +1067,14 @@ def iniciaProcessoBusca(dicionarioUsuario):
                     if configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
                         dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
                 else:
-                    deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL],dicionarioPersonagemAtributos)
+                    # deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL],dicionarioPersonagemAtributos)
                     if textoEhIgual(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][0][CHAVE_EMAIL]):
                         dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
                     elif configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
                         dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
 
-def listaPersonagemAtivoApenasUm(dicionarioPersonagemAtributos):
-    return len(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1
+def haMaisQueUmPersonagemAtivo(dicionarioPersonagemAtributos):
+    return not len(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1
                     
 def retornaTextoMenuReconhecido(x,y,largura):
     telaInteira=retornaAtualizacaoTela()
@@ -1292,7 +1287,7 @@ def deslogaPersonagem(personagemEmail,dicionarioPersonagemAtributos):
         else:
             clickMouseEsquerdo(1,2,35)
         menu=retornaMenu()
-    if personagemEmail!=None or dicionarioPersonagemAtributos!=None:
+    if personagemEmail!=None and dicionarioPersonagemAtributos!=None:
         modificaAtributoUso(dicionarioPersonagemAtributos,False)
 
 def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
@@ -1328,8 +1323,8 @@ def defineDicionarioPersonagemEmUso(dicionarioPersonagem):
     elif nomePersonagemReconhecidoTratado=='provisorioatecair':
         print(f'Nome personagem diferente!')
         linhaSeparacao()
-    # # # print(f'{D}:Personagem ativo reconhecido: {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]}.')
-    # linhaSeparacao()
+    print(f'{D}:Personagem ativo reconhecido: {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]}.')
+    linhaSeparacao()
     return dicionarioPersonagem
 
 def configuraLoginPersonagem(listaDicionarioPersonagensAtivos):
@@ -1423,9 +1418,15 @@ def defineDicionarioTrabalhoRaroEspecial(dicionarioTrabalho):
 def retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados):
     listaDicionariosTrabalhosParaProduzirProduzindo=[]
     for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
-        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_ESTADO],para_produzir)or textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_ESTADO],produzindo):
+        if trabalhoEhParaProduzir(dicionarioTrabalhoDesejado) or trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
             listaDicionariosTrabalhosParaProduzirProduzindo.append(dicionarioTrabalhoDesejado)
     return listaDicionariosTrabalhosParaProduzirProduzindo
+
+def trabalhoEhParaProduzir(dicionarioTrabalhoDesejado):
+    return dicionarioTrabalhoDesejado[CHAVE_ESTADO]==para_produzir
+
+def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
+    return dicionarioTrabalhoDesejado[CHAVE_ESTADO]==produzindo
 
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
     erro=verificaErro(None)

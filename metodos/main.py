@@ -382,8 +382,6 @@ def defineChavePersonagemEmUso(dicionarioUsuario,opcaoPersonagem):
 
 def menuTeste():
     dicionarioUsuario={CHAVE_ID_USUARIO:None,
-                       CHAVE_ID_PERSONAGEM:None,
-                       CHAVE_NOME:None,
                        CHAVE_LISTA_DICIONARIO_PERSONAGEM:[]}
     print(f'Menu teste.')
     print(f'1 - Usuario')
