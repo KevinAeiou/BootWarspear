@@ -1420,29 +1420,36 @@ def defineDicionarioTrabalhoRaroEspecial(dicionarioTrabalho):
         dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]=4
     return dicionarioTrabalho
 
+def retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados):
+    listaDicionariosTrabalhosParaProduzirProduzindo=[]
+    for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
+        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_ESTADO],para_produzir)or textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_ESTADO],produzindo):
+            listaDicionariosTrabalhosParaProduzirProduzindo.append(dicionarioTrabalhoDesejado)
+    return listaDicionariosTrabalhosParaProduzirProduzindo
+
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
-    listaDicionariosTrabalhosDesejados=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
-    dicionarioTrabalho={CHAVE_LISTA_DESEJO:listaDicionariosTrabalhosDesejados,
-                        CHAVE_DICIONARIO_TRABALHO_DESEJADO:None}
-    if not tamanhoIgualZero(listaDicionariosTrabalhosDesejados):#verifica se a lista está vazia
-        dicionarioPersonagemAtributos=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
-        for profissaoVerificada in dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
-            if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
-                continue
-            erro=verificaErro(None)
-            if not erroEncontrado(erro):
-                menu=retornaMenu()
-                if estaMenuInicial(menu):
-                    if existePixelCorrespondencia():
-                        vaiParaMenuCorrespondencia()
-                        recuperaCorrespondencia(dicionarioPersonagemAtributos)
-                while naoEstiverMenuProduzir(menu):
-                    dicionarioPersonagemAtributos=trataMenu(menu,dicionarioPersonagemAtributos)
-                    if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
-                        return dicionarioPersonagemAtributos
-                    menu=retornaMenu()
-                else:
-                    # print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
+    erro=verificaErro(None)
+    if not erroEncontrado(erro):
+        menu=retornaMenu()
+        if estaMenuInicial(menu):
+            if existePixelCorrespondencia():
+                vaiParaMenuCorrespondencia()
+                recuperaCorrespondencia(dicionarioPersonagemAtributos)
+        while naoEstiverMenuProduzir(menu):
+            dicionarioPersonagemAtributos=trataMenu(menu,dicionarioPersonagemAtributos)
+            if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
+                return dicionarioPersonagemAtributos
+            menu=retornaMenu()
+        else:
+            listaDicionariosTrabalhosDesejados=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
+            listaDicionariosTrabalhosParaProduzirProduzindo=retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
+            dicionarioTrabalho={CHAVE_LISTA_DESEJO:listaDicionariosTrabalhosParaProduzirProduzindo,
+                                CHAVE_DICIONARIO_TRABALHO_DESEJADO:None}
+            if not tamanhoIgualZero(listaDicionariosTrabalhosParaProduzirProduzindo):#verifica se a lista está vazia
+                dicionarioPersonagemAtributos=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
+                for profissaoVerificada in dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
+                    if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
+                        continue
                     if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
                         dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
                     print(f'Verificando profissão: {profissaoVerificada[CHAVE_NOME]}')
@@ -1492,25 +1499,27 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                             clickContinuo(3,'up')
                             clickEspecifico(1,'left')
                             linhaSeparacao()
-                        else:
-                            break
-                    if not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
-                        break
-            elif existeOutraConexao(erro):
-                dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
+                        # else:
+                        #     break
+                        # if not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
+                        #     break
+                        # else:
+                        #     print(f'Erro ao percorrer lista de profissões...')
+                        #     linhaSeparacao()
+                        #     break
+                else:
+                    if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
+                        dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
+                    print(f'Fim da lista de profissões...')
+                    linhaSeparacao()
             else:
-                print(f'Erro ao percorrer lista de profissões...')
+                print(f'Lista de trabalhos desejados vazia.')
                 linhaSeparacao()
-                break
-        else:
-            # print(f'CHAVE_LISTA_PROFISSAO_MODIFICADA:{dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]}')
-            if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
-                dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
-            print(f'Fim da lista de profissões...')
-            linhaSeparacao()
-    else:
-        print(f'Lista de trabalhos desejados vazia.')
-        linhaSeparacao()
+                listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
+                modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagem,CHAVE_ESTADO,False)
+
+    elif existeOutraConexao(erro):
+        dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
     return dicionarioPersonagemAtributos
 
 def saiProfissaoVerificada(dicionarioTrabalho):
