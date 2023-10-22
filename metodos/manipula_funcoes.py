@@ -1803,6 +1803,7 @@ def trabalhoEhProducaoLicenca(dicionarioTrabalho):
             textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
+    dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
         if textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO]):
             if trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
