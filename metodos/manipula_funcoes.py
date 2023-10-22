@@ -1592,19 +1592,21 @@ def vaiParaMenuCorrespondencia():
 def estaMenuInicial(menu):
     return menu==menu_inicial
 
-def verificaTrabalhoConcluido(dicionarioPersonagem):
-    dicionarioPersonagem,dicionarioTrabalhoConcluido=defineDicionarioTrabalhoConcluido(dicionarioPersonagem)
+def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
+    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido=defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
-            excluiTrabalho(dicionarioPersonagem,dicionarioTrabalhoConcluido)
+            excluiTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
         else:
             print(f'Trabalho sem recorrencia.')
-            modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalhoConcluido,2)
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json'
+            dados = {CHAVE_ESTADO:2}
+            modificaAtributo(caminhoRequisicao,dados)
         linhaSeparacao()
-        if not dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
-            dicionarioPersonagem=defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem)
-    return dicionarioPersonagem,dicionarioTrabalhoConcluido
+        if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
+            dicionarioPersonagemAtributos=defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagemAtributos)
+    return dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido
 
 def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
     listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
@@ -1807,16 +1809,16 @@ def trabalhoEhProducaoLicenca(dicionarioTrabalho):
             textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
-    dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
+    dicionarioPersonagem = retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
         if textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO]):
             if trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
-                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json'
-                experiencia=profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
-                dados={CHAVE_EXPERIENCIA:experiencia}
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json'
+                experiencia = profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
+                dados = {CHAVE_EXPERIENCIA:experiencia}
                 modificaAtributo(caminhoRequisicao,dados)
                 print(f'Experiência de {profissao[CHAVE_NOME]} atualizada para {experiencia}.')
-                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
                 break
             else:
                 print(f'Trabalho concluido não possui atributo "experiência".')
@@ -1892,7 +1894,7 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
     print(f'Tratando possíveis menus...')
     dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     while True:
-        menu=retornaMenu()
+        menu = retornaMenu()
         if naoReconheceMenu(menu):
             continue
         elif menuTrabalhoEspecificoReconhecido(menu):
@@ -1907,22 +1909,22 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
         elif menuTrabalhosAtuais(menu):
             if trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está ligada.')
-                cloneDicionarioTrabalho=defineCloneDicionarioTrabalho(dicionarioTrabalho)
-                cloneDicionarioTrabalho=adicionaTrabalhoDesejo(dicionarioPersonagemAtributos,cloneDicionarioTrabalho)
+                cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
+                cloneDicionarioTrabalho = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos,cloneDicionarioTrabalho)
                 linhaSeparacao()
             elif not trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está desligada.')
-                print(f'{D}:Licença do trabalho desejado:{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}.')
-                ehLicencaPrincipiante=textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
-                print(f'{D}:Licença do trabalho desejado é pricipiante?:{ehLicencaPrincipiante}.')
-                linhaSeparacao()
+                ehLicencaPrincipiante = textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
                 if ehLicencaPrincipiante:
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
-                modificaEstadoTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_ID]}/.json'
+                dados = {CHAVE_ESTADO:1,
+                         CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]}
+                modificaAtributo(caminhoRequisicao,dados)
                 linhaSeparacao()
                 # removeTrabalhoEstoque(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
             clickContinuo(12,'up')
-            dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=True
+            dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = True
             break
         else:
             break
@@ -1954,7 +1956,8 @@ def defineCloneDicionarioTrabalho(dicionarioTrabalho):
         CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RARIDADE],
         CHAVE_RECORRENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA],
         CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
-    if textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'Licença de produção do principiante'):
+    ehLicencaPrincipiante = textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
+    if ehLicencaPrincipiante:
         cloneDicionarioTrabalho[CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
     return cloneDicionarioTrabalho
 

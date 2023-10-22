@@ -284,37 +284,6 @@ def defineListaDicionarioPersonagem(dicionarioPersonagem):
     #     print(f'{D}:{personagem[CHAVE_NOME]}.')
     return dicionarioPersonagem
 
-def modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,novoEstado):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
-    if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
-            dados={CHAVE_ESTADO:novoEstado,
-                   CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
-            for id in dicionarioRequisicao:
-                caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{id}/.json'
-                if novoEstado==1:
-                    if ((dicionarioTrabalho[CHAVE_NOME] in dicionarioRequisicao[id][CHAVE_NOME])and
-                        (novoEstado-1==dicionarioRequisicao[id][CHAVE_ESTADO])and
-                        (dicionarioTrabalho[CHAVE_PROFISSAO]in dicionarioRequisicao[id][CHAVE_PROFISSAO])and
-                        (dicionarioTrabalho[CHAVE_RECORRENCIA]!=1)):
-                        retornaRequisicao(PATCH,caminhoRequisicao,dados)
-                        print(f'Estado do trabalho modificado para "Produzindo".')
-                        break
-                elif novoEstado==2:
-                    if ((dicionarioTrabalho[CHAVE_NOME] in dicionarioRequisicao[id][CHAVE_NOME])and
-                        (novoEstado-1==dicionarioRequisicao[id][CHAVE_ESTADO])):
-                        retornaRequisicao(PATCH,caminhoRequisicao,dados)
-                        print(f'Estado do trabalho modificado para "Concluído".')
-                        return
-            else:
-                print(f'{dicionarioTrabalho[CHAVE_NOME]} não encontrado na lista.')
-        else:
-            print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
-    else:
-        print(f'Resultado da requisição: {requisicao}.')
-
 def modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,atributo,valor):
     dados={atributo:valor}
     for personagemId in listaPersonagemId:
