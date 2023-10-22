@@ -54,9 +54,9 @@ def retornaPorcentagemVida(pixelVermelho):
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        self.configuraTema()
         self.configuraLayout()
         self.configuraWidget()
-        self.configuraTema()
         self.configuraGridWidgets()
 
     def configuraTema(self):
@@ -73,83 +73,6 @@ class App(customtkinter.CTk):
         self.rowconfigure(0,weight=0)
         self.rowconfigure(1,weight=1)
 
-    def configuraWidget(self):
-        self.labelPersonagem=customtkinter.CTkLabel(self,text='Personagens', font=customtkinter.CTkFont(size=16, weight="bold"))
-        self.frameCentro = customtkinter.CTkFrame(self,corner_radius=10)
-        self.tabPersonagens = customtkinter.CTkTabview(self.frameCentro)
-        self.botaoIniciar=customtkinter.CTkButton(self.frameCentro,text='Iniciar')
-        self.labelTema=customtkinter.CTkLabel(self.frameCentro,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
-        self.opcoesTema=customtkinter.CTkOptionMenu(self.frameCentro,values=['Light','Dark','System'],command=self.mudaTema)
-
-        listaTabs=[]
-        lista=manipula_cliente.retornaDicionarioUsuario('eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem')
-        for personagem in lista:
-            self.tabPersonagens.add(f"{personagem[nome]}")
-            self.tabPersonagens.tab(f"{personagem[nome]}").columnconfigure(0,weight=1)
-            self.tabPersonagens.tab(f"{personagem[nome]}").rowconfigure(0,weight=1)
-            listaTabs.append(self.tabPersonagens)
-        for personagem in lista:
-            caminhoListaDesejo=f'eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem[id]}/Lista_desejo'  
-            listaToDo = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,0)
-            print(f'Lista to do do personagem {personagem[nome]}.')
-            listaDoing = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,1)
-            print(f'Lista doing do personagem {personagem[nome]}.')
-            listaDone = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,2)
-            print(f'Lista done do personagem {personagem[nome]}.')
-            for tabs in listaTabs:
-                self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(personagem[nome]))
-                self.tabEstadosTrabalho.grid(row=0,column=0,padx=5,pady=5,sticky="nsew")
-                self.tabEstadosTrabalho.add(f'To do')
-                self.tabEstadosTrabalho.add(f'Doing')
-                self.tabEstadosTrabalho.add(f'Done')
-                self.tabEstadosTrabalho.tab('To do').columnconfigure(0,weight=1)
-                self.tabEstadosTrabalho.tab('To do').rowconfigure(0,weight=1)
-                self.tabEstadosTrabalho.tab('Doing').columnconfigure(0,weight=1)
-                self.tabEstadosTrabalho.tab('Doing').rowconfigure(0,weight=1)
-                self.tabEstadosTrabalho.tab('Done').columnconfigure(0,weight=1)
-                self.tabEstadosTrabalho.tab('Done').rowconfigure(0,weight=1)
-
-                self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('To do'))
-                self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
-
-                self.frameRolanteLista=[]
-                contadorTrabalho=0
-                if len(listaToDo)!=0:
-                    for toDo in listaToDo:
-                        self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=toDo[nome])
-                        self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
-                        self.frameRolanteLista.append(self.labelTrabalho)
-                        contadorTrabalho+=1
-                else:
-                    self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
-                    self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
-
-                self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('Doing'))
-                self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
-                self.frameRolanteLista=[]
-                contadorTrabalho=0
-                if len(listaDoing)!=0:
-                    for doing in listaDoing:
-                        self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=doing[nome])
-                        self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
-                        contadorTrabalho+=1
-                else:
-                    self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
-                    self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
-                
-                self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('Done'))
-                self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
-                self.frameRolanteLista=[]
-                contadorTrabalho=0
-                if len(listaDone)!=0:
-                    for done in listaDone:
-                        self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=done[nome])
-                        self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
-                        contadorTrabalho+=1
-                else:
-                    self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
-                    self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
-                
     def configuraGridWidgets(self):
         self.labelPersonagem.grid(row=0, column=0, padx=20, pady=(10, 0),sticky=('we'))
         self.frameCentro.grid(row=1, column=0,padx=(10, 10), pady=(10, 10), sticky="nsew")
@@ -157,9 +80,95 @@ class App(customtkinter.CTk):
         self.frameCentro.rowconfigure(0,weight=1)
         self.frameCentro.rowconfigure((1,2,3),weight=0)
         self.tabPersonagens.grid(row=0, column=0, padx=10, pady=(10,0),sticky="nsew")
+        self.tabUsuarios.grid(row=1, column=0, padx=10, pady=(10,0),sticky="nsew")
         self.botaoIniciar.grid(row=1,column=0,padx=10,pady=(10,0))
         self.labelTema.grid(row=2,column=0,padx=10,pady=(10,0),sticky="sw")
         self.opcoesTema.grid(row=3,column=0,padx=10,pady=(5,20),sticky="sw")
+
+    def configuraWidget(self):
+        self.labelPersonagem = customtkinter.CTkLabel(self,text='Usuários', font=customtkinter.CTkFont(size=16, weight="bold"))
+        self.frameCentro = customtkinter.CTkFrame(self,corner_radius=10,bg_color='#2CF10C')
+        self.tabUsuarios = customtkinter.CTkTabview(self,bg_color='#0C31F1')
+        self.tabPersonagens = customtkinter.CTkTabview(self.tabUsuarios,bg_color='#F10C0C')
+        # self.botaoIniciar = customtkinter.CTkButton(self.frameCentro,text='Iniciar')
+        self.labelTema = customtkinter.CTkLabel(self.frameCentro,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
+        self.opcoesTema = customtkinter.CTkOptionMenu(self.frameCentro,values=['Light','Dark','System'],command=self.mudaTema)
+
+        listaTabs=[]
+        listaUsuario=['Usuário','Usuário teste']
+        for usuario in listaUsuario:
+            self.tabUsuarios.add(f"{usuario}")
+            self.tabUsuarios.tab(f"{usuario}").columnconfigure(0,weight=1)
+            self.tabUsuarios.tab(f"{usuario}").rowconfigure(0,weight=1)
+            listaTabs.append(self.tabUsuarios)
+        listaPersonagem = ['P1','P2','P3']
+        listaTabsPersonagem = []
+        for personagem in listaPersonagem:
+            self.tabPersonagens.add(f"{personagem}")
+            self.tabPersonagens.tab(f"{personagem}").columnconfigure(0,weight=1)
+            self.tabPersonagens.tab(f"{personagem}").rowconfigure(0,weight=1)
+            listaTabsPersonagem.append(self.tabUsuarios)
+        #     caminhoListaDesejo=f'eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem[id]}/Lista_desejo'  
+        #     listaToDo = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,0)
+        #     print(f'Lista to do do personagem {personagem[nome]}.')
+        #     listaDoing = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,1)
+        #     print(f'Lista doing do personagem {personagem[nome]}.')
+        #     listaDone = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,2)
+        #     print(f'Lista done do personagem {personagem[nome]}.')
+        #     for tabs in listaTabs:
+        #         self.tabEstadosTrabalho=customtkinter.CTkTabview(tabs.tab(personagem[nome]))
+        #         self.tabEstadosTrabalho.grid(row=0,column=0,padx=5,pady=5,sticky="nsew")
+        #         self.tabEstadosTrabalho.add(f'To do')
+        #         self.tabEstadosTrabalho.add(f'Doing')
+        #         self.tabEstadosTrabalho.add(f'Done')
+        #         self.tabEstadosTrabalho.tab('To do').columnconfigure(0,weight=1)
+        #         self.tabEstadosTrabalho.tab('To do').rowconfigure(0,weight=1)
+        #         self.tabEstadosTrabalho.tab('Doing').columnconfigure(0,weight=1)
+        #         self.tabEstadosTrabalho.tab('Doing').rowconfigure(0,weight=1)
+        #         self.tabEstadosTrabalho.tab('Done').columnconfigure(0,weight=1)
+        #         self.tabEstadosTrabalho.tab('Done').rowconfigure(0,weight=1)
+
+        #         self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('To do'))
+        #         self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
+
+        #         self.frameRolanteLista=[]
+        #         contadorTrabalho=0
+        #         if len(listaToDo)!=0:
+        #             for toDo in listaToDo:
+        #                 self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=toDo[nome])
+        #                 self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+        #                 self.frameRolanteLista.append(self.labelTrabalho)
+        #                 contadorTrabalho+=1
+        #         else:
+        #             self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
+        #             self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+
+        #         self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('Doing'))
+        #         self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
+        #         self.frameRolanteLista=[]
+        #         contadorTrabalho=0
+        #         if len(listaDoing)!=0:
+        #             for doing in listaDoing:
+        #                 self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=doing[nome])
+        #                 self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+        #                 contadorTrabalho+=1
+        #         else:
+        #             self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
+        #             self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                
+        #         self.frameRolante=customtkinter.CTkScrollableFrame(self.tabEstadosTrabalho.tab('Done'))
+        #         self.frameRolante.grid(row=0,column=0,padx=5,pady=(5,0),sticky='nsew')
+        #         self.frameRolanteLista=[]
+        #         contadorTrabalho=0
+        #         if len(listaDone)!=0:
+        #             for done in listaDone:
+        #                 self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text=done[nome])
+        #                 self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+        #                 contadorTrabalho+=1
+        #         else:
+        #             self.labelTrabalho=customtkinter.CTkLabel(self.frameRolante,text='Lista vazia')
+        #             self.labelTrabalho.grid(row=contadorTrabalho,column=0,padx=5,pady=(5,0))
+                
     
     def mudaTema(self,novaAparencia):
         customtkinter.set_appearance_mode(novaAparencia)

@@ -1892,7 +1892,7 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
 
 def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
     print(f'Tratando possíveis menus...')
-    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
+    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = False
     while True:
         menu = retornaMenu()
         if naoReconheceMenu(menu):
