@@ -432,4 +432,6 @@ def usuario():
                 pass
         usuario()
     return
-menuTeste()
+
+if __name__=='__main__':
+    menuTeste()

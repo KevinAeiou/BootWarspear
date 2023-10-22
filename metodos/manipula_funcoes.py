@@ -406,7 +406,7 @@ def verificaLicenca(dicionarioTrabalho,dicionarioPersonagem):
                 if variavelExiste(textoReconhecido):
                     print(f'Licença reconhecida: {textoReconhecido}.')
                     linhaSeparacao()
-                    if verifica_ciclo(listaCiclo)or texto1PertenceTexto2('nenhumitem',textoReconhecido):
+                    if texto1PertenceTexto2('nenhumitem',textoReconhecido):
                         dicionarioTrabalho[CHAVE_LICENCA]='Licença de produção do iniciante'
                         print(f'Licença para trabalho agora é: {dicionarioTrabalho[CHAVE_LICENCA]}.')
                         linhaSeparacao()
@@ -1803,7 +1803,7 @@ def trabalhoEhProducaoLicenca(dicionarioTrabalho):
             textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
-    dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
+    dicionarioPersonagem=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
         if textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO]):
             if trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
