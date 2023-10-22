@@ -1916,7 +1916,7 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
                 print(f'Recorrencia está desligada.')
                 ehLicencaPrincipiante = textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
                 if ehLicencaPrincipiante:
-                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
+                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*1.5)
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_ID]}/.json'
                 dados = {CHAVE_ESTADO:1,
                          CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]}
@@ -1958,7 +1958,7 @@ def defineCloneDicionarioTrabalho(dicionarioTrabalho):
         CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
     ehLicencaPrincipiante = textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
     if ehLicencaPrincipiante:
-        cloneDicionarioTrabalho[CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
+        cloneDicionarioTrabalho[CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*1.5)
     return cloneDicionarioTrabalho
 
 def trabalhoERecorrente(dicionarioTrabalho):
@@ -2816,13 +2816,11 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_DICIONARIO_TRABALHO_DESEJADO:trabalhoComumDesejado
         }
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
-                          CHAVE_ID_PERSONAGEM:dicionarioUsuario[CHAVE_ID_PERSONAGEM],
-                          CHAVE_NOME_PERSONAGEM:'Nome teste',
                           CHAVE_DICIONARIO_PERSONAGEM_EM_USO:dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO],
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
-    listaPersonagem=[dicionarioPersonagem[CHAVE_ID_PERSONAGEM]]
+    listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     while not textoEhIgual(input(f'Continuar?'),'n'):
         dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
@@ -2832,7 +2830,8 @@ def funcao_teste(dicionarioUsuario):
         # detecta_movimento()
         # atualizaEstoquePersonagem(dicionarioPersonagem,trabalhoComumDesejado)
         # defineListaDicionarioEstoque(dicionarioPersonagem)
-        mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
+        # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
+        print(370*1.5)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
         # print(retornaTextoSair())
