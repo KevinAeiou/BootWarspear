@@ -290,7 +290,8 @@ def modificaEstadoTrabalho(dicionarioPersonagem,dicionarioTrabalho,novoEstado):
     if requisicao:
         dicionarioRequisicao=requisicao.json()
         if dicionarioRequisicao!=None:
-            dados={'estado':novoEstado}
+            dados={CHAVE_ESTADO:novoEstado,
+                   CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
             for id in dicionarioRequisicao:
                 caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{id}/.json'
                 if novoEstado==1:
