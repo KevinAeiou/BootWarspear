@@ -1909,7 +1909,11 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
                 linhaSeparacao()
             elif not trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está desligada.')
-                if textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante'):
+                print(f'{D}:Licença do trabalho desejado:{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}.')
+                ehLicencaPrincipiante=textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
+                print(f'{D}:Licença do trabalho desejado é pricipiante?:{ehLicencaPrincipiante}.')
+                linhaSeparacao()
+                if ehLicencaPrincipiante:
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*(1+(5/10)))
                 modificaEstadoTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],1)
                 linhaSeparacao()
