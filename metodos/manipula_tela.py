@@ -18,6 +18,10 @@ mana=85
 nome=1
 id=0
 
+corAzul = '#0C31F1'
+corVerde = '#2CF10C'
+corVermelho = '#F10C0C'
+
 corVidaMana=(0,0,148)#vermelho
 
 # def busca_tecla_especifica():
@@ -67,8 +71,9 @@ class App(customtkinter.CTk):
         alturaTela=self.winfo_screenheight()
         larguraTela=self.winfo_screenwidth()
         largura=larguraTela//2
-        self.title('Gerenciador boot WarSpear')
-        self.geometry(f'{largura}x{alturaTela}+{largura-5}+0')
+        self.title('Gerenciador WarSpear')
+        self.resizable(False,False)
+        self.geometry(f'{largura}x{alturaTela-35}+{largura-5}+0')
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=0)
         self.rowconfigure(1,weight=1)
@@ -79,35 +84,18 @@ class App(customtkinter.CTk):
         self.frameCentro.columnconfigure(0,weight=1)
         self.frameCentro.rowconfigure(0,weight=1)
         self.frameCentro.rowconfigure((1,2,3),weight=0)
-        self.tabPersonagens.grid(row=0, column=0, padx=10, pady=(10,0),sticky="nsew")
-        self.tabUsuarios.grid(row=1, column=0, padx=10, pady=(10,0),sticky="nsew")
+        # self.tabPersonagens.grid(row=0, column=0, padx=10, pady=(10,0),sticky="nsew")
         self.botaoIniciar.grid(row=1,column=0,padx=10,pady=(10,0))
         self.labelTema.grid(row=2,column=0,padx=10,pady=(10,0),sticky="sw")
         self.opcoesTema.grid(row=3,column=0,padx=10,pady=(5,20),sticky="sw")
 
     def configuraWidget(self):
         self.labelPersonagem = customtkinter.CTkLabel(self,text='Usuários', font=customtkinter.CTkFont(size=16, weight="bold"))
-        self.frameCentro = customtkinter.CTkFrame(self,corner_radius=10,bg_color='#2CF10C')
-        self.tabUsuarios = customtkinter.CTkTabview(self,bg_color='#0C31F1')
-        self.tabPersonagens = customtkinter.CTkTabview(self.tabUsuarios,bg_color='#F10C0C')
-        # self.botaoIniciar = customtkinter.CTkButton(self.frameCentro,text='Iniciar')
+        self.frameCentro = customtkinter.CTkFrame(self,corner_radius=10,bg_color=corVerde)
+        # self.tabPersonagens = customtkinter.CTkTabview(self.tabUsuarios,bg_color=corVermelho)
+        self.botaoIniciar = customtkinter.CTkButton(self.frameCentro,text='Iniciar')
         self.labelTema = customtkinter.CTkLabel(self.frameCentro,text='Tema:',bg_color='transparent',text_color=['#000','#fff'])
         self.opcoesTema = customtkinter.CTkOptionMenu(self.frameCentro,values=['Light','Dark','System'],command=self.mudaTema)
-
-        listaTabs=[]
-        listaUsuario=['Usuário','Usuário teste']
-        for usuario in listaUsuario:
-            self.tabUsuarios.add(f"{usuario}")
-            self.tabUsuarios.tab(f"{usuario}").columnconfigure(0,weight=1)
-            self.tabUsuarios.tab(f"{usuario}").rowconfigure(0,weight=1)
-            listaTabs.append(self.tabUsuarios)
-        listaPersonagem = ['P1','P2','P3']
-        listaTabsPersonagem = []
-        for personagem in listaPersonagem:
-            self.tabPersonagens.add(f"{personagem}")
-            self.tabPersonagens.tab(f"{personagem}").columnconfigure(0,weight=1)
-            self.tabPersonagens.tab(f"{personagem}").rowconfigure(0,weight=1)
-            listaTabsPersonagem.append(self.tabUsuarios)
         #     caminhoListaDesejo=f'eEDku1Rvy7f7vbwJiVW7YMsgkIF2/Lista_personagem/{personagem[id]}/Lista_desejo'  
         #     listaToDo = manipula_cliente.retornaListaDicionariosTrabalhosDesejados(caminhoListaDesejo,0)
         #     print(f'Lista to do do personagem {personagem[nome]}.')
