@@ -262,25 +262,29 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
 
 def defineListaDicionarioPersonagem(dicionarioPersonagem):
     print(f'Definindo lista de personagem.')
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=[]
-    listaPersonagem=[]
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = []
+    listaPersonagem = []
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
+    requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
+        dicionarioRequisicao = requisicao.json()
+        if dicionarioRequisicao != None:
             for personagemId in dicionarioRequisicao:
-                personagem={
+                if not CHAVE_CHECK in dicionarioRequisicao[personagemId]:
+                    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{personagemId}.json'
+                    dados = {CHAVE_CHECK:False}
+                    modificaAtributo(caminhoRequisicao,dados)
+                personagem = {
                     CHAVE_ID:personagemId,
+                    CHAVE_CHECK:dicionarioRequisicao[personagemId][CHAVE_CHECK],
                     CHAVE_EMAIL:dicionarioRequisicao[personagemId][CHAVE_EMAIL],
                     CHAVE_ESPACO_PRODUCAO:dicionarioRequisicao[personagemId][CHAVE_ESPACO_PRODUCAO],
                     CHAVE_ESTADO:dicionarioRequisicao[personagemId][CHAVE_ESTADO],
                     CHAVE_NOME:dicionarioRequisicao[personagemId][CHAVE_NOME],
                     CHAVE_SENHA:dicionarioRequisicao[personagemId][CHAVE_SENHA],
-                    CHAVE_USO:dicionarioRequisicao[personagemId][CHAVE_USO]
-                }
+                    CHAVE_USO:dicionarioRequisicao[personagemId][CHAVE_USO]}
                 listaPersonagem.append(personagem)
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]=sorted(listaPersonagem,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
+            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaPersonagem,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:
