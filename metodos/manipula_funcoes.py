@@ -650,12 +650,12 @@ def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
     #tira novo print da tela
     telaInteira=retornaAtualizacaoTela()
     frameTelaInteira=telaInteira[yinicial_nome:yinicial_nome+altura,233:478]
+    # mostraImagem(0,frameTelaInteira,None)
     #teste trata frame trabalho comum
     frameNomeTrabalhoTratado=retornaImagemCinza(frameTelaInteira)
     frameNomeTrabalhoTratado=retornaImagemBinarizada(frameNomeTrabalhoTratado)
     contadorPixelPreto=np.sum(frameNomeTrabalhoTratado==0)
     # # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
-    # mostraImagem(0,frameNomeTrabalhoTratado,None)
     if contadorPixelPreto>0:
         nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
     # # print(f'{D}:Trabalho reconhecido {nomeTrabalhoReconhecido}.')
@@ -1081,23 +1081,23 @@ def haMaisQueUmPersonagemAtivo(dicionarioPersonagemAtributos):
     return not len(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1
                     
 def retornaTextoMenuReconhecido(x,y,largura):
-    telaInteira=retornaAtualizacaoTela()
+    telaInteira = retornaAtualizacaoTela()
     # print(centroAltura,centroMetade)# 384 341
-    alturaFrame=30
-    texto=None
-    frameTela=telaInteira[y:y+alturaFrame,x:x+largura]
+    alturaFrame = 30
+    texto = None
+    frameTela = telaInteira[y:y+alturaFrame,x:x+largura]
     # mostraImagem(0,frameTela,None)
-    if y>30:
-        frameTela=retornaImagemCinza(frameTela)
-        frameTela=retornaImagemEqualizada(frameTela)
-        frameTela=retornaImagemBinarizada(frameTela)
+    if y > 30:
+        frameTela = retornaImagemCinza(frameTela)
+        frameTela = retornaImagemEqualizada(frameTela)
+        frameTela = retornaImagemBinarizada(frameTela)
         # mostraImagem(0,frameTela,None)
-    contadorPixelPreto=np.sum(frameTela==0)
-    print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
+    contadorPixelPreto = np.sum(frameTela==0)
+    # print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
     if existePixelPretoSuficiente(contadorPixelPreto):
-        texto=reconheceTexto(frameTela)
+        texto = reconheceTexto(frameTela)
         if variavelExiste(texto):
-            texto=limpaRuidoTexto(texto)
+            texto = limpaRuidoTexto(texto)
             # print(f'{D}:Texto reconhecimento de menus: {texto}.')
     # print(f'{D}:{texto}')
     return texto
@@ -1327,8 +1327,8 @@ def defineDicionarioPersonagemEmUso(dicionarioPersonagem):
     elif nomePersonagemReconhecidoTratado=='provisorioatecair':
         print(f'Nome personagem diferente!')
         linhaSeparacao()
-    print(f'{D}:Personagem ativo reconhecido: {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]}.')
-    linhaSeparacao()
+    # print(f'{D}:Personagem ativo reconhecido: {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]}.')
+    # linhaSeparacao()
     return dicionarioPersonagem
 
 def configuraLoginPersonagem(listaDicionarioPersonagensAtivos):
@@ -1457,7 +1457,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                         print(f'Trabalho desejado: {trabalhoPriorizado[CHAVE_NOME]}.')
                                         while naoFizerQuatroVerificacoes(dicionarioTrabalho)and not variavelExiste(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]):
                                             nomeTrabalhoReconhecido = reconheceTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho)
-                                            print(f'Nome trabalho raro/especial reconhecido: {nomeTrabalhoReconhecido}.')
+                                            print(f'Trabalho raro/especial reconhecido: {nomeTrabalhoReconhecido}.')
                                             if variavelExiste(nomeTrabalhoReconhecido):
                                                 if texto1PertenceTexto2(nomeTrabalhoReconhecido,trabalhoPriorizado[CHAVE_NOME]):
                                                     dicionarioTrabalho=entraTrabalhoEncontrado(dicionarioTrabalho,trabalhoPriorizado)
@@ -1474,7 +1474,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                             else:
                                                 dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]=4
                                             incrementaChavePosicaoTrabalho(dicionarioTrabalho)
-                                            linhaSeparacao()
+                                        dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]=0
+                                        linhaSeparacao()
                                         if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                             break
                                 else:
@@ -1536,9 +1537,8 @@ def buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagem):
     return dicionarioTrabalho,dicionarioPersonagem
 
 def reconheceTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
-    yinicialNome=(dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]*70)+285
-    nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,0)
-    return nomeTrabalhoReconhecido
+    yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL]*70)+285
+    return retornaNomeTrabalhoReconhecido(yinicialNome,0)
 
 def chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
     # # print(f'{D}:CHAVE_ESPACO_PRODUCAO={dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]}.')
