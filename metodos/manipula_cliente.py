@@ -129,20 +129,26 @@ def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
     return dicionarioTrabalho
 
 def retornaListaDicionarioProfissao(dicionarioPersonagem):
-    listaDicionarioProfissao=[]
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
-    if requisicao!=None:
-        dicionarioProfissoes=requisicao.json()
-        if dicionarioProfissoes!=None:
+    listaDicionarioProfissao = []
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
+    requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
+    if requisicao != None:
+        dicionarioProfissoes = requisicao.json()
+        if dicionarioProfissoes != None:
             for idProfissao in dicionarioProfissoes:
                 if not CHAVE_EXPERIENCIA in dicionarioProfissoes[idProfissao]:
-                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
-                    dados={CHAVE_EXPERIENCIA:0}
+                    caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
+                    dados = {CHAVE_EXPERIENCIA:0}
                     modificaAtributo(caminhoRequisicao,dados)
-                    dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA]=0
-                dicionarioProfissao={
+                    dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA] = 0
+                if not CHAVE_PRIORIDADE in dicionarioProfissoes[idProfissao]:
+                    caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
+                    dados = {CHAVE_PRIORIDADE:False}
+                    modificaAtributo(caminhoRequisicao,dados)
+                    dicionarioProfissoes[idProfissao][CHAVE_PRIORIDADE] = False
+                dicionarioProfissao = {
                     CHAVE_ID:idProfissao,
+                    CHAVE_PRIORIDADE:dicionarioProfissoes[idProfissao][CHAVE_PRIORIDADE],
                     CHAVE_EXPERIENCIA:dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA],
                     CHAVE_NOME:dicionarioProfissoes[idProfissao][CHAVE_NOME]}
                 listaDicionarioProfissao.append(dicionarioProfissao)

@@ -2761,11 +2761,54 @@ def defineAtributoExperienciaTrabalho(dicionarioUsuario):
             linhaSeparacao()
     linhaSeparacao()
 
+def definePrioridadeProfissao(dicionarioUsuario):
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
+    if not tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]):
+        mostraLista(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO])
+        opcaoProfissao = input('Profissão escolhida: ')
+        linhaSeparacao()
+        while opcaoInvalida(opcaoProfissao,len(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO])):
+            print(f'Opção inválida! Selecione uma das opções.')
+            opcaoProfissao=input(f'Sua escolha: ')
+            linhaSeparacao()
+        else:
+            opcaoProfissao = int(opcaoProfissao)
+            if opcaoProfissao == 0:
+                return None
+            else:
+                dicionarioProfissao=retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao)
+                caminhoRequisicao = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'
+                if dicionarioProfissao[CHAVE_PRIORIDADE]:
+                    dados = {CHAVE_PRIORIDADE:False}
+                else:
+                    dados = {CHAVE_PRIORIDADE:True}
+                    for dicionarioProfissaoPriorizada in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+                        if dicionarioProfissaoPriorizada[CHAVE_PRIORIDADE]:
+                            caminhoRequisicaoProfissaoPriorizada = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissaoPriorizada[CHAVE_ID]}/.json'
+                            dadosProfissaoPriorizada = {CHAVE_PRIORIDADE:False}
+                            modificaAtributo(caminhoRequisicaoProfissaoPriorizada,dadosProfissaoPriorizada)
+                            break
+                modificaAtributo(caminhoRequisicao,dados)
+    else:
+        print(f'Lista profissão vazia!')
+    linhaSeparacao()
+
 def adicionaAtributoIdProfissao(dicionarioPersonagem):
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
         listaDicionarioProfissao=retornaListaDicionarioProfissao(dicionarioPersonagem)
         linhaSeparacao()
+
+def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
+    x=1
+    for dicionarioProfissao in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+        if x==opcaoProfissao:
+            break
+        x+=1
+    return dicionarioProfissao
+
+def opcaoInvalida(opcaoLista,tamanhoMenu):
+    return not opcaoLista.isdigit() or int(opcaoLista)<0 or int(opcaoLista)>tamanhoMenu
 
 def verifica_valor_numerico(valor):
     return valor.isdigit()

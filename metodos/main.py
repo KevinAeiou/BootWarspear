@@ -23,9 +23,6 @@ def mostraMenuListaDesejo(dicionarioUsuario):
         opcaoLista = int(opcaoLista)
     return dicionarioUsuario,opcaoLista
 
-def opcaoInvalida(opcaoLista,tamanhoMenu):
-    return not opcaoLista.isdigit() or int(opcaoLista)<0 or int(opcaoLista)>tamanhoMenu
-
 def defineLicenca():
     print(f'Qual o tipo da licença de produção desejada?')
     print(f'1 - Licença do iniciante.')
@@ -165,24 +162,15 @@ def defineProfissao(dicionarioUsuario):
             if opcaoProfissao==0:
                 return None
             else:
-                profissao=defineNomeProfissao(dicionarioUsuario, opcaoProfissao)
-    return profissao
-
-def defineNomeProfissao(dicionarioUsuario, opcaoProfissao):
-    x=1
-    for profissao in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
-        if x==opcaoProfissao:
-            profissao=profissao[CHAVE_NOME]
-            break
-        x+=1
-    return profissao
+                dicionarioProfissao=retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao)
+    return dicionarioProfissao
 
 def defineTrabalho(profissao,raridade):
     print(f'Trabalhos:')
     dicionarioTrabalho={}
     listaDicionariosTrabalhos=retornaListaDicionariosTrabalhos()
     if not tamanhoIgualZero(listaDicionariosTrabalhos):
-        listaDicionariosTrabalhosBuscados=retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade)
+        listaDicionariosTrabalhosBuscados=retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao[CHAVE_NOME],raridade)
         if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
             mostraLista(listaDicionariosTrabalhosBuscados)
             opcaoTrabalho=input(f'Trabalho escolhido: ')
@@ -201,7 +189,7 @@ def defineTrabalho(profissao,raridade):
                         if x==opcaoTrabalho:
                             dicionarioTrabalho=trabalho
                             dicionarioTrabalho[CHAVE_RARIDADE]=raridade
-                            dicionarioTrabalho[CHAVE_PROFISSAO]=profissao
+                            dicionarioTrabalho[CHAVE_PROFISSAO]=profissao[CHAVE_NOME]
                             break
                         x+=1
         else:
@@ -215,16 +203,17 @@ def defineTrabalho(profissao,raridade):
 def mostraMenuConfiuracao():
     print(f'Configurações:')
     print(f'1 - Quantidade de personagens ativos.')
+    print(f'2 - Define prioridade profissão.')
     print(f'0 - Voltar.')
     opcao_configuracao = input(f'Sua escolha: ')
     linhaSeparacao()
-    while not opcao_configuracao.isdigit() or int(opcao_configuracao)<0 or int(opcao_configuracao)>1:
+    while not opcao_configuracao.isdigit() or int(opcao_configuracao)<0 or int(opcao_configuracao)>2:
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_configuracao = input(f'Sua escolha: ')
         linhaSeparacao()
     else:
         opcao_configuracao = int(opcao_configuracao)
-        if opcao_configuracao==0:
+        if opcao_configuracao == 0:
             return 0
     return opcao_configuracao
 
@@ -255,9 +244,9 @@ def menu(dicionarioUsuario):
         elif opcaoEscolha==1:#Menu adicionar novo trabalho a lista
             raridade=defineRaridade()
             if variavelExiste(raridade):
-                profissao=defineProfissao(dicionarioUsuario)
-                if variavelExiste(profissao):
-                    dicionarioTrabalho=defineTrabalho(profissao,raridade)
+                dicionarioProfissao=defineProfissao(dicionarioUsuario)
+                if variavelExiste(dicionarioProfissao):
+                    dicionarioTrabalho=defineTrabalho(dicionarioProfissao,raridade)
                     if not tamanhoIgualZero(dicionarioTrabalho):
                         licenca=defineLicenca()
                         if variavelExiste(licenca):
@@ -298,11 +287,11 @@ def menu(dicionarioUsuario):
             elif opcao_cadastro == 1:#Cadastra novo trabalho
                 raridade=defineRaridade() 
                 if variavelExiste(raridade):
-                    profissao=defineProfissao(dicionarioUsuario)
-                    if variavelExiste(profissao):
+                    dicionarioProfissao=defineProfissao(dicionarioUsuario)
+                    if variavelExiste(dicionarioProfissao):
                         nivel=defineNivel()
                         if variavelExiste(nivel):
-                            defineNovoTrabalho(raridade,profissao,nivel)
+                            defineNovoTrabalho(raridade,dicionarioProfissao,nivel)
             elif opcao_cadastro == 2:#Cadastra novo modelo de habilidade
                 print(f'Em desenvolvimento...')
                 linhaSeparacao()
@@ -311,7 +300,10 @@ def menu(dicionarioUsuario):
             if opcao_configuracao == 0:#Volta ao menu anterior
                 print(f'Voltar.')
                 linhaSeparacao()
-            elif opcao_configuracao==1:
+            elif opcao_configuracao == 1:
+                pass
+            elif opcao_configuracao == 2:
+                definePrioridadeProfissao(dicionarioUsuario)
                 pass
         elif opcaoEscolha==7:
             funcao_teste(dicionarioUsuario)
