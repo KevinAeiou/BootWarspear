@@ -1849,7 +1849,12 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 if tamanhoIgualZero(dicionarioTrabalho):
                     listaDicionarioTrabalho=retornaListaDicionariosTrabalhos()
                     if not tamanhoIgualZero(listaDicionarioTrabalho):
-                        dicionarioTrabalho=retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalho,para_produzir)
+                        for dicionarioTrabalho in listaDicionarioTrabalho:
+                            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],dicionarioTrabalho[CHAVE_NOME]):
+                                dicionarioTrabalho[CHAVE_LICENCA]='Licença de produção do principiante'
+                                dicionarioTrabalho[CHAVE_ESTADO]=concluido
+                                dicionarioTrabalho[CHAVE_RECORRENCIA]=False
+                                break
                 clickContinuo(3,'up')
                 linhaSeparacao()
             else:
@@ -1864,8 +1869,6 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTra
         if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],trabalho[CHAVE_NOME])and
             trabalho[CHAVE_ESTADO]==estado):
             print(f'{trabalho[CHAVE_NOME]} recuperado.')
-            if textoEhIgual(trabalho[CHAVE_LICENCA],''):
-                trabalho[CHAVE_LICENCA]='Licença de produção do iniciante'
             dicionarioTrabalho=trabalho
             break
     return dicionarioTrabalho
@@ -2304,6 +2307,11 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
             clickEspecifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
         recebeTodasRecompensas(menu)
+        for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+            if not dicionarioPersonagem[CHAVE_ESTADO]:
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID]}/.json'
+                dados = {CHAVE_ESTADO:True}
+                modificaAtributo(caminhoRequisicao,dados)
         dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=False
         dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     elif menu==menu_principal:
