@@ -941,7 +941,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
             erro=verificaErro(None)
         else:
             clickEspecifico(1,'f2')
-            clickContinuo(8,'left')   
+            clickContinuo(10,'left')   
             personagemReconhecido=retornaNomePersonagem(1)
             # print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
             dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
@@ -2040,10 +2040,13 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
-def recebeTodasRecompensas(menu):
+def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
     listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
     while True:
         reconheceMenuRecompensa(menu)
+        if existePixelCorrespondencia():
+            vaiParaMenuCorrespondencia()
+            recuperaCorrespondencia(dicionarioPersonagemAtributos)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
         deslogaPersonagem(None,None)
@@ -2316,7 +2319,7 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
             clickContinuo(3,'up')
             clickEspecifico(1,'left')
     elif menu==menu_rec_diarias or menu==menu_loja_milagrosa:
-        recebeTodasRecompensas(menu)
+        recebeTodasRecompensas(menu,dicionarioPersonagemAtributos)
         for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
             if not dicionarioPersonagem[CHAVE_ESTADO]:
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID]}/.json'
