@@ -859,7 +859,7 @@ def verifica_arquivo_existe(caminho_arquivo):
 def retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
     print(f'Verificando profissões necessárias...')
     #cria lista vazia
-    lista_profissao_verificada = []
+    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA] = []
     #abre o arquivo lista de profissoes
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
     #abre o arquivo lista de desejos
@@ -871,15 +871,16 @@ def retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
         for trabalhoDesejado in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
             if textoEhIgual(profissao[CHAVE_NOME],trabalhoDesejado[CHAVE_PROFISSAO]) and estadoTrabalhoEParaProduzir(trabalhoDesejado):
                 #verifca se o indice já está na lista
-                dicionarioProfissao = {CHAVE_ID:profissao[CHAVE_ID],
-                                     CHAVE_NOME:profissao[CHAVE_NOME],
-                                     CHAVE_PRIORIDADE:profissao[CHAVE_PRIORIDADE],
-                                     CHAVE_POSICAO:posicao}
-                lista_profissao_verificada.append(dicionarioProfissao)
+                dicionarioProfissao = {
+                    CHAVE_ID:profissao[CHAVE_ID],
+                    CHAVE_NOME:profissao[CHAVE_NOME],
+                    CHAVE_PRIORIDADE:profissao[CHAVE_PRIORIDADE],
+                    CHAVE_POSICAO:posicao}
+                dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA].append(dicionarioProfissao)
                 break
         posicao+=1
     else:
-        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA] = sorted(lista_profissao_verificada,key=lambda dicionario:dicionario[CHAVE_PRIORIDADE],reverse=True)
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA] = sorted(dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA],key=lambda dicionario:dicionario[CHAVE_PRIORIDADE],reverse=True)
         mostraProfissoesNecessarias(dicionarioPersonagem)
     return dicionarioPersonagem
 
@@ -991,18 +992,29 @@ def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
             break
     return dicionarioPersonagem
 
-def defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,personagemEmail):
-    listaIdPersonagemMesmoEmail=[]
+def defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos):
+    listaDicionarioPersonagemMesmoEmail=[]
     for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],personagemEmail):
-            listaIdPersonagemMesmoEmail.append(dicionarioPersonagem[CHAVE_ID])
-    return listaIdPersonagemMesmoEmail
+        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL]):
+            listaDicionarioPersonagemMesmoEmail.append(dicionarioPersonagem)
+    return listaDicionarioPersonagemMesmoEmail
 
 def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
-    listaPersonagemIdMesmoEmail=defineListaIdPersonagemMesmoEmail(dicionarioPersonagemAtributos,dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL])
-    if not tamanhoIgualZero(listaPersonagemIdMesmoEmail):
-        modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemIdMesmoEmail,CHAVE_USO,Chave)
-#modificado 16/01
+    listaPersonagemMesmoEmail=defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos)
+    if not tamanhoIgualZero(listaPersonagemMesmoEmail):
+        for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+            if personagem[CHAVE_USO]:
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{personagem[CHAVE_ID]}/.json'
+                dados = {
+                    CHAVE_USO:False}
+                modificaAtributo(caminhoRequisicao,dados)
+        for personagemEmUso in listaPersonagemMesmoEmail:
+            if personagemEmUso[CHAVE_USO] != Chave:
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{personagemEmUso[CHAVE_ID]}/.json'
+                dados = {
+                    CHAVE_USO:Chave}
+                modificaAtributo(caminhoRequisicao,dados)
+        
 def preparaPersonagem(dicionarioUsuario):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
     #e o indice 1=nome da profissão
@@ -2874,18 +2886,19 @@ def funcao_teste(dicionarioUsuario):
     dicionarioPersonagem={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
                           CHAVE_DICIONARIO_PERSONAGEM_EM_USO:dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO],
                           CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
-    dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
     listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     while not textoEhIgual(input(f'Continuar?'),'n'):
+        dicionarioPersonagem=defineListaDicionarioPersonagem(dicionarioUsuario)
+        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhosDesejados=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
         dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
         dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         click_atalho_especifico('alt','tab')
         # print(f'{dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]}')
-        retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
+        modificaAtributoUso(dicionarioPersonagem,True)
+        # retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
         # for trabalhoPriorizado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
         #     print(f'{trabalhoPriorizado[CHAVE_NOME]}:{trabalhoPriorizado[CHAVE_PRIORIDADE]}.')
         # atualizaListaProfissao(dicionarioPersonagem)
