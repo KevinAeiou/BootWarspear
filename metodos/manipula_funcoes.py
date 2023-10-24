@@ -1595,7 +1595,16 @@ def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
         else:
             print(f'Trabalho sem recorrencia.')
             caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json'
-            dados = {CHAVE_ESTADO:2}
+            dados = {
+                CHAVE_ESTADO:2,
+                CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
+                CHAVE_ID:dicionarioTrabalhoConcluido[CHAVE_ID],
+                CHAVE_NIVEL:dicionarioTrabalhoConcluido[CHAVE_NIVEL],
+                CHAVE_NOME:dicionarioTrabalhoConcluido[CHAVE_NOME],
+                CHAVE_PROFISSAO:dicionarioTrabalhoConcluido[CHAVE_PROFISSAO],
+                CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
+                CHAVE_RECORRENCIA:dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA],
+                CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]}
             modificaAtributo(caminhoRequisicao,dados)
         linhaSeparacao()
         if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
@@ -1855,6 +1864,8 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTra
         if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],trabalho[CHAVE_NOME])and
             trabalho[CHAVE_ESTADO]==estado):
             print(f'{trabalho[CHAVE_NOME]} recuperado.')
+            if textoEhIgual(trabalho[CHAVE_LICENCA],''):
+                trabalho[CHAVE_LICENCA]='Licença de produção do iniciante'
             dicionarioTrabalho=trabalho
             break
     return dicionarioTrabalho
