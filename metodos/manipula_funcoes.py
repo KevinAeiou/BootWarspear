@@ -79,48 +79,43 @@ def atualiza_nova_tela():
 def atualizaListaProfissao(dicionarioPersonagem):
     print(f'Atualizando lista de profissões...')
     linhaSeparacao()
-    listaDicionarioProfissao=dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]
-    listaProfissaoReconhecida=defineListaProfissaoReconhecida()
-    if len(listaProfissaoReconhecida)==CHAVE_QUANTIDADE_PROFISSAO:
-        for profissaoReconhecida in listaProfissaoReconhecida:
-            for dicionarioProfissao in listaDicionarioProfissao:
-                if textoEhIgual(profissaoReconhecida,dicionarioProfissao[CHAVE_NOME]):
-                    del listaDicionarioProfissao[0]
-                    break
-                else:
-                    dicionarioAux1=dicionarioProfissao
-                    dicionarioAux2,posicao=defineDicionarioAux2(listaDicionarioProfissao, profissaoReconhecida)
-                    if not tamanhoIgualZero(dicionarioAux2):
-                        dados={CHAVE_NOME:dicionarioAux2[CHAVE_NOME],CHAVE_EXPERIENCIA:dicionarioAux2[CHAVE_EXPERIENCIA]}
-                        caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux1[CHAVE_ID]}/.json'
-                        modificaAtributo(caminhoRequisicao,dados)
-                        dados={CHAVE_NOME:dicionarioAux1[CHAVE_NOME],CHAVE_EXPERIENCIA:dicionarioAux1[CHAVE_EXPERIENCIA]}
-                        caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux2[CHAVE_ID]}/.json'
-                        modificaAtributo(caminhoRequisicao,dados)
-                        listaDicionarioProfissao[0][CHAVE_NOME]=dicionarioAux2[CHAVE_NOME]
-                        listaDicionarioProfissao[0][CHAVE_EXPERIENCIA]=dicionarioAux2[CHAVE_EXPERIENCIA]
-                        listaDicionarioProfissao[posicao][CHAVE_NOME]=dicionarioAux1[CHAVE_NOME]
-                        listaDicionarioProfissao[posicao][CHAVE_EXPERIENCIA]=dicionarioAux1[CHAVE_EXPERIENCIA]
-                        del listaDicionarioProfissao[0]
-                        break
-        else:
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
-            dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
-            print(f'Processo concluído com sucesso!')
+    listaProfissaoReconhecida = defineListaProfissaoReconhecida()
+    if len(listaProfissaoReconhecida) == CHAVE_QUANTIDADE_PROFISSAO:
+        verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida)
+        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+        dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
+        print(f'Processo de verificação concluído com sucesso!')
     else:
         print(f'Erro ao definir lista de profissões reconhecidas.')
     linhaSeparacao()
     return dicionarioPersonagem
 
+def verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida):
+    listaDicionarioProfissao = dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]
+    for posicao in range(len(listaProfissaoReconhecida)):
+        if textoEhIgual(listaProfissaoReconhecida[posicao],listaDicionarioProfissao[posicao][CHAVE_NOME]):
+            continue
+        else:
+            dicionarioAux1 = listaDicionarioProfissao[posicao]
+            dicionarioAux2 = defineDicionarioAux2(listaDicionarioProfissao, listaProfissaoReconhecida[posicao])
+            if not tamanhoIgualZero(dicionarioAux2):
+                dados={CHAVE_NOME:dicionarioAux2[CHAVE_NOME],CHAVE_EXPERIENCIA:dicionarioAux2[CHAVE_EXPERIENCIA]}
+                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux1[CHAVE_ID]}/.json'
+                modificaAtributo(caminhoRequisicao,dados)
+                dados={CHAVE_NOME:dicionarioAux1[CHAVE_NOME],CHAVE_EXPERIENCIA:dicionarioAux1[CHAVE_EXPERIENCIA]}
+                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux2[CHAVE_ID]}/.json'
+                modificaAtributo(caminhoRequisicao,dados)
+                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
+                verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida)
+                break
+
 def defineDicionarioAux2(listaDicionarioProfissao, profissaoReconhecida):
     dicionarioAux2={}
-    posicao=0
     for dicionarioProfissao in listaDicionarioProfissao:
         if textoEhIgual(profissaoReconhecida,dicionarioProfissao[CHAVE_NOME]):
             dicionarioAux2=dicionarioProfissao
             break
-        posicao+=1
-    return dicionarioAux2,posicao
+    return dicionarioAux2
 
 def defineListaProfissaoReconhecida():
     yinicialProfissao=285
@@ -143,7 +138,7 @@ def defineListaProfissaoReconhecida():
             break
     else:
         clickContinuo(10,'up')
-        print(f'Processo concluído!')
+        print(f'Processo de reconhecimento concluído!')
     return listaProfissaoReconhecida
 
 def ehMaisQueQuartaVerificacao(x):
@@ -1493,13 +1488,13 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                         if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM_MELHORADO]):
                                             saiProfissaoVerificada(dicionarioTrabalho)
                                         else:
-                                            dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagemAtributos)
+                                            dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                             if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                                 break
-                                if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                                    break
+                                # if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
+                                #     break
                             else:
-                                dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagemAtributos)
+                                dicionarioTrabalho,dicionarioPersonagemAtributos=buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                     break
                         else:
@@ -1539,7 +1534,7 @@ def saiProfissaoVerificada(dicionarioTrabalho):
     clickEspecifico(1,'left')
     linhaSeparacao()
 
-def buscaTrabalhoComum(dicionarioTrabalho,dicionarioPersonagem):
+def buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagem):
     dicionarioTrabalho=defineDicionarioTrabalhoComum(dicionarioTrabalho)
     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
         dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
@@ -1944,9 +1939,14 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
             clickContinuo(12,'up')
             dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = True
             break
+        elif menuLicencas(menu):
+            clickEspecifico(2,'f2')
         else:
             break
     return dicionarioPersonagemAtributos
+
+def menuLicencas(menu):
+    return menu==menu_licencas
 
 def removeTrabalhoEstoque(dicionarioPersonagemAtributos,dicionarioTrabalho):
     listaEstoque=retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
@@ -2127,7 +2127,7 @@ def retornaNomePersonagem(posicao):
         # # print(f'{D}:{nomePersonagemReconhecido}.')
         if variavelExiste(nomePersonagemReconhecido):
             nome=limpaRuidoTexto(nomePersonagemReconhecido)
-            # # print(f'{D}:Personagem reconhecido: {nomePersonagemReconhecidoTratado}')
+            print(f'{D}:Personagem reconhecido: {nome}')
             # linhaSeparacao()
         elif contadorPixelPreto>50:
             nome='provisorioatecair'
@@ -2660,7 +2660,7 @@ def implementaNovaProfissao(dicionarioPersonagem):
         else:
             adicionaNovaProfissao(dicionarioPersonagem,novaProfissao)
     else:
-        print(f'Processo concluído com sucesso!!')
+        print(f'Processo de verificação concluído com sucesso!!')
     linhaSeparacao()
 
 def defineProfissaoEscolhida(dicionarioUsuario):
@@ -2898,9 +2898,10 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
         dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
         dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        defineAtributoExperienciaTrabalho(dicionarioUsuario)
         click_atalho_especifico('alt','tab')
         # print(f'{dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]}')
-        modificaAtributoUso(dicionarioPersonagem,True)
+        # modificaAtributoUso(dicionarioPersonagem,True)
         # retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
         # for trabalhoPriorizado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
         #     print(f'{trabalhoPriorizado[CHAVE_NOME]}:{trabalhoPriorizado[CHAVE_PRIORIDADE]}.')
