@@ -851,7 +851,7 @@ def verifica_arquivo_existe(caminho_arquivo):
           return True
     return False
 
-def retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
+def defineListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
     print(f'Verificando profissões necessárias...')
     #cria lista vazia
     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA] = []
@@ -1439,7 +1439,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
             dicionarioTrabalho={CHAVE_LISTA_DESEJO:listaDicionariosTrabalhosParaProduzirProduzindo,
                                 CHAVE_DICIONARIO_TRABALHO_DESEJADO:None}
             if not tamanhoIgualZero(listaDicionariosTrabalhosParaProduzirProduzindo):#verifica se a lista está vazia
-                dicionarioPersonagemAtributos=retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
+                dicionarioPersonagemAtributos=defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
                 for profissaoVerificada in dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
                     if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                         continue
@@ -1817,7 +1817,7 @@ def trabalhoEhProducaoLicenca(dicionarioTrabalho):
             textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
 
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
-    dicionarioPersonagem = retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
+    dicionarioPersonagem = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
         if textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO]):
             if trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
@@ -1881,6 +1881,7 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTra
 def trataErros(dicionarioTrabalho,dicionarioPersonagem):
     print(f'Tratando possíveis erros...')
     dicionarioPersonagem[CHAVE_CONFIRMACAO]=True
+    tentativas = 1
     erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     while erroEncontrado(erro):
         if erro==erroSemRecursos:
@@ -1899,6 +1900,10 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
                 dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=False
             elif erro==erroOutraConexao:
                 dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
+            elif erro == erroConectando:
+                if tentativas>10:
+                    clickEspecifico(1,'enter')
+                tentativas+=1
         erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     linhaSeparacao()
     return dicionarioTrabalho,dicionarioPersonagem
@@ -2009,7 +2014,12 @@ def iniciaProducao(dicionarioTrabalho,dicionarioPersonagem):
                 dicionarioPersonagem=trataMenus(dicionarioTrabalho,dicionarioPersonagem)
                 if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
                     erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+                    tentativas = 1
                     while erroEncontrado(erro):
+                        if erro == erroConectando:
+                            if tentativas > 10:
+                                clickEspecifico(1,'enter')
+                            tentativas += 1
                         erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
                     dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                     if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
@@ -2763,7 +2773,7 @@ def mostraListaTrabalhoSemExperiencia(dicionarioUsuario):
     x=1
     listaDicionarioTrabalhoSemXp=[]
     for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
-        if textoEhIgual(trabalho[CHAVE_RARIDADE],'raro')and textoEhIgual(trabalho[CHAVE_PROFISSAO],'braceletes'):
+        if textoEhIgual(trabalho[CHAVE_RARIDADE],'comum')and trabalho[CHAVE_NIVEL]==1:
             # if trabalhoEProducaoRecursos(trabalho):
             listaDicionarioTrabalhoSemXp.append(trabalho)
     listaDicionarioTrabalhoSemXp=sorted(listaDicionarioTrabalhoSemXp,key=lambda dicionario:(dicionario[CHAVE_PROFISSAO],dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
@@ -2898,8 +2908,9 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
         dicionarioUsuario[CHAVE_LISTA_TRABALHO]=retornaListaDicionariosTrabalhos()
         dicionarioTrabalho=defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
-        defineAtributoExperienciaTrabalho(dicionarioUsuario)
+        # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         click_atalho_especifico('alt','tab')
+        # defineAtributoExperienciaTrabalho(dicionarioUsuario)
         # print(f'{dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]}')
         # modificaAtributoUso(dicionarioPersonagem,True)
         # retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
@@ -2910,7 +2921,6 @@ def funcao_teste(dicionarioUsuario):
         # detecta_movimento()
         # atualizaEstoquePersonagem(dicionarioPersonagem,trabalhoComumDesejado)
         # defineListaDicionarioEstoque(dicionarioPersonagem)
-        # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # print(370*1.5)
         # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
         # implementaNovaProfissao(dicionarioPersonagem)
