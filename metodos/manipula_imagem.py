@@ -348,8 +348,8 @@ def temporario():
     nucleoBlur=5
     nucleoDilate=5
     interation=4
-    t_lower=78
-    t_upper=80
+    t_lower=49
+    t_upper=50
     referenciaAnterior1=None
     referenciaAtual1=None
     referenciaAnterior2=None
@@ -466,4 +466,5 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# temporario()
+if __name__=='__main__':
+    temporario()
