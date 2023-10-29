@@ -932,6 +932,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
             if erro==erroConectando:
                 if tentativas>10:
                     clickEspecifico(2,'enter')
+                    tentativas = 0
                 tentativas+=1
             erro=verificaErro(None)
         else:
@@ -956,6 +957,7 @@ def entraPersonagemAtivo(dicionarioPersonagem):
                         elif erro==erroConectando:
                             if tentativas>10:
                                 clickEspecifico(2,'enter')
+                                tentativas = 0
                             tentativas+=1
                         erro=verificaErro(None)
                     else:
@@ -1364,6 +1366,7 @@ def logaContaPersonagem(listaDicionarioPersonagensAtivos):
         if erro==erroConectando or erro==erroRestaurandoConexao:
             if tentativas>10:
                 clickEspecifico(1,'enter')
+                tentativas = 0
             tentativas+=1
         elif erro==erroEmailSenhaIncorreta:
             break
@@ -2028,6 +2031,7 @@ def trataErros(dicionarioTrabalho,dicionarioPersonagem):
             elif erro == erroConectando:
                 if tentativas>10:
                     clickEspecifico(1,'enter')
+                    tentativas = 0
                 tentativas+=1
         erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     linhaSeparacao()
@@ -2279,6 +2283,7 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
         if erro==erroConectando:
             if tentativas>10:
                 clickEspecifico(2,'enter')
+                tentativas = 0
             tentativas+=1
         erro=verificaErro(None)
     else:
@@ -2313,6 +2318,7 @@ def entraPersonagem(listaPersonagemPresenteRecuperado):
                     elif erro==erroConectando:
                         if tentativas>10:
                             clickEspecifico(1,'enter')
+                            tentativas = 0
                         tentativas+=1
                     time.sleep(1.5)
                     erro=verificaErro(None)
