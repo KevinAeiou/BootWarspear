@@ -2,6 +2,7 @@ import socket
 import requests
 import json
 import time
+import pyrebase
 import uuid 
 from lista_chaves import *
 
@@ -20,8 +21,8 @@ firebaseConfig = {
     'messagingSenderId': "882438857395",
     'appId': "1:882438857395:web:1d0b926a94d0aacca086c6"}
 
-# firebase = pyrebase.initialize_app(firebaseConfig)
-# autenticacao = firebase.auth()
+firebase = pyrebase.initialize_app(firebaseConfig)
+autenticacao = firebase.auth()
 
 def autenticar_usuario(email,senha):
     try:

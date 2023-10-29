@@ -1282,6 +1282,7 @@ def retornaMenu():
     linhaSeparacao()
     click_atalho_especifico('win','left')
     click_atalho_especifico('win','left')
+    clickMouseEsquerdo(1,35,35)
     verificaErro(None)
     return menu_desconhecido
 
@@ -1655,7 +1656,13 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
     for trabalho in listaDicionarioTrabalhoComum:
         print(f'{D}:Trabalho comum: {trabalho[CHAVE_NOME]}, quantidade: {trabalho[CHAVE_QUANTIDADE]}.')
 
-    
+    listadicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
+    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listadicionarioTrabalhoDesejado)
+    for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
+        if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO],dicionarioProfissaoPrioridade[CHAVE_NOME]):
+            
+            pass
+        print(f'{D}:')
 
     return
 
