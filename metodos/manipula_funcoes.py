@@ -1518,7 +1518,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                             clickContinuo(3,'up')
                             clickEspecifico(1,'left')
                             linhaSeparacao()
-                            time.sleep(1)
+                            time.sleep(1.5)
                 else:
                     if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
                         dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
@@ -1539,6 +1539,7 @@ def saiProfissaoVerificada(dicionarioTrabalho):
     print(f'Nem um trabalho disponível está na lista de desejos.')
     clickContinuo(4,'up')
     clickEspecifico(1,'left')
+    time.sleep(1)
     linhaSeparacao()
 
 def buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagem):

@@ -80,7 +80,7 @@ def inicia_trabalho(posicao):
         time.sleep(1) 
 
 def entraProfissaoEspecifica(indice):
-    time.sleep(0.5)
+    time.sleep(1)
     for x in range(indice):
         tecla.hotkey('down')
         print('Baixo.')
