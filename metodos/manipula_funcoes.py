@@ -1656,7 +1656,8 @@ def retornaQuantidadeRecursosReservados(dicionarioPersonagemAtributos,dicionario
     quantidadeSecundarioReservado = 0
     quantidadeTerciarioReservado = 0
     listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
-    for dicionarioTrabalhoDesejado in listaDicionarioTrabalhoDesejado:
+    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionarioTrabalhoDesejado)
+    for dicionarioTrabalhoDesejado in listaDicionarioTrabalhoProduzirProduzindo:
         if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
             if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_PROFISSAO],dicionarioProfissaoPrioridade[CHAVE_NOME]):
                 if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_RARIDADE],'Comum'):
@@ -1756,8 +1757,8 @@ def retornaQuantidadeRecursos(nivelProduzTrabalhoComum):
 
 def retornaSomaXpTrabalhoProducao(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade):
     somaXpProduzirProduzindo = 0
-    listadicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
-    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listadicionarioTrabalhoDesejado)
+    listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
+    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionarioTrabalhoDesejado)
     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
         if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO],dicionarioProfissaoPrioridade[CHAVE_NOME]):
             somaXpProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
@@ -1765,8 +1766,8 @@ def retornaSomaXpTrabalhoProducao(dicionarioPersonagemAtributos,dicionarioProfis
 
 def defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum):
     quantidadeTrabalhoProduzirProduzindo = 0
-    listadicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
-    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listadicionarioTrabalhoDesejado)
+    listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
+    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionarioTrabalhoDesejado)
     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
         for dicionarioTrabalhoComum in listaDicionarioTrabalhoComum:
             if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME],dicionarioTrabalhoComum[CHAVE_NOME]):
