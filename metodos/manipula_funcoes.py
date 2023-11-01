@@ -2292,14 +2292,21 @@ def removeTrabalhoEstoque(dicionarioPersonagemAtributos,dicionarioTrabalho):
     if not tamanhoIgualZero(listaEstoque):
         for trabalhoEstoque in listaEstoque:
             if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],'Comum'):
-                if textoEhIgual(trabalhoEstoque[CHAVE_NOME],dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO]):
-                    if trabalhoEhProducaoRecursos(dicionarioTrabalho):
-                        pass
-                    else:
-                        novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]-dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
-                        caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-                        dados={CHAVE_QUANTIDADE:novaQuantidade}
-                        modificaAtributo(caminhoRequisicao,dados)
+                if textoEhIgual(trabalhoEstoque[CHAVE_NOME],nomePrimario):
+                    novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE] - quantidadePrimario
+                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                    dados={CHAVE_QUANTIDADE:novaQuantidade}
+                    modificaAtributo(caminhoRequisicao,dados)
+                elif textoEhIgual(dicionarioTrabalho[CHAVE_NOME], nomeSecundario):
+                    novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE] - quantidadeSecundario
+                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                    dados={CHAVE_QUANTIDADE:novaQuantidade}
+                    modificaAtributo(caminhoRequisicao,dados)
+                elif textoEhIgual(dicionarioTrabalho[CHAVE_NOME], nomeTerciario):
+                    novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE] - quantidadeTerciario
+                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                    dados={CHAVE_QUANTIDADE:novaQuantidade}
+                    modificaAtributo(caminhoRequisicao,dados)
     return dicionarioPersonagemAtributos
 
 def defineCloneDicionarioTrabalho(dicionarioTrabalho):
