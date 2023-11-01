@@ -1592,7 +1592,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                     quantidadeRecursoTerciario = quantidadeRecursoTerciario * quantidadeTrabalhoProduzir
                     quantidadeRecursoSecundario = quantidadeRecursoSecundario * quantidadeTrabalhoProduzir
                     quantidadeRecursoPrimario = quantidadeRecursoPrimario * quantidadeTrabalhoProduzir
-                    nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario = retornaNomeRecursos(dicionarioProfissaoPrioridade, nivelProduzTrabalhoComum)
+                    nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario = retornaNomeRecursos(dicionarioProfissaoPrioridade[CHAVE_NOME], nivelProduzTrabalhoComum)
                     print(f'{D}:Recurso primário: {nomeRecursoPrimario}, quantidade: {quantidadeRecursoPrimario}.')
                     print(f'{D}:Recurso secundário: {nomeRecursoSecundario}, quantidade: {quantidadeRecursoSecundario}.')
                     print(f'{D}:Recurso terciário: {nomeRecursoTerciario}, quantidade: {quantidadeRecursoTerciario}.')
@@ -1693,12 +1693,12 @@ def retornaQuantidadeRecursosReservados(dicionarioPersonagemAtributos,dicionario
 
     return quantidadePrimarioReservado, quantidadeSecundarioReservado, quantidadeTerciarioReservado
 
-def retornaNomeRecursos(dicionarioProfissaoPrioridade, nivelProduzTrabalhoComum):
+def retornaNomeRecursos(nomeProfisssao, nivelProduzTrabalhoComum):
     nomeRecursoPrimario = None
     nomeRecursoSecundario = None
     nomeRecursoTerciario = None
     listaDicionarioProfissao = retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum)
-    chaveProfissao = limpaRuidoTexto(dicionarioProfissaoPrioridade[CHAVE_NOME])
+    chaveProfissao = limpaRuidoTexto(nomeProfisssao)
     for dicionarioProfissao in listaDicionarioProfissao:
         if chaveProfissao in dicionarioProfissao:
             nomeRecursoPrimario = dicionarioProfissao[chaveProfissao][0]
@@ -2286,10 +2286,12 @@ def menuLicencas(menu):
     return menu==menu_licencas
 
 def removeTrabalhoEstoque(dicionarioPersonagemAtributos,dicionarioTrabalho):
+    quantidadePrimario, quantidadeSecundario, quantidadeTerciario = retornaQuantidadeRecursos(dicionarioTrabalho[CHAVE_NIVEL])
+    nomePrimario, nomeSecundario, nomeTerciario = retornaNomeRecursos(dicionarioTrabalho[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_NIVEL])
     listaEstoque=retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(listaEstoque):
         for trabalhoEstoque in listaEstoque:
-            if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],'melhorado'):
+            if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],'Comum'):
                 if textoEhIgual(trabalhoEstoque[CHAVE_NOME],dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO]):
                     if trabalhoEhProducaoRecursos(dicionarioTrabalho):
                         pass
