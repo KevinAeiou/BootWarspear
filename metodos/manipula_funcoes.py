@@ -1438,7 +1438,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                 return dicionarioPersonagemAtributos
             menu = retornaMenu()
         else:
-            defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
+            while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+                continue
             listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
             listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
             dicionarioTrabalho = {
@@ -1550,6 +1551,7 @@ def buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagem):
     return dicionarioTrabalho,dicionarioPersonagem
 
 def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+    confirmacao = True
     print(f'Verifica profissão priorizada!')
     dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
 
@@ -1626,16 +1628,23 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                 print(f'{D}:Faltam {quantidadeSecundarioFaltante*-1} {nomeRecursoSecundario}.')
                             if not terciarioNecessario:
                                 print(f'{D}:Faltam {quantidadeTerciarioFaltante*-1} {nomeRecursoTerciario}.')
+                            confirmacao = False
                     else:
+                        confirmacao = False
                         print(f'{D}:Erro ao definir nome de recursos: {nomeRecursoPrimario},{nomeRecursoSecundario},{nomeRecursoTerciario}.')
                 else:
+                    confirmacao = False
                     print(f'{D}:Existem {quantidadeTrabalhoProduzir} trabalhos na fila para produzir ou produzindo.')
             else:
+                confirmacao = False
                 print(f'{D}:Experiência trabalhos para produzir e produzindo é suficiente para evoluir nível da profissão.')
         else:
+            confirmacao = False
             print(f'{D}:Lista dicionário trabalho comum profissão: {dicionarioProfissaoPrioridade[CHAVE_NOME]}, nível: {nivelProduzTrabalhoComum} está vazia!')
     else:
+        confirmacao = False
         print(f'{D}:Dicionário profissão priorizada vazio!')
+    return confirmacao
 
 def retornaQuantidadeRecursosFaltantes(dicionarioPersonagemAtributos, nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario, quantidadeRecursoPrimario, quantidadeRecursoSecundario, quantidadeRecursoTerciario):
     quantidadePrimarioFaltante = quantidadeRecursoPrimario *-1
