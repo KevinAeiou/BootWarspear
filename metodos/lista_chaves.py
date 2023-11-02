@@ -44,5 +44,11 @@ CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO='listaDicionarioPersonagemRetirado'
 CHAVE_DICIONARIO_PERSONAGEM_EM_USO='dicionarioPersonagemEmUso'
 CHAVE_LISTA_DICIONARIO_ESTOQUE='listaDicionarioEstoque'
 CHAVE_QUANTIDADE_PROFISSAO=9
+CHAVE_NOME_PRIMARIO = 'recursoPrimario'
+CHAVE_NOME_SECUNDARIO = 'recursoSecundario'
+CHAVE_NOME_TERCIARIO = 'recursoTerciario'
+CHAVE_QUANTIDADE_PRIMARIO = 'recursoQuantidadePrimario'
+CHAVE_QUANTIDADE_SECUNDARIO = 'recursoQuantidadeSecundario'
+CHAVE_QUANTIDADE_TERCIARIO = 'recursoQuantidadeTerciario'
 
 D='DEBUG'
