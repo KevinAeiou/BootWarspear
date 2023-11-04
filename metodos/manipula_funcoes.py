@@ -147,7 +147,7 @@ def ehMaisQueQuartaVerificacao(x):
 def ehQuartaVerificacao(x):
     return x==4
 
-def atualiza_referencias():
+def retornaReferencias():
     tela_inteira = retornaAtualizacaoTela()
     largura_tela = tela_inteira.shape[1]
     frame_referencia1 = tela_inteira[705-50:705,0:50]
@@ -195,9 +195,9 @@ def detecta_movimento():
     detec = []
     print(f'Atualizou o background.')
     backgroud=retornaBackGround()
-    referencia_anterior1, referencia_anterior2 = atualiza_referencias()
+    referencia_anterior1, referencia_anterior2 = retornaReferencias()
     while True:
-        if not verifica_referencia_tela(referencia_anterior1):
+        if not verificaReferenciaTela(referencia_anterior1):
         # if not verifica_referencia_tela(referencia_anterior1,referencia_anterior2):
             print(f'Atualizou o background.')
             backgroud=retornaBackGround()
@@ -224,7 +224,7 @@ def detecta_movimento():
             cv2.circle(frame_tela, centro, 4, (0, 0, 255), -1)
         #Clicar no centro do objeto em movimento
 
-        referencia_anterior1, referencia_anterior2 = atualiza_referencias()
+        referencia_anterior1, referencia_anterior2 = retornaReferencias()
         cv2.imshow('Teste',dilatado)
         cv2.imshow('Teste2',frame_tela)
         print(centro)
@@ -243,9 +243,9 @@ def detecta_movimento_teste():
     x=0
     print(f'Atualizou o background.')
     backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
-    referencia_anterior1, referencia_anterior2 = atualiza_referencias()    
+    referencia_anterior1, referencia_anterior2 = retornaReferencias()    
     while True:
-        if not verifica_referencia_tela(referencia_anterior1):
+        if not verificaReferenciaTela(referencia_anterior1):
             backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
         tela_inteira = retornaAtualizacaoTela()
         altura_tela = tela_inteira.shape[0]
@@ -285,7 +285,7 @@ def detecta_movimento_teste():
         cv2.imshow('Teste',frame_tela)
         if cv2.waitKey(5)==27:
             break
-        referencia_anterior1, referencia_anterior2 = atualiza_referencias()
+        referencia_anterior1, referencia_anterior2 = retornaReferencias()
         x+=1
     cv2.destroyAllWindows()
     print(lista)
@@ -314,21 +314,6 @@ def verifica_lista_inimigo(nome_reconhecido):
             print(f'Encontrou: {lista_inimigos[indice]}')
             return True
     return False
-
-def verifica_referencia_tela(referencia_anterior1):
-# def verifica_referencia_tela(referencia_anterior1,referencia_anterior2):
-    frame_referencia1, frame_referencia2 = atualiza_referencias() 
-    histograma_referencia1 = retorna_histograma(frame_referencia1)
-    histograma_referencia_anterior1 = retorna_histograma(referencia_anterior1)
-    histograma_referencia2 = retorna_histograma(frame_referencia2)
-    # histograma_referencia_anterior2 = retorna_histograma(referencia_anterior2)
-    comparacao_histogramas1 = retorna_comparacao_histogramas(histograma_referencia1,histograma_referencia_anterior1)
-    # comparacao_histogramas2 = retorna_comparacao_histogramas(histograma_referencia2,histograma_referencia_anterior2)
-    if comparacao_histogramas1!=0:
-    # if comparacao_histogramas1!=0 and comparacao_histogramas2!=0:
-        print(f'Referencias não comferem.')
-        return False
-    return True
 
 def verificaMenuReferencia():
     confirmacao=False
@@ -812,7 +797,7 @@ def retorna_lista_histograma_menu():
         #abre a imagem do modelo
         modelo = abre_imagem(f'modelos/modelo_menu_{x}.png')
         #calcula histograma do modelo
-        histograma_modelo = retorna_histograma(modelo)
+        histograma_modelo = retornaHistograma(modelo)
         lista_histograma.append(histograma_modelo)
     return lista_histograma
 

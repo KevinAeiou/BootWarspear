@@ -92,10 +92,10 @@ def mostraImagem(indice,imagem,nome_frame):
     cv2.waitKey(indice)
     cv2.destroyAllWindows()
 
-def retorna_histograma(imagem):
+def retornaHistograma(imagem):
     return cv2.calcHist([imagem],[0],None,[256],[0,256])
 
-def retorna_comparacao_histogramas(histograma,histograma1):
+def retornaComparacaoHistogramas(histograma,histograma1):
     c1=0
     i=0
     while i<len(histograma)and i<len(histograma1):
@@ -280,24 +280,33 @@ def encontraPixelCor(imagem,cores):
     return False
 
 def encontraPersonagem():
+    nucleoBlur = 3
+    print(f'Atualizou o background.')
+    background = retornaBackGround()
+    referenciaAnterior1, referenciaAnterior2 = retornaReferencias()
     while True:
-        screenshot=tiraScreenshot()
-        telaInteira=retornaImagemColorida(screenshot)
-        metadeTela=telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
-        imagemPreprocessada=preProcessamento(metadeTela)
-        contornos,h1=cv2.findContours(imagemPreprocessada,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-        for cnt in contornos:
-            area=cv2.contourArea(cnt)
-            if area>1600 and area<3000:#2400/2600 area personagem de boa
-                x,y,l,a=cv2.boundingRect(cnt)
-                recorte=metadeTela[y:y+a,x:x+l]
-                classe=detectarPersonagem(recorte)
-                # cv2.putText(metadeTela,str(classe),(x,y),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
-                # cv2.imwrite(f'modelos/personagemTeste/imagem{contador}.png',recorte)
-                cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
-        # cv2.imshow('Metade da tela processada',imagemPreprocessada)
+        if not verificaReferenciaTela(referenciaAnterior1, referenciaAnterior2):
+            print(f'Atualizou o background.')
+            background = retornaBackGround()
+        screenshot = tiraScreenshot()
+        telaInteira = retornaImagemColorida(screenshot)
+        metadeTela = telaInteira[0:telaInteira.shape[0],0:telaInteira.shape[1]//2]
+        imagemTratada = retornaImagemCinza(metadeTela)
+        imagemTratada = cv2.GaussianBlur(imagemTratada,(nucleoBlur,nucleoBlur),0)
+        imagemBackGround = background.apply(imagemTratada)
+        # contornos,h1 = cv2.findContours(imagemBackGround,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        # for cnt in contornos:
+        #     area = cv2.contourArea(cnt)
+        #     if area > 1600 and area < 3000:#2400/2600 area personagem de boa
+        #         x,y,l,a = cv2.boundingRect(cnt)
+        #         recorte = metadeTela[y:y+a,x:x+l]
+        #         classe = detectarPersonagem(recorte)
+        #         # cv2.putText(metadeTela,str(classe),(x,y),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),2)
+        #         cv2.rectangle(metadeTela,(x,y),(x+l,y+a),(0,255,0),2)
+        referenciaAnterior1, referenciaAnterior2 = retornaReferencias()
+        cv2.imshow('Metade da tela processada',imagemBackGround)
         cv2.imshow('Metade da tela',metadeTela)
-        if cv2.waitKey(3) &0xFF==ord('q'):
+        if cv2.waitKey(3) &0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
 
@@ -377,10 +386,10 @@ def temporario():
                 referenciaAtual1Aumentada = cv2.resize(referenciaAtual1,(0,0),fx=5,fy=5)
                 referenciaAtual2=imagem[alturaReferencia:alturaReferencia+50,imagem.shape[1]-50:imagem.shape[1]]
                 # referenciaAtual2Aumentada = cv2.resize(referenciaAtual2,(0,0),fx=5,fy=5)
-                histogramaAtual1=retorna_histograma(referenciaAtual1)
-                histogramaAtual2=retorna_histograma(referenciaAtual2)
-                comparacaoHistograma1=retorna_comparacao_histogramas(histogramaAnterior1,histogramaAtual1)
-                comparacaoHistograma2=retorna_comparacao_histogramas(histogramaAnterior2,histogramaAtual2)
+                histogramaAtual1=retornaHistograma(referenciaAtual1)
+                histogramaAtual2=retornaHistograma(referenciaAtual2)
+                comparacaoHistograma1=retornaComparacaoHistogramas(histogramaAnterior1,histogramaAtual1)
+                comparacaoHistograma2=retornaComparacaoHistogramas(histogramaAnterior2,histogramaAtual2)
                 # imagemSubtraida,diferenca=retorna_subtracao_imagem(referenciaAtual1,referenciaAnterior1)
                 # print(f'Comparação histograma1: {comparacaoHistograma1}.')
                 # if comparacaoHistograma1==0:
@@ -418,8 +427,8 @@ def temporario():
             referenciaAnterior1Aumentada = cv2.resize(referenciaAnterior1,(0,0),fx=5,fy=5)
             referenciaAnterior2=imagem[alturaReferencia:alturaReferencia+50,imagem.shape[1]-50:imagem.shape[1]]
             referenciaAnterior2Aumentada = cv2.resize(referenciaAnterior2,(0,0),fx=5,fy=5)
-            histogramaAnterior1=retorna_histograma(referenciaAnterior1)
-            histogramaAnterior2=retorna_histograma(referenciaAnterior2)
+            histogramaAnterior1=retornaHistograma(referenciaAnterior1)
+            histogramaAnterior2=retornaHistograma(referenciaAnterior2)
             primeiraVerificacao=False
             if ret==True: 
                 cv2.imshow('Imagem background', imagemBackGround) 
@@ -466,5 +475,28 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
+# def verificaReferenciaTela(referencia_anterior1):
+def verificaReferenciaTela(referenciaAnterior1,referenciaAnterior2):
+    referencia1, referencia2 = retornaReferencias() 
+    histogramaReferencia1 = retornaHistograma(referencia1)
+    histogramaReferenciaAnterior1 = retornaHistograma(referenciaAnterior1)
+    histogramaReferencia2 = retornaHistograma(referencia2)
+    histogramaReferenciaAnterior2 = retornaHistograma(referenciaAnterior2)
+    comparacaoHistogramas1 = retornaComparacaoHistogramas(histogramaReferencia1,histogramaReferenciaAnterior1)
+    comparacaoHistogramas2 = retornaComparacaoHistogramas(histogramaReferencia2,histogramaReferenciaAnterior2)
+    # if comparacaoHistogramas1 != 0:
+    if comparacaoHistogramas1!=0 and comparacaoHistogramas2!=0:
+        print(f'Referencias não comferem.')
+        return False
+    return True
+
+def retornaReferencias():
+    screenshot = tiraScreenshot()
+    tela_inteira = retornaImagemColorida(screenshot)
+    largura_tela = tela_inteira.shape[1]
+    frame_referencia1 = tela_inteira[705-50:705,0:50]
+    frame_referencia2 = tela_inteira[500:550,0:50]
+    return frame_referencia1, frame_referencia2
+
 if __name__=='__main__':
-    temporario()
+    encontraPersonagem()
