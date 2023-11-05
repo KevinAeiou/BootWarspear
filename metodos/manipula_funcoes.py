@@ -2382,8 +2382,8 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
     if tamanhoIgualZero(listaPersonagemPresenteRecuperado):
         print(f'Limpou a lista...')
         linhaSeparacao()
-        listaPersonagemPresenteRecuperado=[]
-    nomePersonagemReconhecido=retornaNomePersonagem(0)
+        listaPersonagemPresenteRecuperado = []
+    nomePersonagemReconhecido = retornaNomePersonagem(0)
     if variavelExiste(nomePersonagemReconhecido):
         print(f'{nomePersonagemReconhecido} foi adicionado a lista!')
         linhaSeparacao()
@@ -2394,7 +2394,7 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
     return listaPersonagemPresenteRecuperado
 
 def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
-    listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
+    listaPersonagemPresenteRecuperado = retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
     while True:
         reconheceMenuRecompensa(menu)
         if existePixelCorrespondencia():
@@ -2404,38 +2404,39 @@ def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
         linhaSeparacao()
         deslogaPersonagem(None,None)
         if entraPersonagem(listaPersonagemPresenteRecuperado):
-            listaPersonagemPresenteRecuperado=retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado)
+            listaPersonagemPresenteRecuperado = retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado)
         else:
             print(f'Todos os personagens foram verificados!')
             linhaSeparacao()
             break
-        menu=retornaMenu()
+        menu = retornaMenu()
 
 def recuperaPresente():
-    evento=0
+    evento = 0
+    time.sleep(2)
     print(f'Buscando recompensa diária...')
-    while evento<2:
-        telaInteira=retornaAtualizacaoTela()
-        frameTela=telaInteira[0:telaInteira.shape[0],330:488]
-        imagem=retornaImagemCinza(frameTela)
-        imagem=cv2.GaussianBlur(imagem,(1,1),0)
-        imagem=cv2.Canny(imagem,150,180)
-        kernel=np.ones((2,2),np.uint8)
-        imagem=retornaImagemDitalata(imagem,kernel,1)
-        imagem=retornaImagemErodida(imagem,kernel,1)
-        contornos,h1=cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    while evento < 2:
+        telaInteira = retornaAtualizacaoTela()
+        frameTela = telaInteira[0:telaInteira.shape[0],330:488]
+        imagem = retornaImagemCinza(frameTela)
+        imagem = cv2.GaussianBlur(imagem,(1,1),0)
+        imagem = cv2.Canny(imagem,150,180)
+        kernel = np.ones((2,2),np.uint8)
+        imagem = retornaImagemDitalata(imagem,kernel,1)
+        imagem = retornaImagemErodida(imagem,kernel,1)
+        contornos,h1 = cv2.findContours(imagem,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         for cnt in contornos:
-            area=cv2.contourArea(cnt)
-            if area>4500 and area<5700:
-                x,y,l,a=cv2.boundingRect(cnt)
+            area = cv2.contourArea(cnt)
+            if area > 4500 and area < 5700:
+                x, y, l, a = cv2.boundingRect(cnt)
                 print(f'Area:{area}, x:{x}, y:{y}.')
                 cv2.rectangle(frameTela,(x,y),(x+l,y+a),(0,255,0),2)
-                frameTratado=frameTela[y:y+a,x:x+l]
-                centroX=330+x+(l/2)
-                centroY=y+(a/2)
+                frameTratado = frameTela[y:y+a,x:x+l]
+                centroX = 330+x+(l/2)
+                centroY = y+(a/2)
                 clickMouseEsquerdo(1,centroX,centroY)
                 posicionaMouseEsquerdo(telaInteira.shape[1]//2,telaInteira.shape[0]//2)
-                if verificaErro(None)!=0:
+                if verificaErro(None) != 0:
                     evento=2
                     break
                 clickEspecifico(1,'f2')
@@ -2444,7 +2445,7 @@ def recuperaPresente():
         clickEspecifico(1,'left')
         linhaSeparacao()
         # mostraImagem(0,frameTela,None)
-        evento+=1
+        evento += 1
     clickEspecifico(2,'f1')
 
 def existemPixelsSuficientes(contadorPixelPreto):
@@ -2453,11 +2454,11 @@ def existemPixelsSuficientes(contadorPixelPreto):
 def reconheceMenuRecompensa(menu):
     print(f'Entrou em recuperaPresente.')
     linhaSeparacao()
-    if menu==menu_loja_milagrosa:
+    if menu == menu_loja_milagrosa:
         clickEspecifico(1,'down')
         clickEspecifico(1,'enter')
         recuperaPresente()
-    elif menu==menu_rec_diarias:
+    elif menu == menu_rec_diarias:
         recuperaPresente()
     else:
         print(f'Recompensa diária já recebida!')
