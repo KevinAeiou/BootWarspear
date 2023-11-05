@@ -1619,7 +1619,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                         print(f'{D}:Erro ao definir nome de recursos.')
                 else:
                     confirmacao = False
-                    print(f'{D}:Qunatidade de trabalhos na fila para produzir ou produzindo execede o máximo permitido.')
+                    print(f'{D}:Quantidade de trabalhos na fila para produzir ou produzindo execede o máximo permitido.')
             else:
                 confirmacao = False
                 print(f'{D}:Experiência trabalhos para produzir e produzindo é suficiente para evoluir nível da profissão.')
@@ -2413,9 +2413,9 @@ def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
 
 def recuperaPresente():
     evento = 0
-    time.sleep(2)
     print(f'Buscando recompensa diária...')
     while evento < 2:
+        time.sleep(2)
         telaInteira = retornaAtualizacaoTela()
         frameTela = telaInteira[0:telaInteira.shape[0],330:488]
         imagem = retornaImagemCinza(frameTela)
