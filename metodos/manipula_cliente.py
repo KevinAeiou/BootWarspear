@@ -259,6 +259,12 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
             print(f'Resultado do dicionario: {dicionarioRequisicao}.')  
     else:
         print(f'Resultado da requisição: {requisicao}.')
+    # print(f'{D}: Lista de todos os trabalhos desejados:')
+    # for dicionarioTrabalhoDesejado in listaDicionariosOrdenada:
+    #     for atributo in dicionarioTrabalhoDesejado:
+    #         print(f'{D}: {atributo} = {dicionarioTrabalhoDesejado[atributo]}.')
+    #     print(f'_______________________________________________________________')
+    # print(f'_______________________________________________________________')
     return listaDicionariosOrdenada
 
 def defineListaDicionarioPersonagem(dicionarioPersonagem):
