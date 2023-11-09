@@ -58,4 +58,5 @@ CHAVE_RPA = 'recursoPrimarioAvancado'
 CHAVE_RSA = 'recursoSecundarioAvancado'
 CHAVE_RTA = 'recursoTerciarioAvancado'
 
+
 D='DEBUG'
