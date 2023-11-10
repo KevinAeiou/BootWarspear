@@ -1590,8 +1590,16 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                 if quantidadeTrabalhoProduzir > 0:
 
                     dicionarioTrabalho = defineNomeRecursos(listaDicionarioTrabalhoComum[0])
-                    confirmacao = False
+                    
+                    # print(f'Lista dicionários recursos:')
+                    # for dicionarioRecurso in listaDicionarioRecursos:
+                    #     for atributo in dicionarioRecurso:
+                    #         print(f'{D}: {atributo} = {dicionarioRecurso[atributo]}.')
+                    #     linhaSeparacao()
+                    # linhaSeparacao()
+
                     # dicionarioRecurso = defineTipoRecurso(dicionarioRecurso)
+                    confirmacao = False
                     # if primarioNecessario and secundarioNecessario and terciarioNecessario:
                     #     listaDicionarioTrabalhoComum = sorted(listaDicionarioTrabalhoComum,key=lambda dicionario:dicionario[CHAVE_QUANTIDADE])
                     #     for dicionarioTrabalhoOrdenado in listaDicionarioTrabalhoComum:
@@ -1934,11 +1942,16 @@ def retornaNomeRecursoTrabalhoProducao(nomeTrabalhoProducao):
         ['fazendo tecido de cetim','tecido de cetim'],['comprar tesoura do principiante','tesoura do principiante'],['produzindo fio grosso','fio grosso'],
         ['adquirir faca do aprendiz','Faca do aprendiz'],['recebendo escamas da serpente','Escamas da serpente'],['Concluindo couro resistente','Couro resistente'],
         ['adquirir faca do principiante','Faca do principiante'],['recebendo escamas do lagarto','Escamas do lagarto'],['curtindo couro grosso','Couro grosso'],
-        ['',''],['',''],['',''],['',''],['',''],['',''],
-        ['',''],['',''],['',''],['',''],['',''],['',''],
-        ['',''],['',''],['',''],['',''],['',''],['',''],
-        ['',''],['',''],['',''],['',''],['',''],['',''],
-        ['',''],['',''],['',''],['',''],['',''],['','']]
+        ['adquirir marretão do aprendiz','Marretão do aprendiz'],['forjando placas de cobre','Placas de cobre'],['fazendo placas de bronze','Anéis de bronze'],
+        ['adquirir marretão do principiante','Marretão do principiante'],['forjando placas de ferro','Placas de ferro'],['fazendo anéis de aço','Anéis de aço'],
+        ['adquirir molde do aprendiz','Molde do aprendiz'],['extração de pepitas de cobre','Pepita de cobre'],['recebendo gema das sombras','Pedra de sombras'],
+        ['adquirir molde do principiante','Molde do principiante'],['extração de pepitas de prata','Pepitas de prata'],['recebendo gema da luz','Pedra da luz'],
+        ['adquirir pinça do aprendiz','Pinça do aprendiz'],['extração de jade bruta','Jade bruta'],['recebendo energia inicial','Energia inicial'],
+        ['adquirir pinças do principiante','Pinça do principiante'],['extração de ônix extraordinária','Ônix extraordinária'],['recebendo éter inicial','Éter inicial'],
+        ['adquirir furador do aprendiz','Furador do aprendiz'],['produzindo tecido delicado','Tecido delicado'],['extração de substância instável','Substância instável'],
+        ['adquirir furador do principiante','Furador do principiante'],['produzindo tecido denso','Tecido espesso'],['extração de substância estável','Substância estável'],
+        ['Recebendo fibra de bronze','Fibra de Bronze'],['recebendo prata','Prata'],['recebendo insígnia de estudante','Pin de Estudante'],
+        ['recebendo fibra de platina','Fibra de Platina'],['recebendo âmbar','Âmbarito'],['recebendo distintivo de aprendiz','Pino do Aprendiz']]
     for nomeRecurso in listaNomeRecursos:
         if textoEhIgual(nomeRecurso[0],nomeTrabalhoProducao):
             nomeRecurso = nomeRecurso[1]
