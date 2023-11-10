@@ -1588,55 +1588,58 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                 maximoTrabalhoProduzirProduzindoPermitido = 2
                 quantidadeTrabalhoProduzir = maximoTrabalhoProduzirProduzindoPermitido - quantidadeTrabalhoProduzirProduzindo
                 if quantidadeTrabalhoProduzir > 0:
-                    dicionarioRecurso = defineTipoRecurso(dicionarioRecurso)
-                    if primarioNecessario and secundarioNecessario and terciarioNecessario:
-                        listaDicionarioTrabalhoComum = sorted(listaDicionarioTrabalhoComum,key=lambda dicionario:dicionario[CHAVE_QUANTIDADE])
-                        for dicionarioTrabalhoOrdenado in listaDicionarioTrabalhoComum:
-                            print(f'{D}:{dicionarioTrabalhoOrdenado[CHAVE_NOME]}.')
-                        dicionarioTrabalho = {
-                            CHAVE_NOME:listaDicionarioTrabalhoComum[0][CHAVE_NOME],
-                            CHAVE_NIVEL:listaDicionarioTrabalhoComum[0][CHAVE_NIVEL],
-                            CHAVE_PROFISSAO:listaDicionarioTrabalhoComum[0][CHAVE_PROFISSAO],
-                            CHAVE_EXPERIENCIA:listaDicionarioTrabalhoComum[0][CHAVE_EXPERIENCIA],
-                            CHAVE_RARIDADE:listaDicionarioTrabalhoComum[0][CHAVE_RARIDADE],
-                            CHAVE_RECORRENCIA:False,
-                            CHAVE_ESTADO:0,
-                            CHAVE_LICENCA:'Licença de produção do iniciante'
-                            # listaDicionarioTrabalhoComum[0]
-                            }
-                        adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
-                    else:
-                        # Produz recursos de produção faltantes
-                        listaDicionarioRecursosFaltantes = []
-                        if dicionarioTrabalho[CHAVE_NIVEL] <= 14:
-                            nivelRecurso = 1
-                        else:
-                            nivelRecurso = 8
-                        if not primarioNecessario:
-                            print(f'{D}:Faltam {quantidadePrimarioFaltante*-1} {dicionarioTrabalho[CHAVE_NOME_PRIMARIO]}.')
-                            dicionarioRecurso = {
-                                CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME_PRIMARIO],
-                                CHAVE_NIVEL:nivelRecurso,
-                                CHAVE_QUANTIDADE:quantidadePrimarioFaltante*-1,
-                                CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO]}
-                            listaDicionarioRecursosFaltantes.append(dicionarioRecurso)
-                        if not secundarioNecessario:
-                            print(f'{D}:Faltam {quantidadeSecundarioFaltante*-1} {dicionarioTrabalho[CHAVE_NOME_SECUNDARIO]}.')
-                            dicionarioRecurso = {
-                                CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME_SECUNDARIO],
-                                CHAVE_NIVEL:nivelRecurso,
-                                CHAVE_QUANTIDADE:quantidadeSecundarioFaltante*-1,
-                                CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO]}
-                            listaDicionarioRecursosFaltantes.append(dicionarioRecurso)
-                        if not terciarioNecessario:
-                            print(f'{D}:Faltam {quantidadeTerciarioFaltante*-1} {dicionarioTrabalho[CHAVE_NOME_TERCIARIO]}.')
-                            dicionarioRecurso = {
-                                CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME_TERCIARIO],
-                                CHAVE_NIVEL:nivelRecurso,
-                                CHAVE_QUANTIDADE:quantidadeTerciarioFaltante*-1,
-                                CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO]}
-                            listaDicionarioRecursosFaltantes.append(dicionarioRecurso)
-                        linhaSeparacao()
+
+                    dicionarioTrabalho = defineNomeRecursos(listaDicionarioTrabalhoComum[0])
+                    confirmacao = False
+                    # dicionarioRecurso = defineTipoRecurso(dicionarioRecurso)
+                    # if primarioNecessario and secundarioNecessario and terciarioNecessario:
+                    #     listaDicionarioTrabalhoComum = sorted(listaDicionarioTrabalhoComum,key=lambda dicionario:dicionario[CHAVE_QUANTIDADE])
+                    #     for dicionarioTrabalhoOrdenado in listaDicionarioTrabalhoComum:
+                    #         print(f'{D}:{dicionarioTrabalhoOrdenado[CHAVE_NOME]}.')
+                    #     dicionarioTrabalho = {
+                    #         CHAVE_NOME:listaDicionarioTrabalhoComum[0][CHAVE_NOME],
+                    #         CHAVE_NIVEL:listaDicionarioTrabalhoComum[0][CHAVE_NIVEL],
+                    #         CHAVE_PROFISSAO:listaDicionarioTrabalhoComum[0][CHAVE_PROFISSAO],
+                    #         CHAVE_EXPERIENCIA:listaDicionarioTrabalhoComum[0][CHAVE_EXPERIENCIA],
+                    #         CHAVE_RARIDADE:listaDicionarioTrabalhoComum[0][CHAVE_RARIDADE],
+                    #         CHAVE_RECORRENCIA:False,
+                    #         CHAVE_ESTADO:0,
+                    #         CHAVE_LICENCA:'Licença de produção do iniciante'
+                    #         # listaDicionarioTrabalhoComum[0]
+                    #         }
+                    #     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                    # else:
+                    #     # Produz recursos de produção faltantes
+                    #     listaDicionarioRecursosFaltantes = []
+                    #     if dicionarioTrabalho[CHAVE_NIVEL] <= 14:
+                    #         nivelRecurso = 1
+                    #     else:
+                    #         nivelRecurso = 8
+                    #     if not primarioNecessario:
+                    #         print(f'{D}:Faltam {quantidadePrimarioFaltante*-1} {dicionarioTrabalho[CHAVE_NOME_PRIMARIO]}.')
+                    #         dicionarioRecurso = {
+                    #             CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME_PRIMARIO],
+                    #             CHAVE_NIVEL:nivelRecurso,
+                    #             CHAVE_QUANTIDADE:quantidadePrimarioFaltante*-1,
+                    #             CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO]}
+                    #         listaDicionarioRecursosFaltantes.append(dicionarioRecurso)
+                    #     if not secundarioNecessario:
+                    #         print(f'{D}:Faltam {quantidadeSecundarioFaltante*-1} {dicionarioTrabalho[CHAVE_NOME_SECUNDARIO]}.')
+                    #         dicionarioRecurso = {
+                    #             CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME_SECUNDARIO],
+                    #             CHAVE_NIVEL:nivelRecurso,
+                    #             CHAVE_QUANTIDADE:quantidadeSecundarioFaltante*-1,
+                    #             CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO]}
+                    #         listaDicionarioRecursosFaltantes.append(dicionarioRecurso)
+                    #     if not terciarioNecessario:
+                    #         print(f'{D}:Faltam {quantidadeTerciarioFaltante*-1} {dicionarioTrabalho[CHAVE_NOME_TERCIARIO]}.')
+                    #         dicionarioRecurso = {
+                    #             CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME_TERCIARIO],
+                    #             CHAVE_NIVEL:nivelRecurso,
+                    #             CHAVE_QUANTIDADE:quantidadeTerciarioFaltante*-1,
+                    #             CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO]}
+                    #         listaDicionarioRecursosFaltantes.append(dicionarioRecurso)
+                    #     linhaSeparacao()
                         # produzRecursosFaltantes(dicionarioPersonagemAtributos,listaDicionarioRecursosFaltantes)
                 else:
                     confirmacao = False
@@ -1888,6 +1891,10 @@ def defineNomeRecursos(dicionarioTrabalho):
                 break
     else:
         print(f'{D}:Erro ao definir lista de recursos da profissão: {chaveProfissao}.')
+    print(f'{D}: Dicionário trabalho:')
+    for atributo in dicionarioTrabalho:
+        print(f'{D}: {atributo} = {dicionarioTrabalho[atributo]}.')
+    linhaSeparacao()
     return dicionarioTrabalho
 
 def retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum):
@@ -3491,8 +3498,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
-        # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-        #     continue
+        while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+            continue
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
