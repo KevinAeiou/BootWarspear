@@ -2325,7 +2325,7 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
                     DSA[CHAVE_QUANTIDADE]=DSA[CHAVE_QUANTIDADE]*2
                     DTA[CHAVE_QUANTIDADE]=DTA[CHAVE_QUANTIDADE]*2
                 listaDicionarioTrabalhoProduzido=[DPA,DSA,DTA]
-        if tamanhoIgualZero(dicionarioTrabalhoEstoque):
+        if tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
             nomeRecurso = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoConcluido[CHAVE_NOME])
             if variavelExiste(nomeRecurso):
                 dicionarioTrabalhoEstoque[CHAVE_NIVEL] = dicionarioTrabalhoConcluido[CHAVE_NIVEL]
