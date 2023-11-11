@@ -1634,7 +1634,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                         if variavelExiste(nomeRecursoProduzido):
                                             if textoEhIgual(nomeRecursoProduzido,dicionarioRecurso[CHAVE_NOME]):
                                                 dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do aprendiz'
-                                                dicionarioTrabalho[CHAVE_RECORRENCIA] = false
+                                                dicionarioTrabalho[CHAVE_RECORRENCIA] = False
                                                 dicionarioTrabalho[CHAVE_ESTADO] = 0
                                                 print(f'{D}: Dicionario trabalho recurso faltante:')
                                                 linhaSeparacao()
