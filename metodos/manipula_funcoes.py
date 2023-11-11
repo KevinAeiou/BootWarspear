@@ -1433,8 +1433,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                 return dicionarioPersonagemAtributos
             menu = retornaMenu()
         else:
-            while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-                continue
+            # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+            #     continue
             listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
             listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
             dicionarioTrabalho = {
@@ -1603,6 +1603,10 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                     recursosNecessarios = True
                     for dicionarioRecurso in listaDicionariosRecursos:
                         dicionarioRecurso = defineQuantidadeRecursoNecessarioEstoque(dicionarioRecurso, listaDicionarioTrabalhoEstoque)
+                        if dicionarioRecurso[CHAVE_RTA]:
+                            if dicionarioRecurso[CHAVE_QUANTIDADE] <= 0:
+                                
+                                pass
                         if dicionarioRecurso[CHAVE_QUANTIDADE] > 0:
                             recursosNecessarios = False
                             print(f'{D}: Faltam {dicionarioRecurso[CHAVE_QUANTIDADE]} de {dicionarioRecurso[CHAVE_NOME]}.')
