@@ -1433,8 +1433,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                 return dicionarioPersonagemAtributos
             menu = retornaMenu()
         else:
-            # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-            #     continue
+            while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+                continue
             listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
             listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(listaDicionariosTrabalhosDesejados)
             dicionarioTrabalho = {
