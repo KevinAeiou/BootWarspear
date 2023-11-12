@@ -1434,8 +1434,8 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                 return dicionarioPersonagemAtributos
             menu = retornaMenu()
         else:
-            # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-            #     continue
+            while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+                continue
             listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
             dicionarioTrabalho = {
                 CHAVE_LISTA_DESEJO:listaDicionariosTrabalhosParaProduzirProduzindo,
@@ -1598,8 +1598,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                             print(f'{D}: {atributo} = {dicionarioRecurso[atributo]}.')
                         linhaSeparacao()
                     linhaSeparacao()
-                    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
-                    exitemRecursosSuficientes, listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, listaDicionarioTrabalhoEstoque)
+                    exitemRecursosSuficientes, listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
                     if exitemRecursosSuficientes:
                         print(f'{D}: Existem recursos suficientes para produzir: {dicionarioTrabalhoOrdenado[CHAVE_NOME]} - nível: {nivelProduzTrabalhoComum}.')
                         listaDicionarioTrabalhoComum = sorted(listaDicionarioTrabalhoComum,key=lambda dicionario:dicionario[CHAVE_QUANTIDADE])
@@ -1680,9 +1679,21 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
         print(f'{D}:Dicionário profissão priorizada vazio!')
     return confirmacao
 
-def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, listaDicionarioTrabalhoEstoque):
+def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos):
     confirmacao = True
+    contador = 0
+    tamanhoOriginalLista = len(listaDicionariosRecursos)
+    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    listaDicionarioProfissaoRecursos = retornaListaDicionarioProfissaoRecursos(1)
+    chaveProfissao = limpaRuidoTexto(listaDicionariosRecursos[0][CHAVE_PROFISSAO])
+    for dicionarioProfissaoRecursos in listaDicionarioProfissaoRecursos:
+        if chaveProfissao in dicionarioProfissaoRecursos:
+            nomeRCT = dicionarioProfissaoRecursos[chaveProfissao][2]
+            nomeRCS = dicionarioProfissaoRecursos[chaveProfissao][1]
+            nomeRCP = dicionarioProfissaoRecursos[chaveProfissao][0]
     for dicionarioRecurso in listaDicionariosRecursos:
+        if contador > tamanhoOriginalLista:
+            continue
         for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
             if textoEhIgual(dicionarioRecurso[CHAVE_NOME],dicionarioTrabalhoEstoque[CHAVE_NOME]):
                 novaQuantidade = dicionarioRecurso[CHAVE_QUANTIDADE] - dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]
@@ -1695,12 +1706,89 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, listaDicionari
                     quantidadeRPC = (dicionarioRecurso[CHAVE_QUANTIDADE] - novaQuantidade) * 3
                 elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RSC:
                     quantidadeRPC = (dicionarioRecurso[CHAVE_QUANTIDADE] - novaQuantidade) * 2
-                dicionarioRecurso[CHAVE_QUANTIDADE] = novaQuantidade
-                for dicionarioRecurso1 in listaDicionariosRecursos:
-                    if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RPC:
-                        dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - quantidadeRPC
-                        break
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RTA:
+                    quantidadeRTC = novaQuantidade
+                    for dicionarioRecurso1 in listaDicionariosRecursos:
+                        if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RTC:
+                            dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRTC
+                            quantidadeRTC = dicionarioRecurso1[CHAVE_QUANTIDADE]
+                            break
+                    else:
+                        DRCT = {
+                            CHAVE_NOME:nomeRCT,
+                            CHAVE_NIVEL:1,
+                            CHAVE_EXPERIENCIA:5,
+                            CHAVE_TIPO:CHAVE_RTC,
+                            CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
+                            CHAVE_QUANTIDADE:quantidadeRTC}
+                        listaDicionariosRecursos.append(DRCT)
+                    quantidadeRPC = (quantidadeRTC * 4) + (quantidadeRTC*3)
+                    for dicionarioRecurso1 in listaDicionariosRecursos:
+                        if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RPC:
+                            dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRPC
+                            break
+                    else:
+                        DRCP = {
+                            CHAVE_NOME:nomeRCP,
+                            CHAVE_NIVEL:1,
+                            CHAVE_EXPERIENCIA:3,
+                            CHAVE_TIPO:CHAVE_RPC,
+                            CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
+                            CHAVE_QUANTIDADE:quantidadeRPC}
+                        listaDicionariosRecursos.append(DRCP)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RSA:
+                    quantidadeRSC = novaQuantidade
+                    for dicionarioRecurso1 in listaDicionariosRecursos:
+                        if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RSC:
+                            dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRSC
+                            quantidadeRSC = dicionarioRecurso1[CHAVE_QUANTIDADE]
+                            break
+                    else:
+                        DRCS = {
+                            CHAVE_NOME:nomeRCS,
+                            CHAVE_NIVEL:1,
+                            CHAVE_EXPERIENCIA:5,
+                            CHAVE_TIPO:CHAVE_RSC,
+                            CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
+                            CHAVE_QUANTIDADE:quantidadeRSC}
+                        listaDicionariosRecursos.append(DRCS)
+                    quantidadeRPC = (quantidadeRSC * 3.5) + (quantidadeRSC*2)
+                    for dicionarioRecurso1 in listaDicionariosRecursos:
+                        if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RPC:
+                            dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRPC
+                            break
+                    else:
+                        DRCP = {
+                            CHAVE_NOME:nomeRCP,
+                            CHAVE_NIVEL:1,
+                            CHAVE_EXPERIENCIA:3,
+                            CHAVE_TIPO:CHAVE_RPC,
+                            CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
+                            CHAVE_QUANTIDADE:quantidadeRPC}
+                        listaDicionariosRecursos.append(DRCP)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RPA:
+                    quantidadeRPC = novaQuantidade * 3
+                    for dicionarioRecurso1 in listaDicionariosRecursos:
+                        if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RPC:
+                            dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRPC
+                            break
+                    else:
+                        DRCP = {
+                            CHAVE_NOME:nomeRCP,
+                            CHAVE_NIVEL:1,
+                            CHAVE_EXPERIENCIA:3,
+                            CHAVE_TIPO:CHAVE_RPC,
+                            CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
+                            CHAVE_QUANTIDADE:quantidadeRPC}
+                        listaDicionariosRecursos.append(DRCP)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RPC:
+                    dicionarioRecurso[CHAVE_QUANTIDADE] = novaQuantidade
+                    for dicionarioRecurso1 in listaDicionariosRecursos:
+                        if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RPC:
+                            dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - quantidadeRPC
+                            break
                 break
+        contador += 1
     else:
         print(f'{D}: Lista dicionários recursos depois de subtrair estoque:')
         linhaSeparacao()
