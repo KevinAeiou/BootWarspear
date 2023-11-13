@@ -492,44 +492,44 @@ def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao
 
 def defineDicionarioTrabalhoComum(dicionarioTrabalho):
     print(f'Buscando trabalho comum.')
-    contadorParaBaixo=0
+    contadorParaBaixo = 0
     if not primeiraBusca(dicionarioTrabalho):
-        contadorParaBaixo=dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]
-        clickEspecifico(contadorParaBaixo,'down')
+        contadorParaBaixo = dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]
+        clickEspecifico(contadorParaBaixo, 'down')
     while not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
         if primeiraBusca(dicionarioTrabalho):
-            clicks=3
-            contadorParaBaixo=3
-            clickEspecifico(clicks,'down')
-            yinicialNome=(2*70)+285
-            nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
-        elif contadorParaBaixo==3:
-            yinicialNome=(2*70)+285
-            nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
-        elif contadorParaBaixo==4:
-            yinicialNome=(3*70)+285
-            nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(yinicialNome,1)
-        elif contadorParaBaixo>4:
-            nomeTrabalhoReconhecido=retornaNomeTrabalhoReconhecido(530,1)
+            clicks = 3
+            contadorParaBaixo = 3
+            clickEspecifico(clicks, 'down')
+            yinicialNome = (2 * 70) + 285
+            nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
+        elif contadorParaBaixo == 3:
+            yinicialNome = (2 * 70) + 285
+            nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
+        elif contadorParaBaixo == 4:
+            yinicialNome = (3 * 70) + 285
+            nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
+        elif contadorParaBaixo > 4:
+            nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(530, 1)
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_TRABALHO_COMUM_MELHORADO]:
                 print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
                 if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
-                    clickEspecifico(1,'enter')
-                    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
-                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
-                    contadorParaBaixo+=1
+                    clickEspecifico(1, 'enter')
+                    dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM] = contadorParaBaixo
+                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
+                    contadorParaBaixo += 1
                     linhaSeparacao()
                     break
             else:
                 linhaSeparacao()
-                clickEspecifico(1,'down')
-                dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]=contadorParaBaixo
-                contadorParaBaixo+=1
+                clickEspecifico(1, 'down')
+                dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM] = contadorParaBaixo
+                contadorParaBaixo += 1
         else:
             if not primeiraBusca(dicionarioTrabalho):
-                dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
+                dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
                 vaiParaMenuTrabalhoEmProducao()
                 print(f'Trabalho comum não reconhecido!')
                 linhaSeparacao()
@@ -1539,9 +1539,9 @@ def saiProfissaoVerificada(dicionarioTrabalho):
     linhaSeparacao()
 
 def buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagem):
-    dicionarioTrabalho=defineDicionarioTrabalhoComum(dicionarioTrabalho)
+    dicionarioTrabalho = defineDicionarioTrabalhoComum(dicionarioTrabalho)
     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
-        dicionarioTrabalho,dicionarioPersonagem=iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
+        dicionarioTrabalho, dicionarioPersonagem = iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
         linhaSeparacao()
     return dicionarioTrabalho,dicionarioPersonagem
 
@@ -3730,9 +3730,9 @@ def funcao_teste(dicionarioUsuario):
     dicionarioTrabalho={
         CHAVE_CONFIRMACAO:True,
         CHAVE_POSICAO_TRABALHO_COMUM:-1,
-        CHAVE_PROFISSAO:'Anéis',
+        CHAVE_PROFISSAO:'Braceletes',
         CHAVE_LISTA_TRABALHO_COMUM_MELHORADO:[trabalhoComumDesejado],
-        CHAVE_DICIONARIO_TRABALHO_DESEJADO:trabalhoComumDesejado
+        CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
         }
     dicionarioPersonagemAtributos = {
         CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
@@ -3755,7 +3755,7 @@ def funcao_teste(dicionarioUsuario):
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
-        # click_atalho_especifico('alt','tab')
+        click_atalho_especifico('alt','tab')
         # print(f'{dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]}')
         # modificaAtributoUso(dicionarioPersonagem,True)
         # retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
@@ -3773,7 +3773,8 @@ def funcao_teste(dicionarioUsuario):
         # linhaSeparacao()
         # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
         # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
-        # defineDicionarioTrabalhoComum(dicionarioTrabalho)
+        dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+        defineDicionarioTrabalhoComum(dicionarioTrabalho)
         # clone=defineCloneDicionarioTrabalho(dicionarioTrabalho)
         # for chave in clone:
         #     print(clone[chave])
