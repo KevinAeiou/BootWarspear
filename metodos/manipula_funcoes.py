@@ -452,7 +452,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
     # mostraImagem(0,frameNomeTrabalhoTratado,nomeTrabalhoReconhecido)
     if variavelExiste(nomeTrabalhoReconhecido):
         for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-            if textoReconhecidoPertenceTextoDicionario(nomeTrabalhoReconhecido,dicionarioTrabalhoDesejado):
+            if texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-1],dicionarioTrabalho[CHAVE_NOME].replace('-','')):
                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
                 print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
                 linhaSeparacao()
@@ -541,9 +541,6 @@ def vaiParaMenuTrabalhoEmProducao():
     clickContinuo(9,'up')
     clickEspecifico(1,'left')
 
-def textoReconhecidoPertenceTextoDicionario(textoReconhecido, dicionario):
-    return texto1PertenceTexto2(textoReconhecido[3:-3],dicionario[CHAVE_NOME].replace('-',''))
-
 def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
     return raridadeTrabalhoEhComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
 
@@ -560,7 +557,7 @@ def raridadeTrabalhoEhMelhorado(trabalhoListaDesejo):
     return textoEhIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'melhorado')
 
 def texto1PertenceTexto2(texto1,texto2):
-    # # print(f'{D}:{texto1} pertence a {texto2}?')
+    print(f'{D}:{texto1} pertence a {texto2}?')
     return limpaRuidoTexto(texto1)in limpaRuidoTexto(texto2)
 
 def textoEhIgual(texto1,texto2):
@@ -3710,7 +3707,7 @@ def funcao_teste(dicionarioUsuario):
         }
     trabalhoComumDesejado={
         CHAVE_ID:None,
-        CHAVE_NOME:'Licença de produção do aprendiz',
+        CHAVE_NOME:'Grande coleção de recursos avançados',
         CHAVE_EXPERIENCIA:90,
         CHAVE_NIVEL:5,
         CHAVE_RARIDADE:'raro',
@@ -3757,9 +3754,12 @@ def funcao_teste(dicionarioUsuario):
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
             # continue
+        # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+        #     continue
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
+        # click_atalho_especifico('alt','tab')
         # click_atalho_especifico('alt','tab')
         # print(f'{dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]}')
         # modificaAtributoUso(dicionarioPersonagem,True)
@@ -3778,6 +3778,8 @@ def funcao_teste(dicionarioUsuario):
         # linhaSeparacao()
         # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
         # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
+        # dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+        # defineDicionarioTrabalhoComum(dicionarioTrabalho)
         # dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
         # defineDicionarioTrabalhoComum(dicionarioTrabalho)
         # clone=defineCloneDicionarioTrabalho(dicionarioTrabalho)
