@@ -1635,6 +1635,25 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                                 if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA], 'licença de produção do aprendiz'):
                                                     dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
                                                 contadorQuantidadeRecursoProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE]
+                                        else:
+                                            if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO], dicionarioRecurso[CHAVE_PROFISSAO]):
+                                                if dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == dicionarioRecurso[CHAVE_NIVEL]:
+                                                    if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCP:
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 4
+                                                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 3
+                                                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 2
+                                                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 5
+                                                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 4
+                                                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 3
+                                                    if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA], 'licença de produção do aprendiz'):
+                                                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
+
+                                                    pass
                                     print(f'{D}: Existem {contadorQuantidadeRecursoProduzirProduzindo} unidades sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
                                     linhaSeparacao()
                                     if dicionarioRecurso[CHAVE_QUANTIDADE] - contadorQuantidadeRecursoProduzirProduzindo > 0:
