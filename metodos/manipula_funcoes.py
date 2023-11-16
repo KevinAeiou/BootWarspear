@@ -1597,7 +1597,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                     linhaSeparacao()
                     exitemRecursosSuficientes, listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
                     if exitemRecursosSuficientes:
-                        print(f'{D}: Existem recursos suficientes para produzir: {dicionarioTrabalhoOrdenado[CHAVE_NOME]} - nível: {nivelProduzTrabalhoComum}.')
+                        print(f'{D}: Existem recursos suficientes para produzir: {listaDicionarioTrabalhoComum[0][CHAVE_NOME]} - nível: {nivelProduzTrabalhoComum}.')
                         listaDicionarioTrabalhoComum = sorted(listaDicionarioTrabalhoComum,key=lambda dicionario:dicionario[CHAVE_QUANTIDADE])
                         for dicionarioTrabalhoOrdenado in listaDicionarioTrabalhoComum:
                             print(f'{D}:{dicionarioTrabalhoOrdenado[CHAVE_NOME]}.')
