@@ -452,7 +452,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
     # mostraImagem(0,frameNomeTrabalhoTratado,nomeTrabalhoReconhecido)
     if variavelExiste(nomeTrabalhoReconhecido):
         for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-            if texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-1],dicionarioTrabalho[CHAVE_NOME].replace('-','')):
+            if texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-1],dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')):
                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]=dicionarioTrabalhoDesejado
                 print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
                 linhaSeparacao()
