@@ -3286,40 +3286,40 @@ def verificaCaixaCorreio():
     return False
 
 def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
-    telaInteira=retornaAtualizacaoTela()
-    frameTela=telaInteira[231:231+50,168:168+343]
-    textoCarta=reconheceTexto(frameTela)
-    dicionarioVenda={}
-    if textoCarta!=None:
-        produto=verificaVendaProduto(textoCarta)
-        if produto!=None:
+    telaInteira = retornaAtualizacaoTela()
+    frameTela = telaInteira[231:231+50,168:168+343]
+    textoCarta = reconheceTexto(frameTela)
+    dicionarioVenda = {}
+    if variavelExiste(textoCarta):
+        produto = verificaVendaProduto(textoCarta)
+        if variavelExiste(produto):
             if produto:
                 print(f'Produto vendido:')
-                listaTextoCarta=textoCarta.split()
-                quantidadeProduto=retornaQuantidadeProdutoVendido(listaTextoCarta)
+                listaTextoCarta = textoCarta.split()
+                quantidadeProduto = retornaQuantidadeProdutoVendido(listaTextoCarta)
                 # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
-                frameTela=telaInteira[415:415+30,250:250+260]
-                frameTelaTratado=retornaImagemCinza(frameTela)
-                frameTelaTratado=retornaImagemBinarizada(frameTelaTratado)
-                ouro=reconhece_digito(frameTelaTratado)
-                ouro=re.sub('[^0-9]','',ouro)
+                frameTela = telaInteira[415:415+30,250:250+260]
+                frameTelaTratado = retornaImagemCinza(frameTela)
+                frameTelaTratado = retornaImagemBinarizada(frameTelaTratado)
+                ouro = reconhece_digito(frameTelaTratado)
+                ouro = re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
-                    ouro=int(ouro)
-                dataAtual=str(datetime.date.today())
-                listaTextoCarta=' '.join(listaTextoCarta)
-                dicionarioVenda={CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
+                    ouro = int(ouro)
+                dataAtual = str(datetime.date.today())
+                listaTextoCarta = ' '.join(listaTextoCarta)
+                dicionarioVenda = {CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
                                  'nomeProduto':listaTextoCarta,
                                  'quantidadeProduto':quantidadeProduto,
                                  'valorProduto':ouro,
                                  'dataVenda':dataAtual}
-                adicionaVenda(dicionarioPersonagemAtributos,dicionarioVenda)
+                adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
                 # print(dicionarioVenda)
                 linhaSeparacao()
             else:
                 print(f'Produto expirado:')
-                removerPalavras=['a','oferta','de','expirou']
+                removerPalavras = ['a','oferta','de','expirou']
                 # print(textoCarta)
-                listaTextoCarta=textoCarta.split()
+                listaTextoCarta = textoCarta.split()
                 result = [palavra for palavra in listaTextoCarta if palavra.lower() not in removerPalavras]
                 # print(result)
                 retorno = ' '.join(result)
@@ -3353,20 +3353,29 @@ def verificaVendaProduto(texto):
 
 def recuperaCorrespondencia(dicionarioPersonagemAtributos):
     while verificaCaixaCorreio():
-        clickEspecifico(1,'enter')
-        dicionarioVenda=retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)
-        if not tamanhoIgualZero(dicionarioVenda):
-            listaDicionarioTrabalhoEstoque=retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
-            for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
-                if texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME],dicionarioVenda['nomeProduto']):
-                    novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]-1
-                    caminhoRequisicao=f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-                    dados={CHAVE_QUANTIDADE:novaQuantidade}
-                    modificaAtributo(caminhoRequisicao,dados)
+        clickEspecifico(1, 'enter')
+        dicionarioVenda = retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)
+        atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
         clickEspecifico(1,'f2')
     else:
         print(f'Caixa de correio vazia!')
-        clickMouseEsquerdo(1,2,35)
+        clickMouseEsquerdo(1, 2, 35)
+        linhaSeparacao()
+
+def atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda):
+    if not tamanhoIgualZero(dicionarioVenda):
+        listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+        for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
+            if (texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME], dicionarioVenda['nomeProduto']) and
+                    textoEhIgual(dicionarioVenda['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME])):
+                novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - 1
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                modificaAtributo(caminhoRequisicao, dados)
+                print(f'{D}: Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
+                break
+        else:
+            print(f'{D}: Trabalho vendido não encontrado no estoque.')
         linhaSeparacao()
 
 def existePixelCorrespondencia():
@@ -3790,6 +3799,13 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
         CHAVE_DICIONARIO_PERSONAGEM_EM_USO:dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO],
         CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
+    dicionarioVenda = {
+        CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
+        'nomeProduto':'Vendeu Faixa das llusões Cativantes1 un por 5999 de ouro',
+        'quantidadeProduto':1,
+        'valorProduto':5000,
+        'dataVenda':'00-00-00'
+        }
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
     while not textoEhIgual(input(f'Continuar?'),'n'):
@@ -3799,11 +3815,12 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
         # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
-        while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-            continue
+        # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+        #     continue
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
