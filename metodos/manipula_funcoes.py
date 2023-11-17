@@ -1640,6 +1640,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                                 if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO], dicionarioRecurso[CHAVE_PROFISSAO]):
                                                     if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_RARIDADE],'raro'):
                                                         if trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzirProduzindo):
+                                                            nivelProducao = 0
                                                             if dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == 3:
                                                                 nivelProducao = 1
                                                             elif dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == 10:
