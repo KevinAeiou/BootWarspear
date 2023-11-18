@@ -1622,6 +1622,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                     listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
                                     contadorQuantidadeRecursoProduzirProduzindo = 0
                                     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
+                                        
                                         nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME])
                                         if variavelExiste(nomeRecursoProduzido):
                                             if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
@@ -2411,7 +2412,7 @@ def naoEstiverMenuProduzir(menu):
     return menu!=menu_produzir
 
 def erroEncontrado(erro):
-    return erro!=0
+    return erro != 0
 
 def vaiParaMenuCorrespondencia():
     clickEspecifico(1,'f2')
@@ -2674,46 +2675,51 @@ def trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
     return CHAVE_EXPERIENCIA in dicionarioTrabalho
 
 def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
-    dicionarioTrabalho={}
-    telaInteira=retornaAtualizacaoTela()
-    frameNomeTrabalho=telaInteira[285:285+37, 233:486]
-    if verificaErro(None)==0:
-        nomeTrabalhoConcluido=reconheceTexto(frameNomeTrabalho)
-        clickEspecifico(1,'down')
-        clickEspecifico(1,'f2')
+    dicionarioTrabalho = {}
+    telaInteira = retornaAtualizacaoTela()
+    frameNomeTrabalho = telaInteira[285:285+37, 233:486]
+    erro = verificaErro(None)
+    if not erroEncontrado(erro):
+        nomeTrabalhoConcluido = reconheceTexto(frameNomeTrabalho)
+        clickEspecifico(1, 'down')
+        clickEspecifico(1, 'f2')
         # # print(f'{D}:Trabalho concluido reconhecido: {nomeTrabalhoConcluido}.')
         if variavelExiste(nomeTrabalhoConcluido):
-            if verificaErro(None)==0:
+            erro = verificaErro(None)
+            if not erroEncontrado(erro):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
-                    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=True
-                listaDicionarioTrabalhoDesejado=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
+                    dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
+                listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
-                    dicionarioTrabalho=retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalhoDesejado,produzindo)
+                    dicionarioTrabalho = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalhoDesejado,produzindo)
                 if tamanhoIgualZero(dicionarioTrabalho):
-                    listaDicionarioTrabalho=retornaListaDicionariosTrabalhos()
+                    listaDicionarioTrabalho = retornaListaDicionariosTrabalhos()
                     if not tamanhoIgualZero(listaDicionarioTrabalho):
                         for dicionarioTrabalho in listaDicionarioTrabalho:
-                            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],dicionarioTrabalho[CHAVE_NOME]):
-                                dicionarioTrabalho[CHAVE_LICENCA]='Licença de produção do principiante'
-                                dicionarioTrabalho[CHAVE_ESTADO]=concluido
-                                dicionarioTrabalho[CHAVE_RECORRENCIA]=False
+                            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
+                                dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do principiante'
+                                dicionarioTrabalho[CHAVE_ESTADO] = concluido
+                                dicionarioTrabalho[CHAVE_RECORRENCIA] = False
                                 break
-                clickContinuo(3,'up')
+                clickContinuo(3, 'up')
                 linhaSeparacao()
             else:
-                dicionarioPersonagem[CHAVE_ESPACO_BOLSA]=False
-                clickContinuo(1,'up')
-                clickEspecifico(1,'left')
-    return dicionarioPersonagem,dicionarioTrabalho
+                dicionarioPersonagem[CHAVE_ESPACO_BOLSA] = False
+                clickContinuo(1, 'up')
+                clickEspecifico(1, 'left')
+    return dicionarioPersonagem, dicionarioTrabalho
 
-def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalho,estado):
-    dicionarioTrabalho={}
+def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalho, estado):
+    dicionarioTrabalho = {}
     for trabalho in listaDicionarioTrabalho:
-        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1],trabalho[CHAVE_NOME])and
-            trabalho[CHAVE_ESTADO]==estado):
+        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], trabalho[CHAVE_NOME]) and
+            trabalho[CHAVE_ESTADO] == estado):
             print(f'{trabalho[CHAVE_NOME]} recuperado.')
-            dicionarioTrabalho=trabalho
+            dicionarioTrabalho = trabalho
             break
+    else:
+        print(f'{D}: Dicionário trabalho concluído não encontrado na lista de trabalhos em produção.')
+    linhaSeparacao()
     return dicionarioTrabalho
 
 def trataErros(dicionarioTrabalho,dicionarioPersonagem):
