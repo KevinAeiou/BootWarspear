@@ -611,7 +611,7 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
         'adquirirfuradordoaprendiz','produzindotecidodelicado','extraçãodesubstânciainstável',
         'adquirirfuradordoprincipiante','produzindotecidodenso','extraçãodesubstânciaestável',
         'recebendofibradebronze','recebendoprata','recebendoinsígniadeestudante',
-        'recebendofibradeplatina','recebendoâmbar','recebendodistinticodeaprendiz']
+        'recebendofibradeplatina','recebendoâmbar','recebendodistintivodeaprendiz']
     for recurso in listaProducaoRecurso:
         if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME]):
             confirmacao=True
@@ -3778,11 +3778,11 @@ def funcao_teste(dicionarioUsuario):
 
     dicionarioTrabalhoConcluido = {
         CHAVE_ID:None,
-        CHAVE_NOME:'Extração de substância estável',
+        CHAVE_NOME:'Recebendo Distintivo de Aprendiz',
         CHAVE_EXPERIENCIA:130,
         CHAVE_NIVEL:8,
         CHAVE_RARIDADE:'Avançado',
-        CHAVE_PROFISSAO:'Mantos',
+        CHAVE_PROFISSAO:'Braceletes',
         CHAVE_RECORRENCIA:False,
         CHAVE_LICENCA:'Licença de produção do principiante',
         CHAVE_ESTADO:0
@@ -3815,8 +3815,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
-        atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
-        # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
+        # atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
+        retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
         # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
