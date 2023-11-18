@@ -1454,7 +1454,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
                         if not tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]):
                             dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
-                            if not textoEhIgual(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE],'comum'):
+                            if primeiroTrabalhoDaListaEhRaroOuEspecial(dicionarioTrabalho):
                                 dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL] = 0
                                 for trabalhoPriorizado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
                                     if textoEhIgual(trabalhoPriorizado[CHAVE_RARIDADE],'raro') or textoEhIgual(trabalhoPriorizado[CHAVE_RARIDADE],'especial'):
@@ -1490,8 +1490,6 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                                             dicionarioTrabalho,dicionarioPersonagemAtributos = buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                             if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                                                 break
-                                # if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                                #     break
                             else:
                                 dicionarioTrabalho,dicionarioPersonagemAtributos = buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagemAtributos)
                                 if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
@@ -1514,7 +1512,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                             time.sleep(1.5)
                 else:
                     if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
-                        dicionarioPersonagemAtributos=atualizaListaProfissao(dicionarioPersonagemAtributos)
+                        dicionarioPersonagemAtributos = atualizaListaProfissao(dicionarioPersonagemAtributos)
                     print(f'Fim da lista de profissões...')
                     linhaSeparacao()
             else:
@@ -1526,6 +1524,16 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
     elif existeOutraConexao(erro):
         dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO] = False
     return dicionarioPersonagemAtributos
+
+def primeiroTrabalhoDaListaEhRaroOuEspecial(dicionarioTrabalho):
+    return (not primeiroTrabalhoDaListaEhComum(dicionarioTrabalho) or
+            not primeiroTrabalhoDaListaEhMelhorado(dicionarioTrabalho))
+
+def primeiroTrabalhoDaListaEhMelhorado(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE],'melhorado')
+
+def primeiroTrabalhoDaListaEhComum(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE],'comum')
 
 def saiProfissaoVerificada(dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
