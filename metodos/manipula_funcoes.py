@@ -2723,9 +2723,6 @@ def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
                 linhaSeparacao()
             elif not trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está desligada.')
-                ehLicencaPrincipiante = textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
-                if ehLicencaPrincipiante:
-                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*1.5)
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_ID]}/.json'
                 dados = {CHAVE_ESTADO:1,
                          CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]}
@@ -2795,9 +2792,6 @@ def defineCloneDicionarioTrabalho(dicionarioTrabalho):
         CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RARIDADE],
         CHAVE_RECORRENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA],
         CHAVE_LICENCA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA]}
-    ehLicencaPrincipiante = textoEhIgual(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_LICENCA],'licencadeproducaodoprincipiante')
-    if ehLicencaPrincipiante:
-        cloneDicionarioTrabalho[CHAVE_EXPERIENCIA]=int(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]*1.5)
     return cloneDicionarioTrabalho
 
 def trabalhoERecorrente(dicionarioTrabalho):
