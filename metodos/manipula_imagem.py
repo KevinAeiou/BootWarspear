@@ -475,28 +475,33 @@ def temporario2():
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
             break
 
-# def verificaReferenciaTela(referencia_anterior1):
-def verificaReferenciaTela(referenciaAnterior1,referenciaAnterior2):
-    referencia1, referencia2 = retornaReferencias() 
-    histogramaReferencia1 = retornaHistograma(referencia1)
+def verificaReferenciaTela(referenciaAnterior1, referenciaAnterior2):
+    referenciaAtual1, referenciaAtual2 = retornaReferencias() 
+    histogramaReferenciaAtual1 = retornaHistograma(referenciaAtual1)
     histogramaReferenciaAnterior1 = retornaHistograma(referenciaAnterior1)
-    histogramaReferencia2 = retornaHistograma(referencia2)
+    histogramaReferenciaAtual2 = retornaHistograma(referenciaAtual2)
     histogramaReferenciaAnterior2 = retornaHistograma(referenciaAnterior2)
-    comparacaoHistogramas1 = retornaComparacaoHistogramas(histogramaReferencia1,histogramaReferenciaAnterior1)
-    comparacaoHistogramas2 = retornaComparacaoHistogramas(histogramaReferencia2,histogramaReferenciaAnterior2)
-    # if comparacaoHistogramas1 != 0:
-    if comparacaoHistogramas1!=0 and comparacaoHistogramas2!=0:
-        print(f'Referencias não comferem.')
-        return False
+    comparacaoHistogramas1 = retornaComparacaoHistogramas(histogramaReferenciaAtual1, histogramaReferenciaAnterior1)
+    comparacaoHistogramas2 = retornaComparacaoHistogramas(histogramaReferenciaAtual2, histogramaReferenciaAnterior2)
+    if comparacaoHistogramas1 != 0:
+        print(f'{D}: Referência 1 não confere!')
+        if comparacaoHistogramas2 != 0:
+            print(f'{D}: Referência 2 não confere!')
+            print(f'Referencias não comferem.')
+            return False
     return True
 
 def retornaReferencias():
     screenshot = tiraScreenshot()
-    tela_inteira = retornaImagemColorida(screenshot)
-    largura_tela = tela_inteira.shape[1]
-    frame_referencia1 = tela_inteira[705-50:705,0:50]
-    frame_referencia2 = tela_inteira[500:550,0:50]
-    return frame_referencia1, frame_referencia2
+    telaInteira = retornaImagemColorida(screenshot)
+    alturaTela = telaInteira.shape[0]
+    larguraTela = telaInteira.shape[1]
+    frameReferencia1 = telaInteira[170:170+50, 0:50]
+    frameReferencia2 = telaInteira[alturaTela - 170:alturaTela - 170 + 50, 0:50]
+    frameConcatenado = retornaImagemConcatenada(frameReferencia1, frameReferencia2)
+    # frameConcatenado = retornaImagemRedimensionada(frameConcatenado, 4)
+    # mostraImagem(0, frameConcatenado, None)
+    return frameReferencia1, frameReferencia2
 
 if __name__=='__main__':
     encontraPersonagem()

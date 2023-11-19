@@ -147,17 +147,6 @@ def ehMaisQueQuartaVerificacao(x):
 def ehQuartaVerificacao(x):
     return x==4
 
-def retornaReferencias():
-    telaInteira = retornaAtualizacaoTela()
-    larguraTela = telaInteira.shape[1]
-    alturaTela = telaInteira.shape[0]
-    frameReferencia1 = telaInteira[170:170+50, 0:50]
-    frameReferencia2 = telaInteira[alturaTela - 150:alturaTela - 50, 0:50]
-    frameConcatenado = retornaImagemConcatenada(frameReferencia1, frameReferencia2)
-    frameConcatenado = retornaImagemRedimensionada(frameConcatenado, 4)
-    mostraImagem(0, frameConcatenado, None)
-    return frameReferencia1, frameReferencia2
-
 def pega_centro(x, y, largura, altura):
     """
     :param x: x do objeto
@@ -195,26 +184,25 @@ def defineNovoTrabalho(raridade,profissao,nivel):
             linhaSeparacao()
         confirmacao=input(f'Cadastra novo trabalho:(S/N)?')
 
-def detecta_movimento():
+def detectaMovimento():
     detec = []
     print(f'Atualizou o background.')
-    backgroud=retornaBackGround()
-    referencia_anterior1, referencia_anterior2 = retornaReferencias()
+    backgroud = retornaBackGround()
+    referenciaAnterior1, referenciaAnterior2 = retornaReferencias()
     while True:
-        if not verificaReferenciaTela(referencia_anterior1):
-        # if not verifica_referencia_tela(referencia_anterior1,referencia_anterior2):
+        if not verificaReferenciaTela(referenciaAnterior1, referenciaAnterior2):
             print(f'Atualizou o background.')
-            backgroud=retornaBackGround()
-        tela_inteira = retornaAtualizacaoTela()
-        altura_tela = tela_inteira.shape[0]
-        frame_tela = tela_inteira[0:altura_tela,0:674]
-        frame_tela = cv2.resize(frame_tela,(0,0),fx=0.9,fy=0.9)
-        frame_tela_cinza = cv2.cvtColor(frame_tela,cv2.COLOR_BGR2GRAY)
-        frame_tela_borado = cv2.GaussianBlur(frame_tela_cinza,(3,3),5)
-        bg_frame = backgroud.apply(frame_tela_borado)
-        frame_tela_dilatado = cv2.dilate(bg_frame,np.ones((5,5)))
+            backgroud = retornaBackGround()
+        telaInteira = retornaAtualizacaoTela()
+        alturaTela = telaInteira.shape[0]
+        frameTela = telaInteira[0:alturaTela,0:674]
+        frameTela = cv2.resize(frameTela,(0,0),fx=0.9,fy=0.9)
+        frameTelaCinza = cv2.cvtColor(frameTela,cv2.COLOR_BGR2GRAY)
+        frameTelaBorado = cv2.GaussianBlur(frameTelaCinza,(3,3),5)
+        bgFrame = backgroud.apply(frameTelaBorado)
+        frameTelaDilatado = cv2.dilate(bgFrame,np.ones((5,5)))
         nucleo = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
-        dilatado = cv2.morphologyEx(frame_tela_dilatado,cv2.MORPH_CLOSE,nucleo)
+        dilatado = cv2.morphologyEx(frameTelaDilatado,cv2.MORPH_CLOSE,nucleo)
 
         contorno, imagem = cv2.findContours(dilatado, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         for (i, c) in enumerate(contorno):
@@ -222,18 +210,17 @@ def detecta_movimento():
             validar_contorno = (w >= 40) and (h >= 40)
             if not validar_contorno:
                 continue
-            cv2.rectangle(frame_tela, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(frameTela, (x, y), (x + w, y + h), (0, 255, 0), 2)
             centro = pega_centro(x, y, w, h)
             detec.append(centro)
-            cv2.circle(frame_tela, centro, 4, (0, 0, 255), -1)
-        #Clicar no centro do objeto em movimento
+            cv2.circle(frameTela, centro, 4, (0, 0, 255), -1)
 
-        referencia_anterior1, referencia_anterior2 = retornaReferencias()
+        referenciaAnterior1, referenciaAnterior2 = retornaReferencias()
         cv2.imshow('Teste',dilatado)
-        cv2.imshow('Teste2',frame_tela)
+        cv2.imshow('Teste2',frameTela)
         print(centro)
         # clickMouseEsquerdo(1,centro[0],centro[1])
-        frame_nome_objeto = frame_tela[32:32+30,frame_tela.shape[1]-164:frame_tela.shape[1]]
+        frame_nome_objeto = frameTela[32:32+30,frameTela.shape[1]-164:frameTela.shape[1]]
         # nome_objeto_reconhecido=reconheceTexto(frame_nome_objeto)
         # print(f'Nome reconhecido: {nome_objeto_reconhecido}')
         if cv2.waitKey(1) == 27:
@@ -241,59 +228,6 @@ def detecta_movimento():
         time.sleep(0.3)
     cv2.destroyAllWindows()
 
-def detecta_movimento_teste():
-    detec = []
-    lista = []
-    x=0
-    print(f'Atualizou o background.')
-    backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
-    referencia_anterior1, referencia_anterior2 = retornaReferencias()    
-    while True:
-        if not verificaReferenciaTela(referencia_anterior1):
-            backgroud = cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=255,detectShadows=False)
-        tela_inteira = retornaAtualizacaoTela()
-        altura_tela = tela_inteira.shape[0]
-        frame_tela = tela_inteira[0:altura_tela,0:674]
-        #frame_tela = cv2.resize(frame_tela,(0,0),fx=0.9,fy=0.9)
-        frame_tela_cinza = cv2.cvtColor(frame_tela,cv2.COLOR_BGR2GRAY)
-        frame_tela_borado = cv2.GaussianBlur(frame_tela_cinza,(3,3),5)
-        bg_frame = backgroud.apply(frame_tela_borado)
-        frame_tela_dilatado = cv2.dilate(bg_frame,np.ones((5,5)))
-        nucleo = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
-        dilatado = cv2.morphologyEx(frame_tela_dilatado,cv2.MORPH_CLOSE,nucleo)
-
-        contorno, imagem = cv2.findContours(dilatado, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        for (i, c) in enumerate(contorno):
-            (x, y, largura_objeto, altura_objeto) = cv2.boundingRect(c)
-            validar_contorno = ((largura_objeto >= 42) and (altura_objeto >= 42))and((largura_objeto <= 90) and (altura_objeto <= 90))
-            if not validar_contorno:
-                continue
-            cv2.rectangle(frame_tela, (x, y), (x + largura_objeto, y + altura_objeto), (0, 255, 0), 2)
-            centro_objeto = pega_centro(x, y, largura_objeto, altura_objeto)
-            detec.append(centro_objeto)
-            cv2.circle(frame_tela, centro_objeto, 4, (0, 0, 255), -1)
-        if len(detec)>0:
-            largura_tela = tela_inteira.shape[1]
-            raio_posicao = largura_tela/56
-            ajuste_y = x+altura_objeto-int(raio_posicao)
-            #click_mouse_esquerdo(1,centro_objeto[0],ajuste_y)
-            tela_inteira = retornaAtualizacaoTela()
-            nome_objeto_reconhecido=retorna_nome_inimigo(tela_inteira)
-            if nome_objeto_reconhecido!=None:
-                print(nome_objeto_reconhecido)
-                lista.append(nome_objeto_reconhecido)
-            # while verifica_lista_inimigo(nome_objeto_reconhecido):
-            #     tela_inteira=retorna_atualizacao_tela()
-            #     nome_objeto_reconhecido=retorna_nome_inimigo(tela_inteira)
-            #     verifica_lista_inimigo(nome_objeto_reconhecido)
-        cv2.imshow('Teste',frame_tela)
-        if cv2.waitKey(5)==27:
-            break
-        referencia_anterior1, referencia_anterior2 = retornaReferencias()
-        x+=1
-    cv2.destroyAllWindows()
-    print(lista)
-#modificado 16/01
 def mostraLista(listaDicionarios):
     x=1
     for dicionario in listaDicionarios:
@@ -3833,8 +3767,10 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        # retornaReferencias()
+        detectaMovimento()
         # atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
-        retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
+        # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
         # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
