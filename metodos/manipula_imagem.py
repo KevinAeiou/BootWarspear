@@ -111,7 +111,7 @@ def retornaImagemCinza(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2GRAY)
     return imagem
 
-def retorna_imagem_concatenada(imagem,imagem2):
+def retornaImagemConcatenada(imagem,imagem2):
     imagem_concatenada = cv2.vconcat([imagem,imagem2])
     return imagem_concatenada
 
@@ -159,7 +159,7 @@ def retorna_modelo_nivel_tratado(modelo_original):
                     modelo_tratado[altura,largura] = (255,255,255)
     return modelo_tratado
 
-def retorna_imagem_redimensionada(imagem_original,porcentagem):
+def retornaImagemRedimensionada(imagem_original,porcentagem):
     imagem_original = cv2.cvtColor(np.array(imagem_original), cv2.COLOR_RGB2BGR)
     largura = imagem_original.shape[1]
     altura = imagem_original.shape[0]
@@ -469,7 +469,7 @@ def temporario2():
             x,y,l,a=cv2.boundingRect(cnt)
             cv2.rectangle(imagemCinza,(x,y),(x+l,y+a),(0,255,0),2)
 
-        concatenada=retorna_imagem_concatenada(imagemCinza,imagemPreProcessada)
+        concatenada=retornaImagemConcatenada(imagemCinza,imagemPreProcessada)
         mostraImagem(0,concatenada,None)
         # mostraImagem(0,imagemPreProcessada,None)
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 

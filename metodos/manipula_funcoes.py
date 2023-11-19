@@ -148,11 +148,15 @@ def ehQuartaVerificacao(x):
     return x==4
 
 def retornaReferencias():
-    tela_inteira = retornaAtualizacaoTela()
-    largura_tela = tela_inteira.shape[1]
-    frame_referencia1 = tela_inteira[705-50:705,0:50]
-    frame_referencia2 = tela_inteira[705-50:705,largura_tela-50:largura_tela]
-    return frame_referencia1, frame_referencia2
+    telaInteira = retornaAtualizacaoTela()
+    larguraTela = telaInteira.shape[1]
+    alturaTela = telaInteira.shape[0]
+    frameReferencia1 = telaInteira[170:170+50, 0:50]
+    frameReferencia2 = telaInteira[alturaTela - 150:alturaTela - 50, 0:50]
+    frameConcatenado = retornaImagemConcatenada(frameReferencia1, frameReferencia2)
+    frameConcatenado = retornaImagemRedimensionada(frameConcatenado, 4)
+    mostraImagem(0, frameConcatenado, None)
+    return frameReferencia1, frameReferencia2
 
 def pega_centro(x, y, largura, altura):
     """
