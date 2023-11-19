@@ -1378,7 +1378,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
             if not tamanhoIgualZero(listaDicionariosTrabalhosParaProduzirProduzindo):#verifica se a lista está vazia
                 dicionarioPersonagemAtributos = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
                 for profissaoVerificada in dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
-                    if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
+                    if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
                         continue
                     if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
                         dicionarioPersonagemAtributos = atualizaListaProfissao(dicionarioPersonagemAtributos)
