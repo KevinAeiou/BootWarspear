@@ -305,28 +305,28 @@ def retornaEstadoTrabalho():
     linhaSeparacao()
     return estadoTrabalho
 
-def verificaLicenca(dicionarioTrabalho,dicionarioPersonagem):
-    confirmacao=False
+def verificaLicenca(dicionarioTrabalho, dicionarioPersonagem):
+    confirmacao = False
     if variavelExiste(dicionarioTrabalho):
         print(f"Buscando: {dicionarioTrabalho[CHAVE_LICENCA]}")
         linhaSeparacao()
-        textoReconhecido=retornaLicencaReconhecida()
+        textoReconhecido = retornaLicencaReconhecida()
         if variavelExiste(textoReconhecido) and variavelExiste(dicionarioTrabalho[CHAVE_LICENCA]):
             print(f'Licença reconhecida: {textoReconhecido}.')
             linhaSeparacao()
-            if not texto1PertenceTexto2('licençasdeproduçao',textoReconhecido):
-                primeiraBusca=True
-                listaCiclo=[]
-                while not texto1PertenceTexto2(textoReconhecido,dicionarioTrabalho[CHAVE_LICENCA]):
-                    primeiraBusca=False
-                    clickEspecifico(1,"right")
+            if not texto1PertenceTexto2('licençasdeproduçao', textoReconhecido):
+                primeiraBusca = True
+                listaCiclo = []
+                while not texto1PertenceTexto2(textoReconhecido, dicionarioTrabalho[CHAVE_LICENCA]):
+                    primeiraBusca = False
+                    clickEspecifico(1, "right")
                     listaCiclo.append(textoReconhecido)
-                    textoReconhecido=retornaLicencaReconhecida()
+                    textoReconhecido = retornaLicencaReconhecida()
                     if variavelExiste(textoReconhecido):
                         print(f'Licença reconhecida: {textoReconhecido}.')
                         linhaSeparacao()
-                        if texto1PertenceTexto2('nenhumitem',textoReconhecido):
-                            dicionarioTrabalho[CHAVE_LICENCA]='Licença de produção do iniciante'
+                        if texto1PertenceTexto2('nenhumitem', textoReconhecido) or len(listaCiclo) > 10:
+                            dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do iniciante'
                             print(f'Licença para trabalho agora é: {dicionarioTrabalho[CHAVE_LICENCA]}.')
                             linhaSeparacao()
                     else:
@@ -335,20 +335,20 @@ def verificaLicenca(dicionarioTrabalho,dicionarioPersonagem):
                         break
                 else:#se encontrou a licença buscada
                     if primeiraBusca:
-                        clickEspecifico(1,"f1")
+                        clickEspecifico(1, "f1")
                     else:
-                        clickEspecifico(1,"f2")
-                    confirmacao=True
+                        clickEspecifico(1, "f2")
+                    confirmacao = True
             else:
                 print(f'Sem licenças de produção...')
-                clickEspecifico(1,'f1')
-                listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
-                modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESTADO,False)
+                clickEspecifico(1, 'f1')
+                listaPersonagem = [dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
+                modificaAtributoPersonagem(dicionarioPersonagem, listaPersonagem, CHAVE_ESTADO, False)
                 linhaSeparacao()
         else:
             print(f'Erro ao reconhecer licença!')
             linhaSeparacao()
-    return confirmacao,dicionarioTrabalho
+    return confirmacao, dicionarioTrabalho
 
 def retornaLicencaReconhecida():
     licencaRetornada=None
