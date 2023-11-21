@@ -326,9 +326,12 @@ def verificaLicenca(dicionarioTrabalho, dicionarioPersonagem):
                         print(f'Licença reconhecida: {textoReconhecido}.')
                         linhaSeparacao()
                         if texto1PertenceTexto2('nenhumitem', textoReconhecido) or len(listaCiclo) > 10:
+                            if textoEhIgual(dicionarioTrabalho[CHAVE_LICENCA], 'Licença de produção do iniciante'):
+                                break
                             dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do iniciante'
                             print(f'Licença para trabalho agora é: {dicionarioTrabalho[CHAVE_LICENCA]}.')
                             linhaSeparacao()
+                            listaCiclo = []
                     else:
                         print(f'Erro ao reconhecer licença!')
                         linhaSeparacao()
