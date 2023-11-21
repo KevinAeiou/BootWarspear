@@ -846,8 +846,9 @@ def passa_proxima_posicao():
     yfinal = yfinal+altura_frame
 
 def entraPersonagemAtivo(dicionarioPersonagem):
-    contadorPersonagem=0
-    if retornaMenu() == menu_jogar:
+    contadorPersonagem = 0
+    menu = retornaMenu()
+    if menu == menu_jogar:
         print(f'Buscando personagem ativo...')
         clickEspecifico(1,'enter')
         time.sleep(1)
@@ -899,6 +900,8 @@ def entraPersonagemAtivo(dicionarioPersonagem):
                 linhaSeparacao()
                 if retornaMenu()==menu_escolha_p:
                     clickEspecifico(1,'f1')
+    elif menu == menu_inicial:
+        deslogaPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL], dicionarioPersonagem)
     else:
         clickMouseEsquerdo(1,2,35)
     return dicionarioPersonagem
@@ -986,28 +989,25 @@ def iniciaProcessoBusca(dicionarioUsuario):
                 dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
                 print('Inicia busca...')
                 linhaSeparacao()
-                dicionarioPersonagemAtributos=iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
+                dicionarioPersonagemAtributos = iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
                 if dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]:
                     if haMaisQueUmPersonagemAtivo(dicionarioPersonagemAtributos):
                         clickMouseEsquerdo(1,2,35)
-                        deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL],dicionarioPersonagemAtributos)
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
-                    dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
+                    dicionarioPersonagemAtributos = retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
                 else:
                     modificaAtributoUso(dicionarioPersonagemAtributos,False)
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
                     dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
             else:#se o nome reconhecido não estiver na lista de ativos
                 if tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]):
-                    deslogaPersonagem(None,None)
                     if configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
-                        dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
+                        dicionarioPersonagemAtributos = entraPersonagemAtivo(dicionarioPersonagemAtributos)
                 else:
-                    # deslogaPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL],dicionarioPersonagemAtributos)
                     if textoEhIgual(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO][0][CHAVE_EMAIL]):
-                        dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
+                        dicionarioPersonagemAtributos = entraPersonagemAtivo(dicionarioPersonagemAtributos)
                     elif configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
-                        dicionarioPersonagemAtributos=entraPersonagemAtivo(dicionarioPersonagemAtributos)
+                        dicionarioPersonagemAtributos = entraPersonagemAtivo(dicionarioPersonagemAtributos)
 
 def haMaisQueUmPersonagemAtivo(dicionarioPersonagemAtributos):
     return not len(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO])==1
@@ -1213,19 +1213,19 @@ def retornaMenu():
     verificaErro(None)
     return menu_desconhecido
 
-def deslogaPersonagem(personagemEmail,dicionarioPersonagemAtributos):
-    menu=retornaMenu()
-    while menu!=menu_jogar:
-        if menu==menu_inicial:
+def deslogaPersonagem(personagemEmail, dicionarioPersonagemAtributos):
+    menu = retornaMenu()
+    while menu != menu_jogar:
+        if menu == menu_inicial:
             encerra_secao()
             break
-        elif menu==menu_jogar:
+        elif menu == menu_jogar:
             break
         else:
-            clickMouseEsquerdo(1,2,35)
-        menu=retornaMenu()
-    if personagemEmail!=None and dicionarioPersonagemAtributos!=None:
-        modificaAtributoUso(dicionarioPersonagemAtributos,False)
+            clickMouseEsquerdo(1, 2, 35)
+        menu = retornaMenu()
+    if personagemEmail != None and dicionarioPersonagemAtributos != None:
+        modificaAtributoUso(dicionarioPersonagemAtributos, False)
 
 def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
     dicionarioPersonagemAtributos=defineListaDicionarioPersonagem(dicionarioPersonagemAtributos)
@@ -1265,18 +1265,18 @@ def defineDicionarioPersonagemEmUso(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def configuraLoginPersonagem(listaDicionarioPersonagensAtivos):
-    menu=retornaMenu()
-    while menu!=menu_jogar:
-        if menu==menu_noticias or menu==menu_escolha_p:
-            clickEspecifico(1,'f1')
-        elif menu!=menu_inicial:
-            clickMouseEsquerdo(1,2,35)
+    menu = retornaMenu()
+    while menu != menu_jogar:
+        if menu == menu_noticias or menu == menu_escolha_p:
+            clickEspecifico(1, 'f1')
+        elif menu != menu_inicial:
+            clickMouseEsquerdo(1, 2, 35)
         else:
             encerra_secao()
         linhaSeparacao()
-        menu=retornaMenu()
+        menu = retornaMenu()
     else:
-        login=logaContaPersonagem(listaDicionarioPersonagensAtivos)
+        login = logaContaPersonagem(listaDicionarioPersonagensAtivos)
     return login
     
 def logaContaPersonagem(listaDicionarioPersonagensAtivos):
