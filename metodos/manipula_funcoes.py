@@ -2958,56 +2958,56 @@ def retornaNomePersonagem(posicao):
     return nome
 
 def entraPersonagem(listaPersonagemPresenteRecuperado):
-    confirmacao=False
+    confirmacao = False
     print(f'Buscando próximo personagem...')
-    clickEspecifico(1,'enter')
+    clickEspecifico(1, 'enter')
     time.sleep(1)
-    tentativas=1
-    erro=verificaErro(None)
+    tentativas = 1
+    erro = verificaErro(None)
     while erroEncontrado(erro):
-        if erro==erroConectando:
-            if tentativas>10:
-                clickEspecifico(2,'enter')
+        if erro == erroConectando:
+            if tentativas > 10:
+                clickEspecifico(2, 'enter')
                 tentativas = 0
-            tentativas+=1
-        erro=verificaErro(None)
+            tentativas += 1
+        erro = verificaErro(None)
     else:
-        clickEspecifico(1,'f2')
-        if len(listaPersonagemPresenteRecuperado)==1:
-            clickContinuo(8,'left')
+        clickEspecifico(1, 'f2')
+        if len(listaPersonagemPresenteRecuperado) == 1:
+            clickContinuo(8, 'left')
         else:
-            clickEspecifico(1,'right')
-        nomePersonagem=retornaNomePersonagem(1)               
+            clickEspecifico(1, 'right')
+        nomePersonagem = retornaNomePersonagem(1)               
         while True:
-            nomePersonagemPresenteado=None
+            nomePersonagemPresenteado = None
             for nomeLista in listaPersonagemPresenteRecuperado:
-                if nomePersonagem==nomeLista and nomePersonagem!=None:
-                    nomePersonagemPresenteado=nomeLista
+                if nomePersonagem == nomeLista and nomePersonagem != None:
+                    nomePersonagemPresenteado = nomeLista
                     break
-            if nomePersonagemPresenteado!=None:
-                clickEspecifico(1,'right')
-                nomePersonagem=retornaNomePersonagem(1)
-            if nomePersonagem==None:
+            if nomePersonagemPresenteado != None:
+                clickEspecifico(1, 'right')
+                nomePersonagem = retornaNomePersonagem(1)
+            if nomePersonagem == None:
                 print(f'Fim da lista de personagens!')
                 linhaSeparacao()
-                clickEspecifico(1,'f1')
+                clickEspecifico(1, 'f1')
                 break
             else:
-                clickEspecifico(1,'f2')
+                clickEspecifico(1, 'f2')
                 time.sleep(1)
-                tentativas=1
-                erro=verificaErro(None)
+                tentativas = 1
+                erro = verificaErro(None)
                 while erroEncontrado(erro):
-                    if erro==erroReceberRecompensas:
+                    if erro == erroReceberRecompensas:
                         break
-                    elif erro==erroConectando:
-                        if tentativas>10:
-                            clickEspecifico(1,'enter')
+                    elif erro == erroConectando:
+                        if tentativas > 10:
+                            clickEspecifico(2, 'enter')
                             tentativas = 0
-                        tentativas+=1
+                        tentativas += 1
                     time.sleep(1.5)
-                    erro=verificaErro(None)
-                confirmacao=True
+                    erro = verificaErro(None)
+                confirmacao = True
                 print(f'Login efetuado com sucesso!')
                 linhaSeparacao()
                 break
