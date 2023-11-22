@@ -925,7 +925,7 @@ def defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos):
     return listaDicionarioPersonagemMesmoEmail
 
 def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
-    listaPersonagemMesmoEmail=defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos)
+    listaPersonagemMesmoEmail = defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(listaPersonagemMesmoEmail):
         for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
             if personagem[CHAVE_USO]:
@@ -933,13 +933,13 @@ def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
                 dados = {
                     CHAVE_USO:False}
                 print(f'{D}: Atributo USO de {personagem[CHAVE_NOME]} modificado para FALSO.')
-                modificaAtributo(caminhoRequisicao,dados)
+                modificaAtributo(caminhoRequisicao, dados)
         for personagemEmUso in listaPersonagemMesmoEmail:
             if personagemEmUso[CHAVE_USO] != Chave:
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{personagemEmUso[CHAVE_ID]}/.json'
                 dados = {
                     CHAVE_USO:Chave}
-                modificaAtributo(caminhoRequisicao,dados)
+                modificaAtributo(caminhoRequisicao, dados)
                 print(f'{D}: Atributo USO de {personagemEmUso[CHAVE_NOME]} modificado para VERDADEIRO.')
         linhaSeparacao()
         
@@ -972,36 +972,34 @@ def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
     return dicionarioPersonagem
 
 def iniciaProcessoBusca(dicionarioUsuario):
-    dicionarioPersonagemAtributos={CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO]}
-    dicionarioPersonagemAtributos=defineListaDicionarioPersonagem(dicionarioUsuario)
-    dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
-    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
-    # print(f'CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO: {dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]}.')
+    dicionarioPersonagemAtributos = {CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO]}
+    dicionarioPersonagemAtributos = defineListaDicionarioPersonagem(dicionarioUsuario)
+    dicionarioPersonagemAtributos = defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
+    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO] = []
     while True:
         if tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
-            # print(f'{D}:Lista de personagem ativo vazia')
-            dicionarioPersonagemAtributos=defineListaDicionarioPersonagem(dicionarioUsuario)
+            dicionarioPersonagemAtributos = defineListaDicionarioPersonagem(dicionarioUsuario)
             linhaSeparacao()
-            dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
-            dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]=[]
+            dicionarioPersonagemAtributos = defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
+            dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO] = []
         else:#se houver pelo menos um personagem ativo
-            dicionarioPersonagemAtributos=defineDicionarioPersonagemEmUso(dicionarioPersonagemAtributos)
+            dicionarioPersonagemAtributos = defineDicionarioPersonagemEmUso(dicionarioPersonagemAtributos)
             if variavelExiste(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
-                dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=True
-                dicionarioPersonagemAtributos[CHAVE_ESPACO_BOLSA]=True
-                dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
+                modificaAtributoUso(dicionarioPersonagemAtributos, True)
+                dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO] = True
+                dicionarioPersonagemAtributos[CHAVE_ESPACO_BOLSA] = True
+                dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_MODIFICADA] = False
                 print('Inicia busca...')
                 linhaSeparacao()
                 dicionarioPersonagemAtributos = iniciaBuscaTrabalho(dicionarioPersonagemAtributos)
                 if dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]:
                     if haMaisQueUmPersonagemAtivo(dicionarioPersonagemAtributos):
-                        clickMouseEsquerdo(1,2,35)
+                        clickMouseEsquerdo(1, 2, 35)
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
                     dicionarioPersonagemAtributos = retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
                 else:
-                    modificaAtributoUso(dicionarioPersonagemAtributos,False)
                     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO].append(dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO])
-                    dicionarioPersonagemAtributos=retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
+                    dicionarioPersonagemAtributos = retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos)
             else:#se o nome reconhecido não estiver na lista de ativos
                 if tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]):
                     if configuraLoginPersonagem(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
