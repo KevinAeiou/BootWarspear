@@ -938,6 +938,7 @@ def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
                     CHAVE_USO:False}
                 print(f'{D}: Atributo USO de {personagem[CHAVE_NOME]} modificado para FALSO.')
                 modificaAtributo(caminhoRequisicao, dados)
+                personagem[CHAVE_USO] = False
         for personagemEmUso in listaPersonagemMesmoEmail:
             if personagemEmUso[CHAVE_USO] != Chave:
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{personagemEmUso[CHAVE_ID]}/.json'
@@ -945,7 +946,11 @@ def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
                     CHAVE_USO:Chave}
                 modificaAtributo(caminhoRequisicao, dados)
                 print(f'{D}: Atributo USO de {personagemEmUso[CHAVE_NOME]} modificado para VERDADEIRO.')
+        for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+            if textoEhIgual(personagem[CHAVE_EMAIL], personagemEmUso[CHAVE_EMAIL]):
+                personagem[CHAVE_USO] = True
         linhaSeparacao()
+    return dicionarioPersonagemAtributos
         
 def preparaPersonagem(dicionarioUsuario):
     #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
