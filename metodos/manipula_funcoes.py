@@ -920,7 +920,7 @@ def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
 def defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos):
     listaDicionarioPersonagemMesmoEmail=[]
     for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_EMAIL]):
+        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]):
             listaDicionarioPersonagemMesmoEmail.append(dicionarioPersonagem)
     return listaDicionarioPersonagemMesmoEmail
 
