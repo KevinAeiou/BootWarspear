@@ -917,15 +917,19 @@ def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
             break
     return dicionarioPersonagem
 
-def defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos):
+def defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos, dicionarioPersonagemEmUso):
     listaDicionarioPersonagemMesmoEmail=[]
     for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL]):
+        if textoEhIgual(dicionarioPersonagem[CHAVE_EMAIL],dicionarioPersonagemEmUso[CHAVE_EMAIL]):
             listaDicionarioPersonagemMesmoEmail.append(dicionarioPersonagem)
     return listaDicionarioPersonagemMesmoEmail
 
 def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
-    listaPersonagemMesmoEmail = defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos)
+    if Chave:
+        dicionarioPersonagemEmUso = dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]
+    else:
+        dicionarioPersonagemEmUso = dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1]
+    listaPersonagemMesmoEmail = defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos, dicionarioPersonagemEmUso)
     if not tamanhoIgualZero(listaPersonagemMesmoEmail):
         for personagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
             if personagem[CHAVE_USO]:
