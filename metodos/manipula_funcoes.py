@@ -940,7 +940,7 @@ def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
                 dados = {
                     CHAVE_USO:Chave}
                 modificaAtributo(caminhoRequisicao,dados)
-                print(f'{D}: Atributo USO de {personagem[CHAVE_NOME]} modificado para VERDADEIRO.')
+                print(f'{D}: Atributo USO de {personagemEmUso[CHAVE_NOME]} modificado para VERDADEIRO.')
         linhaSeparacao()
         
 def preparaPersonagem(dicionarioUsuario):
