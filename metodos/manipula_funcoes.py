@@ -2640,7 +2640,7 @@ def trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
     return CHAVE_EXPERIENCIA in dicionarioTrabalho
 
 def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
-    dicionarioTrabalho = {}
+    dicionarioTrabalhoConcluido = {}
     telaInteira = retornaAtualizacaoTela()
     frameNomeTrabalho = telaInteira[285:285+37, 233:486]
     erro = verificaErro(None)
@@ -2656,15 +2656,16 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
                 listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
-                    dicionarioTrabalho = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalhoDesejado,produzindo)
-                if tamanhoIgualZero(dicionarioTrabalho):
-                    listaDicionarioTrabalho = retornaListaDicionariosTrabalhos()
-                    if not tamanhoIgualZero(listaDicionarioTrabalho):
-                        for dicionarioTrabalho in listaDicionarioTrabalho:
+                    dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalhoDesejado,produzindo)
+                if tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+                    if not tamanhoIgualZero(listaDicionariosTrabalhos):
+                        for dicionarioTrabalho in listaDicionariosTrabalhos:
                             if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
-                                dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do principiante'
-                                dicionarioTrabalho[CHAVE_ESTADO] = concluido
-                                dicionarioTrabalho[CHAVE_RECORRENCIA] = False
+                                dicionarioTrabalhoConcluido = dicionarioTrabalho
+                                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = 'Licença de produção do principiante'
+                                dicionarioTrabalhoConcluido[CHAVE_ESTADO] = concluido
+                                dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
                                 break
                 clickContinuo(3, 'up')
                 linhaSeparacao()
@@ -2672,7 +2673,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 dicionarioPersonagem[CHAVE_ESPACO_BOLSA] = False
                 clickContinuo(1, 'up')
                 clickEspecifico(1, 'left')
-    return dicionarioPersonagem, dicionarioTrabalho
+    return dicionarioPersonagem, dicionarioTrabalhoConcluido
 
 def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalho, estado):
     dicionarioTrabalho = {}
