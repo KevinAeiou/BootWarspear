@@ -2324,6 +2324,12 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
                 for chaveAtributo in dicionarioProfissaoPrioridade:
                     print(f'{D}:{chaveAtributo}:{dicionarioProfissao[chaveAtributo]}.')
                 break
+            elif dicionarioProfissao[CHAVE_NOME] == 'Mantos':
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'
+                dados = {
+                    CHAVE_NOME:'Capotes'
+                }
+                modificaAtributo(caminhoRequisicao, dados)
         else:
             print(f'{D}:Nenhuma profissão priorizada!')
     else:
