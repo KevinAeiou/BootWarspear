@@ -307,21 +307,35 @@ def menu(dicionarioUsuario):
             elif opcaoEstoque == 2:
                 definePrioridadeProfissao(dicionarioUsuario)
                 pass
-            elif opcaoEstoque == 3:
+            elif opcaoEstoque == 3: # Modifica atributo trabalho
                 raridade = defineRaridade()
                 if variavelExiste(raridade):
                     dicionarioProfissao = defineProfissao(dicionarioUsuario)
                     if variavelExiste(dicionarioProfissao):
                         dicionarioTrabalho = defineTrabalho(dicionarioProfissao, raridade)
                         if not tamanhoIgualZero(dicionarioTrabalho):
+                            dicionarioTrabalhoEscolhido = {
+                                CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+                                CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
+                                CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
+                                CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
                             indice = 1
-                            for atributo in dicionarioTrabalho:
-                                if atributo != CHAVE_ID:
-                                    print(f'{indice} - {atributo} : {dicionarioTrabalho[atributo]}.')
-                                    indice +=1
+                            for atributo in dicionarioTrabalhoEscolhido:
+                                print(f'{indice} - {atributo} : {dicionarioTrabalhoEscolhido[atributo]}.')
+                                indice +=1
                             print(f'0 - Voltar.')
                             linhaSeparacao()
-
+                            opcaoAtributo = input(f'Opção de atributo:')
+                            while opcaoInvalida(opcaoAtributo, len(dicionarioTrabalhoEscolhido)):
+                                print(f'Opção inválida! Selecione uma das opções.')
+                                opcaoAtributo = input(f'Sua escolha: ')
+                                linhaSeparacao()
+                            else:
+                                opcaoAtributo = int(opcaoAtributo)
+                                if opcaoAtributo != 0:
+                                    novoValorAtributo = input(f'Novo valor do atributo: ')
+                                    
+                                    pass
         elif opcaoEscolha==7:
             funcao_teste(dicionarioUsuario)
             linhaSeparacao()
@@ -330,6 +344,7 @@ def menu(dicionarioUsuario):
             for dicionarioEstoque in listaDicionarioEstoque:
                 print(f'{dicionarioEstoque[CHAVE_QUANTIDADE]} und - {dicionarioEstoque[CHAVE_NOME]}.')
                 pass
+            linhaSeparacao()
             print(f'1 - Modificar quantidade.')
             print(f'0 - Voltar.')
             opcaoEstoque = input(f'Sua escolha: ')
