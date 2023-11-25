@@ -3499,9 +3499,9 @@ def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
     return dicionarioProfissao
 
 def opcaoInvalida(opcaoLista,tamanhoMenu):
-    return not opcaoLista.isdigit() or int(opcaoLista)<0 or int(opcaoLista)>tamanhoMenu
+    return not ehValorNumerico(opcaoLista) or int(opcaoLista)<0 or int(opcaoLista)>tamanhoMenu
 
-def verifica_valor_numerico(valor):
+def ehValorNumerico(valor):
     return valor.isdigit()
 
 def verifica_valor_alfabetico(valor):

@@ -349,7 +349,7 @@ def menu(dicionarioUsuario):
                         print(f'0 - Voltar.')
                         opcaoEstoque = input(f'Sua escolha: ')
                         linhaSeparacao()
-                        while opcaoInvalida(opcaoEstoque,len(listaDicionarioEstoque)):
+                        while opcaoInvalida(opcaoEstoque, len(listaDicionarioEstoque)):
                             print(f'Opção inválida! Selecione uma das opções.')
                             opcaoEstoque = input(f'Sua escolha: ')
                             linhaSeparacao()
@@ -357,26 +357,22 @@ def menu(dicionarioUsuario):
                             opcaoEstoque = int(opcaoEstoque)
                             if opcaoEstoque != 0:
                                 dicionarioTrabalhoEscolhido = listaDicionarioEstoque[opcaoEstoque - 1]
-                                indice = 1
                                 for atributo in dicionarioTrabalhoEscolhido:
                                     if atributo != CHAVE_ID:
-                                        print(f'{indice}: {atributo} - {dicionarioTrabalhoEscolhido[atributo]}.')
-                                        indice += 1
-                                print(f'0 - Voltar.')
-                                opcaoAtributo = input(f'Sua escolha: ')
+                                        print(f'{D}: {atributo} - {dicionarioTrabalhoEscolhido[atributo]}.')
+                                novaQuantidade = input(f'Nova quantidade: ')
                                 linhaSeparacao()
-                                while opcaoInvalida(opcaoAtributo,len(dicionarioTrabalhoEscolhido) - 1):
-                                    print(f'Opção inválida! Selecione uma das opções.')
-                                    opcaoAtributo = input(f'Sua escolha: ')
+                                while not ehValorNumerico(novaQuantidade) or int(novaQuantidade) < 0:
+                                    print(f'Valor inválido!')
+                                    novaQuantidade = input(f'Nova quantidade: ')
                                     linhaSeparacao()
                                 else:
-                                    opcaoAtributo = int(opcaoAtributo)
-                                    if opcaoAtributo != 0:
-                                        chaveEscolhida = None
-                                        indice = 1
-                                        for atributo in dicionarioTrabalhoEscolhido:
-                                            
-                                            pass
+                                    novaQuantidade = int(novaQuantidade)
+                                    caminhoRequisicao = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioTrabalhoEscolhido[CHAVE_ID]}/.json'
+                                    dados = {CHAVE_QUANTIDADE: novaQuantidade}
+                                    modificaAtributo(caminhoRequisicao,dados)
+                                    print(f'Quantidade de {dicionarioTrabalhoEscolhido[CHAVE_NOME]} modificado para: {novaQuantidade}')
+                                    linhaSeparacao()
         menu(dicionarioUsuario)
     return
 
