@@ -229,10 +229,10 @@ def detectaMovimento():
     cv2.destroyAllWindows()
 
 def mostraLista(listaDicionarios):
-    x=1
+    x = 1
     for dicionario in listaDicionarios:
         print(f'{x} - {dicionario[CHAVE_NOME]}.')
-        x+=1
+        x += 1
     print(f'0 - Voltar.')
 
 def defineListaDesejo(dicionarioUsuario):

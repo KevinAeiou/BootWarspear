@@ -204,10 +204,11 @@ def mostraMenuConfiuracao():
     print(f'Configurações:')
     print(f'1 - Quantidade de personagens ativos.')
     print(f'2 - Define prioridade profissão.')
+    print(f'3 - Modifica atributo trabalho.')
     print(f'0 - Voltar.')
     opcao_configuracao = input(f'Sua escolha: ')
     linhaSeparacao()
-    while not opcao_configuracao.isdigit() or int(opcao_configuracao)<0 or int(opcao_configuracao)>2:
+    while not opcao_configuracao.isdigit() or int(opcao_configuracao) < 0 or int(opcao_configuracao) > 3:
         print(f'Opção inválida! Selecione uma das opções.')
         opcao_configuracao = input(f'Sua escolha: ')
         linhaSeparacao()
@@ -305,6 +306,21 @@ def menu(dicionarioUsuario):
             elif opcao_configuracao == 2:
                 definePrioridadeProfissao(dicionarioUsuario)
                 pass
+            elif opcao_configuracao == 3:
+                raridade = defineRaridade()
+                if variavelExiste(raridade):
+                    dicionarioProfissao = defineProfissao(dicionarioUsuario)
+                    if variavelExiste(dicionarioProfissao):
+                        dicionarioTrabalho = defineTrabalho(dicionarioProfissao, raridade)
+                        if not tamanhoIgualZero(dicionarioTrabalho):
+                            indice = 1
+                            for atributo in dicionarioTrabalho:
+                                if atributo != CHAVE_ID:
+                                    print(f'{indice} - {atributo} : {dicionarioTrabalho[atributo]}.')
+                                    indice +=1
+                            print(f'0 - Voltar.')
+                            linhaSeparacao()
+
         elif opcaoEscolha==7:
             funcao_teste(dicionarioUsuario)
             linhaSeparacao()
