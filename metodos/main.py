@@ -307,7 +307,7 @@ def menu(dicionarioUsuario):
             elif opcaoEstoque == 2:
                 definePrioridadeProfissao(dicionarioUsuario)
                 pass
-            elif opcao_configuracao == 3:
+            elif opcaoEstoque == 3:
                 raridade = defineRaridade()
                 if variavelExiste(raridade):
                     dicionarioProfissao = defineProfissao(dicionarioUsuario)

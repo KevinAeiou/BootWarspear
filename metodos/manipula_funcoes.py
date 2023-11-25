@@ -1352,6 +1352,12 @@ def retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemA
     listaDicionariosTrabalhosParaProduzirProduzindo=[]
     listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
+        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_PROFISSAO], 'mantos'):
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
+            dados = {CHAVE_PROFISSAO:'Capotes'}
+            modificaAtributo(caminhoRequisicao, dados)
+            print(f'{D}: Profissão de {dicionarioTrabalhoDesejado[CHAVE_NOME]} alterada para Capotes.')
+            linhaSeparacao()
         if trabalhoEhParaProduzir(dicionarioTrabalhoDesejado) or trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
             listaDicionariosTrabalhosParaProduzirProduzindo.append(dicionarioTrabalhoDesejado)
     # print(f'{D}: Lista de todos os trabalhos desejados:')
@@ -3781,8 +3787,15 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
+            if textoEhIgual(trabalho[CHAVE_PROFISSAO],'mantos'):
+                caminhoRequisicao = f'Lista_trabalhos/{trabalho[CHAVE_ID]}/.json'
+                dados = {CHAVE_PROFISSAO:'Capotes'}
+                modificaAtributo(caminhoRequisicao, dados)
+                print(f'{D}: Profissão de {trabalho[CHAVE_NOME]} alterada para Capotes.')
+                linhaSeparacao()
         # retornaReferencias()
-        detectaMovimento()
+        # detectaMovimento()
         # atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
         # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
