@@ -1352,7 +1352,7 @@ def retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemA
     listaDicionariosTrabalhosParaProduzirProduzindo=[]
     listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
-        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_PROFISSAO], 'mantos'): 
+        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_PROFISSAO], 'capotes'): 
             caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
             dados = {CHAVE_PROFISSAO:'Capotes'}
             modificaAtributo(caminhoRequisicao, dados)
@@ -2148,7 +2148,7 @@ def retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum):
     if nivelProduzTrabalhoComum == 1:
         listaDicionarioProfissaoRecursos=[
                 {'braceletes':['Fibra de Bronze','Prata','Pin de Estudante']},
-                {'mantos':['Furador do aprendiz','Tecido delicado','Substância intável']},
+                {'capotes':['Furador do aprendiz','Tecido delicado','Substância intável']},
                 {'amuletos':['Pinça do aprendiz','Jade bruta','Energia inicial']},
                 {'aneis':['Molde do aprendiz','Pepita de cobre','Pedra de sombras']},
                 {'armadurapesada':['Marretão do aprendiz','Placas de cobre','Anéis de bronze']},
@@ -2159,7 +2159,7 @@ def retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum):
     elif nivelProduzTrabalhoComum == 8:    
         listaDicionarioProfissaoRecursos=[
                 {'braceletes':['Fibra de Platina','Âmbarito','Pino do Aprendiz']},
-                {'mantos':['Furador do principiante','Tecido espesso','Substância estável']},
+                {'capotes':['Furador do principiante','Tecido espesso','Substância estável']},
                 {'amuletos':['Pinça do principiante','Ônix extraordinária','Éter inicial']},
                 {'aneis':['Molde do principiante','Pepita de prata','Pedra da luz']},
                 {'armadurapesada':['Marretão do principiante','Placas de ferro','Anéis de aço']},
@@ -2330,7 +2330,7 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
                 for chaveAtributo in dicionarioProfissaoPrioridade:
                     print(f'{D}:{chaveAtributo}:{dicionarioProfissao[chaveAtributo]}.')
                 break
-            elif dicionarioProfissao[CHAVE_NOME] == 'Mantos':
+            elif dicionarioProfissao[CHAVE_NOME] == 'capotes':
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'
                 dados = {
                     CHAVE_NOME:'Capotes'
@@ -3788,7 +3788,7 @@ def funcao_teste(dicionarioUsuario):
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
-            if textoEhIgual(trabalho[CHAVE_PROFISSAO],'mantos'):
+            if textoEhIgual(trabalho[CHAVE_PROFISSAO],'capotes'):
                 caminhoRequisicao = f'Lista_trabalhos/{trabalho[CHAVE_ID]}/.json'
                 dados = {CHAVE_PROFISSAO:'Capotes'}
                 modificaAtributo(caminhoRequisicao, dados)
