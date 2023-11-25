@@ -1352,8 +1352,8 @@ def retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemA
     listaDicionariosTrabalhosParaProduzirProduzindo=[]
     listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
-        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_PROFISSAO], 'mantos'):
-            caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_ID_PERSONAGEM]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
+        if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_PROFISSAO], 'mantos'): 
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
             dados = {CHAVE_PROFISSAO:'Capotes'}
             modificaAtributo(caminhoRequisicao, dados)
             print(f'{D}: Profissão de {dicionarioTrabalhoDesejado[CHAVE_NOME]} alterada para Capotes.')
