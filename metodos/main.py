@@ -312,30 +312,64 @@ def menu(dicionarioUsuario):
                 if variavelExiste(raridade):
                     dicionarioProfissao = defineProfissao(dicionarioUsuario)
                     if variavelExiste(dicionarioProfissao):
-                        dicionarioTrabalho = defineTrabalho(dicionarioProfissao, raridade)
-                        if not tamanhoIgualZero(dicionarioTrabalho):
-                            dicionarioTrabalhoEscolhido = {
-                                CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
-                                CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-                                CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
-                                CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
-                            indice = 1
-                            for atributo in dicionarioTrabalhoEscolhido:
-                                print(f'{indice} - {atributo} : {dicionarioTrabalhoEscolhido[atributo]}.')
-                                indice +=1
-                            print(f'0 - Voltar.')
-                            linhaSeparacao()
-                            opcaoAtributo = input(f'Opção de atributo:')
-                            while opcaoInvalida(opcaoAtributo, len(dicionarioTrabalhoEscolhido)):
-                                print(f'Opção inválida! Selecione uma das opções.')
-                                opcaoAtributo = input(f'Sua escolha: ')
-                                linhaSeparacao()
+                        while True:
+                            dicionarioTrabalho = defineTrabalho(dicionarioProfissao, raridade)
+                            if not tamanhoIgualZero(dicionarioTrabalho):
+                                dicionarioTrabalhoEscolhido = {
+                                    CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+                                    CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
+                                    CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
+                                    CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
+                                indice = 1
+                                while True:
+                                    for atributo in dicionarioTrabalhoEscolhido:
+                                        print(f'{indice} - {atributo} : {dicionarioTrabalhoEscolhido[atributo]}.')
+                                        indice +=1
+                                    print(f'0 - Voltar.')
+                                    linhaSeparacao()
+                                    opcaoAtributo = input(f'Opção de atributo:')
+                                    while opcaoInvalida(opcaoAtributo, len(dicionarioTrabalhoEscolhido)):
+                                        print(f'Opção inválida! Selecione uma das opções.')
+                                        opcaoAtributo = input(f'Sua escolha: ')
+                                        linhaSeparacao()
+                                    else:
+                                        opcaoAtributo = int(opcaoAtributo)
+                                        if opcaoAtributo != 0:
+                                            contador = 1
+                                            chaveAtributoEscolhido = None
+                                            for atributo in dicionarioTrabalhoEscolhido:
+                                                if contador == opcaoAtributo:
+                                                    chaveAtributoEscolhido = atributo
+                                                    tipoAtributo = type(dicionarioTrabalhoEscolhido[atributo])
+                                                    break
+                                                contador += 1
+                                            if variavelExiste(chaveAtributoEscolhido):
+                                                novoValorAtributo = input(f'Novo valor do atributo {chaveAtributoEscolhido}: ')
+                                                novoValorAtributo = tipoAtributo(novoValorAtributo)
+                                                if CHAVE_TRABALHO_NECESSARIO == chaveAtributoEscolhido:
+                                                    confirmacao = input(f'Manter trabalho: {dicionarioTrabalhoEscolhido[CHAVE_TRABALHO_NECESSARIO]}? S/N: ')
+                                                    while not ehValorAlfabetico(confirmacao):
+                                                        confirmacao = input(f'Manter trabalho: {dicionarioTrabalhoEscolhido[CHAVE_TRABALHO_NECESSARIO]}? S/N: ')
+                                                    else:
+                                                        if str(confirmacao).lower() == 's':
+                                                            novoValorAtributo = dicionarioTrabalhoEscolhido[chaveAtributoEscolhido]+ ',' + novoValorAtributo
+                                                            dados = {chaveAtributoEscolhido:novoValorAtributo}
+                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+                                                            modificaAtributo(caminhoRequisicao, dados)
+                                                        elif str(confirmacao).lower() == 'n':
+                                                            dados = {chaveAtributoEscolhido:novoValorAtributo}
+                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+                                                            modificaAtributo(caminhoRequisicao, dados)
+                                                else:
+                                                    dados = {chaveAtributoEscolhido:novoValorAtributo}
+                                                    caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+                                                    modificaAtributo(caminhoRequisicao, dados)
+                                                print(f'Valor do atributo {chaveAtributoEscolhido} modificado para {novoValorAtributo}.')
+                                                linhaSeparacao()
+                                        else:
+                                            break
                             else:
-                                opcaoAtributo = int(opcaoAtributo)
-                                if opcaoAtributo != 0:
-                                    novoValorAtributo = input(f'Novo valor do atributo: ')
-                                    
-                                    pass
+                                break
         elif opcaoEscolha==7:
             funcao_teste(dicionarioUsuario)
             linhaSeparacao()

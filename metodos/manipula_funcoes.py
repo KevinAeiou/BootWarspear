@@ -3504,7 +3504,7 @@ def opcaoInvalida(opcaoLista,tamanhoMenu):
 def ehValorNumerico(valor):
     return valor.isdigit()
 
-def verifica_valor_alfabetico(valor):
+def ehValorAlfabetico(valor):
     return valor.isalpha()
 
 def linhaSeparacao():
