@@ -320,8 +320,8 @@ def menu(dicionarioUsuario):
                                     CHAVE_RARIDADE:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_RARIDADE],
                                     CHAVE_NIVEL:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL],
                                     CHAVE_EXPERIENCIA:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_EXPERIENCIA]}
-                                indice = 1
                                 while True:
+                                    indice = 1
                                     for atributo in dicionarioTrabalhoEscolhido:
                                         print(f'{indice} - {atributo} : {dicionarioTrabalhoEscolhido[atributo]}.')
                                         indice +=1
@@ -347,23 +347,18 @@ def menu(dicionarioUsuario):
                                                 novoValorAtributo = input(f'Novo valor do atributo {chaveAtributoEscolhido}: ')
                                                 novoValorAtributo = tipoAtributo(novoValorAtributo)
                                                 if CHAVE_TRABALHO_NECESSARIO == chaveAtributoEscolhido:
-                                                    confirmacao = input(f'Manter trabalho: {dicionarioTrabalhoEscolhido[CHAVE_TRABALHO_NECESSARIO]}? S/N: ')
-                                                    while not ehValorAlfabetico(confirmacao):
-                                                        confirmacao = input(f'Manter trabalho: {dicionarioTrabalhoEscolhido[CHAVE_TRABALHO_NECESSARIO]}? S/N: ')
-                                                    else:
-                                                        if str(confirmacao).lower() == 's':
-                                                            novoValorAtributo = dicionarioTrabalhoEscolhido[chaveAtributoEscolhido]+ ',' + novoValorAtributo
-                                                            dados = {chaveAtributoEscolhido:novoValorAtributo}
-                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
-                                                            modificaAtributo(caminhoRequisicao, dados)
-                                                        elif str(confirmacao).lower() == 'n':
-                                                            dados = {chaveAtributoEscolhido:novoValorAtributo}
-                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
-                                                            modificaAtributo(caminhoRequisicao, dados)
+                                                    caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
+                                                    dados = {chaveAtributoEscolhido:novoValorAtributo}
+                                                    print(f'Manter trabalho: {dicionarioTrabalhoEscolhido[CHAVE_TRABALHO_NECESSARIO]}?')
+                                                    if retornaInputConfirmacao():
+                                                        novoValorAtributo = dicionarioTrabalhoEscolhido[chaveAtributoEscolhido]+ ',' + novoValorAtributo
+                                                        dados = {chaveAtributoEscolhido:novoValorAtributo}
+                                                    modificaAtributo(caminhoRequisicao, dados)
                                                 else:
                                                     dados = {chaveAtributoEscolhido:novoValorAtributo}
                                                     caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
                                                     modificaAtributo(caminhoRequisicao, dados)
+                                                dicionarioTrabalhoEscolhido[chaveAtributoEscolhido] = novoValorAtributo
                                                 print(f'Valor do atributo {chaveAtributoEscolhido} modificado para {novoValorAtributo}.')
                                                 linhaSeparacao()
                                         else:
