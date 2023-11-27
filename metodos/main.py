@@ -209,7 +209,7 @@ def mostraMenuConfiuracao():
     print(f'0 - Voltar.')
     opcaoConfiguracao = input(f'Sua escolha: ')
     linhaSeparacao()
-    while not opcaoInvalida(opcaoConfiguracao, 4):
+    while opcaoInvalida(opcaoConfiguracao, 4):
         print(f'Opção inválida! Selecione uma das opções.')
         opcaoConfiguracao = input(f'Sua escolha: ')
         linhaSeparacao()
@@ -247,15 +247,15 @@ def menu(dicionarioUsuario):
             if variavelExiste(raridade):
                 dicionarioProfissao=defineProfissao(dicionarioUsuario)
                 if variavelExiste(dicionarioProfissao):
-                    dicionarioTrabalho=defineTrabalho(dicionarioProfissao,raridade)
-                    if not tamanhoIgualZero(dicionarioTrabalho):
+                    dicionarioTrabalhoMelhoradoEscolhido=defineTrabalho(dicionarioProfissao,raridade)
+                    if not tamanhoIgualZero(dicionarioTrabalhoMelhoradoEscolhido):
                         licenca=defineLicenca()
                         if variavelExiste(licenca):
-                            dicionarioTrabalho[CHAVE_LICENCA]=licenca
+                            dicionarioTrabalhoMelhoradoEscolhido[CHAVE_LICENCA]=licenca
                             recorrencia=defineRecorrencia()
                             if variavelExiste(recorrencia):
-                                dicionarioTrabalho[CHAVE_RECORRENCIA]=recorrencia
-                                adicionaTrabalhoDesejo(dicionarioUsuario,dicionarioTrabalho)
+                                dicionarioTrabalhoMelhoradoEscolhido[CHAVE_RECORRENCIA]=recorrencia
+                                adicionaTrabalhoDesejo(dicionarioUsuario,dicionarioTrabalhoMelhoradoEscolhido)
         elif opcaoEscolha==2:#Menu lista de desejo
             dicionarioUsuario,opcaoLista=mostraMenuListaDesejo(dicionarioUsuario)
             if opcaoLista == 0:#Volta ao menu anterior
@@ -297,28 +297,29 @@ def menu(dicionarioUsuario):
                 print(f'Em desenvolvimento...')
                 linhaSeparacao()
         elif opcaoEscolha==6:#Menu configurações
-            opcaoEstoque = mostraMenuConfiuracao()
-            if opcaoEstoque == 0:#Volta ao menu anterior
+            opcaoConfiguracao = mostraMenuConfiuracao()
+            if opcaoConfiguracao == 0:#Volta ao menu anterior
                 print(f'Voltar.')
                 linhaSeparacao()
-            elif opcaoEstoque == 1:
+            elif opcaoConfiguracao == 1:
                 pass
-            elif opcaoEstoque == 2:
+            elif opcaoConfiguracao == 2:
                 definePrioridadeProfissao(dicionarioUsuario)
                 pass
-            elif opcaoEstoque == 3: # Modifica atributo trabalho
+            elif opcaoConfiguracao == 3: # Modifica atributo trabalho
                 raridade = defineRaridade()
                 if variavelExiste(raridade):
                     dicionarioProfissao = defineProfissao(dicionarioUsuario)
                     if variavelExiste(dicionarioProfissao):
                         while True:
-                            dicionarioTrabalho = defineTrabalho(dicionarioProfissao, raridade)
-                            if not tamanhoIgualZero(dicionarioTrabalho):
+                            dicionarioTrabalhoMelhoradoEscolhido = defineTrabalho(dicionarioProfissao, raridade)
+                            if not tamanhoIgualZero(dicionarioTrabalhoMelhoradoEscolhido):
                                 dicionarioTrabalhoEscolhido = {
-                                    CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
-                                    CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-                                    CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
-                                    CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
+                                    CHAVE_NOME:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NOME],
+                                    CHAVE_PROFISSAO:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_PROFISSAO],
+                                    CHAVE_RARIDADE:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_RARIDADE],
+                                    CHAVE_NIVEL:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL],
+                                    CHAVE_EXPERIENCIA:dicionarioTrabalhoMelhoradoEscolhido[CHAVE_EXPERIENCIA]}
                                 indice = 1
                                 while True:
                                     for atributo in dicionarioTrabalhoEscolhido:
@@ -353,15 +354,15 @@ def menu(dicionarioUsuario):
                                                         if str(confirmacao).lower() == 's':
                                                             novoValorAtributo = dicionarioTrabalhoEscolhido[chaveAtributoEscolhido]+ ',' + novoValorAtributo
                                                             dados = {chaveAtributoEscolhido:novoValorAtributo}
-                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
                                                             modificaAtributo(caminhoRequisicao, dados)
                                                         elif str(confirmacao).lower() == 'n':
                                                             dados = {chaveAtributoEscolhido:novoValorAtributo}
-                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
                                                             modificaAtributo(caminhoRequisicao, dados)
                                                 else:
                                                     dados = {chaveAtributoEscolhido:novoValorAtributo}
-                                                    caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
+                                                    caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
                                                     modificaAtributo(caminhoRequisicao, dados)
                                                 print(f'Valor do atributo {chaveAtributoEscolhido} modificado para {novoValorAtributo}.')
                                                 linhaSeparacao()
@@ -369,16 +370,60 @@ def menu(dicionarioUsuario):
                                             break
                             else:
                                 break
-            elif opcaoEstoque == 4: # Adiciona atributo trabalho necessário
-                dicionarioProfissao = defineProfissao(dicionarioUsuario)
-                if variavelExiste(dicionarioProfissao):
-                    while True:
-                        dicionarioTrabalho = defineTrabalho(dicionarioProfissao, 'melhorado')
-                        if not tamanhoIgualZero(dicionarioTrabalho):
-
-                            pass
-                        else:
-                            break
+            elif opcaoConfiguracao == 4: # Adiciona atributo trabalho necessário
+                while True:
+                    dicionarioProfissao = defineProfissao(dicionarioUsuario)
+                    if variavelExiste(dicionarioProfissao):
+                        while True:
+                            dicionarioTrabalhoMelhoradoEscolhido = defineTrabalho(dicionarioProfissao, 'melhorado')
+                            if not tamanhoIgualZero(dicionarioTrabalhoMelhoradoEscolhido):
+                                listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+                                if not tamanhoIgualZero(listaDicionariosTrabalhos):
+                                    while True:
+                                        listaDicionariosTrabalhosBuscados = []
+                                        for dicionarioTrabalho in listaDicionariosTrabalhos:
+                                            if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoMelhoradoEscolhido[CHAVE_PROFISSAO])and
+                                                dicionarioTrabalho[CHAVE_NIVEL] == dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL]and
+                                                textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], 'comum')):
+                                                listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
+                                        if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
+                                            print(f'Trabalhos comuns nível {dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL]}:')
+                                            indice = 1
+                                            for dicionarioTrabalhoComum in listaDicionariosTrabalhosBuscados:
+                                                print(f'{indice} - Nível {dicionarioTrabalhoComum[CHAVE_NIVEL]} : {dicionarioTrabalhoComum[CHAVE_NOME]}.')
+                                                indice += 1
+                                            print(f'0 - Voltar.')
+                                            opcaoTrabalhoComum = input(f'Trabalho comum escolhido: ')
+                                            linhaSeparacao()
+                                            while opcaoInvalida(opcaoTrabalhoComum, len(listaDicionariosTrabalhosBuscados)):
+                                                print(f'Opção inválida! Selecione uma das opções.')
+                                                opcaoTrabalhoComum = input(f'Trabalho comum escolhido: ')
+                                                linhaSeparacao()
+                                            else:
+                                                opcaoTrabalhoComum = int(opcaoTrabalhoComum)
+                                                nomeTrabalhoComum = None
+                                                if opcaoTrabalhoComum != 0:
+                                                    nomeTrabalhoComum = listaDicionariosTrabalhosBuscados[opcaoTrabalhoComum - 1][CHAVE_NOME]
+                                                    caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
+                                                    dados = {CHAVE_TRABALHO_NECESSARIO:nomeTrabalhoComum}
+                                                    if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoEscolhido:
+                                                        if not tamanhoIgualZero(dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO]):
+                                                            print(f'Manter trabalho {dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO]}?')
+                                                            if retornaInputConfirmacao():
+                                                                nomeTrabalhoComum = dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO] + ',' + nomeTrabalhoComum
+                                                                dados = {CHAVE_TRABALHO_NECESSARIO:nomeTrabalhoComum}
+                                                    modificaAtributo(caminhoRequisicao, dados)
+                                                    linhaSeparacao()
+                                                else:
+                                                    break
+                                        else:
+                                            print(f'Lista de vazia!')
+                                            linhaSeparacao()
+                                            break
+                            else:
+                                break
+                    else:
+                        break
         elif opcaoEscolha==7:
             funcao_teste(dicionarioUsuario)
             linhaSeparacao()

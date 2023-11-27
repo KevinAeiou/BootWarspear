@@ -2185,6 +2185,21 @@ def naoEstiverMenuProduzir(menu):
 def erroEncontrado(erro):
     return erro != 0
 
+def retornaInputConfirmacao():
+    confirmacao = input(f'S/N: ')
+    linhaSeparacao()
+    while (not ehValorAlfabetico(confirmacao)or
+           not texto1PertenceTexto2(confirmacao, 'ns')or
+            not len(confirmacao) == 1):
+        print(f'Valor inválido!')
+        confirmacao = input(f'S/N: ')
+        linhaSeparacao()
+    else:
+        if textoEhIgual(confirmacao, 's'):
+            return True
+        elif textoEhIgual(confirmacao, 'n'):
+            return False
+
 def vaiParaMenuCorrespondencia():
     clickEspecifico(1,'f2')
     clickEspecifico(1,'1')
@@ -3498,8 +3513,8 @@ def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
         x+=1
     return dicionarioProfissao
 
-def opcaoInvalida(opcaoLista,tamanhoMenu):
-    return not ehValorNumerico(opcaoLista) or int(opcaoLista)<0 or int(opcaoLista)>tamanhoMenu
+def opcaoInvalida(opcaoLista, tamanhoMenu):
+    return not ehValorNumerico(opcaoLista) or int(opcaoLista) < 0 or int(opcaoLista) > tamanhoMenu
 
 def ehValorNumerico(valor):
     return valor.isdigit()
@@ -3580,20 +3595,14 @@ def funcao_teste(dicionarioUsuario):
         }
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
-    while not textoEhIgual(input(f'Continuar?'),'n'):
+    while retornaInputConfirmacao():
         dicionarioPersonagemAtributos = defineListaDicionarioPersonagem(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
-        for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
-            if textoEhIgual(trabalho[CHAVE_PROFISSAO],'capotes'):
-                caminhoRequisicao = f'Lista_trabalhos/{trabalho[CHAVE_ID]}/.json'
-                dados = {CHAVE_PROFISSAO:'Capotes'}
-                modificaAtributo(caminhoRequisicao, dados)
-                print(f'{D}: Profissão de {trabalho[CHAVE_NOME]} alterada para Capotes.')
-                linhaSeparacao()
+        print(retornaInputConfirmacao())
         # retornaReferencias()
         # detectaMovimento()
         # atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
