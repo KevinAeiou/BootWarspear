@@ -51,27 +51,30 @@ def defineLicenca():
     return licenca
 
 def defineRaridade():
+    tipoRaridade = None
     print(f'Qual a raridade da produção?')
     print(f'1 - Comum.')
-    print(f'2 - Raro.')
-    print(f'3 - Especial.')
+    print(f'2 - Melhorado.')
+    print(f'3 - Raro.')
+    print(f'4 - Especial.')
     print(f'0 - Voltar.')
-    opcaoRaridade=input('Sua escolha: ')
+    opcaoRaridade = input('Sua escolha: ')
     linhaSeparacao()
-    while opcaoInvalida(opcaoRaridade,3):
+    while opcaoInvalida(opcaoRaridade, 4):
         print(f'Opção inválida! Selecione uma das opções.')
-        opcaoRaridade=input(f'Sua escolha: ')
+        opcaoRaridade = input(f'Sua escolha: ')
         linhaSeparacao()
     else:
-        opcaoRaridade=int(opcaoRaridade)
-        if opcaoRaridade==0:
-            tipoRaridade=None
-        elif opcaoRaridade==1:
-            tipoRaridade='Comum'
-        elif opcaoRaridade==2:
-            tipoRaridade='Raro'
-        elif opcaoRaridade==3:
-            tipoRaridade='Especial'
+        opcaoRaridade = int(opcaoRaridade)
+        if opcaoRaridade != 0:
+            if opcaoRaridade == 1:
+                tipoRaridade = 'Comum'
+            elif opcaoRaridade == 2:
+                tipoRaridade = 'Melhorado'
+            elif opcaoRaridade == 3:
+                tipoRaridade = 'Raro'
+            elif opcaoRaridade == 4:
+                tipoRaridade = 'Especial'
     return tipoRaridade
 
 def defineRecorrencia():
