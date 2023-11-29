@@ -1549,8 +1549,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
             linhaSeparacao()
 
             if xpSuficienteParaEvoluir(xpRestante, somaXpProduzirProduzindo):
-                maximoTrabalhoProduzirProduzindoPermitido = 2
-                quantidadeTrabalhoProduzir = maximoTrabalhoProduzirProduzindoPermitido - quantidadeTrabalhoProduzirProduzindo
+                quantidadeTrabalhoProduzir = CHAVE_TRABALHO_MAXIMO - quantidadeTrabalhoProduzirProduzindo
                 if quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
                     listaDicionariosRecursos = defineListaDicionarioRecursos(listaDicionarioTrabalhoComum[0])
                     print(f'{D}: Lista dicionários recursos:')
