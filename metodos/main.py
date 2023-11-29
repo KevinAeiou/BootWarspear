@@ -362,6 +362,25 @@ def menu(dicionarioUsuario):
                                                     dados = {chaveAtributoEscolhido:novoValorAtributo}
                                                     caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
                                                     modificaAtributo(caminhoRequisicao, dados)
+                                                listaIdUsuarios = ['LA2UjmX7oBX3AlRJfmdWAD41OWg2','eEDku1Rvy7f7vbwJiVW7YMsgkIF2']
+                                                for idUsuario in listaIdUsuarios:
+                                                    dicionarioUsuarioModificacao = {CHAVE_ID_USUARIO:idUsuario}
+                                                    dicionarioUsuarioModificacao = defineListaDicionarioPersonagem(dicionarioUsuarioModificacao)
+                                                    for dicionarioPersonagem in dicionarioUsuarioModificacao[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+                                                        dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioPersonagem
+                                                        dicionarioPersonagem[CHAVE_ID_USUARIO] = dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]
+                                                        dicionarioPersonagem = defineListaDesejo(dicionarioPersonagem)
+                                                        for dicionarioTrabalhoDesejado in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
+                                                            if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_NOME], dicionarioTrabalhoEscolhido[CHAVE_NOME]):
+                                                                caminhoRequisicao = f'Usuarios/{dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
+                                                                modificaAtributo(caminhoRequisicao, dados)
+                                                        listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem)
+                                                        for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
+                                                            if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoEscolhido[CHAVE_NOME]):
+                                                                if chaveAtributoEscolhido in dicionarioTrabalhoEstoque:
+                                                                    caminhoRequisicao = f'Usuarios/{dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioTrabalhoEstoque[CHAVE_ID]}/.json'
+                                                                    modificaAtributo(caminhoRequisicao, dados)
+                                                                    break
                                                 dicionarioTrabalhoEscolhido[chaveAtributoEscolhido] = novoValorAtributo
                                                 print(f'Valor do atributo {chaveAtributoEscolhido} modificado para {novoValorAtributo}.')
                                                 linhaSeparacao()
