@@ -1947,7 +1947,7 @@ def retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum):
     if nivelProduzTrabalhoComum == 1:
         listaDicionarioProfissaoRecursos=[
                 {'braceletes':['Fibra de Bronze','Prata','Pin de Estudante']},
-                {'capotes':['Furador do aprendiz','Tecido delicado','Substância intável']},
+                {'capotes':['Furador do aprendiz','Tecido delicado','Substância instável']},
                 {'amuletos':['Pinça do aprendiz','Jade bruta','Energia inicial']},
                 {'aneis':['Molde do aprendiz','Pepita de cobre','Pedra de sombras']},
                 {'armadurapesada':['Marretão do aprendiz','Placas de cobre','Anéis de bronze']},
