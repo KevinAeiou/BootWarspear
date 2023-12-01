@@ -558,7 +558,7 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
             confirmacao=True
             break
     # print(f'{D}: {dicionarioTrabalhoLista[CHAVE_NOME]} é recurso de produção? {confirmacao}.')
-    linhaSeparacao()
+    # linhaSeparacao()
     return confirmacao
 
 def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
