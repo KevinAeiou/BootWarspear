@@ -557,7 +557,7 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
         if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME]):
             confirmacao=True
             break
-    print(f'{D}: {dicionarioTrabalhoLista[CHAVE_NOME]} é recurso de produção? {confirmacao}.')
+    # print(f'{D}: {dicionarioTrabalhoLista[CHAVE_NOME]} é recurso de produção? {confirmacao}.')
     linhaSeparacao()
     return confirmacao
 
@@ -3601,15 +3601,15 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
-        print(retornaInputConfirmacao())
+        # print(retornaInputConfirmacao())
         # retornaReferencias()
         # detectaMovimento()
         # atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
         # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
-        # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-        #     continue
+        while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+            continue
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
