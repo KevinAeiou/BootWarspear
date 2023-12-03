@@ -1963,7 +1963,7 @@ def retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum):
                 {'amuletos':['Pinça do principiante','Ônix extraordinária','Éter inicial']},
                 {'aneis':['Molde do principiante','Pepita de prata','Pedra da luz']},
                 {'armadurapesada':['Marretão do principiante','Placas de ferro','Anéis de aço']},
-                {'armaduraleve':['Faca do principiante','Escamas de lagarto','Couro grosso']},
+                {'armaduraleve':['Faca do principiante','Escamas do lagarto','Couro grosso']},
                 {'armaduradetecido':['Tesoura do principiante','Fio grosso','Tecido de cetim']},
                 {'armacorpoacorpo':['Lascas de quartzo','Minério de ferro','Mó do principiante']},
                 {'armadelongoalcance':['Esfera do neófito','Varinha de aço','Cabeça do cajado de ônix']}]
