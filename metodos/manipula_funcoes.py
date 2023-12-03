@@ -1587,7 +1587,6 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                     listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
                                     contadorQuantidadeRecursoProduzirProduzindo = 0
                                     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
-                                        
                                         nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME])
                                         if variavelExiste(nomeRecursoProduzido):
                                             if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
@@ -1648,9 +1647,6 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                                         linhaSeparacao()
                                                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
                                                         break
-                                                else:
-                                                    print(f'Erro ao definir nome da produção de recurso de {dicionarioTrabalho[CHAVE_NOME]}.')
-                                                    linhaSeparacao()
                                     else:
                                         if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
                                             for dicionarioRecurso1 in listaDicionariosRecursos:
@@ -1984,7 +1980,7 @@ def retornaNomeRecursoTrabalhoProducao(nomeTrabalhoProducao):
         ['adquirir tesoura do aprendiz','tesoura do aprendiz'],['produzindo fio resistente','fio grosseiro'],['fazendo tecido de linho','tecido de linho'],
         ['fazendo tecido de cetim','tecido de cetim'],['comprar tesoura do principiante','tesoura do principiante'],['produzindo fio grosso','fio grosso'],
         ['adquirir faca do aprendiz','Faca do aprendiz'],['recebendo escamas da serpente','Escamas da serpente'],['Concluindo couro resistente','Couro resistente'],
-        ['adquirir faca do principiante','Faca do principiante'],['recebendo escamas do lagarto','Escamas de lagarto'],['curtindo couro grosso','Couro grosso'],
+        ['adquirir faca do principiante','Faca do principiante'],['recebendo escamas do lagarto','Escamas do lagarto'],['curtindo couro grosso','Couro grosso'],
         ['adquirir marretão do aprendiz','Marretão do aprendiz'],['forjando placas de cobre','Placas de cobre'],['fazendo placas de bronze','Anéis de bronze'],
         ['adquirir marretão do principiante','Marretão do principiante'],['forjando placas de ferro','Placas de ferro'],['fazendo anéis de aço','Anéis de aço'],
         ['adquirir molde do aprendiz','Molde do aprendiz'],['extração de pepitas de cobre','Pepita de cobre'],['recebendo gema das sombras','Pedra de sombras'],
