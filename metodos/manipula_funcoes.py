@@ -1601,8 +1601,6 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                                     dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
                                                 contadorQuantidadeRecursoProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE]
                                         else:
-                                            print(f'Erro ao definir nome da produção de recurso de {dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME]}.')
-                                            linhaSeparacao()
                                             if dicionarioTrabalhoProduzirProduzindo[CHAVE_ESTADO] == 1:
                                                 if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO], dicionarioRecurso[CHAVE_PROFISSAO]):
                                                     if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_RARIDADE],'raro'):
