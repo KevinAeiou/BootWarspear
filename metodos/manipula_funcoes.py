@@ -3041,13 +3041,15 @@ def atualizaEstoquePersonagem(dicionarioPersonagem, dicionarioTrabalhoProduzido)
 
 def modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
     for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
-        if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
-            novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]+dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
-            caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-            dados={CHAVE_QUANTIDADE:novaQuantidade}
-            modificaAtributo(caminhoRequisicao,dados)
+        if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME], trabalhoEstoque[CHAVE_NOME]):
+            novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] + dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+            modificaAtributo(caminhoRequisicao, dados)
+            print(f'{trabalhoEstoque[CHAVE_NOME]} - Quantidade: {novaQuantidade}.')
+            linhaSeparacao()
             for indice in range(len(listaDicionarioTrabalhoProduzido)):
-                if listaDicionarioTrabalhoProduzido[indice][CHAVE_NOME]==trabalhoEstoque[CHAVE_NOME]:
+                if listaDicionarioTrabalhoProduzido[indice][CHAVE_NOME] == trabalhoEstoque[CHAVE_NOME]:
                     del listaDicionarioTrabalhoProduzido[indice]
                     break
             if tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
