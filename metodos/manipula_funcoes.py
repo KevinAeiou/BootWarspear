@@ -2700,6 +2700,17 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
+def retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosTrabalhosVendidos):
+    listaDicionariosTrabalhosRarosVendidos = []
+    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+    if not tamanhoIgualZero(listaDicionariosTrabalhos):
+        for dicionarioTrabalho in listaDicionariosTrabalhos:
+            for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
+                if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], 'raro'):
+                    if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], dicionarioTrabalhoVendido['nomeProduto']):
+                        listaDicionariosTrabalhosRarosVendidos.append(dicionarioTrabalho)
+    return listaDicionariosTrabalhosRarosVendidos
+
 def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
     listaPersonagemPresenteRecuperado = retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
     while True:
@@ -3601,6 +3612,13 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
+        listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
+            for atributo in dicionarioTrabalhoVendido:
+                print(f'{D}: {atributo} - {dicionarioTrabalhoVendido[atributo]}.')
+            linhaSeparacao()
+        linhaSeparacao()
+        retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosTrabalhosVendidos)
         # print(retornaInputConfirmacao())
         # retornaReferencias()
         # detectaMovimento()
@@ -3608,8 +3626,8 @@ def funcao_teste(dicionarioUsuario):
         # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
-        while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-            continue
+        # while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
+        #     continue
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)

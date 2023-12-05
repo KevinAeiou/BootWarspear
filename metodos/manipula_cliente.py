@@ -93,6 +93,22 @@ def retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem):
         print(f'Resultado requisição: {requisicao}.')
     return listaDicionarioEstoque
 
+def retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagem):
+    listaDicionariosTrabalhosVendidos=[]
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_venda/.json'
+    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+    if requisicao:
+        dicionarioRequisicao=requisicao.json()
+        if dicionarioRequisicao:
+            for chave in dicionarioRequisicao:
+                # print(f'{D}:{dicionarioRequisicao[chave]}')
+                listaDicionariosTrabalhosVendidos.append(dicionarioRequisicao[chave])
+        else:
+            print(f'Resultado dicionario: {dicionarioRequisicao}.')
+    else:
+        print(f'Resultado requisição: {requisicao}.')
+    return listaDicionariosTrabalhosVendidos
+
 def adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
     requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
