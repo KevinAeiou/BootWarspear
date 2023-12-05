@@ -1587,7 +1587,6 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                     listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
                                     contadorQuantidadeRecursoProduzirProduzindo = 0
                                     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
-                                        
                                         nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME])
                                         if variavelExiste(nomeRecursoProduzido):
                                             if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
@@ -1962,7 +1961,7 @@ def retornaListaDicionarioProfissaoRecursos(nivelProduzTrabalhoComum):
                 {'amuletos':['Pinça do principiante','Ônix extraordinária','Éter inicial']},
                 {'aneis':['Molde do principiante','Pepita de prata','Pedra da luz']},
                 {'armadurapesada':['Marretão do principiante','Placas de ferro','Anéis de aço']},
-                {'armaduraleve':['Faca do principiante','Escamas de lagarto','Couro grosso']},
+                {'armaduraleve':['Faca do principiante','Escamas do lagarto','Couro grosso']},
                 {'armaduradetecido':['Tesoura do principiante','Fio grosso','Tecido de cetim']},
                 {'armacorpoacorpo':['Lascas de quartzo','Minério de ferro','Mó do principiante']},
                 {'armadelongoalcance':['Esfera do neófito','Varinha de aço','Cabeça do cajado de ônix']}]
@@ -2393,6 +2392,9 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
                 else:
                     print(f'{D}: Tipo de recurso não encontrado!')
                     linhaSeparacao()
+            else:
+                print(f'Erro ao definir nome da produção de recurso de {dicionarioTrabalhoConcluido[CHAVE_NOME]}.')
+                linhaSeparacao()
     else:
         dicionarioTrabalhoEstoque = {
             CHAVE_NIVEL:dicionarioTrabalhoConcluido[CHAVE_NIVEL],
@@ -3050,13 +3052,15 @@ def atualizaEstoquePersonagem(dicionarioPersonagem, dicionarioTrabalhoProduzido)
 
 def modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque):
     for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
-        if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME],trabalhoEstoque[CHAVE_NOME]):
-            novaQuantidade=trabalhoEstoque[CHAVE_QUANTIDADE]+dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
-            caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-            dados={CHAVE_QUANTIDADE:novaQuantidade}
-            modificaAtributo(caminhoRequisicao,dados)
+        if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME], trabalhoEstoque[CHAVE_NOME]):
+            novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] + dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+            modificaAtributo(caminhoRequisicao, dados)
+            print(f'{trabalhoEstoque[CHAVE_NOME]} - Quantidade: {novaQuantidade}.')
+            linhaSeparacao()
             for indice in range(len(listaDicionarioTrabalhoProduzido)):
-                if listaDicionarioTrabalhoProduzido[indice][CHAVE_NOME]==trabalhoEstoque[CHAVE_NOME]:
+                if listaDicionarioTrabalhoProduzido[indice][CHAVE_NOME] == trabalhoEstoque[CHAVE_NOME]:
                     del listaDicionarioTrabalhoProduzido[indice]
                     break
             if tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
