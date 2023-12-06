@@ -498,7 +498,7 @@ def raridadeTrabalhoEhMelhorado(trabalhoListaDesejo):
     return textoEhIgual(trabalhoListaDesejo[CHAVE_RARIDADE],'melhorado')
 
 def texto1PertenceTexto2(texto1,texto2):
-    print(f'{D}:{texto1} pertence a {texto2}?')
+    # print(f'{D}:{texto1} pertence a {texto2}?')
     return limpaRuidoTexto(texto1)in limpaRuidoTexto(texto2)
 
 def textoEhIgual(texto1,texto2):
@@ -2702,15 +2702,31 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
-def retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosTrabalhosVendidos):
+def retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos):
     listaDicionariosTrabalhosRarosVendidos = []
     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
     if not tamanhoIgualZero(listaDicionariosTrabalhos):
-        for dicionarioTrabalho in listaDicionariosTrabalhos:
-            for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
+        for dicionarioProdutoVendido in listaDicionariosProdutosVendidos:
+            for dicionarioTrabalho in listaDicionariosTrabalhos:
                 if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], 'raro'):
-                    if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], dicionarioTrabalhoVendido['nomeProduto']):
-                        listaDicionariosTrabalhosRarosVendidos.append(dicionarioTrabalho)
+                    if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], dicionarioProdutoVendido['nomeProduto']):
+                        if textoEhIgual(dicionarioProdutoVendido['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME]):
+                            if not trabalhoEhProducaoRecursos(dicionarioTrabalho):
+                                dicionarioTrabalho = {
+                                    CHAVE_ID:dicionarioTrabalho[CHAVE_ID],
+                                    CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+                                    CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
+                                    CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
+                                    CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
+                                    CHAVE_QUANTIDADE:dicionarioProdutoVendido['quantidadeProduto'],
+                                    CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
+                                listaDicionariosTrabalhosRarosVendidos.append(dicionarioTrabalho)
+                                break
+    linhaSeparacao()
+    for dicionarioTrabalhoRaroVendido in listaDicionariosTrabalhosRarosVendidos:
+        for atributo in dicionarioTrabalhoRaroVendido:
+            print(f'{D}: {atributo} - {dicionarioTrabalhoRaroVendido[atributo]}.')
+        linhaSeparacao()
     return listaDicionariosTrabalhosRarosVendidos
 
 def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
@@ -3617,12 +3633,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
-            for atributo in dicionarioTrabalhoVendido:
-                print(f'{D}: {atributo} - {dicionarioTrabalhoVendido[atributo]}.')
-            linhaSeparacao()
-        linhaSeparacao()
-        retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosTrabalhosVendidos)
+        if not tamanhoIgualZero(listaDicionariosTrabalhosVendidos):
+            retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosTrabalhosVendidos, dicionarioPersonagemAtributos)
         # print(retornaInputConfirmacao())
         # retornaReferencias()
         # detectaMovimento()

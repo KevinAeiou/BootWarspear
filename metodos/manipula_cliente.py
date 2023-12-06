@@ -94,11 +94,12 @@ def retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem):
     return listaDicionarioEstoque
 
 def retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagem):
-    listaDicionariosTrabalhosVendidos=[]
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_venda/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+    print(f'Definindo lista dicionários produtos vendidos...')
+    listaDicionariosTrabalhosVendidos = []
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
+    requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
-        dicionarioRequisicao=requisicao.json()
+        dicionarioRequisicao = requisicao.json()
         if dicionarioRequisicao:
             for chave in dicionarioRequisicao:
                 # print(f'{D}:{dicionarioRequisicao[chave]}')
