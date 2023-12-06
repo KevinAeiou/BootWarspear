@@ -259,6 +259,7 @@ def menu(dicionarioUsuario):
                             recorrencia=defineRecorrencia()
                             if variavelExiste(recorrencia):
                                 dicionarioTrabalhoMelhoradoEscolhido[CHAVE_RECORRENCIA]=recorrencia
+                                dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ESTADO]=0
                                 adicionaTrabalhoDesejo(dicionarioUsuario,dicionarioTrabalhoMelhoradoEscolhido)
         elif opcaoEscolha==2:#Menu lista de desejo
             dicionarioUsuario,opcaoLista=mostraMenuListaDesejo(dicionarioUsuario)
