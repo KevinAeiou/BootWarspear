@@ -1703,7 +1703,7 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
                 DR12 = {
                     CHAVE_NOME:nomeR12,
                     CHAVE_NIVEL:1,
-                    CHAVE_EXPERIENCIA:5,
+                    CHAVE_EXPERIENCIA:4,
                     CHAVE_TIPO:CHAVE_RCS,
                     CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
                     CHAVE_QUANTIDADE:quantidadeRecursoFaltante}
