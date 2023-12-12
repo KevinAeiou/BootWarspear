@@ -1544,38 +1544,10 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                             }
                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
                     else:
-                        for dicionarioRecurso in listaDicionariosRecursos:
-                            if dicionarioRecurso[CHAVE_QUANTIDADE] > 0:
-                                while True:
-                                    print(f'{D}: Faltam {dicionarioRecurso[CHAVE_QUANTIDADE]} de {dicionarioRecurso[CHAVE_NOME]}.')
-                                    linhaSeparacao()
-                                    quantidadeRecursoProduzirProduzindo = retornaQuantidadeRecursoProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioRecurso)
-                                    if dicionarioRecurso[CHAVE_QUANTIDADE] - quantidadeRecursoProduzirProduzindo > 0:
-                                        listaDicionarioTrabalhos = retornaListaDicionariosTrabalhos()
-                                        if not tamanhoIgualZero(listaDicionarioTrabalhos):
-                                            for dicionarioTrabalho in listaDicionarioTrabalhos:
-                                                nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalho[CHAVE_NOME])
-                                                if variavelExiste(nomeRecursoProduzido):
-                                                    if textoEhIgual(nomeRecursoProduzido,dicionarioRecurso[CHAVE_NOME]):
-                                                        dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do aprendiz'
-                                                        dicionarioTrabalho[CHAVE_RECORRENCIA] = False
-                                                        dicionarioTrabalho[CHAVE_ESTADO] = 0
-                                                        print(f'{D}: Dicionario trabalho recurso faltante:')
-                                                        linhaSeparacao()
-                                                        for atributo in dicionarioTrabalho:
-                                                            print(f'{D}: {atributo} = {dicionarioTrabalho[atributo]}.')
-                                                        linhaSeparacao()
-                                                        adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
-                                                        break
-                                    else:
-                                        print(f'{D}: Existem unidades suficientes sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
-                                        linhaSeparacao()
-                                        listaDicionariosRecursos = atualizaQuantidadeRecursoLista(listaDicionariosRecursos, dicionarioRecurso)
-                                        break
-                        else:
-                            confirmacao = False
-                            print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
-                            linhaSeparacao()
+                        produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
+                        confirmacao = False
+                        print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
+                        linhaSeparacao()
                 else:
                     confirmacao = False
                     print(f'{D}:Quantidade de trabalhos na fila para produzir ou produzindo execede o máximo permitido.')
@@ -1589,6 +1561,48 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
         confirmacao = False
         print(f'{D}:Dicionário profissão priorizada vazio!')
     return confirmacao
+
+def produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos):
+    listaDicionarioTrabalhos = retornaListaDicionariosTrabalhos()
+    if not tamanhoIgualZero(listaDicionarioTrabalhos):
+        for dicionarioRecurso in listaDicionariosRecursos:
+            if dicionarioRecurso[CHAVE_QUANTIDADE] > 0:
+                while True:
+                    print(f'{D}: Faltam {dicionarioRecurso[CHAVE_QUANTIDADE]} de {dicionarioRecurso[CHAVE_NOME]}.')
+                    linhaSeparacao()
+                    quantidadeRecursoProduzirProduzindo = retornaQuantidadeRecursoProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioRecurso)
+                    if dicionarioRecurso[CHAVE_QUANTIDADE] - quantidadeRecursoProduzirProduzindo > 0:
+                            dicionarioTrabalho = defineDicionarioRecursoNecessario(dicionarioRecurso, listaDicionarioTrabalhos)
+                            if not tamanhoIgualZero(dicionarioTrabalho):
+                                adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                    else:
+                        print(f'{D}: Existem unidades suficientes sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
+                        linhaSeparacao()
+                        listaDicionariosRecursos = atualizaQuantidadeRecursoLista(listaDicionariosRecursos, dicionarioRecurso)
+                        break
+    else:
+        print(f'Erro ao definir lista de trabalhos!')
+        linhaSeparacao()
+
+def defineDicionarioRecursoNecessario(dicionarioRecurso, listaDicionarioTrabalhos):
+    for dicionarioTrabalho in listaDicionarioTrabalhos:
+        nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalho[CHAVE_NOME])
+        if variavelExiste(nomeRecursoProduzido):
+            if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
+                dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do aprendiz'
+                dicionarioTrabalho[CHAVE_RECORRENCIA] = False
+                dicionarioTrabalho[CHAVE_ESTADO] = 0
+                print(f'{D}: Dicionario trabalho recurso faltante:')
+                linhaSeparacao()
+                for atributo in dicionarioTrabalho:
+                    print(f'{D}: {atributo} = {dicionarioTrabalho[atributo]}.')
+                linhaSeparacao()
+                break
+    else:
+        dicionarioTrabalho = {}
+        print(f'Erro ao definir dicionário de recurso necessário!')
+        linhaSeparacao()
+    return dicionarioTrabalho
 
 def atualizaQuantidadeRecursoLista(listaDicionariosRecursos, dicionarioRecurso):
     if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
@@ -1769,7 +1783,7 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
             if quantidadeRecursoFaltante <= 0:
                 quantidadeRecursoFaltante = 0
             dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        listaDicionariosRecursos = sorted(listaDicionariosRecursos,key=lambda dicionario:dicionario[CHAVE_TIPO],reverse=True)
+        listaDicionariosRecursos = sorted(listaDicionariosRecursos,key=lambda dicionario:dicionario[CHAVE_TIPO])
     else:
         print(f'{D}: Lista dicionários recursos depois de subtrair estoque:')
         linhaSeparacao()
@@ -3608,7 +3622,8 @@ def funcao_teste(dicionarioUsuario):
         # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
         # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
         listaDicionariosRecursos = defineListaDicionarioRecursos(trabalhoDesejado)
-        existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
+        __,listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
+        produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
         # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
         # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
         # defineAtributoExperienciaTrabalho(dicionarioUsuario)
