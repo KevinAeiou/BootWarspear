@@ -166,16 +166,16 @@ def defineNovoTrabalho(raridade,profissao,nivel):
     while confirmacao.replace(' ','').lower()=='s':
         nome=input(f'Novo trabalho: ')
         if len(nome.replace(' ',''))!=0:
+            experiencia = input(f'Experiência: ')
             print(f'Confirma novo trabalho:(S/N)?')
             confirmaTrabalho=input(f'Escolha: ')
             if confirmaTrabalho.replace(' ','').lower()=='s':
-                dicionarioTrabalho={CHAVE_NOME:nome,
-                                    CHAVE_PROFISSAO:profissao,
-                                    CHAVE_RARIDADE:raridade,
-                                    CHAVE_NIVEL:nivel,
-                                    CHAVE_LICENCA:'',
-                                    CHAVE_RECORRENCIA:False,
-                                    CHAVE_ESTADO:0}
+                dicionarioTrabalho={
+                    CHAVE_NOME:nome,
+                    CHAVE_PROFISSAO:profissao[CHAVE_NOME],
+                    CHAVE_RARIDADE:raridade,
+                    CHAVE_NIVEL:nivel,
+                    CHAVE_EXPERIENCIA:int(experiencia)}
                 # # print(f'{D}:dicionarioTrablho{dicionarioTrabalho}.')
                 linhaSeparacao()
                 cadastraNovoTrabalho(dicionarioTrabalho)
@@ -406,7 +406,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho,tipoTrabalho):
         dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
     return dicionarioTrabalho
 
-def retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
+def defineListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
     listaDicionariosTrabalhosComunsMelhoradosDesejados=[]
     print(f'Buscando trabalho comum na lista...')
     for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
@@ -475,6 +475,11 @@ def defineDicionarioTrabalhoComum(dicionarioTrabalho):
                 print(f'Trabalho comum não reconhecido!')
                 linhaSeparacao()
                 break
+            else:
+                linhaSeparacao()
+                clickEspecifico(1, 'down')
+                dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM] = contadorParaBaixo
+                contadorParaBaixo += 1
     return dicionarioTrabalho
 
 def vaiParaMenuTrabalhoEmProducao():
@@ -1411,7 +1416,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos):
                         entraProfissaoEspecifica(profissaoVerificada[CHAVE_POSICAO])
                         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
                         if not tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]):
-                            dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+                            dicionarioTrabalho = defineListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
                             if primeiroTrabalhoDaListaEhRaroOuEspecial(dicionarioTrabalho):
                                 dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_RARO_ESPECIAL] = 0
                                 for trabalhoPriorizado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
@@ -3568,7 +3573,7 @@ def funcao_teste(dicionarioUsuario):
     dicionarioTrabalho={
         CHAVE_CONFIRMACAO:True,
         CHAVE_POSICAO_TRABALHO_COMUM:-1,
-        CHAVE_PROFISSAO:'Braceletes',
+        CHAVE_PROFISSAO:'Armadura de tecido',
         CHAVE_LISTA_TRABALHO_COMUM_MELHORADO:[trabalhoComumDesejado],
         CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
         }
@@ -3592,134 +3597,6 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
-        # listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        # if not tamanhoIgualZero(listaDicionariosTrabalhosVendidos):
-        #     retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosTrabalhosVendidos, dicionarioPersonagemAtributos)
-        # print(retornaInputConfirmacao())
-        # retornaReferencias()
-        # detectaMovimento()
-        # atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
-        # retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
-        # listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
-        # removeTrabalhoEstoque(dicionarioPersonagemAtributos,trabalhoDesejado)
-        while defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
-            continue
-        # retornaListaDicionariosRecursosProfissaoEspecifica(listaDicionarioTrabalhoEstoque, trabalhoDesejado)
-        # mostraListaTrabalhoSemExperiencia(dicionarioUsuario)
-        # defineAtributoExperienciaTrabalho(dicionarioUsuario)
-        # click_atalho_especifico('alt','tab')
-        # click_atalho_especifico('alt','tab')
-        # print(f'{dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]}')
-        # modificaAtributoUso(dicionarioPersonagem,True)
-        # retornaListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
-        # for trabalhoPriorizado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-        #     print(f'{trabalhoPriorizado[CHAVE_NOME]}:{trabalhoPriorizado[CHAVE_PRIORIDADE]}.')
-        # atualizaListaProfissao(dicionarioPersonagem)
-        # defineAtributoTrabalhoNecessario(dicionarioUsuario)
-        # detecta_movimento()
-        # atualizaEstoquePersonagem(dicionarioPersonagem,trabalhoComumDesejado)
-        # defineListaDicionarioEstoque(dicionarioPersonagem)
-        # print(370*1.5)
-        # modificaExperienciaProfissao(dicionarioPersonagem, trabalhoComumDesejado)
-        # implementaNovaProfissao(dicionarioPersonagem)
-        # print(retornaTextoSair())
-        # linhaSeparacao()
-        # dicionarioPersonagem=defineListaDicionarioPersonagemAtivo(dicionarioPersonagem)
-        # defineDicionarioPersonagemEmUso(dicionarioPersonagem)
-        # dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
-        # defineDicionarioTrabalhoComum(dicionarioTrabalho)
-        # dicionarioTrabalho = retornaListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
-        # defineDicionarioTrabalhoComum(dicionarioTrabalho)
-        # clone=defineCloneDicionarioTrabalho(dicionarioTrabalho)
-        # for chave in clone:
-        #     print(clone[chave])
-        # texto_menu=retornaTextoMenuReconhecido(26,1,100)
-        # verificaErro(dicionarioTrabalho)
-        # dicionarioTrabalho[CHAVE_PROFISSAO]='armaduradetecido'
-        # retornaTipoErro()
-        # telaInteira=retornaAtualizacaoTela()
-        # frameTela=telaInteira[263:263+46,284:284+46]
-        # contadorCorMercador=0
-        # for yFrame in range(0,frameTela.shape[0]):
-        #     for xFrame in range(0,frameTela.shape[1]):
-        #         if (frameTela[yFrame,xFrame]==(51,51,187)).all():
-        #                 contadorCorMercador+=1
-        # print(contadorCorMercador)
-        # adicionaAtributoRecorrencia(dicionarioPersonagem)
-        # mostra_imagem(0,frameTela,None)
-        # encontraMercador()
-        # print(texto_menu)
-        # deleta_item_lista()
-        # print(verificaCaixaCorreio())
-        # dataAtual=datetime.date.today()
-        # print(dataAtual.ctime())
-        # percorreFrameItemBolsa()
-        # listaDicionarioPersonagensAtivos=retornaListaDicionarioPersonagensAtivos(dicionarioPersonagens)
-        # print(f'Lista dicionarios personagem ativo: {listaDicionarioPersonagensAtivos}.')
-        # linhaSeparacao()
-        # dicionarioPrimeiroPersonagem=listaDicionarioPersonagensAtivos[0]
-        # print(dicionarioPrimeiroPersonagem)
-        # linhaSeparacao()
-        # retornaConteudoCorrespondencia(dicionarioPersonagem)
-        # click_atalho_especifico('win','up')
-        # lista_personagem_ativo = consulta_lista_personagem(usuario_id)
-        # busca_lista_personagem_ativo(lista_personagem_ativo)
-        # while not loga_personagem('caah.rm15@gmail.com','aeioukel'):
-        #     continue
-        # verifica_producao_recursos('Licença de produção do aprendiz')
-        # click_continuo(9,'up')
-        # recupera_trabalho_concluido(dicionarioPersonagem)
-        # while True:
-        # click_continuo(8,'up')
-        # confirma_nome_trabalho('Melhorar licença comum',1)
-        #     menu=retorna_menu()
-        #     if menu!=11:
-        #         trata_menu(menu,dicionarioPersonagem)
-        #     break
-        # print('Fim')
-        # lista_habilidade = retorna_lista_habilidade_verificada()
-        # lista_ativos = consulta_lista_personagem(usuario_id)
-        # print(lista_ativos)
-        # while True:
-        #     verifica_habilidade_central(lista_habilidade)
-        # print(retornaLicencaReconhecida())
-        # print(verifica_licenca('principiante'))
-        # linhaSeparacao()
-        # valor=True
-        # while input(f'Continuar?')=='s':
-        #     if valor:
-        #         uso={'uso':1}
-        #         valor=False
-        #     else:
-        #         uso={'uso':0}
-        #         valor=True
-        #     mudaAtributoPersonagem(usuario_id,listaPersonagem,'espacoProducao',valor)
-        # if verifica_menu_referencia():
-        #     print('Achei!')
-        # else:
-        #     print('Não achei...')
-        # retorna_tipo_erro()
-        # dicionarioPersonagem=retorna_lista_profissao_verificada(dicionarioPersonagem)
-        # atualiza_lista_profissao(dicionarioPersonagem)
-        # print(retornaMenu())
-        # verificaPixelCorrespondencia()
-        # dicionarioPersonagem={CHAVE_ID_PERSONAGEM:personagem_id_global,CHAVE_ESPACO_PRODUCAO:True,CHAVE_UNICA_CONEXAO:True}
-        # print(dicionarioPersonagem[CHAVE_UNICA_CONEXAO])
-        # adicionar_profissao(personagem_id_global,'Teste')
-        # trabalho = 'trabalhoid','Apêndice de jade ofuscada','profissaoteste','comum','Licença de produção do iniciante'
-        # inicia_producao(trabalho,dicionarioPersonagem)
-        # verifica_trabalho_comum(trabalho,'profissaoteste')
-        # while inicia_busca_trabalho():
-        #     continue
-        # adicionaAtributoIdProfissao(dicionarioPersonagem)
-        # recuperaPresente()
-        # entra_personagem_ativo('mrninguem')
-        # inicia_busca_trabalho()
-        # confirmaNomeTrabalho(dicionarioTrabalho,1)
-        # click_atalho_especifico('alt','tab')
-    # listaDicionariosRecursos = [
-    #     {CHAVE_NOME:'Pino do Aprendiz',CHAVE_PROFISSAO:'Braceletes',CHAVE_QUANTIDADE:2,CHAVE_TIPO:CHAVE_RAT},
-    #     {CHAVE_NOME:'Âmbarito',CHAVE_PROFISSAO:'Braceletes',CHAVE_QUANTIDADE:3,CHAVE_TIPO:CHAVE_RAS},
-    #     {CHAVE_NOME:'Fibra de Platina',CHAVE_PROFISSAO:'Braceletes',CHAVE_QUANTIDADE:4,CHAVE_TIPO:CHAVE_RAP}
-    #     ]
-    # existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, None)
+        dicionarioTrabalho = defineListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+
+        buscaTrabalhoComumMelhorado(dicionarioTrabalho,dicionarioPersonagemAtributos)
