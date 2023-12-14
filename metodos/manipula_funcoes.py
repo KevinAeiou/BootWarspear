@@ -1549,104 +1549,10 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                             }
                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
                     else:
-                        for dicionarioRecurso in listaDicionariosRecursos:
-                            if dicionarioRecurso[CHAVE_QUANTIDADE] > 0:
-                                while True:
-                                    print(f'{D}: Faltam {dicionarioRecurso[CHAVE_QUANTIDADE]} de {dicionarioRecurso[CHAVE_NOME]}.')
-                                    linhaSeparacao()
-                                    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
-                                    contadorQuantidadeRecursoProduzirProduzindo = 0
-                                    for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
-                                        nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME])
-                                        if variavelExiste(nomeRecursoProduzido):
-                                            if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
-                                                if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS or dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
-                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 1
-                                                elif (dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCP or
-                                                    dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP or
-                                                    dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS or
-                                                    dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT):
-                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 2
-                                                if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA], 'licença de produção do aprendiz'):
-                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
-                                                contadorQuantidadeRecursoProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE]
-                                        else:
-                                            if dicionarioTrabalhoProduzirProduzindo[CHAVE_ESTADO] == 1:
-                                                if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO], dicionarioRecurso[CHAVE_PROFISSAO]):
-                                                    if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_RARIDADE],'raro'):
-                                                        if trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzirProduzindo):
-                                                            nivelProducao = 0
-                                                            if dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == 3:
-                                                                nivelProducao = 1
-                                                            elif dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == 10:
-                                                                nivelProducao = 8
-                                                            if nivelProducao == dicionarioRecurso[CHAVE_NIVEL]:
-                                                                if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCP:
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 4
-                                                                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 3
-                                                                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 2
-                                                                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 5
-                                                                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 4
-                                                                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 3
-                                                                if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA], 'licença de produção do aprendiz'):
-                                                                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
-                                                                contadorQuantidadeRecursoProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE]
-                                    print(f'{D}: Existem {contadorQuantidadeRecursoProduzirProduzindo} unidades sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
-                                    linhaSeparacao()
-                                    if dicionarioRecurso[CHAVE_QUANTIDADE] - contadorQuantidadeRecursoProduzirProduzindo > 0:
-                                        listaDicionarioTrabalhos = retornaListaDicionariosTrabalhos()
-                                        if not tamanhoIgualZero(listaDicionarioTrabalhos):
-                                            for dicionarioTrabalho in listaDicionarioTrabalhos:
-                                                nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalho[CHAVE_NOME])
-                                                if variavelExiste(nomeRecursoProduzido):
-                                                    if textoEhIgual(nomeRecursoProduzido,dicionarioRecurso[CHAVE_NOME]):
-                                                        dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do aprendiz'
-                                                        dicionarioTrabalho[CHAVE_RECORRENCIA] = False
-                                                        dicionarioTrabalho[CHAVE_ESTADO] = 0
-                                                        print(f'{D}: Dicionario trabalho recurso faltante:')
-                                                        linhaSeparacao()
-                                                        for atributo in dicionarioTrabalho:
-                                                            print(f'{D}: {atributo} = {dicionarioTrabalho[atributo]}.')
-                                                        linhaSeparacao()
-                                                        adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
-                                                        break
-                                    else:
-                                        if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
-                                            for dicionarioRecurso1 in listaDicionariosRecursos:
-                                                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCT:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = 0
-                                                elif dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 4) - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
-                                        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
-                                            for dicionarioRecurso1 in listaDicionariosRecursos:
-                                                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCS:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = 0
-                                                elif dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3.5) - (dicionarioRecurso[CHAVE_QUANTIDADE] * 2)
-                                        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
-                                            for dicionarioRecurso1 in listaDicionariosRecursos:
-                                                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
-                                        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
-                                            for dicionarioRecurso1 in listaDicionariosRecursos:
-                                                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
-                                        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
-                                            for dicionarioRecurso1 in listaDicionariosRecursos:
-                                                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                                                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 2)           
-                                        print(f'{D}: Existem unidades suficientes sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
-                                        linhaSeparacao()
-                                        break
-                        else:
-                            confirmacao = False
-                            print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
-                            linhaSeparacao()
+                        produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
+                        confirmacao = False
+                        print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
+                        linhaSeparacao()
                 else:
                     confirmacao = False
                     print(f'{D}:Quantidade de trabalhos na fila para produzir ou produzindo execede o máximo permitido.')
@@ -1660,6 +1566,118 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
         confirmacao = False
         print(f'{D}:Dicionário profissão priorizada vazio!')
     return confirmacao
+
+def produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos):
+    listaDicionarioTrabalhos = retornaListaDicionariosTrabalhos()
+    if not tamanhoIgualZero(listaDicionarioTrabalhos):
+        for dicionarioRecurso in listaDicionariosRecursos:
+            if dicionarioRecurso[CHAVE_QUANTIDADE] > 0:
+                while True:
+                    print(f'{D}: Faltam {dicionarioRecurso[CHAVE_QUANTIDADE]} de {dicionarioRecurso[CHAVE_NOME]}.')
+                    linhaSeparacao()
+                    quantidadeRecursoProduzirProduzindo = retornaQuantidadeRecursoProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioRecurso)
+                    if dicionarioRecurso[CHAVE_QUANTIDADE] - quantidadeRecursoProduzirProduzindo > 0:
+                            dicionarioTrabalho = defineDicionarioRecursoNecessario(dicionarioRecurso, listaDicionarioTrabalhos)
+                            if not tamanhoIgualZero(dicionarioTrabalho):
+                                adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
+                    else:
+                        print(f'{D}: Existem unidades suficientes sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
+                        linhaSeparacao()
+                        listaDicionariosRecursos = atualizaQuantidadeRecursoLista(listaDicionariosRecursos, dicionarioRecurso)
+                        break
+    else:
+        print(f'Erro ao definir lista de trabalhos!')
+        linhaSeparacao()
+
+def defineDicionarioRecursoNecessario(dicionarioRecurso, listaDicionarioTrabalhos):
+    for dicionarioTrabalho in listaDicionarioTrabalhos:
+        nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalho[CHAVE_NOME])
+        if variavelExiste(nomeRecursoProduzido):
+            if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
+                dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do aprendiz'
+                dicionarioTrabalho[CHAVE_RECORRENCIA] = False
+                dicionarioTrabalho[CHAVE_ESTADO] = 0
+                print(f'{D}: Dicionario trabalho recurso faltante:')
+                linhaSeparacao()
+                for atributo in dicionarioTrabalho:
+                    print(f'{D}: {atributo} = {dicionarioTrabalho[atributo]}.')
+                linhaSeparacao()
+                break
+    else:
+        dicionarioTrabalho = {}
+        print(f'Erro ao definir dicionário de recurso necessário!')
+        linhaSeparacao()
+    return dicionarioTrabalho
+
+def atualizaQuantidadeRecursoLista(listaDicionariosRecursos, dicionarioRecurso):
+    if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
+        for dicionarioRecurso1 in listaDicionariosRecursos:
+            if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCT:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = 0
+            elif dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 4) - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
+    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
+        for dicionarioRecurso1 in listaDicionariosRecursos:
+            if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCS:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = 0
+            elif dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3.5) - (dicionarioRecurso[CHAVE_QUANTIDADE] * 2)
+    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
+        for dicionarioRecurso1 in listaDicionariosRecursos:
+            if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
+    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
+        for dicionarioRecurso1 in listaDicionariosRecursos:
+            if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
+    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
+        for dicionarioRecurso1 in listaDicionariosRecursos:
+            if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
+                dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 2)
+    return listaDicionariosRecursos
+
+def retornaQuantidadeRecursoProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioRecurso):
+    listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
+    quantidadeRecursoProduzirProduzindo = 0
+    for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
+        nomeRecursoProduzido = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME])
+        if variavelExiste(nomeRecursoProduzido):
+            if textoEhIgual(nomeRecursoProduzido, dicionarioRecurso[CHAVE_NOME]):
+                if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS or dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
+                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 1
+                elif (dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCP or
+                    dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP or
+                    dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS or
+                    dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT):
+                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 2
+                if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA], 'licença de produção do aprendiz'):
+                    dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
+                quantidadeRecursoProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE]
+        else:
+            nivelProducao = 0
+            if dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == 3:
+                nivelProducao = 1
+            elif dicionarioTrabalhoProduzirProduzindo[CHAVE_NIVEL] == 10:
+                nivelProducao = 8
+            if (dicionarioTrabalhoProduzirProduzindo[CHAVE_ESTADO] == 1 and
+                textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO], dicionarioRecurso[CHAVE_PROFISSAO])and
+                textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_RARIDADE],'raro')and
+                trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzirProduzindo)and
+                nivelProducao == dicionarioRecurso[CHAVE_NIVEL]):
+                    if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
+                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 2
+                    elif (dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS or dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT):
+                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 3
+                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCP or dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
+                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 4
+                    elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
+                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = 5
+                    if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA], 'licença de produção do aprendiz'):
+                        dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE] * 2                                        
+                    quantidadeRecursoProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_QUANTIDADE]
+    print(f'{D}: Existem {quantidadeRecursoProduzirProduzindo} unidades sendo produzidas de {dicionarioRecurso[CHAVE_NOME]}.')
+    linhaSeparacao()
+    return quantidadeRecursoProduzirProduzindo
 
 def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos):
     confirmacao = True
@@ -1708,7 +1726,7 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
                 DR12 = {
                     CHAVE_NOME:nomeR12,
                     CHAVE_NIVEL:1,
-                    CHAVE_EXPERIENCIA:5,
+                    CHAVE_EXPERIENCIA:4,
                     CHAVE_TIPO:CHAVE_RCS,
                     CHAVE_PROFISSAO:dicionarioRecurso[CHAVE_PROFISSAO],
                     CHAVE_QUANTIDADE:quantidadeRecursoFaltante}
@@ -1770,7 +1788,7 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
             if quantidadeRecursoFaltante <= 0:
                 quantidadeRecursoFaltante = 0
             dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        listaDicionariosRecursos = sorted(listaDicionariosRecursos,key=lambda dicionario:dicionario[CHAVE_TIPO],reverse=True)
+        listaDicionariosRecursos = sorted(listaDicionariosRecursos,key=lambda dicionario:dicionario[CHAVE_TIPO])
     else:
         print(f'{D}: Lista dicionários recursos depois de subtrair estoque:')
         linhaSeparacao()
@@ -1788,6 +1806,7 @@ def xpSuficienteParaEvoluir(xpNecessario, somaXpProduzirProduzindo):
     return xpNecessario - somaXpProduzirProduzindo >= 0
 
 def defineListaDicionarioRecursos(dicionarioTrabalho):
+    print(f'Definindo lista de dicionários de recursos.')
     listaDicionariosRecursos = []
     dicionarioTrabalho = defineQuantidadeRecursos(dicionarioTrabalho)
     listaDicionarioProfissaoRecursos = retornaListaDicionarioProfissaoRecursos(1)
@@ -1854,7 +1873,6 @@ def defineListaDicionarioRecursos(dicionarioTrabalho):
         listaDicionariosRecursos.append(DRAT)
         listaDicionariosRecursos.append(DRAS)
         listaDicionariosRecursos.append(DRAP)
-
     print(f'{D}: Lista de dicionários recursos:')
     for dicionarioRecurso in listaDicionariosRecursos:
         for atributo in dicionarioRecurso:
@@ -1961,6 +1979,7 @@ def retornaNomeRecursoTrabalhoProducao(nomeTrabalhoProducao):
     return nomeRecurso
 
 def defineQuantidadeRecursos(dicionarioTrabalho):
+    print(f'Define quantidade de recursos primário, segundário e terciário.')
     nivelProduzTrabalhoComum = dicionarioTrabalho[CHAVE_NIVEL]
     recursoTerciario = 0
     if nivelProduzTrabalhoComum == 10:
@@ -1988,8 +2007,11 @@ def defineQuantidadeRecursos(dicionarioTrabalho):
     elif nivelProduzTrabalhoComum == 32:
         recursoTerciario = 18
     dicionarioTrabalho[CHAVE_QUANTIDADE_TERCIARIO] = recursoTerciario
-    dicionarioTrabalho[CHAVE_QUANTIDADE_SECUNDARIO] = recursoTerciario+1
-    dicionarioTrabalho[CHAVE_QUANTIDADE_PRIMARIO] = recursoTerciario+2
+    dicionarioTrabalho[CHAVE_QUANTIDADE_SECUNDARIO] = recursoTerciario + 1
+    dicionarioTrabalho[CHAVE_QUANTIDADE_PRIMARIO] = recursoTerciario + 2
+    for atributo in dicionarioTrabalho:
+        print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}.')
+    linhaSeparacao()
     return dicionarioTrabalho
 
 def retornaSomaXpTrabalhoProducao(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade):
@@ -3539,12 +3561,9 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
         CHAVE_NOME:'Faixa de Jade Opaca',
         CHAVE_EXPERIENCIA:30,
-        CHAVE_NIVEL:8,
+        CHAVE_NIVEL:16,
         CHAVE_RARIDADE:'comum',
-        CHAVE_PROFISSAO:'Braceletes',
-        CHAVE_RECORRENCIA:False,
-        CHAVE_LICENCA:'Licença de produção do iniciante',
-        CHAVE_ESTADO:0
+        CHAVE_PROFISSAO:'Braceletes'
         }
     trabalhoComumDesejado={
         CHAVE_ID:None,
