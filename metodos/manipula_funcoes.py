@@ -318,7 +318,6 @@ def verificaLicenca(dicionarioTrabalho, dicionarioPersonagem):
                 primeiraBusca = True
                 listaCiclo = []
                 while not texto1PertenceTexto2(textoReconhecido, dicionarioTrabalho[CHAVE_LICENCA]):
-                    primeiraBusca = False
                     clickEspecifico(1, "right")
                     listaCiclo.append(textoReconhecido)
                     textoReconhecido = retornaLicencaReconhecida()
@@ -326,7 +325,7 @@ def verificaLicenca(dicionarioTrabalho, dicionarioPersonagem):
                         print(f'Licença reconhecida: {textoReconhecido}.')
                         linhaSeparacao()
                         if texto1PertenceTexto2('nenhumitem', textoReconhecido) or len(listaCiclo) > 10:
-                            if textoEhIgual(dicionarioTrabalho[CHAVE_LICENCA], 'Licença de produção do iniciante'):
+                            if textoEhIgual(dicionarioTrabalho[CHAVE_LICENCA], 'Licença de produção do iniciante')and primeiraBusca:
                                 break
                             dicionarioTrabalho[CHAVE_LICENCA] = 'Licença de produção do iniciante'
                             print(f'Licença para trabalho agora é: {dicionarioTrabalho[CHAVE_LICENCA]}.')
@@ -336,6 +335,7 @@ def verificaLicenca(dicionarioTrabalho, dicionarioPersonagem):
                         print(f'Erro ao reconhecer licença!')
                         linhaSeparacao()
                         break
+                    primeiraBusca = False
                 else:#se encontrou a licença buscada
                     if primeiraBusca:
                         clickEspecifico(1, "f1")
