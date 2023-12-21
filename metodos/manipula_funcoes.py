@@ -3633,6 +3633,7 @@ def funcao_teste(dicionarioUsuario):
             dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         dicionarioTrabalho = defineListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+        listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
 
         dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
         if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
@@ -3651,8 +3652,41 @@ def funcao_teste(dicionarioUsuario):
                     nivelTrabalhoProducao = retornaNivelTrabalhoProducao(nivelProfissao)
                     print(f'{D}: Nível do trabalho - {nivelTrabalhoProducao}.')
                     linhaSeparacao()
-                    
-                    pass
+                    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+                    if not tamanhoIgualZero(listaDicionariosTrabalhos):
+                        listaDicionariosTrabalhosMelhorados = []
+                        for dicionarioTrabalho in listaDicionariosTrabalhos:
+                            if (textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], 'melhorado')and
+                                dicionarioTrabalho[CHAVE_NIVEL] == nivelTrabalhoProducao and
+                                textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissaoPrioridade[CHAVE_NOME])):
+                                listaDicionariosTrabalhosMelhorados.append(dicionarioTrabalho)
+                        print(f'{D}: Lista de dicionários trabalhos melhorados...')
+                        for dicionarioTrabalhoMelhorado in listaDicionariosTrabalhosMelhorados:
+                            for atributo in dicionarioTrabalhoMelhorado:
+                                print(f'{D}: {atributo} - {dicionarioTrabalhoMelhorado[atributo]}.')
+                            linhaSeparacao()
+                        linhaSeparacao()
+                        if not tamanhoIgualZero(listaDicionariosTrabalhosEstoque):
+                            for dicionarioTrabalhoEstoque in listaDicionariosTrabalhosEstoque:
+                                for posicao in range(len(listaDicionariosTrabalhosMelhorados)):
+                                    if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], listaDicionariosTrabalhosMelhorados[posicao][CHAVE_NOME]):
+                                        del listaDicionariosTrabalhosMelhorados[posicao]
+                                        break
+                            if not tamanhoIgualZero(listaDicionariosTrabalhosMelhorados):
+                                for dicionarioTrabalhoMelhorado in listaDicionariosTrabalhosMelhorados:
+                                    if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhorado:
+                                        
+                                        pass
+                            else:
+                                print(f'{D}: Todos os trabalhos melhorados da profissão - {dicionarioProfissaoPrioridade[CHAVE_NOME]} no nível - {nivelTrabalhoProducao} foram produzidos.')
+                                linhaSeparacao()
+                        else:
+                            print(f'{D}: Lista de trabalhos em estoque está vazia!')
+                            linhaSeparacao()
+                            
+                    else:
+                        print(f'{D}: Lista de trabalhos está vazia!')
+                        linhaSeparacao()
         else:
             print(f'{D}: Nem uma profissão priorizada definida.')
             linhaSeparacao()
