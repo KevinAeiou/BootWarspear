@@ -1521,8 +1521,8 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
         nivelProfissao, xpMinimo, xpMaximo = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
         xpNecessario = xpMaximo - xpMinimo
         xpRestante = xpNecessario - (dicionarioProfissaoPrioridade[CHAVE_EXPERIENCIA] - xpMinimo)
-        nivelProduzTrabalhoComum = retornaNivelProduzTrabalhoComum(nivelProfissao)
-        listaDicionarioTrabalhoComum = retornaListaDicionarioTrabalhoComumNivelEspecifico(dicionarioProfissaoPrioridade, nivelProduzTrabalhoComum)
+        nivelTrabalhoProducao = retornaNivelTrabalhoProducao(nivelProfissao)
+        listaDicionarioTrabalhoComum = retornaListaDicionarioTrabalhoComumNivelEspecifico(dicionarioProfissaoPrioridade, nivelTrabalhoProducao)
         if not tamanhoIgualZero(listaDicionarioTrabalhoComum):
             listaDicionarioTrabalhoComum = defineQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum)
             listaDicionarioTrabalhoComum, quantidadeTrabalhoProduzirProduzindo = defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum)
@@ -1535,7 +1535,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                         dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * quantidadeTrabalhoProduzir
                     exitemRecursosSuficientes, listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
                     if exitemRecursosSuficientes:
-                        print(f'{D}: Existem recursos suficientes para produzir: {listaDicionarioTrabalhoComum[0][CHAVE_NOME]} - nível: {nivelProduzTrabalhoComum}.')
+                        print(f'{D}: Existem recursos suficientes para produzir: {listaDicionarioTrabalhoComum[0][CHAVE_NOME]} - nível: {nivelTrabalhoProducao}.')
                         listaDicionarioTrabalhoComum = sorted(listaDicionarioTrabalhoComum,key=lambda dicionario:dicionario[CHAVE_QUANTIDADE])
                         dicionarioTrabalho = {
                             CHAVE_NOME:listaDicionarioTrabalhoComum[0][CHAVE_NOME],
@@ -1561,7 +1561,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                 print(f'{D}:Experiência trabalhos para produzir e produzindo é suficiente para evoluir nível da profissão.')    
         else:
             confirmacao = False
-            print(f'{D}:Lista dicionário trabalho comum profissão: {dicionarioProfissaoPrioridade[CHAVE_NOME]}, nível: {nivelProduzTrabalhoComum} está vazia!')
+            print(f'{D}:Lista dicionário trabalho comum profissão: {dicionarioProfissaoPrioridade[CHAVE_NOME]}, nível: {nivelTrabalhoProducao} está vazia!')
     else:
         confirmacao = False
         print(f'{D}:Dicionário profissão priorizada vazio!')
@@ -2033,36 +2033,36 @@ def retornaListaDicionarioTrabalhoComumNivelEspecifico(dicionarioProfissaoPriori
             listaDicionarioTrabalhoComum.append(dicionarioTrabalho)
     return listaDicionarioTrabalhoComum
 
-def retornaNivelProduzTrabalhoComum(nivelProfissao):
+def retornaNivelTrabalhoProducao(nivelProfissao):
     if nivelProfissao == 1:
-        nivelProduzTrabalhoComum = 1
+        nivelTrabalhoProducao = 1
     elif nivelProfissao == 8:
-        nivelProduzTrabalhoComum = 8
+        nivelTrabalhoProducao = 8
     elif nivelProfissao >= 2 and nivelProfissao < 4:
-        nivelProduzTrabalhoComum = 10
+        nivelTrabalhoProducao = 10
     elif nivelProfissao >= 4 and nivelProfissao < 6:
-        nivelProduzTrabalhoComum = 12
+        nivelTrabalhoProducao = 12
     elif nivelProfissao >= 6 and nivelProfissao < 8:
-        nivelProduzTrabalhoComum = 14
+        nivelTrabalhoProducao = 14
     elif nivelProfissao >= 9 and nivelProfissao < 11:
-        nivelProduzTrabalhoComum = 16
+        nivelTrabalhoProducao = 16
     elif nivelProfissao >= 11 and nivelProfissao < 13:
-        nivelProduzTrabalhoComum = 18
+        nivelTrabalhoProducao = 18
     elif nivelProfissao >= 13 and nivelProfissao < 15:
-        nivelProduzTrabalhoComum = 20
+        nivelTrabalhoProducao = 20
     elif nivelProfissao >= 15 and nivelProfissao < 17:
-        nivelProduzTrabalhoComum = 22
+        nivelTrabalhoProducao = 22
     elif nivelProfissao >= 17 and nivelProfissao < 19:
-        nivelProduzTrabalhoComum = 24
+        nivelTrabalhoProducao = 24
     elif nivelProfissao >= 19 and nivelProfissao < 21:
-        nivelProduzTrabalhoComum = 26
+        nivelTrabalhoProducao = 26
     elif nivelProfissao >= 21 and nivelProfissao < 23:
-        nivelProduzTrabalhoComum = 28
+        nivelTrabalhoProducao = 28
     elif nivelProfissao >= 23 and nivelProfissao < 25:
-        nivelProduzTrabalhoComum = 30
+        nivelTrabalhoProducao = 30
     elif nivelProfissao >= 25 and nivelProfissao < 27:
-        nivelProduzTrabalhoComum = 32
-    return nivelProduzTrabalhoComum
+        nivelTrabalhoProducao = 32
+    return nivelTrabalhoProducao
 
 def retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade):
     listaXPMaximo = [20,200,540,1250,2550,4700,7990,12770,19440,28440,40270,55450,74570,98250,127180,156110,185040,215000,245000,300000,375000,470000,585000,720000,875000,1050000]
@@ -2082,7 +2082,7 @@ def retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade):
                 xpMinimo = listaXPMaximo[posicao-1]
                 xpMaximo = listaXPMaximo[posicao]
                 break
-    return nivelProfissao,xpMinimo,xpMaximo
+    return nivelProfissao, xpMinimo, xpMaximo
 
 def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
     dicionarioProfissaoPrioridade = {}
@@ -3634,4 +3634,31 @@ def funcao_teste(dicionarioUsuario):
         dicionarioTrabalho = defineListaDicionariosTrabalhosPriorizados(dicionarioTrabalho)
         dicionarioTrabalho = defineListaDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
 
-        confirmacao, listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
+        dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
+        if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
+            nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
+            print(f'{D}: Nível da profissão - {nivelProfissao}.')
+            linhaSeparacao()
+            if nivelProfissao < 8:
+                if valorEhImpar(nivelProfissao):
+                    nivelTrabalhoProducao = retornaNivelTrabalhoProducao(nivelProfissao)
+                    print(f'{D}: Nível do trabalho - {nivelTrabalhoProducao}.')
+                    linhaSeparacao()
+
+                    pass
+            else:
+                if valorEhPar(nivelProfissao):
+                    nivelTrabalhoProducao = retornaNivelTrabalhoProducao(nivelProfissao)
+                    print(f'{D}: Nível do trabalho - {nivelTrabalhoProducao}.')
+                    linhaSeparacao()
+                    
+                    pass
+        else:
+            print(f'{D}: Nem uma profissão priorizada definida.')
+            linhaSeparacao()
+
+def valorEhPar(nivel):
+    return nivel % 2 == 0
+
+def valorEhImpar(nivel):
+    return nivel % 2 == 1
