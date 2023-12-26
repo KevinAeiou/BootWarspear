@@ -2702,6 +2702,13 @@ def iniciaProducao(dicionarioTrabalho, dicionarioPersonagem):
                                     dicionarioTrabalhoDesejado[CHAVE_LICENCA] = 'Licença de produção do iniciante'
                                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                                     linhaSeparacao()
+                            else:
+                                if len(listaCiclo) > 10:
+                                    print(f'{dicionarioTrabalhoDesejado[CHAVE_LICENCA]} não encontrado!')
+                                    print(f'Licença buscada agora é Licença de produção do iniciante!')
+                                    dicionarioTrabalhoDesejado[CHAVE_LICENCA] = 'Licença de produção do iniciante'
+                                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
+                                    linhaSeparacao()
                         else:
                             erro = verificaErro(None)
                             if erro == erroOutraConexao:
