@@ -366,7 +366,8 @@ def menu(dicionarioUsuario):
                                                 listaIdUsuarios = ['LA2UjmX7oBX3AlRJfmdWAD41OWg2','eEDku1Rvy7f7vbwJiVW7YMsgkIF2']
                                                 for idUsuario in listaIdUsuarios:
                                                     dicionarioUsuarioModificacao = {CHAVE_ID_USUARIO:idUsuario}
-                                                    dicionarioUsuarioModificacao = defineListaDicionarioPersonagem(dicionarioUsuarioModificacao)
+                                                    listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuarioModificacao)
+                                                    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
                                                     for dicionarioPersonagem in dicionarioUsuarioModificacao[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
                                                         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioPersonagem
                                                         dicionarioPersonagem[CHAVE_ID_USUARIO] = dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]
@@ -579,7 +580,8 @@ def menuExcluiTrabalho(dicionarioUsuario):
 
 def menuPersonagem(dicionarioUsuario):
     print(f'Personagens.')
-    dicionarioUsuario=defineListaDicionarioPersonagem(dicionarioUsuario)
+    listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
     linhaSeparacao()
     if tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
         menuTeste()

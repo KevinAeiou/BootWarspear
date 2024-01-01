@@ -1,5 +1,6 @@
 import time
 import cv2
+from lista_chaves import *
 import pyautogui as tecla
 
 tela = 'boot_warspear\atualizacao_tela.png'
@@ -79,9 +80,10 @@ def inicia_trabalho(posicao):
         print('____________________________________')
         time.sleep(1) 
 
-def entraProfissaoEspecifica(indice):
+def entraProfissaoEspecifica(dicionarioProfissao):
+    print(f'Entrando na profissão {dicionarioProfissao[CHAVE_NOME]}...')
     time.sleep(1)
-    for x in range(indice):
+    for x in range(dicionarioProfissao[CHAVE_POSICAO]):
         tecla.hotkey('down')
         print('Baixo.')
         time.sleep(0.5)

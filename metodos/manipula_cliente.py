@@ -284,10 +284,9 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
     # print(f'_______________________________________________________________')
     return listaDicionariosOrdenada
 
-def defineListaDicionarioPersonagem(dicionarioPersonagem):
+def retornaListaDicionariosPersonagens(dicionarioPersonagem):
     print(f'Definindo lista de personagem.')
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = []
-    listaPersonagem = []
+    listaDicionariosPersonagens = []
     caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
     requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
@@ -308,8 +307,7 @@ def defineListaDicionarioPersonagem(dicionarioPersonagem):
                     CHAVE_NOME:dicionarioRequisicao[personagemId][CHAVE_NOME],
                     CHAVE_SENHA:dicionarioRequisicao[personagemId][CHAVE_SENHA],
                     CHAVE_USO:dicionarioRequisicao[personagemId][CHAVE_USO]}
-                listaPersonagem.append(personagem)
-            dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaPersonagem,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
+                listaDicionariosPersonagens.append(personagem)
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:
@@ -317,7 +315,7 @@ def defineListaDicionarioPersonagem(dicionarioPersonagem):
     # print(f'{D}:Lista de personagens:')
     # for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
     #     print(f'{D}:{personagem[CHAVE_NOME]}.')
-    return dicionarioPersonagem
+    return listaDicionariosPersonagens
 
 def modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,atributo,valor):
     dados={atributo:valor}
