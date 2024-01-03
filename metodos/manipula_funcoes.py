@@ -424,6 +424,12 @@ def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, rarid
     if tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
         print(f'Nem um trabaho {raridade} na lista!')
         linhaSeparacao()
+    else:
+        for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
+            if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
+                dicionarioTrabalhoDesejado[CHAVE_PRIORIDADE] = 1
+            else:
+                dicionarioTrabalhoDesejado[CHAVE_PRIORIDADE] = 2
     return listaDicionariosTrabalhosDesejados
 
 def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade):
@@ -1456,7 +1462,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosEspeciais)
         listaDicionariosTrabalhosRaros = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosRaros):
-            listaDicionariosTrabalhosRaros = sorted(listaDicionariosTrabalhosRaros,key=lambda dicionario:dicionario[CHAVE_NOME])
+            listaDicionariosTrabalhosRaros = sorted(listaDicionariosTrabalhosRaros,key=lambda dicionario:(dicionario[CHAVE_PRIORIDADE], dicionario[CHAVE_NOME]))
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosRaros)
         listaDicionariosTrabalhosMelhorados = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_MELHORADO, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosMelhorados):
@@ -1464,7 +1470,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosMelhorados)
         listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosComuns):
-            listaDicionariosTrabalhosComuns = sorted(listaDicionariosTrabalhosComuns,key=lambda dicionario:dicionario[CHAVE_NOME])
+            listaDicionariosTrabalhosComuns = sorted(listaDicionariosTrabalhosComuns,key=lambda dicionario:(dicionario[CHAVE_PRIORIDADE], dicionario[CHAVE_NOME]))
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosComuns)
         indiceLista = 0
         while indiceLista < len(listaDeListaTrabalhos):
