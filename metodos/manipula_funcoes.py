@@ -1473,7 +1473,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             for dicionarioTrabalhoVerificado in listaVerificada:
                 if raridadeTrabalhoEhEspecial(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhRaro(dicionarioTrabalhoVerificado):
                     print(f'Trabalho desejado: {dicionarioTrabalhoVerificado[CHAVE_NOME]}.')
-                    dicionarioTrabalho[CHAVE_POSICAO] = 1
+                    dicionarioTrabalho[CHAVE_POSICAO] = 0
                     while naoFizerQuatroVerificacoes(dicionarioTrabalho)and not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                         nomeTrabalhoReconhecido = retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho)
                         print(f'Trabalho {dicionarioTrabalhoVerificado[CHAVE_RARIDADE]} reconhecido: {nomeTrabalhoReconhecido}.')
