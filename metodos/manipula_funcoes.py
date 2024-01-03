@@ -1490,7 +1490,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             else:
                 indice += 1
         if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):# Começa processo de produção do trabalho
-            dicionarioTrabalho, dicionarioPersonagem = iniciaProducao(dicionarioTrabalho,dicionarioPersonagem)
+            dicionarioTrabalho, dicionarioPersonagemAtributos = iniciaProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
             linhaSeparacao()
         else:
             saiProfissaoVerificada(dicionarioTrabalho)
@@ -2688,7 +2688,6 @@ def iniciaProducao(dicionarioTrabalho, dicionarioPersonagem):
         clickEspecifico(1, 'enter')
     elif erro == erroOutraConexao:
         dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
-
     if confirmacao:
         # confirmacao,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],dicionarioPersonagem)
         if variavelExiste(dicionarioTrabalhoDesejado):
