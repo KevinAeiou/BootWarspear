@@ -593,24 +593,24 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
     # linhaSeparacao()
     return confirmacao
 
-def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
+def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     time.sleep(1)
-    nomeTrabalhoReconhecido=None
-    if identificador==0:
-        altura=39
-    elif identificador==1:
-        altura=68
+    nomeTrabalhoReconhecido = None
+    if identificador == 0:
+        altura = 39
+    elif identificador == 1:
+        altura = 68
     #tira novo print da tela
-    telaInteira=retornaAtualizacaoTela()
-    frameTelaInteira=telaInteira[yinicial_nome:yinicial_nome+altura,233:478]
+    telaInteira = retornaAtualizacaoTela()
+    frameTelaInteira = telaInteira[yinicialNome:yinicialNome + altura, 233:478]
     # mostraImagem(0,frameTelaInteira,None)
     #teste trata frame trabalho comum
-    frameNomeTrabalhoTratado=retornaImagemCinza(frameTelaInteira)
-    frameNomeTrabalhoTratado=retornaImagemBinarizada(frameNomeTrabalhoTratado)
-    contadorPixelPreto=np.sum(frameNomeTrabalhoTratado==0)
+    frameNomeTrabalhoTratado = retornaImagemCinza(frameTelaInteira)
+    frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalhoTratado)
+    contadorPixelPreto=np.sum(frameNomeTrabalhoTratado == 0)
     # # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
-    if contadorPixelPreto>0:
-        nomeTrabalhoReconhecido=reconheceTexto(frameNomeTrabalhoTratado)
+    if contadorPixelPreto > 0:
+        nomeTrabalhoReconhecido = reconheceTexto(frameNomeTrabalhoTratado)
     # # print(f'{D}:Trabalho reconhecido {nomeTrabalhoReconhecido}.')
     return nomeTrabalhoReconhecido
 
