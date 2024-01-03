@@ -1433,6 +1433,7 @@ def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
     dicionarioPersonagemAtributos = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
     indiceProfissao = 0
+    dicionarioTrabalho[CHAVE_POSICAO] = -1
     while indiceProfissao < len(dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]):#percorre lista de profissao
         profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indiceProfissao]
         if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
@@ -1444,7 +1445,6 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         linhaSeparacao()
         listaDeListaTrabalhos = []
         dicionarioTrabalho[CHAVE_PROFISSAO] = profissaoVerificada[CHAVE_NOME]
-        dicionarioTrabalho[CHAVE_POSICAO] = -1
         dicionarioTrabalho[CHAVE_CONFIRMACAO] = True
         listaDicionariosTrabalhosEspeciais = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_ESPECIAL, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosEspeciais):
@@ -1469,6 +1469,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             for dicionarioTrabalhoVerificado in listaVerificada:
                 if raridadeTrabalhoEhEspecial(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhRaro(dicionarioTrabalhoVerificado):
                     print(f'Trabalho desejado: {dicionarioTrabalhoVerificado[CHAVE_NOME]}.')
+                    dicionarioTrabalho[CHAVE_POSICAO] = 1
                     while naoFizerQuatroVerificacoes(dicionarioTrabalho)and not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                         nomeTrabalhoReconhecido = retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho)
                         print(f'Trabalho {dicionarioTrabalhoVerificado[CHAVE_RARIDADE]} reconhecido: {nomeTrabalhoReconhecido}.')
@@ -1485,6 +1486,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                         else:
                             dicionarioTrabalho[CHAVE_POSICAO] = 4
                         dicionarioTrabalho = incrementaChavePosicaoTrabalho(dicionarioTrabalho)
+                    dicionarioTrabalho[CHAVE_POSICAO] = -1
                     linhaSeparacao()
                     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                         break
@@ -1504,6 +1506,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         else:
             saiProfissaoVerificada(dicionarioTrabalho)
             indiceProfissao += 1
+            dicionarioTrabalho[CHAVE_POSICAO] = -1
         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                 if retornaEstadoTrabalho() == concluido:
@@ -2140,10 +2143,7 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
 
 def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     time.sleep(2)
-    posicao = dicionarioTrabalho[CHAVE_POSICAO]
-    if posicao < 0:
-        posicao = 1
-    yinicialNome = (posicao * 70) + 285
+    yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO] * 70) + 285
     return retornaNomeTrabalhoReconhecido(yinicialNome,0)
 
 def chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
@@ -2151,8 +2151,6 @@ def chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
     return dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
 
 def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
-    if dicionarioTrabalho[CHAVE_POSICAO] == -1:
-        dicionarioTrabalho[CHAVE_POSICAO] = 1
     dicionarioTrabalho[CHAVE_POSICAO] += 1
     return dicionarioTrabalho
 
