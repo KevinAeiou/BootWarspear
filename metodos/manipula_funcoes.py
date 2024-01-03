@@ -406,12 +406,12 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
         dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
     return dicionarioTrabalho
 
-def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade):
+def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade, dicionarioProfissao):
     listaDicionariosTrabalhosDesejados = []
     print(f'Buscando trabalho {raridade} na lista...')
     for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-        if textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade):
+        if textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade) and textoEhIgual(trabalhoDesejado[CHAVE_PROFISSAO], dicionarioProfissao[CHAVE_NOME]):
             print(f'Trabalho {raridade} encontado: {trabalhoDesejado[CHAVE_NOME]}.')
             linhaSeparacao()
             listaDicionariosTrabalhosDesejados.append(trabalhoDesejado)
@@ -453,7 +453,7 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
             nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(530, 1)
         if variavelExiste(nomeTrabalhoReconhecido):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
-            for dicionarioTrabalhoDesejado in listaDicionarioTrabalhoDesejado:
+            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
                 print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
                 if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
                     clickEspecifico(1, 'enter')
@@ -470,7 +470,7 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
         else:
             if not primeiraBusca(dicionarioTrabalho) and dicionarioTrabalho[CHAVE_POSICAO] > 5:
                 # dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
-                print(f'Trabalho {listaDicionarioTrabalhoDesejado[0][CHAVE_RARIDADE]} não reconhecido!')
+                print(f'Trabalho {dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE]} não reconhecido!')
                 vaiParaMenuTrabalhoEmProducao()
                 linhaSeparacao()
                 break
@@ -540,7 +540,7 @@ def variavelExiste(variavelVerificada):
     return variavelVerificada!=None
 
 def primeiraBusca(dicionarioTrabalho):
-    return dicionarioTrabalho[CHAVE_POSICAO_TRABALHO_COMUM]==-1
+    return dicionarioTrabalho[CHAVE_POSICAO]==-1
 
 def limpaRuidoTexto(texto):
     return unidecode(texto).replace(' ','').replace('-','').lower()
@@ -1441,16 +1441,16 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         dicionarioTrabalho[CHAVE_PROFISSAO] = profissaoVerificada[CHAVE_NOME]
         dicionarioTrabalho[CHAVE_POSICAO] = -1
         dicionarioTrabalho[CHAVE_CONFIRMACAO] = True
-        listaDicionariosTrabalhosEspeciais = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_ESPECIAL)
+        listaDicionariosTrabalhosEspeciais = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_ESPECIAL, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosEspeciais):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosEspeciais)
-        listaDicionariosTrabalhosRaros = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO)
+        listaDicionariosTrabalhosRaros = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosRaros):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosRaros)
-        listaDicionariosTrabalhosMelhorados = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_MELHORADO)
+        listaDicionariosTrabalhosMelhorados = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_MELHORADO, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosMelhorados):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosMelhorados)
-        listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM)
+        listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosComuns):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosComuns)
         indice = 0
@@ -3701,7 +3701,7 @@ def funcao_teste(dicionarioUsuario):
 
     dicionarioTrabalho={
         CHAVE_CONFIRMACAO:True,
-        CHAVE_POSICAO_TRABALHO_COMUM:-1,
+        CHAVE_POSICAO:-1,
         CHAVE_PROFISSAO:'Armadura de tecido',
         CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
         }
@@ -3730,7 +3730,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosRecursos = defineListaDicionarioRecursos(trabalhoDesejado)
         for dicionarioRecurso in listaDicionariosRecursos:
             dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
-        listaDicionariosTrabalhoComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade=CHAVE_RARIDADE_COMUM)
+        listaDicionariosTrabalhoComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade=CHAVE_RARIDADE_COMUM, dicionarioProfissao = profissaoVerificada)
         listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
 
         dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
