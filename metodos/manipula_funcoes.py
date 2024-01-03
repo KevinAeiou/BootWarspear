@@ -1445,15 +1445,19 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         dicionarioTrabalho[CHAVE_CONFIRMACAO] = True
         listaDicionariosTrabalhosEspeciais = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_ESPECIAL, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosEspeciais):
+            listaDicionariosTrabalhosEspeciais = sorted(listaDicionariosTrabalhosEspeciais,key=lambda dicionario:dicionario[CHAVE_NOME])
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosEspeciais)
         listaDicionariosTrabalhosRaros = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosRaros):
+            listaDicionariosTrabalhosRaros = sorted(listaDicionariosTrabalhosEspeciais,key=lambda dicionario:dicionario[CHAVE_NOME])
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosRaros)
         listaDicionariosTrabalhosMelhorados = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_MELHORADO, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosMelhorados):
+            listaDicionariosTrabalhosMelhorados = sorted(listaDicionariosTrabalhosEspeciais,key=lambda dicionario:dicionario[CHAVE_NOME])
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosMelhorados)
         listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosComuns):
+            listaDicionariosTrabalhosComuns = sorted(listaDicionariosTrabalhosEspeciais,key=lambda dicionario:dicionario[CHAVE_NOME])
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosComuns)
         indiceLista = 0
         while indiceLista < len(listaDeListaTrabalhos):
@@ -2761,7 +2765,7 @@ def iniciaProducao(dicionarioTrabalho, dicionarioPersonagem):
                                             clickEspecifico(1, 'enter')
                                         tentativas += 1
                                     erro = verificaErro(dicionarioTrabalhoDesejado)
-                                dicionarioTrabalho[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
+                                dicionarioTrabalho[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
                                 if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
                                     dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
                                 print(f'Atualizou a CHAVE_LISTA_DESEJO.')
