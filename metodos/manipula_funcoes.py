@@ -2137,6 +2137,7 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
     return dicionarioProfissaoPrioridade
 
 def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
+    time.sleep(2)
     posicao = dicionarioTrabalho[CHAVE_POSICAO]
     if posicao < 0:
         posicao = 1
