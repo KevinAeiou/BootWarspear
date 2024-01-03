@@ -1455,6 +1455,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         indice = 0
         while indice < len(listaDeListaTrabalhos):
             listaVerificada = listaDeListaTrabalhos[indice]
+            dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaVerificada
             for dicionarioTrabalhoVerificado in listaVerificada:
                 if raridadeTrabalhoEhEspecial(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhRaro(dicionarioTrabalhoVerificado):
                     print(f'Trabalho desejado: {dicionarioTrabalhoVerificado[CHAVE_NOME]}.')
