@@ -1429,7 +1429,9 @@ def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
 
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
     dicionarioPersonagemAtributos = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
-    for profissaoVerificada in dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]:#percorre lista de profissao
+    indice = 0
+    while indice < len(dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]):#percorre lista de profissao
+        profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indice]
         if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
             continue
         if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
@@ -1494,6 +1496,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             linhaSeparacao()
         else:
             saiProfissaoVerificada(dicionarioTrabalho)
+            indice += 1
         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                 if retornaEstadoTrabalho() == concluido:
