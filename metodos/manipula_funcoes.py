@@ -488,6 +488,7 @@ def vaiParaMenuTrabalhoEmProducao():
 
 def vaiParaMenuProduzir(dicionarioPersonagemAtributos):
     erro = verificaErro(None)
+    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = False
     if not erroEncontrado(erro):
         menu = retornaMenu()
         if estaMenuInicial(menu):
@@ -500,7 +501,7 @@ def vaiParaMenuProduzir(dicionarioPersonagemAtributos):
                 break
             menu = retornaMenu()
         else:
-            confirmacao = True
+            dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = True
     elif existeOutraConexao(erro):
         dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO] = False
     return dicionarioPersonagemAtributos
