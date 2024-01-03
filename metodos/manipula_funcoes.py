@@ -414,9 +414,13 @@ def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, rarid
         if (textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade) and
             textoEhIgual(trabalhoDesejado[CHAVE_PROFISSAO], dicionarioProfissao[CHAVE_NOME]) and
             trabalhoDesejado[CHAVE_ESTADO] == 0):
-            print(f'Trabalho {raridade} encontado: {trabalhoDesejado[CHAVE_NOME]}.')
-            linhaSeparacao()
-            listaDicionariosTrabalhosDesejados.append(trabalhoDesejado)
+            for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
+                if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_NOME], trabalhoDesejado[CHAVE_NOME]):
+                    break
+            else:
+                print(f'Trabalho {raridade} encontado: {trabalhoDesejado[CHAVE_NOME]}.')
+                linhaSeparacao()
+                listaDicionariosTrabalhosDesejados.append(trabalhoDesejado)
     if tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
         print(f'Nem um trabaho {raridade} na lista!')
         linhaSeparacao()
