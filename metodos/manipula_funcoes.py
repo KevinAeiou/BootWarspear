@@ -592,6 +592,7 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
     return confirmacao
 
 def retornaNomeTrabalhoReconhecido(yinicial_nome,identificador):
+    time.sleep(1)
     nomeTrabalhoReconhecido=None
     if identificador==0:
         altura=39
