@@ -431,7 +431,7 @@ def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao
     return listaDicionariosTrabalhosBuscadosOrdenados
 
 def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
-    print(f'Buscando trabalho {dicionarioTrabalho[CHAVE_RARIDADE]}.')
+    print(f'Buscando trabalho {dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE]}.')
     contadorParaBaixo = 0
     if not primeiraBusca(dicionarioTrabalho):
         contadorParaBaixo = dicionarioTrabalho[CHAVE_POSICAO]
