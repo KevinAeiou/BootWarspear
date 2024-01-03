@@ -1484,7 +1484,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                                     break
                         else:
                             dicionarioTrabalho[CHAVE_POSICAO] = 4
-                        incrementaChavePosicaoTrabalho(dicionarioTrabalho)
+                        dicionarioTrabalho = incrementaChavePosicaoTrabalho(dicionarioTrabalho)
                     linhaSeparacao()
                     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                         break
@@ -2151,7 +2151,10 @@ def chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
     return dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
 
 def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
-    dicionarioTrabalho[CHAVE_POSICAO]+=1
+    if dicionarioTrabalho[CHAVE_POSICAO] == -1:
+        dicionarioTrabalho[CHAVE_POSICAO] = 1
+    dicionarioTrabalho[CHAVE_POSICAO] += 1
+    return dicionarioTrabalho
 
 def chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
     # # print(f'{D}:CHAVE_DICIONARIO_TRABALHO_DESEJADO: {dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]}.')
