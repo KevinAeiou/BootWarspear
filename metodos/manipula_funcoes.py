@@ -1429,9 +1429,9 @@ def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
 
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
     dicionarioPersonagemAtributos = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
-    indice = 0
-    while indice < len(dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]):#percorre lista de profissao
-        profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indice]
+    indiceProfissao = 0
+    while indiceProfissao < len(dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]):#percorre lista de profissao
+        profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indiceProfissao]
         if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
             continue
         if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
@@ -1455,9 +1455,9 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM, dicionarioProfissao = profissaoVerificada)
         if not tamanhoIgualZero(listaDicionariosTrabalhosComuns):
             listaDeListaTrabalhos.append(listaDicionariosTrabalhosComuns)
-        indice = 0
-        while indice < len(listaDeListaTrabalhos):
-            listaVerificada = listaDeListaTrabalhos[indice]
+        indiceLista = 0
+        while indiceLista < len(listaDeListaTrabalhos):
+            listaVerificada = listaDeListaTrabalhos[indiceLista]
             dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaVerificada
             for dicionarioTrabalhoVerificado in listaVerificada:
                 if raridadeTrabalhoEhEspecial(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhRaro(dicionarioTrabalhoVerificado):
@@ -1490,13 +1490,13 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                 break
             else:
-                indice += 1
+                indiceLista += 1
         if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):# Começa processo de produção do trabalho
             dicionarioTrabalho, dicionarioPersonagemAtributos = iniciaProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
             linhaSeparacao()
         else:
             saiProfissaoVerificada(dicionarioTrabalho)
-            indice += 1
+            indiceProfissao += 1
         if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
             if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                 if retornaEstadoTrabalho() == concluido:
