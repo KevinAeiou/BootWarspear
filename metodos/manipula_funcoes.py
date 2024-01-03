@@ -411,7 +411,9 @@ def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, rarid
     print(f'Buscando trabalho {raridade} na lista...')
     for trabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-        if textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade) and textoEhIgual(trabalhoDesejado[CHAVE_PROFISSAO], dicionarioProfissao[CHAVE_NOME]):
+        if (textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade) and
+            textoEhIgual(trabalhoDesejado[CHAVE_PROFISSAO], dicionarioProfissao[CHAVE_NOME]) and
+            trabalhoDesejado[CHAVE_ESTADO] == 0):
             print(f'Trabalho {raridade} encontado: {trabalhoDesejado[CHAVE_NOME]}.')
             linhaSeparacao()
             listaDicionariosTrabalhosDesejados.append(trabalhoDesejado)
