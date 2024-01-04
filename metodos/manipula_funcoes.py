@@ -1480,6 +1480,9 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             for dicionarioTrabalhoVerificado in listaVerificada:
                 if raridadeTrabalhoEhEspecial(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhRaro(dicionarioTrabalhoVerificado):
                     print(f'Trabalho desejado: {dicionarioTrabalhoVerificado[CHAVE_NOME]}.')
+                    posicaoAux = -1
+                    if dicionarioTrabalho[CHAVE_POSICAO] != -1:
+                        posicaoAux = dicionarioTrabalho[CHAVE_POSICAO]
                     dicionarioTrabalho[CHAVE_POSICAO] = 0
                     while naoFizerQuatroVerificacoes(dicionarioTrabalho)and not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                         nomeTrabalhoReconhecido = retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho)
@@ -1497,7 +1500,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                         else:
                             dicionarioTrabalho[CHAVE_POSICAO] = 4
                         dicionarioTrabalho = incrementaChavePosicaoTrabalho(dicionarioTrabalho)
-                    dicionarioTrabalho[CHAVE_POSICAO] = -1
+                    dicionarioTrabalho[CHAVE_POSICAO] = posicaoAux
                     linhaSeparacao()
                     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                         break
@@ -2642,7 +2645,7 @@ def defineCloneDicionarioTrabalho(dicionarioTrabalho):
 def trabalhoERecorrente(dicionarioTrabalho):
     return dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_RECORRENCIA]
 
-def menuTrabalhosAtuais(menu):
+def menuTrabalhosAtuaisReconhecido(menu):
     return menu==menu_trab_atuais
 
 def naoHaRecursosSuficientes(dicionarioTrabalho):
@@ -2662,7 +2665,7 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
     dicionarioTrabalhoDesejado = dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]
     while True:
         menu = retornaMenu()
-        if menuTrabalhosAtuais(menu):
+        if menuTrabalhosAtuaisReconhecido(menu):
             if trabalhoERecorrente(dicionarioTrabalho):
                 print(f'Recorrencia está ligada.')
                 cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
@@ -3650,6 +3653,9 @@ def deleta_item_lista():
     print(f'{lista}')
 
 def funcao_teste(dicionarioUsuario):
+    profissaoVerificada = {
+        CHAVE_NOME: 'Armadura de tecido'
+    }
     trabalhoDesejado={
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
         CHAVE_NOME:'Pulseiras Unidade',
@@ -3713,12 +3719,11 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosRecursos = defineListaDicionarioRecursos(trabalhoDesejado)
         for dicionarioRecurso in listaDicionariosRecursos:
             dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
-        listaDicionariosTrabalhoComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade=CHAVE_RARIDADE_COMUM, dicionarioProfissao = profissaoVerificada)
         listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
 
         dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
 
-        iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho)
+        # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
         #     print(f'{D}: Nível da profissão - {nivelProfissao}.')
