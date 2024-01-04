@@ -1447,6 +1447,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
     while indiceProfissao < len(dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]):#percorre lista de profissao
         profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indiceProfissao]
         if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
+            indiceProfissao += 1
             continue
         if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
             dicionarioPersonagemAtributos = atualizaListaProfissao(dicionarioPersonagemAtributos)
