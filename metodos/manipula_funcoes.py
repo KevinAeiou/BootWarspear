@@ -483,7 +483,6 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
             if not primeiraBusca(dicionarioTrabalho) and dicionarioTrabalho[CHAVE_POSICAO] > 5:
                 # dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
                 print(f'Trabalho {dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE]} não reconhecido!')
-                vaiParaMenuTrabalhoEmProducao()
                 linhaSeparacao()
                 break
             else:
@@ -497,6 +496,11 @@ def vaiParaMenuTrabalhoEmProducao():
     clickEspecifico(1,'f1')
     clickContinuo(9,'up')
     clickEspecifico(1,'left')
+
+def vaiParaOTopoDaListaDeTrabalhosComunsEMelhorados(dicionarioTrabalho):
+    print(f'{D}: Voltando para o topo da lista!')
+    clickContinuo(dicionarioTrabalho[CHAVE_POSICAO]+5,'up')
+    linhaSeparacao()
 
 def vaiParaMenuProduzir(dicionarioPersonagemAtributos):
     erro = verificaErro(None)
@@ -1508,6 +1512,11 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                     dicionarioTrabalho = defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
                     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                         break
+                    elif indiceLista + 1 >= len(listaDeListaTrabalhos):
+                        vaiParaMenuTrabalhoEmProducao()
+                    else:
+                        vaiParaOTopoDaListaDeTrabalhosComunsEMelhorados(dicionarioTrabalho)
+                        pass
                 if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                     break
             if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
