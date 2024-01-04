@@ -1511,7 +1511,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             else:
                 indiceLista += 1
         if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):# Começa processo de produção do trabalho
-            dicionarioTrabalho, dicionarioPersonagemAtributos = iniciaProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
+            dicionarioTrabalho, dicionarioPersonagemAtributos = iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
             linhaSeparacao()
         else:
             saiProfissaoVerificada(dicionarioTrabalho)
@@ -2522,71 +2522,28 @@ def trataErros(dicionarioTrabalho, dicionarioPersonagem):
     tentativas = 1
     erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     while erroEncontrado(erro):
-        if erro == erroSemRecursos:
-            excluiTrabalho(dicionarioPersonagem,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-            dicionarioTrabalho[CHAVE_LISTA_DESEJO]=retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-            if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
-                dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
-        elif erro==erroSemEspacosProducao or erro==erroOutraConexao or erro==erroConectando or erro==erroRestaurandoConexao:
-            dicionarioPersonagem[CHAVE_CONFIRMACAO]=False
-            dicionarioTrabalho[CHAVE_CONFIRMACAO]=False
-            if erro==erroSemEspacosProducao:
-                listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
-                modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,False)
+        if naoHaRecursosSuficientes(dicionarioTrabalho):
+            excluiTrabalho(dicionarioPersonagem, dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+        elif erro == erroSemEspacosProducao or erro == erroOutraConexao or erro == erroConectando or erro == erroRestaurandoConexao:
+            dicionarioPersonagem[CHAVE_CONFIRMACAO] = False
+            dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
+            if erro == erroSemEspacosProducao:
+                listaPersonagem = [dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
+                modificaAtributoPersonagem(dicionarioPersonagem, listaPersonagem, CHAVE_ESPACO_PRODUCAO, False)
                 linhaSeparacao()
-                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=False
-            elif erro==erroOutraConexao:
-                dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
+                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] = False
+            elif erro == erroOutraConexao:
+                dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
             elif erro == erroConectando:
-                if tentativas>10:
-                    clickEspecifico(1,'enter')
+                if tentativas > 10:
+                    clickEspecifico(1, 'enter')
                     tentativas = 0
                 tentativas+=1
-        erro=verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+        erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     linhaSeparacao()
-    return dicionarioTrabalho,dicionarioPersonagem
+    return dicionarioTrabalho, dicionarioPersonagem
 
-def trataMenus(dicionarioTrabalho,dicionarioPersonagemAtributos):
-    print(f'Tratando possíveis menus...')
-    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = False
-    while True:
-        menu = retornaMenu()
-        if naoReconheceMenu(menu):
-            continue
-        elif menuTrabalhoEspecificoReconhecido(menu):
-            clickEspecifico(1,'f2')
-            if naoHaRecursosSuficientes(dicionarioTrabalho):
-                excluiTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-                break
-        elif menuEscolhaEquipamentoReconhecido(menu):
-            clickEspecifico(1,'f2')
-            time.sleep(1)
-            verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-        elif menuTrabalhosAtuais(menu):
-            if trabalhoERecorrente(dicionarioTrabalho):
-                print(f'Recorrencia está ligada.')
-                cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
-                dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos,cloneDicionarioTrabalho)
-                linhaSeparacao()
-            elif not trabalhoERecorrente(dicionarioTrabalho):
-                print(f'Recorrencia está desligada.')
-                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_ID]}/.json'
-                dados = {CHAVE_ESTADO:1,
-                         CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO][CHAVE_EXPERIENCIA]}
-                modificaAtributo(caminhoRequisicao,dados)
-                linhaSeparacao()
-            removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-            clickContinuo(12,'up')
-            dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = True
-            break
-        elif menuLicencas(menu):
-            clickEspecifico(2,'f2')
-        else:
-            break
-    return dicionarioPersonagemAtributos
-
-def menuLicencas(menu):
+def menuLicencasReconhecido(menu):
     return menu==menu_licencas
 
 def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
@@ -2699,24 +2656,43 @@ def menuTrabalhoEspecificoReconhecido(menu):
 def naoReconheceMenu(menu):
     return menu==menu_desconhecido
 
-def iniciaProducao(dicionarioTrabalho, dicionarioPersonagem):
+def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
+    primeiraBusca = True
     dicionarioTrabalhoDesejado = dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]
-    # dicionarioPersonagem = entraLicenca(dicionarioPersonagem)
-    confirmacao = False
-    erro = verificaErro(None)
-    if not erroEncontrado(erro):
-        confirmacao = True
-        clickEspecifico(1, 'up')
-        clickEspecifico(1, 'enter')
-    elif erro == erroOutraConexao:
-        dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
-    if confirmacao:
-        # confirmacao,dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = verificaLicenca(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO],dicionarioPersonagem)
-        if variavelExiste(dicionarioTrabalhoDesejado):
+    while True:
+        menu = retornaMenu()
+        if menuTrabalhosAtuais(menu):
+            if trabalhoERecorrente(dicionarioTrabalho):
+                print(f'Recorrencia está ligada.')
+                cloneDicionarioTrabalho = defineCloneDicionarioTrabalho(dicionarioTrabalho)
+                dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = adicionaTrabalhoDesejo(dicionarioPersonagem,cloneDicionarioTrabalho)
+                linhaSeparacao()
+            elif not trabalhoERecorrente(dicionarioTrabalho):
+                print(f'Recorrencia está desligada.')
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
+                dados = {CHAVE_ESTADO:1,
+                         CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA]}
+                modificaAtributo(caminhoRequisicao,dados)
+                linhaSeparacao()
+            removeTrabalhoEstoque(dicionarioPersonagem, dicionarioTrabalhoDesejado)
+            clickContinuo(12,'up')
+            dicionarioPersonagem[CHAVE_CONFIRMACAO] = True
+            break
+        elif menuTrabalhoEspecificoReconhecido(menu):
+            if primeiraBusca:
+                print(f'{D}: Entra menu licença.')
+                linhaSeparacao()
+                clickEspecifico(1, 'up')
+                clickEspecifico(1, 'enter')
+            else:
+                print(f'{D}: Clica f2.')
+                linhaSeparacao()
+                clickEspecifico(1, 'f2')
+        elif menuLicencasReconhecido(menu):
             print(f"Buscando: {dicionarioTrabalhoDesejado[CHAVE_LICENCA]}")
             linhaSeparacao()
             textoReconhecido = retornaLicencaReconhecida()
-            if variavelExiste(textoReconhecido) and variavelExiste(dicionarioTrabalhoDesejado[CHAVE_LICENCA]):
+            if variavelExiste(textoReconhecido):
                 print(f'Licença reconhecida: {textoReconhecido}.')
                 linhaSeparacao()
                 if not texto1PertenceTexto2('licençasdeproduçao', textoReconhecido):
@@ -2766,25 +2742,6 @@ def iniciaProducao(dicionarioTrabalho, dicionarioPersonagem):
                             clickEspecifico(1, "f1")
                         else:
                             clickEspecifico(1, "f2")
-                        clickEspecifico(1,'f2')#click que definitivamente começa a produção
-                        dicionarioTrabalho, dicionarioPersonagem = trataErros(dicionarioTrabalho,dicionarioPersonagem)
-                        linhaSeparacao()
-                        if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
-                            dicionarioPersonagem = trataMenus(dicionarioTrabalho,dicionarioPersonagem)
-                            if chaveConfirmacaoForVerdadeira(dicionarioPersonagem):
-                                erro = verificaErro(dicionarioTrabalhoDesejado)
-                                tentativas = 1
-                                while erroEncontrado(erro):
-                                    if erro == erroConectando:
-                                        if tentativas > 10:
-                                            clickEspecifico(1, 'enter')
-                                        tentativas += 1
-                                    erro = verificaErro(dicionarioTrabalhoDesejado)
-                                dicionarioTrabalho[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
-                                if tamanhoIgualZero(dicionarioTrabalho[CHAVE_LISTA_DESEJO]):
-                                    dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
-                                print(f'Atualizou a CHAVE_LISTA_DESEJO.')
-                                linhaSeparacao()
                 else:
                     print(f'Sem licenças de produção...')
                     listaPersonagem = [dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
@@ -2793,15 +2750,19 @@ def iniciaProducao(dicionarioTrabalho, dicionarioPersonagem):
                     clickContinuo(10, 'up')
                     clickEspecifico(1, 'left')
                     linhaSeparacao()
+                    break
             else:
                 print(f'Erro ao reconhecer licença!')
                 linhaSeparacao()
-        else:
-            print(f'{D}: Dicionario trabalho desejado está vazio.')
+                break
+        elif menuEscolhaEquipamentoReconhecido(menu):
+            print(f'{D}: Clica f2.')
             linhaSeparacao()
-    else:
-        print(f'Erro ao entrar na licença...')
-        linhaSeparacao()
+            clickEspecifico(1, 'f2')
+        else:
+            break
+        dicionarioTrabalho, dicionarioPersonagem = trataErros(dicionarioTrabalho,dicionarioPersonagem)
+        primeiraBusca = False
     return dicionarioTrabalho, dicionarioPersonagem
 
 def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
