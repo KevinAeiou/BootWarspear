@@ -1990,12 +1990,12 @@ def retornaNomesRecursos(chaveProfissao, nivelRecurso):
 def retornaNomeRecursoTrabalhoProducao(nomeTrabalhoProducao):
     nomeRecurso = None
     listaNomeRecursos = [
-        ['criar esfera do aprendiz','esfera do aprendiz'],['produzindo a varinha de madeira','varinha de madeira'],['produzindo cabeça do cajado de jade','cabeça do cajado de jade'],
-        ['produzindo cabeça de cajado de ônix','cabeça do cajado de ônix'],['criar esfera do neófito','esfera do neófito'],['produzindo a varinha de aço','varinha de aço'],
-        ['extracao de lascas','lascas'],['manipulacao de lascas','minerio de cobre'],['fazer mo do aprendiz','mo do aprendiz'],
-        ['preparando lascas de quartzo','lascas de quartzo'],['manipulacao de minerio de cobre','minerio de ferro'],['fazer mo do princiante','mo do principiante'],
-        ['adquirir tesoura do aprendiz','tesoura do aprendiz'],['produzindo fio resistente','fio grosseiro'],['fazendo tecido de linho','tecido de linho'],
-        ['fazendo tecido de cetim','tecido de cetim'],['comprar tesoura do principiante','tesoura do principiante'],['produzindo fio grosso','fio grosso'],
+        ['criar esfera do aprendiz','Esfera do aprendiz'],['produzindo a varinha de madeira','Varinha de madeira'],['produzindo cabeça do cajado de jade','Cabeça do cajado de jade'],
+        ['produzindo cabeça de cajado de ônix','Cabeça do cajado de ônix'],['criar esfera do neófito','Esfera do neófito'],['produzindo a varinha de aço','Varinha de aço'],
+        ['extracao de lascas','Lascas'],['manipulacao de lascas','Minerio de cobre'],['fazer mo do aprendiz','Mo do aprendiz'],
+        ['preparando lascas de quartzo','Lascas de quartzo'],['manipulacao de minerio de cobre','Minério de ferro'],['fazer mo do princiante','Mo do principiante'],
+        ['adquirir tesoura do aprendiz','Tesoura do aprendiz'],['produzindo fio resistente','Fio grosseiro'],['fazendo tecido de linho','Tecido de linho'],
+        ['fazendo tecido de cetim','Tecido de cetim'],['comprar tesoura do principiante','Tesoura do principiante'],['produzindo fio grosso','Fio grosso'],
         ['adquirir faca do aprendiz','Faca do aprendiz'],['recebendo escamas da serpente','Escamas da serpente'],['Concluindo couro resistente','Couro resistente'],
         ['adquirir faca do principiante','Faca do principiante'],['recebendo escamas do lagarto','Escamas do lagarto'],['curtindo couro grosso','Couro grosso'],
         ['adquirir marretão do aprendiz','Marretão do aprendiz'],['forjando placas de cobre','Placas de cobre'],['fazendo placas de bronze','Anéis de bronze'],
