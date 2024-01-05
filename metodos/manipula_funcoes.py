@@ -1411,7 +1411,9 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
     dicionarioTrabalho[CHAVE_POSICAO] = -1
     while indiceProfissao < len(dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA]):#percorre lista de profissao
         profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indiceProfissao]
-        if not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
+        if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
+            break
+        elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
             indiceProfissao += 1
             continue
         if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
@@ -1491,20 +1493,21 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
             saiProfissaoVerificada(dicionarioTrabalho)
             indiceProfissao += 1
             dicionarioTrabalho[CHAVE_POSICAO] = -1
-        if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
-            if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
-                if retornaEstadoTrabalho() == concluido:
-                    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
-                    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-                        modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                        atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
-                elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
-                    break
-            dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
-            clickContinuo(3,'up')
-            clickEspecifico(1,'left')
-            linhaSeparacao()
-            time.sleep(1.5)
+        if chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
+            if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
+                if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
+                    if retornaEstadoTrabalho() == concluido:
+                        dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
+                        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                            modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                            atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
+                    elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
+                        break
+                dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
+                clickContinuo(3,'up')
+                clickEspecifico(1,'left')
+                linhaSeparacao()
+                time.sleep(1.5)
     else:
         if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
             dicionarioPersonagemAtributos = atualizaListaProfissao(dicionarioPersonagemAtributos)
