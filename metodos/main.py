@@ -4,9 +4,9 @@ from manipula_cliente import *
 
 def mostraMenuListaDesejo(dicionarioUsuario):
     print(f'Lista de trabalhos desejados:')
-    dicionarioUsuario=defineListaDesejo(dicionarioUsuario)
-    if not tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DESEJO]):
-        mostraListaDesejo(dicionarioUsuario)
+    listaDesejo = retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
+    if not tamanhoIgualZero(listaDesejo):
+        mostraListaDesejo(listaDesejo)
     else:
         print(f'A lista está vazia.')
         linhaSeparacao()
