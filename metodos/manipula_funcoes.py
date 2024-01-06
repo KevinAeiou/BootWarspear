@@ -446,6 +446,10 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
         contadorParaBaixo = dicionarioTrabalho[CHAVE_POSICAO]
         clickEspecifico(contadorParaBaixo, 'down')
     while not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
+        erro = verificaErro(dicionarioTrabalho)
+        if erroEncontrado(erro):
+            dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
+            break
         if primeiraBusca(dicionarioTrabalho):
             clicks = 3
             contadorParaBaixo = 3
@@ -1104,7 +1108,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
         if variavelExiste(texto):
             texto = limpaRuidoTexto(texto)
             # print(f'{D}:Texto reconhecimento de menus: {texto}.')
-    # print(f'{D}:{texto}')
+    print(f'{D}:{texto}')
     return texto
 
 def existePixelPretoSuficiente(contadorPixelPreto):
@@ -1115,7 +1119,7 @@ def retornaMenu():
     # 1947,2721
     inicio = time.time()
     print(f'Reconhecendo menu.')
-    textoMenu=retornaTextoMenuReconhecido(26,1,150)
+    textoMenu = retornaTextoMenuReconhecido(26,1,150)
     if variavelExiste(textoMenu):
         if texto1PertenceTexto2('spearonline',textoMenu):
             textoMenu=retornaTextoMenuReconhecido(216,194,270)
@@ -1473,6 +1477,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                         break
                 elif raridadeTrabalhoEhMelhorado(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhComum(dicionarioTrabalhoVerificado):
                     dicionarioTrabalho = defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+                    dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = dicionarioTrabalho[CHAVE_CONFIRMACAO]
                     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                         break
                     elif indiceLista + 1 >= len(listaDeListaTrabalhos):
@@ -1486,14 +1491,14 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                 break
             else:
                 indiceLista += 1
-        if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):# Começa processo de produção do trabalho
-            dicionarioTrabalho, dicionarioPersonagemAtributos = iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
-            linhaSeparacao()
-        else:
-            saiProfissaoVerificada(dicionarioTrabalho)
-            indiceProfissao += 1
-            dicionarioTrabalho[CHAVE_POSICAO] = -1
-        if chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
+        if chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):# CHAVE que indica que nem um erro foi detectado
+            if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):# Começa processo de produção do trabalho
+                dicionarioTrabalho, dicionarioPersonagemAtributos = iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
+                linhaSeparacao()
+            else:
+                saiProfissaoVerificada(dicionarioTrabalho)
+                indiceProfissao += 1
+                dicionarioTrabalho[CHAVE_POSICAO] = -1
             if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                 if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                     if retornaEstadoTrabalho() == concluido:
@@ -3366,18 +3371,18 @@ def descobreFrames():
 # descobreFrames()
 
 def retornaTextoSair():
-    texto=None
-    telaInteira=retornaAtualizacaoTela()
-    frameTela=telaInteira[telaInteira.shape[0]-50:telaInteira.shape[0]-25,50:50+60]
-    frameTelaTratado=retornaImagemCinza(frameTela)
-    frameTelaTratado=retornaImagemBinarizada(frameTelaTratado)
-    contadorPixelPreto=np.sum(frameTelaTratado==0)
+    texto = None
+    telaInteira = retornaAtualizacaoTela()
+    frameTela = telaInteira[telaInteira.shape[0]-50:telaInteira.shape[0]-15,50:50+60]
+    frameTelaTratado = retornaImagemCinza(frameTela)
+    frameTelaTratado = retornaImagemBinarizada(frameTelaTratado)
+    contadorPixelPreto = np.sum(frameTelaTratado==0)
     # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
-    # mostraImagem(0,frameTelaTratado,None)
-    if contadorPixelPreto>100 and contadorPixelPreto<400:
-        texto=reconheceTexto(frameTelaTratado)
+    # mostraImagem(0, frameTelaTratado, None)
+    if contadorPixelPreto > 100 and contadorPixelPreto < 400:
+        texto = reconheceTexto(frameTelaTratado)
         if variavelExiste(texto):
-            texto=limpaRuidoTexto(texto)
+            texto = limpaRuidoTexto(texto)
     return texto
 
 def retorna_lista_pixel_minimap():
@@ -3735,6 +3740,7 @@ def funcao_teste(dicionarioUsuario):
 
         dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
 
+        retornaTextoSair()
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
