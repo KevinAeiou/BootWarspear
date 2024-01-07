@@ -1267,8 +1267,7 @@ def retornaMenu():
                     fim=time.time()
                     # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
-                    return menu_meu_perfil
-            
+                    return menu_meu_perfil           
             textoMenu=retornaTextoMenuReconhecido(169,97,75)
             if variavelExiste(textoMenu):
                 if texto1PertenceTexto2('bolsa',textoMenu):
@@ -1278,15 +1277,15 @@ def retornaMenu():
                     # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_bolsa
-
+            clickMouseEsquerdo(1,35,35)
+        else:
+            click_atalho_especifico('win','left')
+            click_atalho_especifico('win','left')
+            linhaSeparacao()
     print(f'Menu não reconhecido...')
     linhaSeparacao()
     fim = time.time()
     # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
-    linhaSeparacao()
-    click_atalho_especifico('win','left')
-    click_atalho_especifico('win','left')
-    clickMouseEsquerdo(1,35,35)
     verificaErro(None)
     return menu_desconhecido
 
@@ -3097,6 +3096,7 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
             if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
             if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
