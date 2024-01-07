@@ -630,7 +630,7 @@ def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     return nomeTrabalhoReconhecido
 
 def verificaErro(dicionarioTrabalho):
-    dicionarioTrabalho=configuraLicenca(dicionarioTrabalho)
+    dicionarioTrabalho = configuraLicenca(dicionarioTrabalho)
     time.sleep(0.5)
     print(f'Verificando erro...')
     erro=retornaTipoErro()
@@ -2504,7 +2504,7 @@ def trataErros(dicionarioTrabalho, dicionarioPersonagem):
     tentativas = 1
     erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
     while erroEncontrado(erro):
-        if erroNaoHaRecursosSuficientes(dicionarioTrabalho):
+        if erroNaoHaRecursosSuficientes(erro):
             excluiTrabalho(dicionarioPersonagem, dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
         elif erro == erroSemEspacosProducao or erro == erroOutraConexao or erro == erroConectando or erro == erroRestaurandoConexao:
             dicionarioPersonagem[CHAVE_CONFIRMACAO] = False
@@ -2626,8 +2626,8 @@ def trabalhoERecorrente(dicionarioTrabalho):
 def menuTrabalhosAtuaisReconhecido(menu):
     return menu==menu_trab_atuais
 
-def erroNaoHaRecursosSuficientes(dicionarioTrabalho):
-    return verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])==erroSemRecursos
+def erroNaoHaRecursosSuficientes(erro):
+    return erro == erroSemRecursos
 
 def menuEscolhaEquipamentoReconhecido(menu):
     return menu==menu_esc_equipamento
@@ -2749,7 +2749,7 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
         tentativas = 1
         erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
         while erroEncontrado(erro):
-            if erroNaoHaRecursosSuficientes(dicionarioTrabalho):
+            if erroNaoHaRecursosSuficientes(erro):
                 excluiTrabalho(dicionarioPersonagem, dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
                 dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
             elif erroNaoHaEspacosDeProducao(erro) or erroHaOutraConexao(erro) or erroEstaConectando(erro) or erroReconectando(erro):
