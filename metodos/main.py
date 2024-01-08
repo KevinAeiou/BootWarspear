@@ -368,10 +368,10 @@ def menu(dicionarioUsuario):
                                                     dicionarioUsuarioModificacao = {CHAVE_ID_USUARIO:idUsuario}
                                                     listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuarioModificacao)
                                                     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
-                                                    for dicionarioPersonagem in dicionarioUsuarioModificacao[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+                                                    for dicionarioPersonagem in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
                                                         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioPersonagem
                                                         dicionarioPersonagem[CHAVE_ID_USUARIO] = dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]
-                                                        dicionarioPersonagem = defineListaDesejo(dicionarioPersonagem)
+                                                        dicionarioPersonagem[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                                                         for dicionarioTrabalhoDesejado in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
                                                             if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_NOME], dicionarioTrabalhoEscolhido[CHAVE_NOME]):
                                                                 caminhoRequisicao = f'Usuarios/{dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
@@ -394,88 +394,97 @@ def menu(dicionarioUsuario):
                 while True:
                     dicionarioProfissao = defineProfissao(dicionarioUsuario)
                     if variavelExiste(dicionarioProfissao):
-                        while True:
-                            # dicionarioTrabalhoMelhoradoEscolhido = defineTrabalho(dicionarioProfissao, 'melhorado')
-                            dicionarioTrabalhoMelhoradoEscolhido = None
-                            listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-                            if not tamanhoIgualZero(listaDicionariosTrabalhos):
-                                listaDicionariosTrabalhosBuscados = []
-                                for dicionarioTrabalho in listaDicionariosTrabalhos:
-                                    if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissao[CHAVE_NOME])and
-                                        textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], 'melhorado')):
-                                        listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
-                                if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
-                                    listaDicionariosTrabalhosBuscados = sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
-                                    print(f'Trabalhos melhorados de {dicionarioProfissao[CHAVE_NOME]}:')
-                                    indice = 1
-                                    for dicionarioTrabalhoBuscado in listaDicionariosTrabalhosBuscados:
-                                        if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoBuscado:
-                                            print(f'{indice} - Nível {dicionarioTrabalhoBuscado[CHAVE_NIVEL]} : {dicionarioTrabalhoBuscado[CHAVE_NOME]} <-- {dicionarioTrabalhoBuscado[CHAVE_TRABALHO_NECESSARIO]}.')
-                                        else:
-                                            print(f'{indice} - Nível {dicionarioTrabalhoBuscado[CHAVE_NIVEL]} : {dicionarioTrabalhoBuscado[CHAVE_NOME]}.')
-                                        if indice + 1 <= len(listaDicionariosTrabalhosBuscados):
-                                            if dicionarioTrabalhoBuscado[CHAVE_NIVEL] != listaDicionariosTrabalhosBuscados[indice][CHAVE_NIVEL]:
-                                                linhaSeparacao()
-                                        indice += 1
-                                    print(f'0 - Voltar.')
-                                    opcaoTrabalho = input(f'Trabalho melhorado escolhido: ')
-                                    linhaSeparacao()
-                                    while opcaoInvalida(opcaoTrabalho, len(listaDicionariosTrabalhosBuscados)):
-                                        print(f'Opção inválida! Selecione uma das opções.')
+                        raridade = defineRaridade()
+                        if variavelExiste(raridade):
+                            while True:
+                                # dicionarioTrabalhoMelhoradoEscolhido = defineTrabalho(dicionarioProfissao, 'melhorado')
+                                dicionarioTrabalhoMelhoradoEscolhido = None
+                                listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+                                if not tamanhoIgualZero(listaDicionariosTrabalhos):
+                                    listaDicionariosTrabalhosBuscados = []
+                                    for dicionarioTrabalho in listaDicionariosTrabalhos:
+                                        if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissao[CHAVE_NOME])and
+                                            textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], raridade)):
+                                            listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
+                                    if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
+                                        listaDicionariosTrabalhosBuscados = sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
+                                        print(f'Trabalhos melhorados de {dicionarioProfissao[CHAVE_NOME]}:')
+                                        indice = 1
+                                        for dicionarioTrabalhoBuscado in listaDicionariosTrabalhosBuscados:
+                                            if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoBuscado:
+                                                print(f'{indice} - Nível {dicionarioTrabalhoBuscado[CHAVE_NIVEL]} : {dicionarioTrabalhoBuscado[CHAVE_NOME]} <-- {dicionarioTrabalhoBuscado[CHAVE_TRABALHO_NECESSARIO]}.')
+                                            else:
+                                                print(f'{indice} - Nível {dicionarioTrabalhoBuscado[CHAVE_NIVEL]} : {dicionarioTrabalhoBuscado[CHAVE_NOME]}.')
+                                            if indice + 1 <= len(listaDicionariosTrabalhosBuscados):
+                                                if dicionarioTrabalhoBuscado[CHAVE_NIVEL] != listaDicionariosTrabalhosBuscados[indice][CHAVE_NIVEL]:
+                                                    linhaSeparacao()
+                                            indice += 1
+                                        print(f'0 - Voltar.')
                                         opcaoTrabalho = input(f'Trabalho melhorado escolhido: ')
                                         linhaSeparacao()
-                                    else:
-                                        opcaoTrabalho = int(opcaoTrabalho)
-                                        nomeTrabalhoComum = None
-                                        if opcaoTrabalho != 0:
-                                            dicionarioTrabalhoMelhoradoEscolhido = listaDicionariosTrabalhosBuscados[opcaoTrabalho - 1]
-                                            while True:
-                                                listaDicionariosTrabalhosBuscados = []
-                                                for dicionarioTrabalho in listaDicionariosTrabalhos:
-                                                    if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoMelhoradoEscolhido[CHAVE_PROFISSAO])and
-                                                        dicionarioTrabalho[CHAVE_NIVEL] == dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL]and
-                                                        textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], 'comum')):
-                                                        listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
-                                                if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
-                                                    listaDicionariosTrabalhosBuscados = sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
-                                                    print(f'{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NOME]} nível {dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL]}:')
-                                                    indice = 1
-                                                    for dicionarioTrabalhoBuscado in listaDicionariosTrabalhosBuscados:
-                                                        print(f'{indice} - Nível {dicionarioTrabalhoBuscado[CHAVE_NIVEL]} : {dicionarioTrabalhoBuscado[CHAVE_NOME]}.')
-                                                        indice += 1
-                                                    print(f'0 - Voltar.')
-                                                    opcaoTrabalho = input(f'Trabalho comum escolhido: ')
-                                                    linhaSeparacao()
-                                                    while opcaoInvalida(opcaoTrabalho, len(listaDicionariosTrabalhosBuscados)):
-                                                        print(f'Opção inválida! Selecione uma das opções.')
+                                        while opcaoInvalida(opcaoTrabalho, len(listaDicionariosTrabalhosBuscados)):
+                                            print(f'Opção inválida! Selecione uma das opções.')
+                                            opcaoTrabalho = input(f'Trabalho melhorado escolhido: ')
+                                            linhaSeparacao()
+                                        else:
+                                            opcaoTrabalho = int(opcaoTrabalho)
+                                            nomeTrabalhoComum = None
+                                            if opcaoTrabalho != 0:
+                                                dicionarioTrabalhoMelhoradoEscolhido = listaDicionariosTrabalhosBuscados[opcaoTrabalho - 1]
+                                                while True:
+                                                    listaDicionariosTrabalhosBuscados = []
+                                                    raridade2 = None
+                                                    if textoEhIgual(raridade, CHAVE_RARIDADE_MELHORADO):
+                                                        raridade2 = CHAVE_RARIDADE_COMUM
+                                                    elif textoEhIgual(raridade, CHAVE_RARIDADE_RARO):
+                                                        raridade2 = CHAVE_RARIDADE_MELHORADO
+                                                    for dicionarioTrabalho in listaDicionariosTrabalhos:
+                                                        if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoMelhoradoEscolhido[CHAVE_PROFISSAO])and
+                                                            dicionarioTrabalho[CHAVE_NIVEL] == dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL]and
+                                                            textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], raridade2)):
+                                                            listaDicionariosTrabalhosBuscados.append(dicionarioTrabalho)
+                                                    if not tamanhoIgualZero(listaDicionariosTrabalhosBuscados):
+                                                        listaDicionariosTrabalhosBuscados = sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
+                                                        print(f'{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NOME]} nível {dicionarioTrabalhoMelhoradoEscolhido[CHAVE_NIVEL]}:')
+                                                        indice = 1
+                                                        for dicionarioTrabalhoBuscado in listaDicionariosTrabalhosBuscados:
+                                                            print(f'{indice} - Nível {dicionarioTrabalhoBuscado[CHAVE_NIVEL]} : {dicionarioTrabalhoBuscado[CHAVE_NOME]}.')
+                                                            indice += 1
+                                                        print(f'0 - Voltar.')
                                                         opcaoTrabalho = input(f'Trabalho comum escolhido: ')
                                                         linhaSeparacao()
-                                                    else:
-                                                        opcaoTrabalho = int(opcaoTrabalho)
-                                                        nomeTrabalhoComum = None
-                                                        if opcaoTrabalho != 0:
-                                                            nomeTrabalhoComum = listaDicionariosTrabalhosBuscados[opcaoTrabalho - 1][CHAVE_NOME]
-                                                            caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
-                                                            dados = {CHAVE_TRABALHO_NECESSARIO:nomeTrabalhoComum}
-                                                            if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoEscolhido:
-                                                                if not tamanhoIgualZero(dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO]):
-                                                                    print(f'Manter trabalho {dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO]}?')
-                                                                    if retornaInputConfirmacao():
-                                                                        nomeTrabalhoComum = dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO] + ',' + nomeTrabalhoComum
-                                                                        dados = {CHAVE_TRABALHO_NECESSARIO:nomeTrabalhoComum}
-                                                            dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO] = nomeTrabalhoComum
-                                                            modificaAtributo(caminhoRequisicao, dados)
+                                                        while opcaoInvalida(opcaoTrabalho, len(listaDicionariosTrabalhosBuscados)):
+                                                            print(f'Opção inválida! Selecione uma das opções.')
+                                                            opcaoTrabalho = input(f'Trabalho comum escolhido: ')
                                                             linhaSeparacao()
                                                         else:
-                                                            break
-                                                else:
-                                                    print(f'Lista de vazia!')
-                                                    linhaSeparacao()
-                                                    break
-                                        else:
-                                            break
+                                                            opcaoTrabalho = int(opcaoTrabalho)
+                                                            nomeTrabalhoComum = None
+                                                            if opcaoTrabalho != 0:
+                                                                nomeTrabalhoComum = listaDicionariosTrabalhosBuscados[opcaoTrabalho - 1][CHAVE_NOME]
+                                                                caminhoRequisicao = f'Lista_trabalhos/{dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ID]}/.json'
+                                                                dados = {CHAVE_TRABALHO_NECESSARIO:nomeTrabalhoComum}
+                                                                if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoEscolhido:
+                                                                    if not tamanhoIgualZero(dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO]):
+                                                                        print(f'Manter trabalho {dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO]}?')
+                                                                        if retornaInputConfirmacao():
+                                                                            nomeTrabalhoComum = dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO] + ',' + nomeTrabalhoComum
+                                                                            dados = {CHAVE_TRABALHO_NECESSARIO:nomeTrabalhoComum}
+                                                                dicionarioTrabalhoMelhoradoEscolhido[CHAVE_TRABALHO_NECESSARIO] = nomeTrabalhoComum
+                                                                modificaAtributo(caminhoRequisicao, dados)
+                                                                linhaSeparacao()
+                                                            else:
+                                                                break
+                                                    else:
+                                                        print(f'Lista de vazia!')
+                                                        linhaSeparacao()
+                                                        break
+                                            else:
+                                                break
                                 else:
                                     break
+                        else:
+                            break
                     else:
                         break
         elif opcaoEscolha==7:

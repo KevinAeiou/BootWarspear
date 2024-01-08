@@ -3096,6 +3096,7 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
             if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
 
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
@@ -3149,6 +3150,33 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
         dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
         dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO]=False
     return dicionarioPersonagemAtributos
+
+def verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido):
+    dicionarioTrabalhoRaro = {}
+    if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO):
+        listaDeTrabalhos = retornaListaDicionariosTrabalhos()
+        print(f'{D}: Trabalhos RARO. Profissão {dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]}. Nível {dicionarioTrabalhoConcluido[CHAVE_NIVEL]}.')
+        for trabalho in listaDeTrabalhos:
+            if textoEhIgual(trabalho[CHAVE_PROFISSAO], dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]):    
+                if textoEhIgual(trabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO):
+                    if trabalho[CHAVE_NIVEL] == dicionarioTrabalhoConcluido[CHAVE_NIVEL]:
+                        if CHAVE_TRABALHO_NECESSARIO in trabalho:
+                            if textoEhIgual(trabalho[CHAVE_TRABALHO_NECESSARIO], dicionarioTrabalhoConcluido[CHAVE_NOME]):
+                                trabalho[CHAVE_LICENCA] = CHAVE_LICENCA_PRINCIPIANTE
+                                trabalho[CHAVE_RECORRENCIA] = False
+                                trabalho[CHAVE_ESTADO] = para_produzir
+                                trabalho[CHAVE_EXPERIENCIA] = trabalho[CHAVE_EXPERIENCIA] * 1.5
+                                for atributo in trabalho:
+                                    print(f'{D}: {atributo} - {trabalho[atributo]}.')
+                                linhaSeparacao()
+                                dicionarioTrabalhoRaro = trabalho
+                                break
+                        else:
+                            print(f'{D}: Trabalho não possue CHAVE:{CHAVE_TRABALHO_NECESSARIO}.')
+    if variavelExiste(dicionarioTrabalhoRaro):
+        adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoRaro)
+        pass
+
 
 def atualizaEstoquePersonagem(dicionarioPersonagem, dicionarioTrabalhoProduzido):
     listaDicionarioTrabalhoProduzido = retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoProduzido)
@@ -3695,10 +3723,10 @@ def funcao_teste(dicionarioUsuario):
 
     dicionarioTrabalhoConcluido = {
         CHAVE_ID:None,
-        CHAVE_NOME:'Recebendo Distintivo de Aprendiz',
+        CHAVE_NOME:'Pulseiras de ônix artístico',
         CHAVE_EXPERIENCIA:130,
-        CHAVE_NIVEL:8,
-        CHAVE_RARIDADE:'Avançado',
+        CHAVE_NIVEL:16,
+        CHAVE_RARIDADE:'Melhorado',
         CHAVE_PROFISSAO:'Braceletes',
         CHAVE_RECORRENCIA:False,
         CHAVE_LICENCA:'Licença de produção do principiante',
@@ -3740,7 +3768,7 @@ def funcao_teste(dicionarioUsuario):
 
         dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
 
-        retornaTextoSair()
+        verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
