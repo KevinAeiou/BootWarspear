@@ -352,7 +352,7 @@ def muda_quantidade_personagem(usuario_id,nova_quantidade):
 def excluiTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_ID]}/.json'
     if retornaRequisicao(DELETE,caminhoRequisicao,None):
-        print(f'Trabalho {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
+        print(f'Trabalho id: {dicionarioTrabalho[CHAVE_ID]} - {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
     else:
         print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
 

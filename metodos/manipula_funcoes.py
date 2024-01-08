@@ -2201,7 +2201,7 @@ def estaMenuInicial(menu):
     return menu==menu_inicial
 
 def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
-    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido=defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
+    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
@@ -2466,7 +2466,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
                 listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                 if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
-                    dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido,listaDicionarioTrabalhoDesejado,produzindo)
+                    dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalhoDesejado)
                 if tamanhoIgualZero(dicionarioTrabalhoConcluido):
                     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
                     if not tamanhoIgualZero(listaDicionariosTrabalhos):
@@ -2485,11 +2485,11 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 clickEspecifico(1, 'left')
     return dicionarioPersonagem, dicionarioTrabalhoConcluido
 
-def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalho, estado):
+def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalho):
     dicionarioTrabalho = {}
     for trabalho in listaDicionarioTrabalho:
         if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], trabalho[CHAVE_NOME]) and
-            trabalho[CHAVE_ESTADO] == estado):
+            trabalho[CHAVE_ESTADO] == produzindo):
             print(f'{trabalho[CHAVE_NOME]} recuperado.')
             dicionarioTrabalho = trabalho
             break
@@ -3769,7 +3769,7 @@ def funcao_teste(dicionarioUsuario):
 
         dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
 
-        verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        excluiTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
