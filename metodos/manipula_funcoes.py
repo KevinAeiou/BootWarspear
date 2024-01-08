@@ -1505,6 +1505,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                         if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
                             modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                             atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
+                            verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                     elif not chaveEspacoProducaoForVerdadeira(dicionarioPersonagemAtributos):
                         break
                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
