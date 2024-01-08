@@ -2201,11 +2201,11 @@ def estaMenuInicial(menu):
     return menu==menu_inicial
 
 def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
-    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
+    dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
-            excluiTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
+            excluiTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         else:
             print(f'Trabalho sem recorrencia.')
             caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json'
@@ -2219,11 +2219,11 @@ def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
                 CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
                 CHAVE_RECORRENCIA:dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA],
                 CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]}
-            modificaAtributo(caminhoRequisicao,dados)
+            modificaAtributo(caminhoRequisicao, dados)
         linhaSeparacao()
         if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
-            dicionarioPersonagemAtributos=defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagemAtributos)
-    return dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido
+            dicionarioPersonagemAtributos = defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagemAtributos)
+    return dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido
 
 def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
     listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
@@ -3174,10 +3174,8 @@ def verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabal
                                 break
                         else:
                             print(f'{D}: Trabalho não possue CHAVE:{CHAVE_TRABALHO_NECESSARIO}.')
-    if variavelExiste(dicionarioTrabalhoRaro):
+    if not tamanhoIgualZero(dicionarioTrabalhoRaro):
         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoRaro)
-        pass
-
 
 def atualizaEstoquePersonagem(dicionarioPersonagem, dicionarioTrabalhoProduzido):
     listaDicionarioTrabalhoProduzido = retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoProduzido)
