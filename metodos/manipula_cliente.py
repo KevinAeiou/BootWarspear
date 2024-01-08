@@ -126,21 +126,20 @@ def adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho):
             caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
             requisicao=retornaRequisicao(DELETE,caminhoRequisicao,None)
 
-def adicionaTrabalhoDesejo(dicionarioPersonagem,dicionarioTrabalho):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
-    requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
+def adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho):
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
+    requisicao = retornaRequisicao(POST, caminhoRequisicao, dicionarioTrabalho)
     if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        dados={'id':dicionarioRequisicao['name']}
-        caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
-        requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-        if requisicao!=None:
-            dicionarioRequisicao=requisicao.json()
-            # for id in dicionarioRequisicao:
-            #     print(f'Novo trabalho foi adicionado: {dicionarioRequisicao[id][CHAVE_NOME]}.')
+        dicionarioRequisicao = requisicao.json()
+        dados = {'id':dicionarioRequisicao['name']}
+        caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
+        requisicao = retornaRequisicao(PATCH,caminhoRequisicao,dados)
+        if requisicao:
+            dicionarioRequisicao = requisicao.json()
+            print(f'Novo trabalho foi adicionado a lista de desejo!')
         else:
-            caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
-            requisicao=retornaRequisicao(DELETE,caminhoRequisicao,None)
+            caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
+            requisicao = retornaRequisicao(DELETE,caminhoRequisicao,None)
     else:
         print(f'Limite de tentativas de conexão atingido.')
         print(f'Erro ao adicionar {dicionarioTrabalho[CHAVE_NOME]} a lista de desejo.')

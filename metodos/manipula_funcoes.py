@@ -3765,8 +3765,9 @@ def funcao_teste(dicionarioUsuario):
             dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
         listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
 
-        dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
-
+        # dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
+        dicionarioTrabalhoConcluido  = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        time.sleep(2)
         excluiTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
