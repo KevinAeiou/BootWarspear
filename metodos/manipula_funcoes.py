@@ -3656,6 +3656,36 @@ def definePrioridadeProfissao(dicionarioUsuario):
         print(f'Lista profissão vazia!')
     linhaSeparacao()
 
+def defineQuantidadeEspacosDeProducao(dicionarioPersonagemAtributos):
+    print(f'Define quantidade de espaços de produção...')
+    contadorEspacosProducao = 2
+    for dicionarioProfissao in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+        nivel, _ , _= retornaNivelXpMinimoMaximo(dicionarioProfissao)
+        dicionarioProfissao[CHAVE_NIVEL] = nivel
+        # print(f'{D}: Profissão: {dicionarioProfissao[CHAVE_NOME]}, nível: {dicionarioProfissao[CHAVE_NIVEL]}.')
+    for dicionarioProfissao in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+        if dicionarioProfissao[CHAVE_NIVEL] >= 5:
+            contadorEspacosProducao += 1
+            break
+    listaNiveis = [10, 15, 20, 25]
+    for nivel in listaNiveis:
+        contadorEspacosProducao = retornaContadorEspacosProducao(dicionarioPersonagemAtributos, contadorEspacosProducao, nivel)
+    print(f'{D}: Espaços de produção disponíveis: {contadorEspacosProducao}.')
+    linhaSeparacao()
+
+def retornaContadorEspacosProducao(dicionarioPersonagemAtributos, contadorEspacosProducao, nivel):
+    contadorNivel = 0
+    for dicionarioProfissao in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
+        if dicionarioProfissao[CHAVE_NIVEL] >= nivel:
+            contadorNivel += 1
+    else:
+        print(f'{D}: Contador de profissões nível {nivel} ou superior: {contadorNivel}.')
+        if contadorNivel > 0 and contadorNivel < 3:
+            contadorEspacosProducao += 1
+        elif contadorNivel >= 3:
+            contadorEspacosProducao += 2
+    return contadorEspacosProducao
+
 def adicionaAtributoIdProfissao(dicionarioPersonagem):
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
@@ -3765,10 +3795,7 @@ def funcao_teste(dicionarioUsuario):
             dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
         listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
 
-        # dicionarioProfissaoPrioridade = retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos)
-        dicionarioTrabalhoConcluido  = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-        time.sleep(2)
-        excluiTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        defineQuantidadeEspacosDeProducao(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
