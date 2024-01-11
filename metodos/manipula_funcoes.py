@@ -1422,6 +1422,7 @@ def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
     return dicionarioTrabalhoDesejado[CHAVE_ESTADO]==produzindo
 
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
+    dicionarioPersonagemAtributos = defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho)
     dicionarioPersonagemAtributos = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
     indiceProfissao = 0
     dicionarioTrabalho[CHAVE_POSICAO] = -1
@@ -1429,7 +1430,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         profissaoVerificada = dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_VERIFICADA][indiceProfissao]
         if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos) or not chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
             break
-        elif not existeEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho):
+        elif not existeEspacoProducao(dicionarioPersonagemAtributos):
             indiceProfissao += 1
             continue
         if listaProfissoesFoiModificada(dicionarioPersonagemAtributos):
@@ -1520,7 +1521,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                             modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                             atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
                             verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                    elif not existeEspacoProducao(dicionarioPersonagemAtributos, dicinarioTrabalho):
+                    elif not existeEspacoProducao(dicionarioPersonagemAtributos):
                         break
                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
                 clickContinuo(3,'up')
@@ -1534,6 +1535,17 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
         print(f'Fim da lista de profissões...')
         linhaSeparacao()
     return dicionarioPersonagemAtributos
+
+def defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho):
+    if existeTrabalhoEspecialParaProduzir(dicionarioTrabalho):
+        dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] += -1
+    return dicionarioPersonagemAtributos
+
+def existeTrabalhoEspecialParaProduzir(dicionarioTrabalho):
+    for trabalho in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
+        if trabalho[CHAVE_RARIDADE] == CHAVE_RARIDADE_ESPECIAL and trabalho[CHAVE_ESTADO] == para_produzir:
+            return True
+    return False
 
 def primeiroTrabalhoDaListaEhRaroOuEspecial(dicionarioTrabalho):
     return (not primeiroTrabalhoDaListaEhComum(dicionarioTrabalho) or
@@ -2153,8 +2165,9 @@ def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO] * 70) + 285
     return retornaNomeTrabalhoReconhecido(yinicialNome,0)
 
-def existeEspacoProducao(dicionarioPersonagemAtributos, dicinarioTrabalho):
-    for trabalho in dicinarioTrabalho[CHAVE_LISTA_DESEJO]:
+def existeEspacoProducao(dicionarioPersonagemAtributos):
+    listaDesejo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
+    for trabalho in listaDesejo:
         if trabalho[CHAVE_ESTADO] == produzindo:
             dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] += -1
             if dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] <= 0:
@@ -2240,15 +2253,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
                 CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]}
             modificaAtributo(caminhoRequisicao, dados)
         linhaSeparacao()
-        if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
-            dicionarioPersonagemAtributos = defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagemAtributos)
     return dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido
-
-def defineChaveEspacoProducaoVerdadeiro(dicionarioPersonagem):
-    listaPersonagem=[dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
-    modificaAtributoPersonagem(dicionarioPersonagem,listaPersonagem,CHAVE_ESPACO_PRODUCAO,True)
-    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=True
-    return dicionarioPersonagem
 
 def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
     listaDicionarioTrabalhoProduzido = []
@@ -2529,10 +2534,7 @@ def trataErros(dicionarioTrabalho, dicionarioPersonagem):
             dicionarioPersonagem[CHAVE_CONFIRMACAO] = False
             dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
             if erro == erroSemEspacosProducao:
-                listaPersonagem = [dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
-                modificaAtributoPersonagem(dicionarioPersonagem, listaPersonagem, CHAVE_ESPACO_PRODUCAO, False)
-                linhaSeparacao()
-                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] = False
+                pass
             elif erro == erroOutraConexao:
                 dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
             elif erro == erroConectando:
@@ -2776,10 +2778,7 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
                 dicionarioPersonagem[CHAVE_CONFIRMACAO] = False
                 dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
                 if erroNaoHaEspacosDeProducao(erro):
-                    listaPersonagem = [dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
-                    modificaAtributoPersonagem(dicionarioPersonagem, listaPersonagem, CHAVE_ESPACO_PRODUCAO, False)
-                    linhaSeparacao()
-                    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] = False
+                    pass
                 elif erroHaOutraConexao(erro):
                     dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
                 elif erroEstaConectando(erro):
@@ -3121,7 +3120,7 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
 
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
-            if not dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]:
+            if not existeEspacoProducao(dicionarioPersonagemAtributos):
                 print(f'Todos os espaços de produção ocupados.')
                 linhaSeparacao()
                 dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
@@ -3138,7 +3137,6 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_ID]}/.json'
                 dados = {CHAVE_ESTADO:True}
                 modificaAtributo(caminhoRequisicao,dados)
-        dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]=False
         dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO]=False
     elif menu==menu_principal:
         #menu principal
