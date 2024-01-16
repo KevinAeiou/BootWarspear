@@ -1599,6 +1599,8 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                             CHAVE_ESTADO:0,
                             CHAVE_LICENCA:'Licença de produção do iniciante'
                             }
+                        if trabalhoEhProducaoRecursos(dicionarioTrabalho):
+                            dicionarioTrabalho[CHAVE_RECORRENCIA] = True
                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho)
                     else:
                         produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
@@ -2235,6 +2237,8 @@ def estaMenuInicial(menu):
 def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
     dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+        if trabalhoEhProducaoRecursos(dicionarioTrabalhoConcluido):
+            dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = True
         if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
             print(f'Trabalho recorrente.')
             excluiTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
