@@ -2759,7 +2759,7 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
                 print(f'Erro ao reconhecer licença!')
                 linhaSeparacao()
                 break
-        elif menuEscolhaEquipamentoReconhecido(menu):
+        elif menuEscolhaEquipamentoReconhecido(menu) or menuAtributosEquipamentoReconhecido(menu):
             print(f'{D}: Clica f2.')
             linhaSeparacao()
             clickEspecifico(1, 'f2')
@@ -2792,6 +2792,9 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
             break
         primeiraBusca = False
     return dicionarioTrabalho, dicionarioPersonagem
+
+def menuAtributosEquipamentoReconhecido(menu):
+    return menu == menu_trab_atributos
 
 def erroReconectando(erro):
     return erro == erroRestaurandoConexao
