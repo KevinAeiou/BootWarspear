@@ -1539,6 +1539,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
 def defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho):
     if existeTrabalhoEspecialParaProduzir(dicionarioTrabalho):
         dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] += -1
+        print(f'{D}: Existe trabalho especial, espaço de produção definido para - {dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]}.')
     return dicionarioPersonagemAtributos
 
 def existeTrabalhoEspecialParaProduzir(dicionarioTrabalho):
