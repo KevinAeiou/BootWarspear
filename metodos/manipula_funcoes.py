@@ -2173,7 +2173,9 @@ def existeEspacoProducao(dicionarioPersonagemAtributos):
         if trabalho[CHAVE_ESTADO] == produzindo:
             dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] += -1
             if dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] <= 0:
+                print(f'{D}: {dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]} espaços de produção - FALSO.')
                 return False
+    print(f'{D}: {dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]} espaços de produção - VERDADEIRO.')
     return True
 
 def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
@@ -3822,7 +3824,7 @@ def funcao_teste(dicionarioUsuario):
             dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
         listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
 
-        verificaEspacoProducao(dicionarioPersonagemAtributos)        
+        existeEspacoProducao(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
