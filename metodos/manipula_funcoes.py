@@ -2168,14 +2168,15 @@ def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     return retornaNomeTrabalhoReconhecido(yinicialNome,0)
 
 def existeEspacoProducao(dicionarioPersonagemAtributos):
+    espacoProducao = dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
     listaDesejo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
     for trabalho in listaDesejo:
         if trabalho[CHAVE_ESTADO] == produzindo:
-            dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] += -1
-            if dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO] <= 0:
-                print(f'{D}: {dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]} espaços de produção - FALSO.')
+            espacoProducao -= 1
+            if espacoProducao <= 0:
+                print(f'{D}: {espacoProducao} espaços de produção - FALSO.')
                 return False
-    print(f'{D}: {dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]} espaços de produção - VERDADEIRO.')
+    print(f'{D}: {espacoProducao} espaços de produção - VERDADEIRO.')
     return True
 
 def incrementaChavePosicaoTrabalho(dicionarioTrabalho):
