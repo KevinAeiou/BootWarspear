@@ -292,14 +292,8 @@ def retornaListaDicionariosPersonagens(dicionarioPersonagem):
         dicionarioRequisicao = requisicao.json()
         if dicionarioRequisicao != None:
             for personagemId in dicionarioRequisicao:
-                if not CHAVE_CHECK in dicionarioRequisicao[personagemId]:
-                    caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{personagemId}.json'
-                    dados = {CHAVE_CHECK:False}
-                    modificaAtributo(caminhoRequisicao,dados)
-                    dicionarioRequisicao[personagemId][CHAVE_CHECK] = False
                 personagem = {
                     CHAVE_ID:personagemId,
-                    CHAVE_CHECK:dicionarioRequisicao[personagemId][CHAVE_CHECK],
                     CHAVE_EMAIL:dicionarioRequisicao[personagemId][CHAVE_EMAIL],
                     CHAVE_ESPACO_PRODUCAO:dicionarioRequisicao[personagemId][CHAVE_ESPACO_PRODUCAO],
                     CHAVE_ESTADO:dicionarioRequisicao[personagemId][CHAVE_ESTADO],
