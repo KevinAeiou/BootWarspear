@@ -1422,7 +1422,7 @@ def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
     return dicionarioTrabalhoDesejado[CHAVE_ESTADO]==produzindo
 
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
-    dicionarioPersonagemAtributos = defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho)
+    # dicionarioPersonagemAtributos = defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho)
     dicionarioPersonagemAtributos = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagemAtributos)
     indiceProfissao = 0
     dicionarioTrabalho[CHAVE_POSICAO] = -1
