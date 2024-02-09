@@ -2505,7 +2505,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                         for dicionarioTrabalho in listaDicionariosTrabalhos:
                             if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
                                 dicionarioTrabalhoConcluido = dicionarioTrabalho
-                                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = 'Licença de produção do principiante'
+                                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = 'Licença de produção do iniciante'
                                 dicionarioTrabalhoConcluido[CHAVE_ESTADO] = concluido
                                 dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
                                 break
