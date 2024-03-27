@@ -1581,11 +1581,11 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
             listaDicionarioTrabalhoComum, quantidadeTrabalhoProduzirProduzindo = defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum)
             somaXpProduzirProduzindo = retornaSomaXpTrabalhoProducao(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade)
             if xpSuficienteParaEvoluir(xpRestante, somaXpProduzirProduzindo):
+                CHAVE_TRABALHO_MAXIMO = 1
                 quantidadeTrabalhoProduzir = CHAVE_TRABALHO_MAXIMO - quantidadeTrabalhoProduzirProduzindo
                 if quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
                     listaDicionariosRecursos = defineListaDicionarioRecursos(listaDicionarioTrabalhoComum[0])
-                    for dicionarioRecurso in listaDicionariosRecursos:
-                        dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * quantidadeTrabalhoProduzir
+                    listaDicionariosRecursos = multiplicaQuantidadeDeRecursosPorQuantidadeDisponiveis(quantidadeTrabalhoProduzir, listaDicionariosRecursos)
                     exitemRecursosSuficientes, listaDicionariosRecursos = existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos)
                     if exitemRecursosSuficientes:
                         print(f'{D}: Existem recursos suficientes para produzir: {listaDicionarioTrabalhoComum[0][CHAVE_NOME]} - nível: {nivelTrabalhoProducao}.')
@@ -1621,6 +1621,11 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
         confirmacao = False
         print(f'{D}:Dicionário profissão priorizada vazio!')
     return confirmacao
+
+def multiplicaQuantidadeDeRecursosPorQuantidadeDisponiveis(quantidadeTrabalhoProduzir, listaDicionariosRecursos):
+    for dicionarioRecurso in listaDicionariosRecursos:
+        dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * quantidadeTrabalhoProduzir
+    return listaDicionariosRecursos
 
 def produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos):
     listaDicionarioTrabalhos = retornaListaDicionariosTrabalhos()
@@ -1737,97 +1742,72 @@ def retornaQuantidadeRecursoProduzirProduzindo(dicionarioPersonagemAtributos, di
 def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos):
     confirmacao = True
     listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
-    chaveProfissao = limpaRuidoTexto(listaDicionariosRecursos[0][CHAVE_PROFISSAO])
-    nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario = retornaNomesRecursos(chaveProfissao, 1)
-    DR13 = {
-        CHAVE_NOME:nomeRecursoTerciario,
-        CHAVE_NIVEL:1,
-        CHAVE_EXPERIENCIA:5,
-        CHAVE_TIPO:CHAVE_RCT,
-        CHAVE_PROFISSAO:listaDicionariosRecursos[0][CHAVE_PROFISSAO],
-        CHAVE_QUANTIDADE:0}
-    DR12 = {
-        CHAVE_NOME:nomeRecursoSecundario,
-        CHAVE_NIVEL:1,
-        CHAVE_EXPERIENCIA:4,
-        CHAVE_TIPO:CHAVE_RCS,
-        CHAVE_PROFISSAO:listaDicionariosRecursos[0][CHAVE_PROFISSAO],
-        CHAVE_QUANTIDADE:0}
-    DR11 = {
-        CHAVE_NOME:nomeRecursoPrimario,
-        CHAVE_NIVEL:1,
-        CHAVE_EXPERIENCIA:3,
-        CHAVE_TIPO:CHAVE_RCP,
-        CHAVE_PROFISSAO:listaDicionariosRecursos[0][CHAVE_PROFISSAO],
-        CHAVE_QUANTIDADE:0}
-    listaDicionariosRecursos.append(DR13)
-    listaDicionariosRecursos.append(DR12)
-    listaDicionariosRecursos.append(DR11)
     for dicionarioRecurso in listaDicionariosRecursos:
+        quantidadeRecursoFaltante = dicionarioRecurso[CHAVE_QUANTIDADE]
         for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
-            if textoEhIgual(dicionarioRecurso[CHAVE_NOME],dicionarioTrabalhoEstoque[CHAVE_NOME]):
+            if textoEhIgual(dicionarioRecurso[CHAVE_NOME], dicionarioTrabalhoEstoque[CHAVE_NOME]):
                 quantidadeRecursoFaltante = dicionarioRecurso[CHAVE_QUANTIDADE] - dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]
                 break
         else:
-            quantidadeRecursoFaltante = dicionarioRecurso[CHAVE_QUANTIDADE]
             print(f'{D}: Recurso: {dicionarioRecurso[CHAVE_NOME]} não encontrado no estoque.')
             linhaSeparacao()
-        if quantidadeRecursoFaltante > 0:
+        if quantidadeRecursoFaltante > 0: #se falta pelo menos um recurso
+            if quantidadeRecursoFaltante != dicionarioRecurso[CHAVE_QUANTIDADE]:
+                quantidadeRecurso = (dicionarioRecurso[CHAVE_QUANTIDADE] - quantidadeRecursoFaltante)
+                if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
+                    for recurso in listaDicionariosRecursos:
+                        if recurso[CHAVE_TIPO] == CHAVE_RCT:
+                            recurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
+                        elif recurso[CHAVE_TIPO] == CHAVE_RCP:
+                            recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (quantidadeRecurso * 7)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
+                    for recurso in listaDicionariosRecursos:
+                        if recurso[CHAVE_TIPO] == CHAVE_RCS:
+                            recurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
+                        elif recurso[CHAVE_TIPO] == CHAVE_RCP:
+                            recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (quantidadeRecurso * 5.5)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
+                    for recurso in listaDicionariosRecursos:
+                        if recurso[CHAVE_TIPO] == CHAVE_RCP:
+                            recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (quantidadeRecurso * 3)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
+                    for recurso in listaDicionariosRecursos:
+                        if recurso[CHAVE_TIPO] == CHAVE_RCP:
+                            recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (quantidadeRecurso * 1.5)
+                elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
+                    for recurso in listaDicionariosRecursos:
+                        if recurso[CHAVE_TIPO] == CHAVE_RCP:
+                            recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - quantidadeRecurso
+                dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
             confirmacao = False
-        if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
-            if quantidadeRecursoFaltante > 0:
-                for dicionarioRecurso1 in listaDicionariosRecursos:
-                    if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCT:
-                        dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRecursoFaltante
-                    elif dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                        dicionarioRecurso1[CHAVE_QUANTIDADE] += (quantidadeRecursoFaltante * 4) + (quantidadeRecursoFaltante * 3)
-            else:
-                quantidadeRecursoFaltante = 0
-            dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
-            if quantidadeRecursoFaltante > 0:
-                quantidadeR11 = (quantidadeRecursoFaltante * 3.5) + (quantidadeRecursoFaltante * 2)
-                for dicionarioRecurso1 in listaDicionariosRecursos:
-                    if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCS:
-                        dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeRecursoFaltante
-                    elif dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                        dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeR11
-            else:
-                quantidadeRecursoFaltante = 0
-            dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
-            if quantidadeRecursoFaltante > 0:
-                quantidadeR11 = (quantidadeRecursoFaltante * 3)
-                for dicionarioRecurso1 in listaDicionariosRecursos:
-                    if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                        dicionarioRecurso1[CHAVE_QUANTIDADE] += quantidadeR11
-            else:
-                quantidadeRecursoFaltante = 0
-            dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
-            if quantidadeRecursoFaltante <= 0:
-                quantidadeRecursoFaltante = 0
-            quantidadeR11 = quantidadeRecursoFaltante * 3
-            for dicionarioRecurso1 in listaDicionariosRecursos:
-                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] + quantidadeR11
-                    break
-            dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
-            if quantidadeRecursoFaltante <= 0:
-                quantidadeRecursoFaltante = 0
-            quantidadeR11 = quantidadeRecursoFaltante * 2
-            for dicionarioRecurso1 in listaDicionariosRecursos:
-                if dicionarioRecurso1[CHAVE_TIPO] == CHAVE_RCP:
-                    dicionarioRecurso1[CHAVE_QUANTIDADE] = dicionarioRecurso1[CHAVE_QUANTIDADE] + quantidadeR11
-                    break
-            dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCP:
-            if quantidadeRecursoFaltante <= 0:
-                quantidadeRecursoFaltante = 0
-            dicionarioRecurso[CHAVE_QUANTIDADE] = quantidadeRecursoFaltante
-        listaDicionariosRecursos = sorted(listaDicionariosRecursos,key=lambda dicionario:dicionario[CHAVE_TIPO])
+        elif quantidadeRecursoFaltante <= 0: #se não faltam recursos
+            if dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAT:
+                for recurso in listaDicionariosRecursos:
+                    if recurso[CHAVE_TIPO] == CHAVE_RCT:
+                        recurso[CHAVE_QUANTIDADE] = 0
+                    elif recurso[CHAVE_TIPO] == CHAVE_RCP:
+                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 7)
+            elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAS:
+                for recurso in listaDicionariosRecursos:
+                    if recurso[CHAVE_TIPO] == CHAVE_RCS:
+                        recurso[CHAVE_QUANTIDADE] = 0
+                    elif recurso[CHAVE_TIPO] == CHAVE_RCP:
+                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 5.5)
+            elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
+                for recurso in listaDicionariosRecursos:
+                    if recurso[CHAVE_TIPO] == CHAVE_RCP:
+                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
+            elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
+                for recurso in listaDicionariosRecursos:
+                    if recurso[CHAVE_TIPO] == CHAVE_RCP:
+                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 1.5)
+            elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
+                for recurso in listaDicionariosRecursos:
+                    if recurso[CHAVE_TIPO] == CHAVE_RCP:
+                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - dicionarioRecurso[CHAVE_QUANTIDADE]
+            dicionarioRecurso[CHAVE_QUANTIDADE] = 0
     else:
+        listaDicionariosRecursos = sorted(listaDicionariosRecursos, key = lambda dicionario:dicionario[CHAVE_TIPO])
         print(f'{D}: Lista dicionários recursos depois de subtrair estoque:')
         linhaSeparacao()
         for dicionariosRecursos in listaDicionariosRecursos:
@@ -1843,64 +1823,87 @@ def quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
 def xpSuficienteParaEvoluir(xpNecessario, somaXpProduzirProduzindo):
     return xpNecessario - somaXpProduzirProduzindo >= 0
 
-def defineListaDicionarioRecursos(dicionarioTrabalho):
+def defineListaDicionarioRecursos(dicionarioProdutoParaProduzir):
     print(f'Definindo lista de dicionários de recursos.')
     listaDicionariosRecursos = []
-    dicionarioTrabalho = defineQuantidadeRecursos(dicionarioTrabalho)
-    chaveProfissao = limpaRuidoTexto(dicionarioTrabalho[CHAVE_PROFISSAO])
+    dicionarioProdutoParaProduzir = defineQuantidadeRecursos(dicionarioProdutoParaProduzir)
+    chaveProfissao = limpaRuidoTexto(dicionarioProdutoParaProduzir[CHAVE_PROFISSAO])
     nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario = retornaNomesRecursos(chaveProfissao, 1)
-    if dicionarioTrabalho[CHAVE_NIVEL] <= 14:
+    if dicionarioProdutoParaProduzir[CHAVE_NIVEL] <= 14:
         DRCT = {
             CHAVE_NOME:nomeRecursoTerciario,
             CHAVE_NIVEL:1,
             CHAVE_EXPERIENCIA:5,
             CHAVE_TIPO:CHAVE_RCT,
-            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-            CHAVE_QUANTIDADE:dicionarioTrabalho[CHAVE_QUANTIDADE_TERCIARIO]}
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RCT]}
         DRCS = {
             CHAVE_NOME:nomeRecursoSecundario,
             CHAVE_NIVEL:1,
             CHAVE_EXPERIENCIA:4,
             CHAVE_TIPO:CHAVE_RCS,
-            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-            CHAVE_QUANTIDADE:dicionarioTrabalho[CHAVE_QUANTIDADE_SECUNDARIO]}
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RCS]}
         DRCP = {
             CHAVE_NOME:nomeRecursoPrimario,
             CHAVE_NIVEL:1,
             CHAVE_EXPERIENCIA:3,
             CHAVE_TIPO:CHAVE_RCP,
-            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-            CHAVE_QUANTIDADE:dicionarioTrabalho[CHAVE_QUANTIDADE_PRIMARIO]}
-        DRCP[CHAVE_QUANTIDADE] += (DRCT[CHAVE_QUANTIDADE]*3)+(DRCS[CHAVE_QUANTIDADE]*2)
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RCP]}
         listaDicionariosRecursos.append(DRCT)
         listaDicionariosRecursos.append(DRCS)
         listaDicionariosRecursos.append(DRCP)
     else:
+        DRCT = {
+            CHAVE_NOME:nomeRecursoTerciario,
+            CHAVE_NIVEL:1,
+            CHAVE_EXPERIENCIA:5,
+            CHAVE_TIPO:CHAVE_RCT,
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RCT]}
+        DRCS = {
+            CHAVE_NOME:nomeRecursoSecundario,
+            CHAVE_NIVEL:1,
+            CHAVE_EXPERIENCIA:4,
+            CHAVE_TIPO:CHAVE_RCS,
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RCS]}
+        DRCP = {
+            CHAVE_NOME:nomeRecursoPrimario,
+            CHAVE_NIVEL:1,
+            CHAVE_EXPERIENCIA:3,
+            CHAVE_TIPO:CHAVE_RCP,
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RCP]}
         nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario = retornaNomesRecursos(chaveProfissao, 8)
         DRAT = {
             CHAVE_NOME:nomeRecursoTerciario,
             CHAVE_NIVEL:8,
             CHAVE_EXPERIENCIA:130,
             CHAVE_TIPO:CHAVE_RAT,
-            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-            CHAVE_QUANTIDADE:dicionarioTrabalho[CHAVE_QUANTIDADE_TERCIARIO]}
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RAT]}
         DRAS = {
             CHAVE_NOME:nomeRecursoSecundario,
             CHAVE_NIVEL:8,
             CHAVE_EXPERIENCIA:130,
             CHAVE_TIPO:CHAVE_RAS,
-            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-            CHAVE_QUANTIDADE:dicionarioTrabalho[CHAVE_QUANTIDADE_SECUNDARIO]}
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RAS]}
         DRAP = {
             CHAVE_NOME:nomeRecursoPrimario,
             CHAVE_NIVEL:8,
             CHAVE_EXPERIENCIA:130,
             CHAVE_TIPO:CHAVE_RAP,
-            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
-            CHAVE_QUANTIDADE:dicionarioTrabalho[CHAVE_QUANTIDADE_PRIMARIO]}
+            CHAVE_PROFISSAO:dicionarioProdutoParaProduzir[CHAVE_PROFISSAO],
+            CHAVE_QUANTIDADE:dicionarioProdutoParaProduzir[CHAVE_RAP]}
         listaDicionariosRecursos.append(DRAT)
         listaDicionariosRecursos.append(DRAS)
         listaDicionariosRecursos.append(DRAP)
+        listaDicionariosRecursos.append(DRCT)
+        listaDicionariosRecursos.append(DRCS)
+        listaDicionariosRecursos.append(DRCP)
     print(f'{D}: Lista de dicionários recursos:')
     for dicionarioRecurso in listaDicionariosRecursos:
         for atributo in dicionarioRecurso:
@@ -2014,36 +2017,45 @@ def retornaNomeRecursoTrabalhoProducao(nomeTrabalhoProducao):
     return nomeRecurso
 
 def defineQuantidadeRecursos(dicionarioTrabalho):
-    print(f'Define quantidade de recursos primário, segundário e terciário.')
+    print(f'Define quantidade de recursos.')
     nivelProduzTrabalhoComum = dicionarioTrabalho[CHAVE_NIVEL]
     recursoTerciario = 0
-    if nivelProduzTrabalhoComum == 10:
-        recursoTerciario = 2
-    elif nivelProduzTrabalhoComum == 12:
-        recursoTerciario = 4
-    elif nivelProduzTrabalhoComum == 14:
-        recursoTerciario = 6
-    elif nivelProduzTrabalhoComum == 16:
-        recursoTerciario = 2
-    elif nivelProduzTrabalhoComum == 18:
-        recursoTerciario = 4
-    elif nivelProduzTrabalhoComum == 20:
-        recursoTerciario = 6
-    elif nivelProduzTrabalhoComum == 22:
-        recursoTerciario = 8
-    elif nivelProduzTrabalhoComum == 24:
-        recursoTerciario = 10
-    elif nivelProduzTrabalhoComum == 26:
-        recursoTerciario = 12
-    elif nivelProduzTrabalhoComum == 28:
-        recursoTerciario = 14
-    elif nivelProduzTrabalhoComum == 30:
-        recursoTerciario = 16
-    elif nivelProduzTrabalhoComum == 32:
-        recursoTerciario = 18
-    dicionarioTrabalho[CHAVE_QUANTIDADE_TERCIARIO] = recursoTerciario
-    dicionarioTrabalho[CHAVE_QUANTIDADE_SECUNDARIO] = recursoTerciario + 1
-    dicionarioTrabalho[CHAVE_QUANTIDADE_PRIMARIO] = recursoTerciario + 2
+    if nivelProduzTrabalhoComum <= 14:
+        if nivelProduzTrabalhoComum == 10:
+            recursoTerciario = 2
+        elif nivelProduzTrabalhoComum == 12:
+            recursoTerciario = 4
+        elif nivelProduzTrabalhoComum == 14:
+            recursoTerciario = 6
+        dicionarioTrabalho[CHAVE_RCT] = recursoTerciario
+        dicionarioTrabalho[CHAVE_RCS] = recursoTerciario + 1
+        dicionarioTrabalho[CHAVE_RCP] = (recursoTerciario + 2) + (dicionarioTrabalho[CHAVE_RCS] * 2) + (dicionarioTrabalho[CHAVE_RCT] * 3)
+    else:
+        if nivelProduzTrabalhoComum == 16:
+            recursoTerciario = 2
+        elif nivelProduzTrabalhoComum == 18:
+            recursoTerciario = 4
+        elif nivelProduzTrabalhoComum == 20:
+            recursoTerciario = 6
+        elif nivelProduzTrabalhoComum == 22:
+            recursoTerciario = 8
+        elif nivelProduzTrabalhoComum == 24:
+            recursoTerciario = 10
+        elif nivelProduzTrabalhoComum == 26:
+            recursoTerciario = 12
+        elif nivelProduzTrabalhoComum == 28:
+            recursoTerciario = 14
+        elif nivelProduzTrabalhoComum == 30:
+            recursoTerciario = 16
+        elif nivelProduzTrabalhoComum == 32:
+            recursoTerciario = 18
+        dicionarioTrabalho[CHAVE_RAT] = recursoTerciario
+        dicionarioTrabalho[CHAVE_RAS] = recursoTerciario + 1
+        dicionarioTrabalho[CHAVE_RAP] = recursoTerciario + 2
+
+        dicionarioTrabalho[CHAVE_RCT] = dicionarioTrabalho[CHAVE_RAT]
+        dicionarioTrabalho[CHAVE_RCS] = dicionarioTrabalho[CHAVE_RAS]
+        dicionarioTrabalho[CHAVE_RCP] = (dicionarioTrabalho[CHAVE_RAP] * 3) + (dicionarioTrabalho[CHAVE_RAS] * 5.5) + (dicionarioTrabalho[CHAVE_RAT] * 7) 
     for atributo in dicionarioTrabalho:
         print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}.')
     linhaSeparacao()
@@ -3764,7 +3776,7 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
         CHAVE_NOME:'Pulseiras Unidade',
         CHAVE_EXPERIENCIA:750,
-        CHAVE_NIVEL:26,
+        CHAVE_NIVEL:10,
         CHAVE_RARIDADE:'Avançado',
         CHAVE_PROFISSAO:'Braceletes'
         }
@@ -3821,12 +3833,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        listaDicionariosRecursos = defineListaDicionarioRecursos(trabalhoDesejado)
-        for dicionarioRecurso in listaDicionariosRecursos:
-            dicionarioRecurso[CHAVE_QUANTIDADE] = dicionarioRecurso[CHAVE_QUANTIDADE] * 4
-        listaDicionariosTrabalhosEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
-
-        existeEspacoProducao(dicionarioPersonagemAtributos)
+        defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
