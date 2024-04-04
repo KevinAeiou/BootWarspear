@@ -2862,7 +2862,7 @@ def retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendid
                     if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], dicionarioProdutoVendido['nomeProduto']):
                         if textoEhIgual(dicionarioProdutoVendido['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME]):
                             if not trabalhoEhProducaoRecursos(dicionarioTrabalho):
-                                dicionarioTrabalho = {
+                                dicionarioTrabalhoRaroVendido = {
                                     CHAVE_ID:dicionarioTrabalho[CHAVE_ID],
                                     CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
                                     CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
@@ -2870,7 +2870,9 @@ def retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendid
                                     CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
                                     CHAVE_QUANTIDADE:dicionarioProdutoVendido['quantidadeProduto'],
                                     CHAVE_EXPERIENCIA:dicionarioTrabalho[CHAVE_EXPERIENCIA]}
-                                listaDicionariosTrabalhosRarosVendidos.append(dicionarioTrabalho)
+                                if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalho:
+                                    dicionarioTrabalhoRaroVendido[CHAVE_TRABALHO_NECESSARIO] = dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO]
+                                listaDicionariosTrabalhosRarosVendidos.append(dicionarioTrabalhoRaroVendido)
                                 break
     linhaSeparacao()
     listaDicionariosTrabalhosRarosVendidosOrdenados = sorted(listaDicionariosTrabalhosRarosVendidos, key = lambda dicionario: (dicionario[CHAVE_PROFISSAO], dicionario[CHAVE_NIVEL], dicionario[CHAVE_NOME]))
@@ -2895,6 +2897,32 @@ def retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdut
             print(f'{D}: {atributo} - {dicionarioTrabalhoRaroVendido[atributo]}.')
         linhaSeparacao()
     return listaDicionariosProdutosRarosVendidosOrdenada
+
+def quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, nomeTrabalhoRaroVendido):
+    for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
+        if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], nomeTrabalhoRaroVendido):
+            return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] > 0
+    return False
+
+def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada):
+    listaDicionariosTrabalhoParaProduzir = []
+    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    for dicionarioProdutoRaroVendido in listaDicionariosProdutosRarosVendidosOrdenada:
+        if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME]):
+            listaDicionariosTrabalhoParaProduzir.append(dicionarioProdutoRaroVendido)
+            print(f'{D}: Atributos do trabalho mais vendido:')
+            for atributo in dicionarioProdutoRaroVendido:
+                print(f'{D}: {atributo} - {dicionarioProdutoRaroVendido[atributo]}.')
+            linhaSeparacao()
+            listaTrabalhosNecessarios = dicionarioProdutoRaroVendido[CHAVE_TRABALHO_NECESSARIO].split(',')
+            print(f'{D}: Lista de trabalhosNecessários: {listaTrabalhosNecessarios}.')
+            for trabalhoNecessario in listaTrabalhosNecessarios:
+            
+                pass
+            # if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_TRABALHO_NECESSARIO]):
+            
+            #     pass
+            break
 
 def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
     listaPersonagemPresenteRecuperado = retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
@@ -3862,6 +3890,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
         listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
+        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
