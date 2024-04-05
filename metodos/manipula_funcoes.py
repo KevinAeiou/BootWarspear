@@ -2904,25 +2904,81 @@ def quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, nome
             return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] > 0
     return False
 
+def trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, nomeTrabalhoRaroVendido):
+    listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
+    for dicionarioTrabalhoParaProduzirProduzindo in listaDicionariosTrabalhosParaProduzirProduzindo:
+        if textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_NOME], nomeTrabalhoRaroVendido):
+            return True
+    return False
+
+def retornaDicinarioTrabalhoNecessario(trabalhoNecessario):
+    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+    for dicionarioTrabalho in listaDicionariosTrabalhos:
+        if textoEhIgual(dicionarioTrabalho[CHAVE_NOME], trabalhoNecessario):
+            return dicionarioTrabalho
+    return None
+
+def exitePeloMenosUmaUnidadeTrabalhoNecessarioEmEstoque(listaDicionarioTrabalhoEstoque, listaTrabalhosMelhoradosNecessarios):
+    confirmacao = True
+    for trabalhoNecessario in listaTrabalhosMelhoradosNecessarios:
+        if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, trabalhoNecessario):
+            confirmacao = False
+        else:
+            print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho necessário ({trabalhoNecessario}) no estoque.')
+    return confirmacao
+
 def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada):
     listaDicionariosTrabalhoParaProduzir = []
     listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
     for dicionarioProdutoRaroVendido in listaDicionariosProdutosRarosVendidosOrdenada:
         if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME]):
-            listaDicionariosTrabalhoParaProduzir.append(dicionarioProdutoRaroVendido)
-            print(f'{D}: Atributos do trabalho mais vendido:')
-            for atributo in dicionarioProdutoRaroVendido:
-                print(f'{D}: {atributo} - {dicionarioProdutoRaroVendido[atributo]}.')
-            linhaSeparacao()
-            listaTrabalhosNecessarios = dicionarioProdutoRaroVendido[CHAVE_TRABALHO_NECESSARIO].split(',')
-            print(f'{D}: Lista de trabalhosNecessários: {listaTrabalhosNecessarios}.')
-            for trabalhoNecessario in listaTrabalhosNecessarios:
-            
-                pass
-            # if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_TRABALHO_NECESSARIO]):
-            
-            #     pass
-            break
+            if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido[CHAVE_NOME]):
+                print(f'{D}: Atributos do trabalho mais vendido:')
+                for atributo in dicionarioProdutoRaroVendido:
+                    print(f'{D}: {atributo} - {dicionarioProdutoRaroVendido[atributo]}.')
+                linhaSeparacao()
+                if CHAVE_TRABALHO_NECESSARIO in dicionarioProdutoRaroVendido:
+                    listaTrabalhosMelhoradosNecessarios = dicionarioProdutoRaroVendido[CHAVE_TRABALHO_NECESSARIO].split(',')
+                    print(f'{D}: Lista de trabalhosNecessários: {listaTrabalhosMelhoradosNecessarios}.')
+                    if exitePeloMenosUmaUnidadeTrabalhoNecessarioEmEstoque(listaDicionarioTrabalhoEstoque, listaTrabalhosMelhoradosNecessarios):
+                        print(f'{D}: Existe pelo menos 1 (uma) unidade de cada trabalhos necessário no estoque.')
+                        dicionarioProdutoRaroVendido[CHAVE_RECORRENCIA] = False
+                        dicionarioProdutoRaroVendido[CHAVE_LICENCA] = CHAVE_LICENCA_PRINCIPIANTE
+                        dicionarioProdutoRaroVendido[CHAVE_ESTADO] = para_produzir
+                        adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
+                        break
+                    else:
+                        for trabalhoNecessario in listaTrabalhosMelhoradosNecessarios:
+                            if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, trabalhoNecessario):
+                                if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoNecessario):
+                                    dicionarioTrabalhoMelhoradoNecessario = retornaDicinarioTrabalhoNecessario(trabalhoNecessario)
+                                    if variavelExiste(dicionarioTrabalhoMelhoradoNecessario):
+                                        if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoNecessario:
+                                            listaTrabalhosComusDoTrabalhoMelhorado = dicionarioTrabalhoMelhoradoNecessario[CHAVE_TRABALHO_NECESSARIO].split(',')
+                                            for trabalhoNecessarioDoTrabalhoNecessario in listaTrabalhosComusDoTrabalhoMelhorado:
+                                                if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, trabalhoNecessarioDoTrabalhoNecessario[CHAVE_NOME]):
+                                                    if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoNecessarioDoTrabalhoNecessario[CHAVE_NOME]):
+                                                        
+                                                        pass
+                                                    else:
+                                                        print(f'{D}: Trabalho necessário ({trabalhoNecessario}) está sendo produzido!')
+                                                else:
+                                                    print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho necessário ({trabalhoNecessario}) no estoque.')
+                                        else:
+                                            print(f'{D}:  Trabalho {dicionarioTrabalhoMelhoradoNecessario[CHAVE_NOME]} não possui CHAVE_TRABALHO_NECESSARIO.')
+                                    else:
+                                        print(f'{D}: Dicionário trabalho necessário não foi encontrado!')
+                                else:
+                                    print(f'{D}: Trabalho necessário ({trabalhoNecessario}) está sendo produzido!')
+                else:
+                    print(f'{D}: Trabalho {dicionarioProdutoRaroVendido[CHAVE_NOME]} não possui CHAVE_TRABALHO_NECESSARIO.')
+                    print(f'{D}: Passando para o próximo trabalho...')
+            else:
+                print(f'{D}: Produto mais ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) vendido está sendo produzido!')
+                break
+        else:
+            print(f'{D}: Existe pelo menos 1 (uma) unidade do produto mais vendido ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque.')
+    print(f'{D}: Fim do processo de verificação de produto mais vendido...')
 
 def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
     listaPersonagemPresenteRecuperado = retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado=[])
