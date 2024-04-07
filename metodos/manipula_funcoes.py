@@ -524,7 +524,8 @@ def vaiParaMenuProduzir(dicionarioPersonagemAtributos):
         if estaMenuInicial(menu):
             if existePixelCorrespondencia():
                 vaiParaMenuCorrespondencia()
-                recuperaCorrespondencia(dicionarioPersonagemAtributos)
+                if recuperaCorrespondencia(dicionarioPersonagemAtributos):
+                    verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
         while naoEstiverMenuProduzir(menu):
             dicionarioPersonagemAtributos = trataMenu(menu,dicionarioPersonagemAtributos)
             if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
@@ -2898,10 +2899,10 @@ def retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdut
         linhaSeparacao()
     return listaDicionariosProdutosRarosVendidosOrdenada
 
-def quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, nomeTrabalhoRaroVendido):
+def quantidadeTrabalhoEstoqueEhMaiorQueQuantidade(listaDicionarioTrabalhoEstoque, nomeTrabalhoRaroVendido, quantidade):
     for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
         if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], nomeTrabalhoRaroVendido):
-            return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] > 1
+            return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] > quantidade
     return False
 
 def trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, nomeTrabalhoRaroVendido):
@@ -2921,7 +2922,7 @@ def retornaDicinarioTrabalhoNecessario(trabalhoNecessario):
 def exitePeloMenosUmaUnidadeTrabalhoNecessarioEmEstoque(listaDicionarioTrabalhoEstoque, listaTrabalhosMelhoradosNecessarios):
     confirmacao = True
     for trabalhoNecessario in listaTrabalhosMelhoradosNecessarios:
-        if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, trabalhoNecessario):
+        if not quantidadeTrabalhoEstoqueEhMaiorQueQuantidade(listaDicionarioTrabalhoEstoque, trabalhoNecessario, quantidade = 1):
             confirmacao = False
         else:
             print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho necessário ({trabalhoNecessario}) no estoque.')
@@ -2935,7 +2936,7 @@ def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProd
             break
         verificacoes += 1
         print(f'{D}: Verificando quantidade de {dicionarioProdutoRaroVendido[CHAVE_NOME]} no estoque...')
-        if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME]):
+        if not quantidadeTrabalhoEstoqueEhMaiorQueQuantidade(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME], quantidade = 1):
             print(f'{D}: Quantidade de {dicionarioProdutoRaroVendido[CHAVE_NOME]} é insuficiente !')
             print(f'{D}: Verificando se {dicionarioProdutoRaroVendido[CHAVE_NOME]} já está sendo produzido...')
             if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido[CHAVE_NOME]):
@@ -2958,7 +2959,7 @@ def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProd
                         # verifica condições para adicionar os recursos necessário para este
                         for trabalhoMelhoradoNecessario in listaTrabalhosMelhoradosNecessarios:
                             print(f'{D}: Verificando quantidade de {trabalhoMelhoradoNecessario} no estoque...')
-                            if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, trabalhoMelhoradoNecessario):
+                            if not quantidadeTrabalhoEstoqueEhMaiorQueQuantidade(listaDicionarioTrabalhoEstoque, trabalhoMelhoradoNecessario, quantidade = 0):
                                 print(f'{D}: Quantidade de {trabalhoMelhoradoNecessario} é insuficiente !')
                                 print(f'{D}: Verificando se {trabalhoMelhoradoNecessario} já está sendo produzido...')
                                 if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoMelhoradoNecessario):
@@ -2974,7 +2975,7 @@ def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProd
                                             trabalhosComunsNecessariosSuficientes = True
                                             for trabalhoComumNecessario in listaTrabalhosComunsNecessarios:
                                                 print(f'{D}: Verificando quantidade de {trabalhoComumNecessario} no estoque...')
-                                                if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, trabalhoComumNecessario):
+                                                if not quantidadeTrabalhoEstoqueEhMaiorQueQuantidade(listaDicionarioTrabalhoEstoque, trabalhoComumNecessario, quantidade = 0):
                                                     trabalhosComunsNecessariosSuficientes = False
                                                     print(f'{D}: Quantidade de {trabalhoComumNecessario} é insuficiente !')
                                                     print(f'{D}: Verificando se {trabalhoComumNecessario} já está sendo produzido...')
@@ -3037,7 +3038,8 @@ def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
         reconheceMenuRecompensa(menu)
         if existePixelCorrespondencia():
             vaiParaMenuCorrespondencia()
-            recuperaCorrespondencia(dicionarioPersonagemAtributos)
+            if recuperaCorrespondencia(dicionarioPersonagemAtributos):
+                verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
         deslogaPersonagem(None,None)
@@ -3497,31 +3499,34 @@ def verificaVendaProduto(texto):
     return None
 
 def recuperaCorrespondencia(dicionarioPersonagemAtributos):
+    verificaTrabalhoRaroVendido = False
     while verificaCaixaCorreio():
         clickEspecifico(1, 'enter')
         dicionarioVenda = retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)
-        atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
+        if not tamanhoIgualZero(dicionarioVenda):
+            verificaTrabalhoRaroVendido = True
+            atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda)
         clickEspecifico(1,'f2')
     else:
         print(f'Caixa de correio vazia!')
         clickMouseEsquerdo(1, 2, 35)
         linhaSeparacao()
+    return verificaTrabalhoRaroVendido
 
 def atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda):
-    if not tamanhoIgualZero(dicionarioVenda):
-        listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
-        for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
-            if (texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME], dicionarioVenda['nomeProduto']) and
-                    textoEhIgual(dicionarioVenda['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME])):
-                novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - 1
-                caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
-                dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                modificaAtributo(caminhoRequisicao, dados)
-                print(f'{D}: Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
-                break
-        else:
-            print(f'{D}: Trabalho vendido não encontrado no estoque.')
-        linhaSeparacao()
+    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
+        if (texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME], dicionarioVenda['nomeProduto']) and
+                textoEhIgual(dicionarioVenda['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME])):
+            novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - 1
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+            modificaAtributo(caminhoRequisicao, dados)
+            print(f'{D}: Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
+            break
+    else:
+        print(f'{D}: Trabalho vendido não encontrado no estoque.')
+    linhaSeparacao()
 
 def existePixelCorrespondencia():
     confirmacao=False
@@ -3889,10 +3894,14 @@ def retornaContadorEspacosProducao(dicionarioPersonagemAtributos, contadorEspaco
             contadorEspacosProducao += 2
     return contadorEspacosProducao
 
-def adicionaAtributoIdProfissao(dicionarioPersonagem):
-    for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
-        listaDicionarioProfissao=retornaListaDicionarioProfissao(dicionarioPersonagem)
+def verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos):
+    listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+    listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
+    if not tamanhoIgualZero(listaDicionariosProdutosRarosVendidos):
+        listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
+        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
+    else:
+        print(f'{D}: Lista de trabalhos raros vendidos está vazia!')
         linhaSeparacao()
 
 def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
@@ -3994,11 +4003,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
-        if not tamanhoIgualZero(listaDicionariosProdutosRarosVendidos):
-            listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
-            produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
+        
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
