@@ -1522,6 +1522,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                             modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                             atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
                             verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                            verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
                     elif not existeEspacoProducao(dicionarioPersonagemAtributos):
                         break
                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
@@ -3303,7 +3304,7 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-
+                verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
             if not existeEspacoProducao(dicionarioPersonagemAtributos):
