@@ -2898,10 +2898,10 @@ def retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdut
         linhaSeparacao()
     return listaDicionariosProdutosRarosVendidosOrdenada
 
-def quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, nomeTrabalhoRaroVendido):
+def quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, nomeTrabalhoRaroVendido):
     for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
         if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], nomeTrabalhoRaroVendido):
-            return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] > 0
+            return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] > 1
     return False
 
 def trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, nomeTrabalhoRaroVendido):
@@ -2921,18 +2921,25 @@ def retornaDicinarioTrabalhoNecessario(trabalhoNecessario):
 def exitePeloMenosUmaUnidadeTrabalhoNecessarioEmEstoque(listaDicionarioTrabalhoEstoque, listaTrabalhosMelhoradosNecessarios):
     confirmacao = True
     for trabalhoNecessario in listaTrabalhosMelhoradosNecessarios:
-        if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, trabalhoNecessario):
+        if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, trabalhoNecessario):
             confirmacao = False
         else:
             print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho necessário ({trabalhoNecessario}) no estoque.')
     return confirmacao
 
 def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada):
-    listaDicionariosTrabalhoParaProduzir = []
+    verificacoes = 0
     listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
     for dicionarioProdutoRaroVendido in listaDicionariosProdutosRarosVendidosOrdenada:
-        if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME]):
+        if verificacoes > 2:
+            break
+        verificacoes += 1
+        print(f'{D}: Verificando quantidade de {dicionarioProdutoRaroVendido[CHAVE_NOME]} no estoque...')
+        if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME]):
+            print(f'{D}: Quantidade de {dicionarioProdutoRaroVendido[CHAVE_NOME]} é insuficiente !')
+            print(f'{D}: Verificando se {dicionarioProdutoRaroVendido[CHAVE_NOME]} já está sendo produzido...')
             if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido[CHAVE_NOME]):
+                print(f'{D}: Trabalho {dicionarioProdutoRaroVendido[CHAVE_NOME]} não está sendo produzido!')
                 print(f'{D}: Atributos do trabalho mais vendido:')
                 for atributo in dicionarioProdutoRaroVendido:
                     print(f'{D}: {atributo} - {dicionarioProdutoRaroVendido[atributo]}.')
@@ -2946,38 +2953,82 @@ def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProd
                         dicionarioProdutoRaroVendido[CHAVE_LICENCA] = CHAVE_LICENCA_PRINCIPIANTE
                         dicionarioProdutoRaroVendido[CHAVE_ESTADO] = para_produzir
                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
-                        break
-                    else:
-                        for trabalhoNecessario in listaTrabalhosMelhoradosNecessarios:
-                            if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, trabalhoNecessario):
-                                if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoNecessario):
-                                    dicionarioTrabalhoMelhoradoNecessario = retornaDicinarioTrabalhoNecessario(trabalhoNecessario)
+                        linhaSeparacao()
+                    else: # se não existe recurso suficiente para adicionar o trabalho raro mais vendido
+                        # verifica condições para adicionar os recursos necessário para este
+                        for trabalhoMelhoradoNecessario in listaTrabalhosMelhoradosNecessarios:
+                            print(f'{D}: Verificando quantidade de {trabalhoMelhoradoNecessario} no estoque...')
+                            if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, trabalhoMelhoradoNecessario):
+                                print(f'{D}: Quantidade de {trabalhoMelhoradoNecessario} é insuficiente !')
+                                print(f'{D}: Verificando se {trabalhoMelhoradoNecessario} já está sendo produzido...')
+                                if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoMelhoradoNecessario):
+                                    print(f'{D}: Trabalho {trabalhoMelhoradoNecessario} não está sendo produzido!')
+                                    print(f'{D}: Buscando dicionário de {trabalhoMelhoradoNecessario}...')
+                                    dicionarioTrabalhoMelhoradoNecessario = retornaDicinarioTrabalhoNecessario(trabalhoMelhoradoNecessario)
                                     if variavelExiste(dicionarioTrabalhoMelhoradoNecessario):
+                                        for atributo in dicionarioTrabalhoMelhoradoNecessario:
+                                            print(f'{D}: {atributo} - {dicionarioTrabalhoMelhoradoNecessario[atributo]}.')
+                                        linhaSeparacao()
                                         if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoNecessario:
-                                            listaTrabalhosComusDoTrabalhoMelhorado = dicionarioTrabalhoMelhoradoNecessario[CHAVE_TRABALHO_NECESSARIO].split(',')
-                                            for trabalhoNecessarioDoTrabalhoNecessario in listaTrabalhosComusDoTrabalhoMelhorado:
-                                                if not quantidadeTrabalhoEstoqueEhMaiorQueZero(listaDicionarioTrabalhoEstoque, trabalhoNecessarioDoTrabalhoNecessario[CHAVE_NOME]):
-                                                    if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoNecessarioDoTrabalhoNecessario[CHAVE_NOME]):
-                                                        
+                                            listaTrabalhosComunsNecessarios = dicionarioTrabalhoMelhoradoNecessario[CHAVE_TRABALHO_NECESSARIO].split(',')
+                                            trabalhosComunsNecessariosSuficientes = True
+                                            for trabalhoComumNecessario in listaTrabalhosComunsNecessarios:
+                                                print(f'{D}: Verificando quantidade de {trabalhoComumNecessario} no estoque...')
+                                                if not quantidadeTrabalhoEstoqueEhMaiorQueUm(listaDicionarioTrabalhoEstoque, trabalhoComumNecessario):
+                                                    trabalhosComunsNecessariosSuficientes = False
+                                                    print(f'{D}: Quantidade de {trabalhoComumNecessario} é insuficiente !')
+                                                    print(f'{D}: Verificando se {trabalhoComumNecessario} já está sendo produzido...')
+                                                    if not trabalhoEstaListaProduzirProduzindo(dicionarioPersonagemAtributos, trabalhoComumNecessario):
+                                                        print(f'{D}: Trabalho {trabalhoComumNecessario} não está sendo produzido!')
+                                                        print(f'{D}: Buscando dicionário de {trabalhoComumNecessario}...')
+                                                        dicionarioTrabalhoComumNecessario = retornaDicinarioTrabalhoNecessario(trabalhoComumNecessario)
+                                                        if variavelExiste(dicionarioTrabalhoComumNecessario):
+                                                            dicionarioTrabalhoComumNecessario[CHAVE_RECORRENCIA] = False
+                                                            dicionarioTrabalhoComumNecessario[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
+                                                            dicionarioTrabalhoComumNecessario[CHAVE_ESTADO] = para_produzir
+                                                            for atributo in dicionarioTrabalhoComumNecessario:
+                                                                print(f'{D}: {atributo} - {dicionarioTrabalhoComumNecessario[atributo]}.')
+                                                            adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoComumNecessario)
+                                                            linhaSeparacao()
                                                         pass
                                                     else:
-                                                        print(f'{D}: Trabalho necessário ({trabalhoNecessario}) está sendo produzido!')
+                                                        print(f'{D}: Trabalho comum necessário ({trabalhoComumNecessario}) está sendo produzido!')
+                                                        linhaSeparacao()
                                                 else:
-                                                    print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho necessário ({trabalhoNecessario}) no estoque.')
+                                                    print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho comum necessário ({trabalhoComumNecessario}) no estoque.')
+                                                    linhaSeparacao()
+                                            else:
+                                                if trabalhosComunsNecessariosSuficientes:
+                                                    print(f'{D}: Adicionando {dicionarioTrabalhoMelhoradoNecessario[CHAVE_NOME]} a lista de desejos...')
+                                                    dicionarioTrabalhoMelhoradoNecessario[CHAVE_RECORRENCIA] = False
+                                                    dicionarioTrabalhoMelhoradoNecessario[CHAVE_LICENCA] = CHAVE_LICENCA_PRINCIPIANTE
+                                                    dicionarioTrabalhoMelhoradoNecessario[CHAVE_ESTADO] = para_produzir
+                                                    for atributo in dicionarioTrabalhoMelhoradoNecessario:
+                                                        print(f'{D}: {atributo} - {dicionarioTrabalhoMelhoradoNecessario[atributo]}.')
+                                                    adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoMelhoradoNecessario)
+                                                    linhaSeparacao()
                                         else:
                                             print(f'{D}:  Trabalho {dicionarioTrabalhoMelhoradoNecessario[CHAVE_NOME]} não possui CHAVE_TRABALHO_NECESSARIO.')
+                                            linhaSeparacao()
                                     else:
-                                        print(f'{D}: Dicionário trabalho necessário não foi encontrado!')
+                                        print(f'{D}: Dicionário de {trabalhoMelhoradoNecessario} não foi encontrado!')
+                                        linhaSeparacao()
                                 else:
-                                    print(f'{D}: Trabalho necessário ({trabalhoNecessario}) está sendo produzido!')
+                                    print(f'{D}: Trabalho melhorado necessário ({trabalhoMelhoradoNecessario}) está sendo produzido!')
+                                    linhaSeparacao()
+                            else:
+                                print(f'{D}: Quantidade do trabalho melhorado necessário ({trabalhoMelhoradoNecessario}) é suficiente!')
+                                linhaSeparacao()
                 else:
                     print(f'{D}: Trabalho {dicionarioProdutoRaroVendido[CHAVE_NOME]} não possui CHAVE_TRABALHO_NECESSARIO.')
-                    print(f'{D}: Passando para o próximo trabalho...')
+                    linhaSeparacao()
             else:
-                print(f'{D}: Produto mais ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) vendido está sendo produzido!')
-                break
+                print(f'{D}: Produto mais vendido ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) está sendo produzido!')
+                linhaSeparacao()
         else:
-            print(f'{D}: Existe pelo menos 1 (uma) unidade do produto mais vendido ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque.')
+            print(f'{D}: Existe pelo menos 2 (duas) unidades do produto mais vendido ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque.')
+            print(f'{D}: Passando para o próximo trabalho...')
+            linhaSeparacao()
     print(f'{D}: Fim do processo de verificação de produto mais vendido...')
 
 def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
@@ -3945,8 +3996,9 @@ def funcao_teste(dicionarioUsuario):
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
         listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
         listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
-        listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
-        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
+        if not tamanhoIgualZero(listaDicionariosProdutosRarosVendidos):
+            listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
+            produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)

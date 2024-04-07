@@ -136,7 +136,7 @@ def adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho):
         requisicao = retornaRequisicao(PATCH,caminhoRequisicao,dados)
         if requisicao:
             dicionarioRequisicao = requisicao.json()
-            print(f'Novo trabalho foi adicionado a lista de desejo!')
+            print(f'Novo trabalho ({dicionarioTrabalho[CHAVE_NOME]}) foi adicionado a lista de desejo!')
         else:
             caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioRequisicao["name"]}/.json'
             requisicao = retornaRequisicao(DELETE,caminhoRequisicao,None)
