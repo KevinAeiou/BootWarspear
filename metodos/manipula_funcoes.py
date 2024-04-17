@@ -2571,6 +2571,7 @@ def menuLicencasReconhecido(menu):
     return menu==menu_licencas
 
 def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
+    caminhoEstoque = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/'
     listaTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(listaTrabalhoEstoque):
         if textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_COMUM):
@@ -2618,6 +2619,7 @@ def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
                 dicionarioTrabalho = defineQuantidadeRecursos(dicionarioTrabalho)
                 dicionarioTrabalho = defineNomeRecursos(dicionarioTrabalho)
                 for trabalhoEstoque in listaTrabalhoEstoque:
+                    dados = {}
                     if textoEhIgual(trabalhoEstoque[CHAVE_NOME], dicionarioTrabalho[CHAVE_NOME_PRIMARIO]):
                         if dicionarioTrabalho[CHAVE_NIVEL] > 14:
                             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalho[CHAVE_RAP]
@@ -2625,10 +2627,8 @@ def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
                             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalho[CHAVE_RCP]
                         if novaQuantidade < 0:
                             novaQuantidade = 0
-                        caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                        caminhoRequisicao = f'{caminhoEstoque}{trabalhoEstoque[CHAVE_ID]}/.json'
                         dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                        print(f'{D}: Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada de {trabalhoEstoque[CHAVE_QUANTIDADE]} para {novaQuantidade}.')
-                        modificaAtributo(caminhoRequisicao,dados)
                     elif textoEhIgual(trabalhoEstoque[CHAVE_NOME], dicionarioTrabalho[CHAVE_NOME_SECUNDARIO]):
                         if dicionarioTrabalho[CHAVE_NIVEL] > 14:
                             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalho[CHAVE_RAS]
@@ -2636,10 +2636,8 @@ def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
                             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalho[CHAVE_RCS]
                         if novaQuantidade < 0:
                             novaQuantidade = 0
-                        caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                        caminhoRequisicao = f'{caminhoEstoque}{trabalhoEstoque[CHAVE_ID]}/.json'
                         dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                        print(f'{D}:Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
-                        modificaAtributo(caminhoRequisicao,dados)
                     elif textoEhIgual(trabalhoEstoque[CHAVE_NOME], dicionarioTrabalho[CHAVE_NOME_TERCIARIO]):
                         if dicionarioTrabalho[CHAVE_NIVEL] > 14:
                             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalho[CHAVE_RAT]
@@ -2647,12 +2645,26 @@ def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
                             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalho[CHAVE_RCT]
                         if novaQuantidade < 0:
                             novaQuantidade = 0
-                        caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+                        caminhoRequisicao = f'{caminhoEstoque}{trabalhoEstoque[CHAVE_ID]}/.json'
                         dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                    if not tamanhoIgualZero(dados):
                         print(f'{D}:Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
                         modificaAtributo(caminhoRequisicao,dados)
-        elif textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],CHAVE_RARIDADE_MELHORADO):
-            pass
+        elif textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO) or textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO):
+            if not trabalhoEhProducaoRecursos(dicionarioTrabalho):
+                if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalho:
+                    listaTrabalhosNecessarios = dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO].split(',')
+                    for trabalhoNecessario in listaTrabalhosNecessarios:
+                        for trabalhoEstoque in listaTrabalhoEstoque:
+                            if textoEhIgual(trabalhoNecessario, trabalhoEstoque[CHAVE_NOME]):
+                                novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - 1
+                                if novaQuantidade < 0:
+                                    novaQuantidade = 0
+                                caminhoRequisicao = f'{caminhoEstoque}{trabalhoEstoque[CHAVE_ID]}/.json'
+                                dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                                print(f'{D}:Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
+                                modificaAtributo(caminhoRequisicao,dados)
+                                break
     else:
         print(f'Lista de estoque está vazia!')
         linhaSeparacao()
@@ -4004,7 +4016,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        
+        verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
