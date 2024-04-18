@@ -66,6 +66,6 @@ CHAVE_RCT = 'recursoC'
 CHAVE_RAP = 'recursoD'
 CHAVE_RAS = 'recursoE'
 CHAVE_RAT = 'recursoF'
-CHAVE_TRABALHO_MAXIMO = 4
+CHAVE_TRABALHO_MAXIMO = 2
 
 D='DEBUG'
