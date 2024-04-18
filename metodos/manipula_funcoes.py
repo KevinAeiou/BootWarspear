@@ -3,12 +3,12 @@ import numpy as np
 from manipula_imagem import *
 from manipula_teclado import *
 from manipula_cliente import *
+from Utilitarios import *
 from lista_chaves import *
 import time
 import datetime
 import os.path
 import re
-from unidecode import unidecode
 
 xinicial=181
 xfinal = 228
@@ -481,7 +481,7 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
                 print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
-                if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
+                if texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
                     clickEspecifico(1, 'enter')
                     dicionarioTrabalho[CHAVE_POSICAO] = contadorParaBaixo
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
@@ -558,29 +558,8 @@ def raridadeTrabalhoEhRaro(dicionarioTrabalho):
 def raridadeTrabalhoEhEspecial(dicionarioTrabalho):
     return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_ESPECIAL)
 
-def texto1PertenceTexto2(texto1,texto2):
-    # print(f'{D}:{texto1} pertence a {texto2}?')
-    return limpaRuidoTexto(texto1)in limpaRuidoTexto(texto2)
-
-def textoEhIgual(texto1,texto2):
-    # print(f'{D}:{limpaRuidoTexto(texto1)}.')
-    # print(f'{D}:{limpaRuidoTexto(texto2)}.')
-    return limpaRuidoTexto(texto1)==limpaRuidoTexto(texto2)
-
-def variavelExiste(variavelVerificada):
-    return variavelVerificada!=None
-
 def primeiraBusca(dicionarioTrabalho):
-    return dicionarioTrabalho[CHAVE_POSICAO]==-1
-
-def limpaRuidoTexto(texto):
-    return unidecode(texto).replace(' ','').replace('-','').lower()
-
-def retiraDigitos(texto):
-    listaDigitos=['0','1','2','3','4','5','6','7','8','9']
-    for digito in listaDigitos:
-        texto=texto.replace(digito,'')
-    return texto
+    return dicionarioTrabalho[CHAVE_POSICAO] == -1
 
 def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
     confirmacao=False
@@ -4016,7 +3995,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
+
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
