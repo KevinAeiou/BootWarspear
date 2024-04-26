@@ -2182,8 +2182,8 @@ def retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade):
     listaXPMaximo = [
         20, 200, 540, 1250, 2550, 4700, 7990, 12770
         ,19440, 28440, 40270, 55450, 74570, 98250, 127180, 156110
-        ,185040, 215000, 245000, 300000, 375000, 470000, 585000, 720000
-        ,875000, 1050000]
+        ,185040, 215000, 245000, 300000, 375000, 470000, 585000, 706825
+        ,830000, 1050000]
     xpAtual = dicionarioProfissaoPrioridade[CHAVE_EXPERIENCIA]
     nivelProfissao = 1
     xpMinimo = 0
