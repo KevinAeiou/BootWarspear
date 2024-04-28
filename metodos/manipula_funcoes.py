@@ -1589,9 +1589,6 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                             if tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
                                 dicionarioTrabalhoProducaoRecursos = retornaDicionarioTrabalhoProducaoRecursos(listaDicionarioTrabalhoComum[0])
                                 if not tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
-                                    dicionarioTrabalhoProducaoRecursos[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
-                                    dicionarioTrabalhoProducaoRecursos[CHAVE_RECORRENCIA] = True
-                                    dicionarioTrabalhoProducaoRecursos[CHAVE_ESTADO] = para_produzir
                                     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
                             produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
                             confirmacao = False
@@ -3149,6 +3146,9 @@ def retornaDicionarioTrabalhoProducaoRecursos(dicionarioTrabalhoComumNecessario)
             and trabalhoEhProducaoRecursos(dicionarioTrabalho)
             and textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoComumNecessario[CHAVE_PROFISSAO]))
         if condicoes:
+            dicionarioTrabalho[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
+            dicionarioTrabalho[CHAVE_RECORRENCIA] = True
+            dicionarioTrabalho[CHAVE_ESTADO] = para_produzir
             print(f'{D}: Dicionário trabalho produção de recursos:')
             for atributo in dicionarioTrabalho:
                 print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}')
