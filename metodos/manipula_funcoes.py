@@ -3179,6 +3179,7 @@ def recuperaPresente():
     evento = 0
     print(f'Buscando recompensa diária...')
     while evento < 2:
+        print(f'Buscando referência "PEGAR"...')
         time.sleep(2)
         telaInteira = retornaAtualizacaoTela()
         frameTela = telaInteira[0:telaInteira.shape[0],330:488]
@@ -3198,6 +3199,7 @@ def recuperaPresente():
                 frameTratado = frameTela[y:y+a,x:x+l]
                 centroX = 330+x+(l/2)
                 centroY = y+(a/2)
+                print(f'Referência encontrada!')
                 clickMouseEsquerdo(1,centroX,centroY)
                 posicionaMouseEsquerdo(telaInteira.shape[1]//2,telaInteira.shape[0]//2)
                 if verificaErro(None) != 0:
@@ -3205,6 +3207,7 @@ def recuperaPresente():
                     break
                 clickEspecifico(1,'f2')
                 break
+        print(f'Próxima busca.')
         clickContinuo(8,'up')
         clickEspecifico(1,'left')
         linhaSeparacao()
@@ -4038,15 +4041,6 @@ def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
 
 def opcaoInvalida(opcaoLista, tamanhoMenu):
     return not ehValorNumerico(opcaoLista) or int(opcaoLista) < 0 or int(opcaoLista) > tamanhoMenu
-
-def ehValorNumerico(valor):
-    return valor.isdigit()
-
-def ehValorAlfabetico(valor):
-    return valor.isalpha()
-
-def linhaSeparacao():
-    print(f'____________________________________________________')
 
 def entra_usuario():
     email = input(f'Email: ')

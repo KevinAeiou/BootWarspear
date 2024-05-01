@@ -17,3 +17,12 @@ def retiraDigitos(texto):
     for digito in listaDigitos:
         texto = texto.replace(digito,'')
     return texto
+
+def ehValorNumerico(valor):
+    return valor.isdigit()
+
+def ehValorAlfabetico(valor):
+    return valor.isalpha()
+
+def linhaSeparacao():
+    print(f'____________________________________________________')

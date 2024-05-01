@@ -1,6 +1,7 @@
 import time, sys
 from manipula_funcoes import *
 from manipula_cliente import *
+from Utilitarios import *
 
 def mostraMenuListaDesejo(dicionarioUsuario):
     print(f'Lista de trabalhos desejados:')
@@ -494,15 +495,15 @@ def menu(dicionarioUsuario):
             while True:
                 listaDicionarioEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioUsuario)
                 listaDicionarioEstoqueOrdenado = sorted(listaDicionarioEstoque,
-                                                        key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
+                                                        key=lambda dicionario:(
+                                                            dicionario[CHAVE_PROFISSAO], dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
                 indice = 1
                 for dicionarioEstoque in listaDicionarioEstoqueOrdenado:
                     if CHAVE_PROFISSAO in dicionarioEstoque:
-                        print(f'{dicionarioEstoque[CHAVE_PROFISSAO]} - {dicionarioEstoque[CHAVE_QUANTIDADE]} und - {dicionarioEstoque[CHAVE_NOME]}.')
+                        print(f'{dicionarioEstoque[CHAVE_PROFISSAO]} - Nível {dicionarioEstoque[CHAVE_NIVEL]} - {dicionarioEstoque[CHAVE_QUANTIDADE]} und - {dicionarioEstoque[CHAVE_NOME]}.')
                         if indice < len(listaDicionarioEstoqueOrdenado):
                             if dicionarioEstoque[CHAVE_PROFISSAO] != listaDicionarioEstoqueOrdenado[indice][CHAVE_PROFISSAO]:
                                 linhaSeparacao()
-                                pass
                     else:
                         print(f'{dicionarioEstoque[CHAVE_QUANTIDADE]} und - {dicionarioEstoque[CHAVE_NOME]}.')
                     indice += 1
