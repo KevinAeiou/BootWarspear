@@ -1589,9 +1589,6 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                             if tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
                                 dicionarioTrabalhoProducaoRecursos = retornaDicionarioTrabalhoProducaoRecursos(listaDicionarioTrabalhoComum[0])
                                 if not tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
-                                    dicionarioTrabalhoProducaoRecursos[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
-                                    dicionarioTrabalhoProducaoRecursos[CHAVE_RECORRENCIA] = True
-                                    dicionarioTrabalhoProducaoRecursos[CHAVE_ESTADO] = para_produzir
                                     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
                             produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
                             confirmacao = False
@@ -3004,7 +3001,8 @@ def exitePeloMenosUmaUnidadeTrabalhoNecessarioEmEstoque(listaDicionarioTrabalhoE
             print(f'{D}: Existe pelo menos 1 (uma) unidade do trabalho necessário ({trabalhoNecessario}) no estoque.')
     return confirmacao
 
-def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada):
+def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos):
+    listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
     verificacoes = 0
     listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
     for dicionarioProdutoRaroVendido in listaDicionariosProdutosRarosVendidosOrdenada:
@@ -3149,6 +3147,9 @@ def retornaDicionarioTrabalhoProducaoRecursos(dicionarioTrabalhoComumNecessario)
             and trabalhoEhProducaoRecursos(dicionarioTrabalho)
             and textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoComumNecessario[CHAVE_PROFISSAO]))
         if condicoes:
+            dicionarioTrabalho[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
+            dicionarioTrabalho[CHAVE_RECORRENCIA] = True
+            dicionarioTrabalho[CHAVE_ESTADO] = para_produzir
             print(f'{D}: Dicionário trabalho produção de recursos:')
             for atributo in dicionarioTrabalho:
                 print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}')
@@ -4025,8 +4026,7 @@ def verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos):
     listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
     listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(listaDicionariosProdutosRarosVendidos):
-        listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
-        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
+        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
     else:
         print(f'{D}: Lista de trabalhos raros vendidos está vazia!')
         linhaSeparacao()
@@ -4123,8 +4123,7 @@ def funcao_teste(dicionarioUsuario):
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()    
         listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
         listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
-        listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
-        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidosOrdenada)
+        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
