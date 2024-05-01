@@ -2545,12 +2545,13 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
     dicionarioTrabalhoConcluido = {}
     telaInteira = retornaAtualizacaoTela()
     frameNomeTrabalho = telaInteira[285:285+37, 233:486]
+    frameNomeTrabalhoBinarizado = retornaImagemBinarizada(frameNomeTrabalho)
     erro = verificaErro(None)
     if not erroEncontrado(erro):
-        nomeTrabalhoConcluido = reconheceTexto(frameNomeTrabalho)
+        nomeTrabalhoConcluido = reconheceTexto(frameNomeTrabalhoBinarizado)
         clickEspecifico(1, 'down')
         clickEspecifico(1, 'f2')
-        # # print(f'{D}:Trabalho concluido reconhecido: {nomeTrabalhoConcluido}.')
+        print(f'{D}: Trabalho concluido reconhecido: {nomeTrabalhoConcluido}.')
         if variavelExiste(nomeTrabalhoConcluido):
             erro = verificaErro(None)
             if not erroEncontrado(erro):
@@ -2565,7 +2566,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                         for dicionarioTrabalho in listaDicionariosTrabalhos:
                             if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
                                 dicionarioTrabalhoConcluido = dicionarioTrabalho
-                                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = 'Licença de produção do iniciante'
+                                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
                                 dicionarioTrabalhoConcluido[CHAVE_ESTADO] = concluido
                                 dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
                                 break
@@ -3180,8 +3181,8 @@ def recuperaPresente():
     evento = 0
     print(f'Buscando recompensa diária...')
     while evento < 2:
-        print(f'Buscando referência "PEGAR"...')
         time.sleep(2)
+        print(f'Buscando referência "PEGAR"...')
         telaInteira = retornaAtualizacaoTela()
         frameTela = telaInteira[0:telaInteira.shape[0],330:488]
         imagem = retornaImagemCinza(frameTela)
@@ -4121,9 +4122,10 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()    
-        listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
-        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
+        defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
+        # listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
+        # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):

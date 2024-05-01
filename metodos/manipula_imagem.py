@@ -146,7 +146,7 @@ def retornaImagemEqualizada(img):
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     cl2 = clahe.apply(img)
     fim = time.time()
-    # print(f'{D}:{fim-inicio}.')
+    # print(f'{D}:Tempo de retornaImagemEqualizada: {fim - inicio}')
     return cl2
 
 def retorna_modelo_nivel_tratado(modelo_original):
@@ -233,7 +233,7 @@ def retornaImagemBinarizada(image):
     # ret, thresh = cv2.threshold(blur,180, 255,
     #                         cv2.THRESH_BINARY)
     fim = time.time()
-    # print(f'{D}:Tempo de salvaLimiarImagem: {fim - inicio}')
+    # print(f'{D}:Tempo de retornaImagemBinarizada: {fim - inicio}')
     return thresh
 
 def retornaImagemDitalata(imagem,kernel,iteracoes):
