@@ -1587,8 +1587,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                         else:
                             dicionarioTrabalhoProducaoRecursos = retornaDicionarioTrabalhoProducaoRecursos(listaDicionarioTrabalhoComum[0])
                             if not tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
-                                dicionarioTrabalhoProducaoRecursos = verificaTrabalhoProducaoRecursosListaParaProduzir(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
-                                if tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
+                                if verificaTrabalhoProducaoRecursosListaParaProduzir(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos):
                                     if not retornaDicionarioTrabalhoProducaoRecursos(listaDicionarioTrabalhoComum[0]):
                                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
                                 produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
