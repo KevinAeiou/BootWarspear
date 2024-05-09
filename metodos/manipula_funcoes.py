@@ -2066,35 +2066,37 @@ def defineQuantidadeRecursos(dicionarioTrabalho):
     print(f'Define quantidade de recursos.')
     nivelProduzTrabalhoComum = dicionarioTrabalho[CHAVE_NIVEL]
     recursoTerciario = 0
+    if textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], CHAVE_PROFISSAO_ARMA_DE_LONGO_ALCANCE):
+        recursoTerciario = 1
     if nivelProduzTrabalhoComum <= 14:
         if nivelProduzTrabalhoComum == 10:
-            recursoTerciario = 2
+            recursoTerciario += 2
         elif nivelProduzTrabalhoComum == 12:
-            recursoTerciario = 4
+            recursoTerciario += 4
         elif nivelProduzTrabalhoComum == 14:
-            recursoTerciario = 6
+            recursoTerciario += 6
         dicionarioTrabalho[CHAVE_RCT] = recursoTerciario
         dicionarioTrabalho[CHAVE_RCS] = recursoTerciario + 1
         dicionarioTrabalho[CHAVE_RCP] = (recursoTerciario + 2) + (dicionarioTrabalho[CHAVE_RCS] * 2) + (dicionarioTrabalho[CHAVE_RCT] * 3)
     else:
         if nivelProduzTrabalhoComum == 16:
-            recursoTerciario = 2
+            recursoTerciario += 2
         elif nivelProduzTrabalhoComum == 18:
-            recursoTerciario = 4
+            recursoTerciario += 4
         elif nivelProduzTrabalhoComum == 20:
-            recursoTerciario = 6
+            recursoTerciario += 6
         elif nivelProduzTrabalhoComum == 22:
-            recursoTerciario = 8
+            recursoTerciario += 8
         elif nivelProduzTrabalhoComum == 24:
-            recursoTerciario = 10
+            recursoTerciario += 10
         elif nivelProduzTrabalhoComum == 26:
-            recursoTerciario = 12
+            recursoTerciario += 12
         elif nivelProduzTrabalhoComum == 28:
-            recursoTerciario = 14
+            recursoTerciario += 14
         elif nivelProduzTrabalhoComum == 30:
-            recursoTerciario = 16
+            recursoTerciario += 16
         elif nivelProduzTrabalhoComum == 32:
-            recursoTerciario = 18
+            recursoTerciario += 18
         dicionarioTrabalho[CHAVE_RAT] = recursoTerciario
         dicionarioTrabalho[CHAVE_RAS] = recursoTerciario + 1
         dicionarioTrabalho[CHAVE_RAP] = recursoTerciario + 2
