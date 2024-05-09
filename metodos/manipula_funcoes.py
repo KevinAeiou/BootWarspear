@@ -1652,7 +1652,9 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                         # while x < quantidadeTrabalhos:
                         #     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
                         #     x += 1
+                confirmacao = False
             else:
+                confirmacao = False
                 print(f'{D}: Dicionário vazio!')
                 linhaSeparacao()
     else:
