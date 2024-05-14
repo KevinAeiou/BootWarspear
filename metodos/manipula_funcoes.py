@@ -1592,12 +1592,13 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                         else:
                             dicionarioTrabalhoGrandeProducaoRecursos = retornaDicionarioTrabalhoGrandeProducaoRecursos(listaDicionarioTrabalhoComum[0])
                             if not tamanhoIgualZero(dicionarioTrabalhoGrandeProducaoRecursos):
-                                if not verificaTrabalhoProducaoRecursosListaParaProduzir(dicionarioPersonagemAtributos, dicionarioTrabalhoGrandeProducaoRecursos):
+                                if not verificaTrabalhoProducaoRecursosListaParaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoGrandeProducaoRecursos):
                                     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoGrandeProducaoRecursos)
-                                produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
-                                confirmacao = False
-                                print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
-                                linhaSeparacao()
+                                if nivelProfissao < 9:
+                                    produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
+                                    confirmacao = False
+                                    print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
+                                    linhaSeparacao()
                             else:
                                 confirmacao = False
                                 print(f'{D}: Dicionário trabalho produção de recuros não encontrado.')
@@ -3163,7 +3164,7 @@ def verificaTrabalhoComumNecessario(dicionarioPersonagemAtributos, nomeTrabalhoC
         else:
             dicionarioTrabalhoProducaoRecursos = retornaDicionarioTrabalhoGrandeProducaoRecursos(dicionarioTrabalhoComumNecessario)
             if not tamanhoIgualZero(dicionarioTrabalhoProducaoRecursos):
-                if not verificaTrabalhoProducaoRecursosListaParaProduzir(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos):
+                if not verificaTrabalhoProducaoRecursosListaParaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos):
                     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
                 else:
                     print(f'{D}: Dicionário trabalho produção de recursos está na lista para produzir/produzindo!')
@@ -3184,7 +3185,7 @@ def retornaDicionarioProfissaoTrabalho(dicionarioPersonagemAtributos, dicionario
             return dicionarioProfissao
     return {}
 
-def verificaTrabalhoProducaoRecursosListaParaProduzir(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos):
+def verificaTrabalhoProducaoRecursosListaParaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos):
     listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoParaProduzirProduzindo in listaDicionariosTrabalhosParaProduzirProduzindo:
         condicoes = (textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoProducaoRecursos[CHAVE_NOME])
@@ -3192,7 +3193,7 @@ def verificaTrabalhoProducaoRecursosListaParaProduzir(dicionarioPersonagemAtribu
             and textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_PROFISSAO], dicionarioTrabalhoProducaoRecursos[CHAVE_PROFISSAO]))
         if condicoes:
             return True
-    print(f'Dicionário trabalho produção de recursos não encontrado!') 
+    print(f'Dicionário trabalho produção de recursos ({dicionarioTrabalhoProducaoRecursos[CHAVE_NOME]}, {dicionarioTrabalhoProducaoRecursos[CHAVE_PROFISSAO]}) não encontrado na lista produzir/produzindo!') 
     linhaSeparacao() 
     return False
 
