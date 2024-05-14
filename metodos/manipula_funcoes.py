@@ -1596,9 +1596,9 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoGrandeProducaoRecursos)
                                 if nivelProfissao < 9:
                                     produzRecursoFaltante(dicionarioPersonagemAtributos, listaDicionariosRecursos)
-                                    confirmacao = False
                                     print(f'{D}: Existem unidades suficientes sendo produzidas de todos recursos necessários.')
                                     linhaSeparacao()
+                                confirmacao = False
                             else:
                                 confirmacao = False
                                 print(f'{D}: Dicionário trabalho produção de recuros não encontrado.')
