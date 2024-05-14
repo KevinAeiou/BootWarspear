@@ -429,7 +429,6 @@ def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioPersonagemAtrib
                     break
             else:
                 print(f'Trabalho {raridade} encontado: {trabalhoDesejado[CHAVE_NOME]}.')
-                linhaSeparacao()
                 listaDicionariosTrabalhosDesejados.append(trabalhoDesejado)
     if tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
         print(f'Nem um trabaho {raridade} na lista!')
@@ -440,6 +439,7 @@ def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioPersonagemAtrib
                 dicionarioTrabalhoDesejado[CHAVE_PRIORIDADE] = 1
             else:
                 dicionarioTrabalhoDesejado[CHAVE_PRIORIDADE] = 2
+        linhaSeparacao()
     return listaDicionariosTrabalhosDesejados
 
 def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao,raridade):
