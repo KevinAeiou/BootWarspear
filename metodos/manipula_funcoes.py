@@ -1565,8 +1565,9 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
             if not tamanhoIgualZero(listaDicionarioTrabalhoComum):
                 listaDicionarioTrabalhoComum = defineQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum)
                 listaDicionarioTrabalhoComum, quantidadeTrabalhoProduzirProduzindo = defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum)
-                somaXpProduzirProduzindo = retornaSomaXpTrabalhoProducao(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade)
-                if xpSuficienteParaEvoluir(xpRestante, somaXpProduzirProduzindo):
+                somatorioXpProduzindo = retornaSomatorioXpTrabalhoProduzindo(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade)
+                xpSuficienteParaEvoluir = xpNecessario - somatorioXpProduzindo >= 0
+                if xpSuficienteParaEvoluir:
                     quantidadeTrabalhoProduzir = CHAVE_TRABALHO_MAXIMO - quantidadeTrabalhoProduzirProduzindo
                     if quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
                         listaDicionariosRecursos = defineListaDicionarioRecursos(listaDicionarioTrabalhoComum[0])
@@ -1873,9 +1874,6 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
 def quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
     return quantidadeTrabalhoProduzir > 0
 
-def xpSuficienteParaEvoluir(xpNecessario, somaXpProduzirProduzindo):
-    return xpNecessario - somaXpProduzirProduzindo >= 0
-
 def defineListaDicionarioRecursos(dicionarioProdutoParaProduzir):
     print(f'Definindo lista de dicionários de recursos.')
     listaDicionariosRecursos = []
@@ -2116,11 +2114,12 @@ def defineQuantidadeRecursos(dicionarioTrabalho):
     linhaSeparacao()
     return dicionarioTrabalho
 
-def retornaSomaXpTrabalhoProducao(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade):
+def retornaSomatorioXpTrabalhoProduzindo(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade):
     somaXpProduzirProduzindo = 0
     listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
-        if textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO],dicionarioProfissaoPrioridade[CHAVE_NOME]):
+        if (textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO],dicionarioProfissaoPrioridade[CHAVE_NOME])
+            and dicionarioTrabalhoProduzirProduzindo[CHAVE_ESTADO] == produzindo):
             somaXpProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
     return somaXpProduzirProduzindo
 
