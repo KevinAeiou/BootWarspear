@@ -2568,9 +2568,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
             if not erroEncontrado(erro):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
-                listaDicionarioTrabalhoDesejado = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
-                if not tamanhoIgualZero(listaDicionarioTrabalhoDesejado):
-                    dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalhoDesejado)
+                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(dicionarioPersonagem, nomeTrabalhoConcluido)
                 if tamanhoIgualZero(dicionarioTrabalhoConcluido):
                     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
                     if not tamanhoIgualZero(listaDicionariosTrabalhos):
@@ -2589,18 +2587,20 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 clickEspecifico(1, 'left')
     return dicionarioPersonagem, dicionarioTrabalhoConcluido
 
-def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido, listaDicionarioTrabalho):
-    dicionarioTrabalho = {}
-    for trabalho in listaDicionarioTrabalho:
-        if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], trabalho[CHAVE_NOME]) and
-            trabalho[CHAVE_ESTADO] == produzindo):
-            print(f'{trabalho[CHAVE_NOME]} recuperado.')
-            dicionarioTrabalho = trabalho
-            break
-    else:
-        print(f'{D}: Dicionário trabalho concluído não encontrado na lista de trabalhos em produção.')
+def retornaDicionarioTrabalhoRecuperado(dicionarioPersonagem, nomeTrabalhoConcluido):
+    listaDicionariosTrabalhosListaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
+    if not tamanhoIgualZero(listaDicionariosTrabalhosListaProduzirProduzindo):
+        for dicionarioTrabalho in listaDicionariosTrabalhosListaProduzirProduzindo:
+            if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME])
+                and dicionarioTrabalho[CHAVE_ESTADO] == produzindo):
+                print(f'{dicionarioTrabalho[CHAVE_NOME]} recuperado.')
+                print(f'{D}: Dicionário ({dicionarioTrabalho[CHAVE_NOME]}) encontrado na lista produzindo!')
+                linhaSeparacao()
+                return dicionarioTrabalho
+        else:
+            print(f'{D}: Dicionário ({nomeTrabalhoConcluido}) concluído não encontrado na lista produzindo!')
     linhaSeparacao()
-    return dicionarioTrabalho
+    return {}
 
 def trataErros(dicionarioTrabalho, dicionarioPersonagem):
     print(f'Tratando possíveis erros...')
