@@ -524,8 +524,7 @@ def vaiParaMenuProduzir(dicionarioPersonagemAtributos):
         if estaMenuInicial(menu):
             if existePixelCorrespondencia():
                 vaiParaMenuCorrespondencia()
-                if recuperaCorrespondencia(dicionarioPersonagemAtributos):
-                    verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
+                recuperaCorrespondencia(dicionarioPersonagemAtributos)
         while naoEstiverMenuProduzir(menu):
             dicionarioPersonagemAtributos = trataMenu(menu,dicionarioPersonagemAtributos)
             if not chaveConfirmacaoForVerdadeira(dicionarioPersonagemAtributos):
@@ -1055,6 +1054,7 @@ def iniciaProcessoBusca(dicionarioUsuario):
                         dicionarioTrabalho = {
                             CHAVE_LISTA_DESEJO: listaDicionariosTrabalhosParaProduzirProduzindo,
                             CHAVE_DICIONARIO_TRABALHO_DESEJADO: None}
+                        verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
                         dicionarioPersonagemAtributos = iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho)
                     else:
                         print(f'Lista de trabalhos desejados vazia.')
@@ -1503,7 +1503,6 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                                 atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
                                 verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                                verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
                         elif not existeEspacoProducao(dicionarioPersonagemAtributos):
                             break
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
@@ -3226,8 +3225,7 @@ def recebeTodasRecompensas(menu,dicionarioPersonagemAtributos):
         reconheceMenuRecompensa(menu)
         if existePixelCorrespondencia():
             vaiParaMenuCorrespondencia()
-            if recuperaCorrespondencia(dicionarioPersonagemAtributos):
-                verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
+            recuperaCorrespondencia(dicionarioPersonagemAtributos)
         print(f'Lista: {listaPersonagemPresenteRecuperado}.')
         linhaSeparacao()
         deslogaPersonagem(None,None)
@@ -3494,7 +3492,6 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                verificaProdutosRarosMaisVendidos(dicionarioPersonagemAtributos)
         elif estado_trabalho==produzindo:
             # lista_profissao.clear()
             if not existeEspacoProducao(dicionarioPersonagemAtributos):
