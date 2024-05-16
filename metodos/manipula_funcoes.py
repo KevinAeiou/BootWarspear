@@ -1795,16 +1795,11 @@ def retornaQuantidadeRecursoProduzirProduzindo(dicionarioPersonagemAtributos, di
 
 def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPersonagemAtributos):
     confirmacao = True
-    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
     for dicionarioRecurso in listaDicionariosRecursos:
         quantidadeRecursoFaltante = dicionarioRecurso[CHAVE_QUANTIDADE]
-        for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
-            if textoEhIgual(dicionarioRecurso[CHAVE_NOME], dicionarioTrabalhoEstoque[CHAVE_NOME]):
-                quantidadeRecursoFaltante = dicionarioRecurso[CHAVE_QUANTIDADE] - dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]
-                break
-        else:
-            print(f'{D}: Recurso: {dicionarioRecurso[CHAVE_NOME]} não encontrado no estoque.')
-            linhaSeparacao()
+        dicionarioTrabalhoEstoque = retornaDicionarioTrabalhoEspecificoEstoque(dicionarioPersonagemAtributos, dicionarioRecurso[CHAVE_NOME])
+        if not tamanhoIgualZero(dicionarioTrabalhoEstoque):
+            quantidadeRecursoFaltante -= dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]
         if quantidadeRecursoFaltante > 0: #se falta pelo menos um recurso
             if quantidadeRecursoFaltante != dicionarioRecurso[CHAVE_QUANTIDADE]:
                 quantidadeRecurso = (dicionarioRecurso[CHAVE_QUANTIDADE] - quantidadeRecursoFaltante)
@@ -1846,19 +1841,19 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
                     if recurso[CHAVE_TIPO] == CHAVE_RCS:
                         recurso[CHAVE_QUANTIDADE] = 0
                     elif recurso[CHAVE_TIPO] == CHAVE_RCP:
-                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 5.5)
+                        recurso[CHAVE_QUANTIDADE] -= (dicionarioRecurso[CHAVE_QUANTIDADE] * 5.5)
             elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RAP:
                 for recurso in listaDicionariosRecursos:
                     if recurso[CHAVE_TIPO] == CHAVE_RCP:
-                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
+                        recurso[CHAVE_QUANTIDADE] -= (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
             elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCT:
                 for recurso in listaDicionariosRecursos:
                     if recurso[CHAVE_TIPO] == CHAVE_RCP:
-                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - (dicionarioRecurso[CHAVE_QUANTIDADE] * 1.5)
+                        recurso[CHAVE_QUANTIDADE] -= (dicionarioRecurso[CHAVE_QUANTIDADE] * 3)
             elif dicionarioRecurso[CHAVE_TIPO] == CHAVE_RCS:
                 for recurso in listaDicionariosRecursos:
                     if recurso[CHAVE_TIPO] == CHAVE_RCP:
-                        recurso[CHAVE_QUANTIDADE] = recurso[CHAVE_QUANTIDADE] - dicionarioRecurso[CHAVE_QUANTIDADE]
+                        recurso[CHAVE_QUANTIDADE] -= (dicionarioRecurso[CHAVE_QUANTIDADE] * 2)
             dicionarioRecurso[CHAVE_QUANTIDADE] = 0
     else:
         listaDicionariosRecursos = sorted(listaDicionariosRecursos, key = lambda dicionario:dicionario[CHAVE_TIPO])
@@ -1870,6 +1865,16 @@ def existemRecursosSuficientesEmEstoque(listaDicionariosRecursos, dicionarioPers
             linhaSeparacao()
         linhaSeparacao()
     return confirmacao, listaDicionariosRecursos 
+
+def retornaDicionarioTrabalhoEspecificoEstoque(dicionarioPersonagemAtributos, nomeTrabalho):
+    listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+    for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
+        if textoEhIgual(nomeTrabalho, dicionarioTrabalhoEstoque[CHAVE_NOME]):
+            return dicionarioTrabalhoEstoque
+    else:
+        print(f'{D}: Recurso: {nomeTrabalho} não encontrado no estoque.')
+        linhaSeparacao()
+    return {}
 
 def quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
     return quantidadeTrabalhoProduzir > 0
@@ -2134,7 +2139,7 @@ def defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAt
     return listaDicionarioTrabalhoComum, quantidadeTrabalhoProduzirProduzindo
 
 def defineQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum):
-    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoComum in listaDicionarioTrabalhoComum:
         for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
             if textoEhIgual(dicionarioTrabalhoComum[CHAVE_NOME], dicionarioTrabalhoEstoque[CHAVE_NOME]):
@@ -2630,7 +2635,7 @@ def menuLicencasReconhecido(menu):
 
 def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalhoProduzindo):
     caminhoEstoque = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/'
-    listaTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    listaTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(listaTrabalhoEstoque):
         if textoEhIgual(dicionarioTrabalhoProduzindo[CHAVE_RARIDADE], CHAVE_RARIDADE_COMUM):
             if trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzindo):
@@ -3007,7 +3012,7 @@ def retornaDicinarioTrabalhoNecessario(trabalhoNecessario):
 def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos):
     listaDicionariosProdutosRarosVendidosOrdenada = retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdutosRarosVendidos)
     verificacoes = 0
-    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
     for dicionarioProdutoRaroVendido in listaDicionariosProdutosRarosVendidosOrdenada:
         print(f'{D}: {verificacoes+1} verificações.')
         linhaSeparacao()
@@ -3577,7 +3582,7 @@ def verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabal
 def atualizaEstoquePersonagem(dicionarioPersonagem, dicionarioTrabalhoProduzido):
     listaDicionarioTrabalhoProduzido = retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoProduzido)
     if not tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
-        listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem)
+        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagem)
         if not tamanhoIgualZero(listaDicionarioTrabalhoEstoque):
             for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
                 listaDicionarioTrabalhoProduzido = modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionarioPersonagem, trabalhoEstoque)
@@ -3707,7 +3712,7 @@ def recuperaCorrespondencia(dicionarioPersonagemAtributos):
     return verificaTrabalhoRaroVendido
 
 def atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda):
-    listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagemAtributos)
+    listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
     for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
         if (texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME], dicionarioVenda['nomeProduto']) and
                 textoEhIgual(dicionarioVenda['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME])):
@@ -4186,8 +4191,8 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()    
-        listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
+        # listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
         defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)

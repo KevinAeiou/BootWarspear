@@ -77,7 +77,7 @@ def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
         print(f'Limite de tentativas de conexão atingido.')
     return dicionarioVenda
 
-def retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem):
+def retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagem):
     listaDicionarioEstoque=[]
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)

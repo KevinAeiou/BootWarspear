@@ -377,7 +377,7 @@ def menu(dicionarioUsuario):
                                                             if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_NOME], dicionarioTrabalhoEscolhido[CHAVE_NOME]):
                                                                 caminhoRequisicao = f'Usuarios/{dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
                                                                 modificaAtributo(caminhoRequisicao, dados)
-                                                        listaDicionarioTrabalhoEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioPersonagem)
+                                                        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagem)
                                                         for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
                                                             if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoEscolhido[CHAVE_NOME]):
                                                                 if chaveAtributoEscolhido in dicionarioTrabalhoEstoque:
@@ -493,7 +493,7 @@ def menu(dicionarioUsuario):
             linhaSeparacao()
         elif opcaoEscolha == 8:
             while True:
-                listaDicionarioEstoque = retornaListaDicionarioTrabalhoEstoque(dicionarioUsuario)
+                listaDicionarioEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioUsuario)
                 listaDicionarioEstoqueOrdenado = sorted(listaDicionarioEstoque,
                                                         key=lambda dicionario:(
                                                             dicionario[CHAVE_PROFISSAO], dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
