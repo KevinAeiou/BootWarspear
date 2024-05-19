@@ -112,6 +112,9 @@ def retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagem):
         if dicionarioRequisicao:
             for chave in dicionarioRequisicao:
                 # print(f'{D}:{dicionarioRequisicao[chave]}')
+                if not CHAVE_ID in dicionarioRequisicao[chave]:
+                    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/{chave}.json'
+                    requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados = {'id':chave})
                 listaDicionariosTrabalhosVendidos.append(dicionarioRequisicao[chave])
         else:
             print(f'Resultado dicionario: {dicionarioRequisicao}.')
