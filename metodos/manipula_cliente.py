@@ -68,11 +68,20 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
         print(f'Limite de tentativas de conexão atingido.')
     return requisicaoRetorno
 
-def adicionaVenda(dicionarioPersonagem,dicionarioVenda):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
-    requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioVenda)
+def adicionaVenda(dicionarioPersonagem, dicionarioVenda):
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
+    requisicao = retornaRequisicao(POST,caminhoRequisicao,dicionarioVenda)
     if requisicao:
-        print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
+        dicionarioRequisicao = requisicao.json()
+        if dicionarioRequisicao:
+            idProdutoVendido = dicionarioRequisicao['name']
+            caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/{idProdutoVendido}.json'
+            requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados = {'id':idProdutoVendido})
+            if requisicao:
+                print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
+            else:
+                print(f'Falha ao adicionar ({dicionarioVenda["nomeProduto"]}).')
+                requisicao = retornaRequisicao(DELETE, caminhoRequisicao, None)
     else:
         print(f'Limite de tentativas de conexão atingido.')
     return dicionarioVenda

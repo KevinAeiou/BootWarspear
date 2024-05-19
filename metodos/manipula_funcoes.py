@@ -3650,12 +3650,14 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                 ouro = re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
                     ouro = int(ouro)
+                else:
+                    ouro = 0
                 dataAtual = str(datetime.date.today())
                 listaTextoCarta = ' '.join(listaTextoCarta)
                 dicionarioVenda = {CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
                                  'nomeProduto':listaTextoCarta,
                                  'quantidadeProduto':quantidadeProduto,
-                                 'valorProduto':ouro,
+                                 'valorProduto':int(ouro),
                                  'dataVenda':dataAtual}
                 adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
                 # print(dicionarioVenda)
@@ -4177,7 +4179,7 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     dicionarioVenda = {
         CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
-        'nomeProduto':'Vendeu Faixa das llusões Cativantes1 un por 5999 de ouro',
+        'nomeProduto':'Produto vendido teste',
         'quantidadeProduto':1,
         'valorProduto':5000,
         'dataVenda':'00-00-00'
@@ -4190,11 +4192,12 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
-        dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()    
+        dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
+        adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
         # listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
         # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
-        defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
+        # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
         # if not tamanhoIgualZero(dicionarioProfissaoPrioridade):
         #     nivelProfissao, __, __ = retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade)
