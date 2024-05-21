@@ -3657,6 +3657,7 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                 for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
                     if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], listaTextoCarta):
                         chaveIdTrabalho = dicionarioTrabalho[CHAVE_ID]
+                        break
                 dicionarioVenda = {CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID],
                                  CHAVE_ID_TRABALHO:chaveIdTrabalho,
                                  'nomeProduto':listaTextoCarta,
