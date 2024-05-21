@@ -3654,7 +3654,11 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                     ouro = 0
                 dataAtual = str(datetime.date.today())
                 listaTextoCarta = ' '.join(listaTextoCarta)
-                dicionarioVenda = {CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
+                for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
+                    if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], listaTextoCarta):
+                        chaveIdTrabalho = dicionarioTrabalho[CHAVE_ID]
+                dicionarioVenda = {CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID],
+                                 CHAVE_ID_TRABALHO:chaveIdTrabalho,
                                  'nomeProduto':listaTextoCarta,
                                  'quantidadeProduto':quantidadeProduto,
                                  'valorProduto':int(ouro),
@@ -3700,6 +3704,7 @@ def verificaVendaProduto(texto):
 
 def recuperaCorrespondencia(dicionarioPersonagemAtributos):
     verificaTrabalhoRaroVendido = False
+    dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
     while verificaCaixaCorreio():
         clickEspecifico(1, 'enter')
         dicionarioVenda = retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)
@@ -4193,8 +4198,22 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
         listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        for dicionarioProdutoVendido in listaDicionariosProdutosVendidos:
+            if CHAVE_ID_TRABALHO in dicionarioProdutoVendido:
+                for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
+                    if textoEhIgual(trabalho[CHAVE_ID], dicionarioProdutoVendido[CHAVE_ID_TRABALHO]):
+                        dicionarioProdutoVendido[CHAVE_NOME] = trabalho[CHAVE_NOME]
+                        dicionarioProdutoVendido[CHAVE_PROFISSAO] = trabalho[CHAVE_PROFISSAO]
+                        dicionarioProdutoVendido[CHAVE_NIVEL] = trabalho[CHAVE_NIVEL]
+                        dicionarioProdutoVendido[CHAVE_RARIDADE] = trabalho[CHAVE_RARIDADE]
+                        break
+            for atributo in dicionarioProdutoVendido:
+                print(f'{D}: {atributo} - {dicionarioProdutoVendido[atributo]}.')
+            linhaSeparacao()
+        # print("\n" * os.get_terminal_size().lines)
+        # print(f'{D}: {porcentagem:,.2f}% concluído...')
+        # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
         # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)

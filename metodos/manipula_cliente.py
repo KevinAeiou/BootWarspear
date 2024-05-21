@@ -387,9 +387,9 @@ def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
         else:
             print(f'Fim da lista.')
 
-def modificaAtributo(caminhoRequisicao,dados):
-    caminhoRequisicao=f'{link_database}/{caminhoRequisicao}'
-    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+def modificaAtributo(caminhoRequisicao, dados):
+    caminhoRequisicao = f'{link_database}/{caminhoRequisicao}'
+    requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados)
     if requisicao:
         print(f'Adicionado com sucesso!')
     else:
