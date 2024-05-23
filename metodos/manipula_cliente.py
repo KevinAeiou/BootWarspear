@@ -387,6 +387,17 @@ def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
         else:
             print(f'Fim da lista.')
 
+def retornaTrabalhoCaminhoEspecifico(idEspecifico):
+    caminhoRequisicao = f'{link_database}/Lista_trabalhos/{idEspecifico}/.json'
+    requisicao = retornaRequisicao(GET, caminhoRequisicao, None)
+    if requisicao:
+        dicionarioRequisicao = requisicao.json()
+        if dicionarioRequisicao != None:
+            return dicionarioRequisicao
+    else:
+        print(f'Erro requisicao: {requisicao}...')
+    return {}
+
 def modificaAtributo(caminhoRequisicao, dados):
     caminhoRequisicao = f'{link_database}/{caminhoRequisicao}'
     requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados)

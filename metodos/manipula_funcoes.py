@@ -2138,10 +2138,15 @@ def defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAt
                 quantidadeTrabalhoProduzirProduzindo += 1
     return listaDicionarioTrabalhoComum, quantidadeTrabalhoProduzirProduzindo
 
-def defineQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos,listaDicionarioTrabalhoComum):
+def defineQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, listaDicionarioTrabalhoComum):
     listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
     for dicionarioTrabalhoComum in listaDicionarioTrabalhoComum:
         for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
+            for dicionarioTrabalho in listaDicionariosTrabalhos:
+                if textoEhIgual(dicionarioTrabalho[CHAVE_ID], dicionarioTrabalhoEstoque[CHAVE_ID_TRABALHO]):
+
+                    pass
             if textoEhIgual(dicionarioTrabalhoComum[CHAVE_NOME], dicionarioTrabalhoEstoque[CHAVE_NOME]):
                 dicionarioTrabalhoComum[CHAVE_QUANTIDADE] = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]
                 break
@@ -4199,19 +4204,9 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        for dicionarioProdutoVendido in listaDicionariosProdutosVendidos:
-            if CHAVE_ID_TRABALHO in dicionarioProdutoVendido:
-                for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
-                    if textoEhIgual(trabalho[CHAVE_ID], dicionarioProdutoVendido[CHAVE_ID_TRABALHO]):
-                        dicionarioProdutoVendido[CHAVE_NOME] = trabalho[CHAVE_NOME]
-                        dicionarioProdutoVendido[CHAVE_PROFISSAO] = trabalho[CHAVE_PROFISSAO]
-                        dicionarioProdutoVendido[CHAVE_NIVEL] = trabalho[CHAVE_NIVEL]
-                        dicionarioProdutoVendido[CHAVE_RARIDADE] = trabalho[CHAVE_RARIDADE]
-                        break
-            for atributo in dicionarioProdutoVendido:
-                print(f'{D}: {atributo} - {dicionarioProdutoVendido[atributo]}.')
-            linhaSeparacao()
+        dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
+        for atributo in dicionarioTrabalhoEspecifico:
+            print(f'{D}: {atributo} - {dicionarioTrabalhoEspecifico[atributo]}.')
         # print("\n" * os.get_terminal_size().lines)
         # print(f'{D}: {porcentagem:,.2f}% concluído...')
         # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
