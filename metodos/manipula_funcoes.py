@@ -2141,6 +2141,7 @@ def defineSomaQuantidadeTrabalhoEstoqueProduzirProduzindo(dicionarioPersonagemAt
 
 def defineQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, listaDicionarioTrabalhoComum):
     listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
     for dicionarioTrabalhoComum in listaDicionarioTrabalhoComum:
         for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
             if textoEhIgual(dicionarioTrabalhoComum[CHAVE_ID], dicionarioTrabalhoEstoque[CHAVE_ID_TRABALHO]):
