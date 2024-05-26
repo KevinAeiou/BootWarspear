@@ -4235,6 +4235,7 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
+<<<<<<< HEAD
         listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
         # listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
         listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
@@ -4253,6 +4254,13 @@ def funcao_teste(dicionarioUsuario):
         #     for atributo in dicionarioProdutoVendido:
         #         print(f'{D}: {atributo} - {dicionarioProdutoVendido[atributo]}.')
         #     linhaSeparacao()
+=======
+        dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
+        for atributo in dicionarioTrabalhoEspecifico:
+            print(f'{D}: {atributo} - {dicionarioTrabalhoEspecifico[atributo]}.')
+        # print("\n" * os.get_terminal_size().lines)
+        # print(f'{D}: {porcentagem:,.2f}% concluído...')
+>>>>>>> 51e5743ce8f1981bbdc4a322b0992d138b6ba366
         # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
         # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
