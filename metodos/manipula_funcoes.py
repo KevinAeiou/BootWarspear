@@ -1614,35 +1614,31 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
         else:
             listaDicionariosTrabalhosProducaoRecursos = []
             listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-            if nivelProfissao == 1:
-                for dicionarioTrabalho in listaDicionariosTrabalhos:
-                    condicoes = (
-                        dicionarioTrabalho[CHAVE_NIVEL] == nivelTrabalhoProducao
-                        and textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissaoPrioridade[CHAVE_NOME])
-                        and dicionarioTrabalho[CHAVE_EXPERIENCIA] == 3)
-                    if condicoes:
-                        listaDicionariosTrabalhosProducaoRecursos.append(dicionarioTrabalho)
-                        break
-            elif nivelProfissao == 8:
-                for dicionarioTrabalho in listaDicionariosTrabalhos:
-                    condicoes = (
-                        dicionarioTrabalho[CHAVE_NIVEL] == nivelTrabalhoProducao
-                        and textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissaoPrioridade[CHAVE_NOME])
-                        and dicionarioTrabalho[CHAVE_EXPERIENCIA] == 130)
-                    if condicoes:
-                        listaDicionariosTrabalhosProducaoRecursos.append(dicionarioTrabalho)
-            print(f'{D}: Dicionário trabalho para produção de recursos:')
+            xpRecurso = 3
+            if nivelTrabalhoProducao == 8:
+                xpRecurso = 130
+            for dicionarioTrabalho in listaDicionariosTrabalhos:
+                condicoes = (
+                    dicionarioTrabalho[CHAVE_NIVEL] == nivelTrabalhoProducao
+                    and textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissaoPrioridade[CHAVE_NOME])
+                    and dicionarioTrabalho[CHAVE_EXPERIENCIA] == xpRecurso)
+                if condicoes:
+                    listaDicionariosTrabalhosProducaoRecursos.append(dicionarioTrabalho)
             if not tamanhoIgualZero(listaDicionariosTrabalhosProducaoRecursos):
-                for dicionatrioTrabalho in listaDicionariosTrabalhosProducaoRecursos:
-                    for atributo in dicionatrioTrabalho:
-                        print(f'{D}: {atributo} - {dicionatrioTrabalho[atributo]}')
-                    linhaSeparacao()
+                print(f'{D}: Dicionário trabalho para produção de recursos:')
                 quantidadeTrabalhos = xpRestante / listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_EXPERIENCIA]
                 listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
                 for dicionarioTrabalhoParaProduzirProduzindo in listaDicionariosTrabalhosParaProduzirProduzindo:
                     for dicionarioTrabalhoGrandeProducaoRecursos in listaDicionariosTrabalhosProducaoRecursos:
+                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_RECORRENCIA] = False
+                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_ESTADO] = para_produzir
+                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
                         if textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_NOME]):
                             quantidadeTrabalhos -= 1
+                for dicionatrioTrabalho in listaDicionariosTrabalhosProducaoRecursos:
+                    for atributo in dicionatrioTrabalho:
+                        print(f'{D}: {atributo} - {dicionatrioTrabalho[atributo]}')
+                    linhaSeparacao()
                 if nivelProfissao == 1:
                     listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_RECORRENCIA] = False
                     listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_ESTADO] = para_produzir
@@ -1652,14 +1648,10 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, listaDicionariosTrabalhosProducaoRecursos[0])
                         x += 1
                 elif nivelProfissao == 8:
-                    x = 0
-                    for dicionarioTrabalhoGrandeProducaoRecursos in listaDicionariosTrabalhosProducaoRecursos:
-                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_RECORRENCIA] = False
-                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_ESTADO] = para_produzir
-                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
-                        # while x < quantidadeTrabalhos:
-                        #     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoProducaoRecursos)
-                        #     x += 1
+                    for dicionarioTrabalhoRecurso in listaDicionariosTrabalhosProducaoRecursos:
+                        tipoRecurso = retornaChaveTipoRecurso(dicionarioTrabalhoRecurso)
+                        print(f'{D}: {dicionarioTrabalhoRecurso[CHAVE_NOME]} - tipo ({tipoRecurso}).')
+                    pass
                 confirmacao = False
             else:
                 confirmacao = False
@@ -1976,19 +1968,19 @@ def retornaChaveTipoRecurso(dicionarioRecurso):
             for x in range(len(dicionarioProfissaoRecursos[chaveProfissao])):
                 if textoEhIgual(dicionarioProfissaoRecursos[chaveProfissao][x],dicionarioRecurso[CHAVE_NOME]):
                     if x == 0 and dicionarioRecurso[CHAVE_NIVEL] == 1:
-                        tipoRecurso = CHAVE_RCP
+                        return CHAVE_RCP
                     elif x == 0 and dicionarioRecurso[CHAVE_NIVEL] == 8:
-                        tipoRecurso = CHAVE_RAP
+                        return CHAVE_RAP
                     elif x == 1 and dicionarioRecurso[CHAVE_NIVEL] == 1:
-                        tipoRecurso = CHAVE_RCS
+                        return CHAVE_RCS
                     elif x == 1 and dicionarioRecurso[CHAVE_NIVEL] == 8:
-                        tipoRecurso = CHAVE_RAS
+                        return CHAVE_RAS
                     elif x == 2 and dicionarioRecurso[CHAVE_NIVEL] == 1:
-                        tipoRecurso = CHAVE_RCT
+                        return CHAVE_RCT
                     elif x == 2 and dicionarioRecurso[CHAVE_NIVEL] == 8:
-                        tipoRecurso = CHAVE_RAT
+                        return CHAVE_RAT
                     break
-    return tipoRecurso
+    return None
 
 def defineNomeRecursos(dicionarioTrabalho):
     chaveProfissao = limpaRuidoTexto(dicionarioTrabalho[CHAVE_PROFISSAO])
@@ -4235,36 +4227,13 @@ def funcao_teste(dicionarioUsuario):
         listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-<<<<<<< HEAD
-        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
-        # listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
-        
-        # adicionaAtributoTrabalhoId(dicionarioUsuario, dicionarioPersonagemAtributos, listaDicionariosTrabalhosDesejados)
-        # adicionaChaveIdTrabalhoEmProdutoVendido(dicionarioUsuario, dicionarioPersonagemAtributos)
-        # for dicionarioProdutoVendido in listaDicionariosProdutosVendidos:
-        #     if CHAVE_ID_TRABALHO in dicionarioProdutoVendido:
-        #         for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
-        #             if textoEhIgual(trabalho[CHAVE_ID], dicionarioProdutoVendido[CHAVE_ID_TRABALHO]):
-        #                 dicionarioProdutoVendido[CHAVE_NOME] = trabalho[CHAVE_NOME]
-        #                 dicionarioProdutoVendido[CHAVE_PROFISSAO] = trabalho[CHAVE_PROFISSAO]
-        #                 dicionarioProdutoVendido[CHAVE_NIVEL] = trabalho[CHAVE_NIVEL]
-        #                 dicionarioProdutoVendido[CHAVE_RARIDADE] = trabalho[CHAVE_RARIDADE]
-        #                 break
-        #     for atributo in dicionarioProdutoVendido:
-        #         print(f'{D}: {atributo} - {dicionarioProdutoVendido[atributo]}.')
-        #     linhaSeparacao()
-=======
-        dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
-        for atributo in dicionarioTrabalhoEspecifico:
-            print(f'{D}: {atributo} - {dicionarioTrabalhoEspecifico[atributo]}.')
+        defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
+        # dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
         # print("\n" * os.get_terminal_size().lines)
         # print(f'{D}: {porcentagem:,.2f}% concluído...')
->>>>>>> 51e5743ce8f1981bbdc4a322b0992d138b6ba366
         # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
         # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
-        # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
 
 def valorEhPar(nivel):
