@@ -2537,7 +2537,8 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
             CHAVE_NOME:dicionarioTrabalhoConcluido[CHAVE_NOME],
             CHAVE_QUANTIDADE:1,
             CHAVE_PROFISSAO:dicionarioTrabalhoConcluido[CHAVE_PROFISSAO],
-            CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE]
+            CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
+            CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID]
         }
         listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
 
@@ -4176,7 +4177,7 @@ def adicionaAtributoTrabalhoId(dicionarioUsuario, dicionarioPersonagemAtributos,
         for trabalho in dicionarioUsuario[CHAVE_LISTA_TRABALHO]:
             if textoEhIgual(trabalho[CHAVE_NOME], dicionarioTrabalhoEstoque[CHAVE_NOME]):
                 if not CHAVE_ID_TRABALHO in trabalho:
-                    caminhoRequisicao = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoEstoque[CHAVE_ID]}.json'
+                    caminhoRequisicao = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioTrabalhoEstoque[CHAVE_ID]}.json'
                     dados = {CHAVE_ID_TRABALHO:trabalho[CHAVE_ID]}
                     modificaAtributo(caminhoRequisicao, dados)
                 break
@@ -4271,10 +4272,16 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
-        listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
-        dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
+        # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
+        # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
+        # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
+        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+        adicionaAtributoTrabalhoId(dicionarioUsuario, dicionarioPersonagemAtributos, listaDicionarioTrabalhoEstoque)
+        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+        for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
+            if not CHAVE_ID_TRABALHO in dicionarioTrabalhoEstoque:
+                print(f'{D}: {dicionarioTrabalhoEstoque[CHAVE_NOME]} - {dicionarioTrabalhoEstoque[CHAVE_PROFISSAO]} - {dicionarioTrabalhoEstoque[CHAVE_NIVEL]}.')
         # dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
         # print("\n" * os.get_terminal_size().lines)
         # print(f'{D}: {porcentagem:,.2f}% concluído...')

@@ -285,7 +285,7 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
                 dicionarioTrabalhoDesejado=dicionarioRequisicao[trabalhoDesejadoId]
                 dicionarioTrabalhoDesejado[CHAVE_ID]=trabalhoDesejadoId
                 listaDicionarioTrabalhoDesejado.append(dicionarioTrabalhoDesejado)
-                listaDicionariosOrdenada=sorted(listaDicionarioTrabalhoDesejado,key=lambda dicionario:dicionario[CHAVE_PROFISSAO])
+                # listaDicionariosOrdenada=sorted(listaDicionarioTrabalhoDesejado,key=lambda dicionario:dicionario[CHAVE_PROFISSAO])
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.')  
     else:
@@ -296,7 +296,7 @@ def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
     #         print(f'{D}: {atributo} = {dicionarioTrabalhoDesejado[atributo]}.')
     #     print(f'_______________________________________________________________')
     # print(f'_______________________________________________________________')
-    return listaDicionariosOrdenada
+    return listaDicionarioTrabalhoDesejado
 
 def retornaListaDicionariosPersonagens(dicionarioPersonagem):
     print(f'Definindo lista de personagem.')
@@ -360,7 +360,8 @@ def muda_quantidade_personagem(usuario_id,nova_quantidade):
 def excluiTrabalho(dicionarioPersonagemAtributos,dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_ID]}/.json'
     if retornaRequisicao(DELETE,caminhoRequisicao,None):
-        print(f'Trabalho id: {dicionarioTrabalho[CHAVE_ID]} - {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
+        pass
+        # print(f'Trabalho id: {dicionarioTrabalho[CHAVE_ID]} - {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
     else:
         print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
 
