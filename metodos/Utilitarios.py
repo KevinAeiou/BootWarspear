@@ -1,4 +1,5 @@
 from unidecode import unidecode
+from lista_chaves import *
 
 def variavelExiste(variavelVerificada):
     return variavelVerificada!=None
@@ -23,6 +24,12 @@ def ehValorNumerico(valor):
 
 def ehValorAlfabetico(valor):
     return valor.isalpha()
+
+def trabalhoEhParaProduzir(dicionarioTrabalhoDesejado):
+    return dicionarioTrabalhoDesejado[CHAVE_ESTADO] == CODIGO_PARA_PRODUZIR
+
+def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
+    return dicionarioTrabalhoDesejado[CHAVE_ESTADO] == CODIGO_PRODUZINDO
 
 def linhaSeparacao():
     print(f'____________________________________________________')

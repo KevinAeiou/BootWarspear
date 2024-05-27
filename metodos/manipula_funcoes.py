@@ -64,10 +64,6 @@ erroUsarObjetoParaProduzir=20
 
 lista_personagem_ativo=[]
 
-para_produzir=0
-produzindo=1
-concluido=2
-
 tela = 'atualizacao_tela.png'
 
 def atualiza_nova_tela():
@@ -294,7 +290,7 @@ def verifica_porcentagem_vida():
     return False
 
 def retornaEstadoTrabalho():
-    estadoTrabalho=para_produzir
+    estadoTrabalho=CODIGO_PARA_PRODUZIR
     #icone do primeiro espaço de produç 181,295 228,342
     telaInteira=retornaAtualizacaoTela()
     frameTelaInteira=telaInteira[311:311+43, 233:486]
@@ -302,13 +298,13 @@ def retornaEstadoTrabalho():
     if variavelExiste(texto):
         if textoEhIgual("trabalhoconcluído",texto):
             print(f'Trabalho concluído!')
-            estadoTrabalho=concluido
+            estadoTrabalho=CODIGO_CONCLUIDO
         elif texto1PertenceTexto2('adicionarnovo',texto):
             print(f'Nem um trabalho!')
-            estadoTrabalho=para_produzir
+            estadoTrabalho=CODIGO_PARA_PRODUZIR
         else:
             print(f'Em produção...')
-            estadoTrabalho=produzindo
+            estadoTrabalho=CODIGO_PRODUZINDO
     else:
         print(f'Ocorreu algum erro ao verificar o espaço de produção!')
     linhaSeparacao()
@@ -540,7 +536,7 @@ def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, 
     return raridadeTrabalhoEhComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
 
 def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
-    return trabalhoListaDesejo[CHAVE_ESTADO]==para_produzir
+    return trabalhoListaDesejo[CHAVE_ESTADO]==CODIGO_PARA_PRODUZIR
 
 def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
     return textoEhIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
@@ -1387,19 +1383,7 @@ def retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemA
             linhaSeparacao()
         if trabalhoEhParaProduzir(dicionarioTrabalhoDesejado) or trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
             listaDicionariosTrabalhosParaProduzirProduzindo.append(dicionarioTrabalhoDesejado)
-    # print(f'{D}: Lista de todos os trabalhos desejados:')
-    # for dicionarioTrabalho in listaDicionariosTrabalhosParaProduzirProduzindo:
-    #     for atributo in dicionarioTrabalho:
-    #         print(f'{D}: {atributo} = {dicionarioTrabalho[atributo]}.')
-    #     linhaSeparacao()
-    # linhaSeparacao()
     return listaDicionariosTrabalhosParaProduzirProduzindo
-
-def trabalhoEhParaProduzir(dicionarioTrabalhoDesejado):
-    return dicionarioTrabalhoDesejado[CHAVE_ESTADO]==para_produzir
-
-def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
-    return dicionarioTrabalhoDesejado[CHAVE_ESTADO]==produzindo
 
 def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
     # dicionarioPersonagemAtributos = defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho)
@@ -1497,7 +1481,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                     dicionarioTrabalho[CHAVE_POSICAO] = -1
                 if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                     if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
-                        if retornaEstadoTrabalho() == concluido:
+                        if retornaEstadoTrabalho() == CODIGO_CONCLUIDO:
                             dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
                             if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
                                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
@@ -1528,7 +1512,7 @@ def defineChaveEspacoProducao(dicionarioPersonagemAtributos, dicionarioTrabalho)
 
 def existeTrabalhoEspecialParaProduzir(dicionarioTrabalho):
     for trabalho in dicionarioTrabalho[CHAVE_LISTA_DESEJO]:
-        if trabalho[CHAVE_RARIDADE] == CHAVE_RARIDADE_ESPECIAL and trabalho[CHAVE_ESTADO] == para_produzir:
+        if trabalho[CHAVE_RARIDADE] == CHAVE_RARIDADE_ESPECIAL and trabalho[CHAVE_ESTADO] == CODIGO_PARA_PRODUZIR:
             return True
     return False
 
@@ -1567,7 +1551,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                 somatorioXpProduzindo = retornaSomatorioXpTrabalhoProduzindo(dicionarioPersonagemAtributos,dicionarioProfissaoPrioridade)
                 xpSuficienteParaEvoluir = xpNecessario - somatorioXpProduzindo >= 0
                 if xpSuficienteParaEvoluir:
-                    quantidadeTrabalhoProduzir = CHAVE_TRABALHO_MAXIMO - quantidadeTrabalhoProduzirProduzindo
+                    quantidadeTrabalhoProduzir = CODIGO_TRABALHO_MAXIMO - quantidadeTrabalhoProduzirProduzindo
                     if quantidadeTrabalhoProduzindoMenorQueOPermitido(quantidadeTrabalhoProduzir):
                         listaDicionariosRecursos = defineListaDicionarioRecursos(listaDicionarioTrabalhoComum[0])
                         listaDicionariosRecursos = multiplicaQuantidadeDeRecursosPorQuantidadeDisponiveis(quantidadeTrabalhoProduzir, listaDicionariosRecursos)
@@ -1583,7 +1567,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                                 CHAVE_EXPERIENCIA:listaDicionarioTrabalhoComum[0][CHAVE_EXPERIENCIA],
                                 CHAVE_RARIDADE:listaDicionarioTrabalhoComum[0][CHAVE_RARIDADE],
                                 CHAVE_RECORRENCIA:False,
-                                CHAVE_ESTADO:para_produzir,
+                                CHAVE_ESTADO:CODIGO_PARA_PRODUZIR,
                                 CHAVE_LICENCA:CHAVE_LICENCA_INICIANTE}
                             if trabalhoEhProducaoRecursos(dicionarioTrabalho):
                                 dicionarioTrabalho[CHAVE_RECORRENCIA] = True
@@ -1631,7 +1615,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                 for dicionarioTrabalhoParaProduzirProduzindo in listaDicionariosTrabalhosParaProduzirProduzindo:
                     for dicionarioTrabalhoGrandeProducaoRecursos in listaDicionariosTrabalhosProducaoRecursos:
                         dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_RECORRENCIA] = False
-                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_ESTADO] = para_produzir
+                        dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                         dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
                         if textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoGrandeProducaoRecursos[CHAVE_NOME]):
                             quantidadeTrabalhos -= 1
@@ -1641,7 +1625,7 @@ def defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos):
                     linhaSeparacao()
                 if nivelProfissao == 1:
                     listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_RECORRENCIA] = False
-                    listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_ESTADO] = para_produzir
+                    listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                     listaDicionariosTrabalhosProducaoRecursos[0][CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
                     x = 0
                     while x < quantidadeTrabalhos:
@@ -2164,7 +2148,7 @@ def retornaSomatorioXpTrabalhoProduzindo(dicionarioPersonagemAtributos,dicionari
     listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoProduzirProduzindo in listaDicionarioTrabalhoProduzirProduzindo:
         if (textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO],dicionarioProfissaoPrioridade[CHAVE_NOME])
-            and dicionarioTrabalhoProduzirProduzindo[CHAVE_ESTADO] == produzindo):
+            and dicionarioTrabalhoProduzirProduzindo[CHAVE_ESTADO] == CODIGO_PRODUZINDO):
             somaXpProduzirProduzindo += dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
     return somaXpProduzirProduzindo
 
@@ -2288,7 +2272,7 @@ def existeEspacoProducao(dicionarioPersonagemAtributos):
     espacoProducao = dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
     listaDesejo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
     for trabalho in listaDesejo:
-        if trabalho[CHAVE_ESTADO] == produzindo:
+        if trabalho[CHAVE_ESTADO] == CODIGO_PRODUZINDO:
             espacoProducao -= 1
             if espacoProducao <= 0:
                 print(f'{D}: {espacoProducao} espaços de produção - FALSO.')
@@ -2541,7 +2525,6 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
             CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID]
         }
         listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
-
     print(f'{D}: Lista de dicionários trabalhos concluídos:')
     for dicionarioTrabalhoConcluido in listaDicionarioTrabalhoProduzido:
         for atributo in dicionarioTrabalhoConcluido:
@@ -2614,17 +2597,14 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
             if not erroEncontrado(erro):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
-                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(dicionarioPersonagem, nomeTrabalhoConcluido)
-                if tamanhoIgualZero(dicionarioTrabalhoConcluido):
-                    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-                    if not tamanhoIgualZero(listaDicionariosTrabalhos):
-                        for dicionarioTrabalho in listaDicionariosTrabalhos:
-                            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
-                                dicionarioTrabalhoConcluido = dicionarioTrabalho
-                                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
-                                dicionarioTrabalhoConcluido[CHAVE_ESTADO] = concluido
-                                dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
-                                break
+                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
+                if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                    listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
+                    for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
+                        condicao = (trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
+                            and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
+                        if condicao:
+                            dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
                 clickContinuo(3, 'up')
                 linhaSeparacao()
             else:
@@ -2633,19 +2613,22 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 clickEspecifico(1, 'left')
     return dicionarioPersonagem, dicionarioTrabalhoConcluido
 
-def retornaDicionarioTrabalhoRecuperado(dicionarioPersonagem, nomeTrabalhoConcluido):
-    listaDicionariosTrabalhosListaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
-    if not tamanhoIgualZero(listaDicionariosTrabalhosListaProduzirProduzindo):
-        for dicionarioTrabalho in listaDicionariosTrabalhosListaProduzirProduzindo:
-            if (texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME])
-                and dicionarioTrabalho[CHAVE_ESTADO] == produzindo):
-                print(f'{dicionarioTrabalho[CHAVE_NOME]} recuperado.')
-                print(f'{D}: Dicionário ({dicionarioTrabalho[CHAVE_NOME]}) encontrado na lista produzindo!')
-                linhaSeparacao()
+def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
+    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+    if not tamanhoIgualZero(listaDicionariosTrabalhos):
+        for dicionarioTrabalho in listaDicionariosTrabalhos:
+            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
+                dicionarioTrabalhoConcluido = dicionarioTrabalho
+                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
+                dicionarioTrabalhoConcluido[CHAVE_ESTADO] = CODIGO_CONCLUIDO
+                dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
                 return dicionarioTrabalho
         else:
-            print(f'{D}: Dicionário ({nomeTrabalhoConcluido}) concluído não encontrado na lista produzindo!')
-    linhaSeparacao()
+            print(f'{D}: {nomeTrabalhoConcluido} não encontrado na lista de trabalhos.')
+            linhaSeparacao()
+    else:
+        print(f'{D}: Erro ao definir lista de trabalhos.')
+        linhaSeparacao()
     return {}
 
 def trataErros(dicionarioTrabalho, dicionarioPersonagem):
@@ -2790,7 +2773,7 @@ def defineCloneDicionarioTrabalhoDesejado(dicionarioTrabalhoDesejado):
     cloneDicionarioTrabalho = {
         CHAVE_ID:None,
         CHAVE_NOME:dicionarioTrabalhoDesejado[CHAVE_NOME],
-        CHAVE_ESTADO:produzindo,
+        CHAVE_ESTADO:CODIGO_PRODUZINDO,
         CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA],
         CHAVE_NIVEL:dicionarioTrabalhoDesejado[CHAVE_NIVEL],
         CHAVE_PROFISSAO:dicionarioTrabalhoDesejado[CHAVE_PROFISSAO],
@@ -3066,7 +3049,7 @@ def produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProd
 def verificaTrabalhoRaroNecessario(dicionarioPersonagemAtributos, verificacoes, listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido):
     print(f'{D}: Verificando quantidade de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque...')
     quantidadeTrabalhoRaroNoEstoque = retornaQuantidadeTrabalhoNoEstoque(listaDicionarioTrabalhoEstoque, dicionarioProdutoRaroVendido[CHAVE_NOME])
-    quantidadeTrabalhoRaroNecessario = CHAVE_QUANTIDADE_MINIMA_TRABALHO_RARO_EM_ESTOQUE - quantidadeTrabalhoRaroNoEstoque
+    quantidadeTrabalhoRaroNecessario = CODIGO_QUANTIDADE_MINIMA_TRABALHO_RARO_EM_ESTOQUE - quantidadeTrabalhoRaroNoEstoque
     if quantidadeTrabalhoRaroNecessario > 0:
         print(f'{D}: Quantidade de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque é ({quantidadeTrabalhoRaroNoEstoque}).')
         print(f'{D}: Verificando se ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) já está sendo produzido...')
@@ -3098,7 +3081,7 @@ def verificaTrabalhoRaroNecessario(dicionarioPersonagemAtributos, verificacoes, 
                                 print(f'{D}: Adicionando ({quantidadeTrabalhoRaroNecessario}) unidades de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) a lista para produzir/produzindo...')
                                 dicionarioProdutoRaroVendido[CHAVE_RECORRENCIA] = False
                                 dicionarioProdutoRaroVendido[CHAVE_LICENCA] = licencaProducaoIdeal
-                                dicionarioProdutoRaroVendido[CHAVE_ESTADO] = para_produzir
+                                dicionarioProdutoRaroVendido[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                                 for x in range(quantidadeTrabalhoRaroNecessario):
                                     adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
                                 linhaSeparacao()
@@ -3106,7 +3089,7 @@ def verificaTrabalhoRaroNecessario(dicionarioPersonagemAtributos, verificacoes, 
                             print(f'{D}: Adicionando ({quantidadeTrabalhoMelhoradoNecessarioNoEstoque}) unidades de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) a lista para produzir/produzindo...')
                             dicionarioProdutoRaroVendido[CHAVE_RECORRENCIA] = False
                             dicionarioProdutoRaroVendido[CHAVE_LICENCA] = licencaProducaoIdeal
-                            dicionarioProdutoRaroVendido[CHAVE_ESTADO] = para_produzir
+                            dicionarioProdutoRaroVendido[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                             for x in range(quantidadeTrabalhoMelhoradoNecessarioNoEstoque):
                                 adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
                             linhaSeparacao()
@@ -3158,7 +3141,7 @@ def verificaTrabalhoMelhoradoNecessario(dicionarioPersonagemAtributos, listaDici
                         print(f'{D}: Adicionando ({quantidadeTrabalhoMelhoradoNecessarioFaltante}) unidades de ({dicionarioTrabalhoMelhoradoNecessario[CHAVE_NOME]}) a lista para produzir/produzindo...')
                         dicionarioTrabalhoMelhoradoNecessario[CHAVE_RECORRENCIA] = False
                         dicionarioTrabalhoMelhoradoNecessario[CHAVE_LICENCA] = licencaProducaoIdeal
-                        dicionarioTrabalhoMelhoradoNecessario[CHAVE_ESTADO] = para_produzir
+                        dicionarioTrabalhoMelhoradoNecessario[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                         for x in range(quantidadeTrabalhoMelhoradoNecessarioFaltante):
                             adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoMelhoradoNecessario)
                         linhaSeparacao()
@@ -3166,7 +3149,7 @@ def verificaTrabalhoMelhoradoNecessario(dicionarioPersonagemAtributos, listaDici
                     print(f'{D}: Adicionando ({quantidadeTrabalhoComumNecessarioNoEstoque}) unidades de ({dicionarioTrabalhoMelhoradoNecessario[CHAVE_NOME]}) a lista para produzir/produzindo...')
                     dicionarioTrabalhoMelhoradoNecessario[CHAVE_RECORRENCIA] = False
                     dicionarioTrabalhoMelhoradoNecessario[CHAVE_LICENCA] = licencaProducaoIdeal
-                    dicionarioTrabalhoMelhoradoNecessario[CHAVE_ESTADO] = para_produzir
+                    dicionarioTrabalhoMelhoradoNecessario[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                     for x in range(quantidadeTrabalhoComumNecessarioNoEstoque):
                         adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoMelhoradoNecessario)
                     linhaSeparacao()
@@ -3198,7 +3181,7 @@ def verificaTrabalhoComumNecessario(dicionarioPersonagemAtributos, nomeTrabalhoC
         if existemRecursosSuficientes:
             dicionarioTrabalhoComumNecessario[CHAVE_RECORRENCIA] = False
             dicionarioTrabalhoComumNecessario[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
-            dicionarioTrabalhoComumNecessario[CHAVE_ESTADO] = para_produzir
+            dicionarioTrabalhoComumNecessario[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
             linhaSeparacao()
             print(f'{D}: Atributos do trabalho comum:')
             for atributo in dicionarioTrabalhoComumNecessario:
@@ -3235,7 +3218,7 @@ def verificaTrabalhoProducaoRecursosListaParaProduzirProduzindo(dicionarioPerson
     listaDicionariosTrabalhosParaProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
     for dicionarioTrabalhoParaProduzirProduzindo in listaDicionariosTrabalhosParaProduzirProduzindo:
         condicoes = (textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoProducaoRecursos[CHAVE_NOME])
-            and dicionarioTrabalhoParaProduzirProduzindo[CHAVE_ESTADO] == para_produzir
+            and dicionarioTrabalhoParaProduzirProduzindo[CHAVE_ESTADO] == CODIGO_PARA_PRODUZIR
             and textoEhIgual(dicionarioTrabalhoParaProduzirProduzindo[CHAVE_PROFISSAO], dicionarioTrabalhoProducaoRecursos[CHAVE_PROFISSAO]))
         if condicoes:
             return True
@@ -3258,7 +3241,7 @@ def retornaDicionarioTrabalhoGrandeProducaoRecursos(dicionarioTrabalhoComumNeces
         if condicoes:
             dicionarioTrabalho[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
             dicionarioTrabalho[CHAVE_RECORRENCIA] = True
-            dicionarioTrabalho[CHAVE_ESTADO] = para_produzir
+            dicionarioTrabalho[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
             print(f'{D}: Dicionário trabalho produção de recursos:')
             for atributo in dicionarioTrabalho:
                 print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}')
@@ -3533,13 +3516,13 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
         pass
     elif menu==menu_trab_atuais:
         estado_trabalho=retornaEstadoTrabalho()
-        if estado_trabalho==concluido:
+        if estado_trabalho==CODIGO_CONCLUIDO:
             dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
             if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
                 modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
                 verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-        elif estado_trabalho==produzindo:
+        elif estado_trabalho==CODIGO_PRODUZINDO:
             # lista_profissao.clear()
             if not existeEspacoProducao(dicionarioPersonagemAtributos):
                 print(f'Todos os espaços de produção ocupados.')
@@ -3609,7 +3592,7 @@ def verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabal
                             if textoEhIgual(trabalho[CHAVE_TRABALHO_NECESSARIO], dicionarioTrabalhoConcluido[CHAVE_NOME]):
                                 trabalho[CHAVE_LICENCA] = licencaProducaoIdeal
                                 trabalho[CHAVE_RECORRENCIA] = False
-                                trabalho[CHAVE_ESTADO] = para_produzir
+                                trabalho[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
                                 trabalho[CHAVE_EXPERIENCIA] = trabalho[CHAVE_EXPERIENCIA] * 1.5
                                 for atributo in trabalho:
                                     print(f'{D}: {atributo} - {trabalho[atributo]}.')
