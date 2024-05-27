@@ -402,7 +402,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     # mostraImagem(0,frameNomeTrabalhoTratado,nomeTrabalhoReconhecido)
     if variavelExiste(nomeTrabalhoReconhecido):
         for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-            if texto1PertenceTexto2(nomeTrabalhoReconhecido[3: -1], dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')):
+            if texto1PertenceTexto2(nomeTrabalhoReconhecido[3: -1], dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-','')):
                 dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                 print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
                 linhaSeparacao()
@@ -481,7 +481,7 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
                 print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
-                if texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME]):
+                if texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO]):
                     clickEspecifico(1, 'enter')
                     dicionarioTrabalho[CHAVE_POSICAO] = contadorParaBaixo
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
