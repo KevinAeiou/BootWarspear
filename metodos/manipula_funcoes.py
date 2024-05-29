@@ -2500,35 +2500,6 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
     linhaSeparacao()
     return listaDicionarioTrabalhoProduzido
 
-def trabalhoEhColecaoRecursosAvancados(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursosavançados')or
-            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'coletaemmassaderecursosavançados'))
-
-def trabalhoEhColecaoRecursosComuns(dicionarioTrabalho):
-    return textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursoscomuns')
-
-def trabalhoEhMelhoriaCatalisadorComposto(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadocatalizadoramplificado'))
-
-def trabalhoEhMelhoriaCatalisadorComum(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadocatalizadorcomum'))
-
-def trabalhoEhMelhoriaSubstanciaComposta(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadasubstânciacomposta'))
-
-def trabalhoEhMelhoriaSubstanciaComum(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadasubstânciacomum'))
-
-def trabalhoEhMelhoriaEssenciaComposta(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadaessênciacomposta'))
-
-def trabalhoEhMelhoriaEssenciaComum(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadaessênciacomum'))
-
-def trabalhoEhProducaoLicenca(dicionarioTrabalho):
-    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhorarlicençacomum')or
-            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
-
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
     dicionarioPersonagem = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
@@ -4230,7 +4201,7 @@ def funcao_teste(dicionarioUsuario):
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado('alabardadodemolidorcruel')
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado('melhoriadocatalizadorcomum')
         dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
         retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)

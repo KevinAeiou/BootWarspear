@@ -31,5 +31,34 @@ def trabalhoEhParaProduzir(dicionarioTrabalhoDesejado):
 def trabalhoEhProduzindo(dicionarioTrabalhoDesejado):
     return dicionarioTrabalhoDesejado[CHAVE_ESTADO] == CODIGO_PRODUZINDO
 
+def trabalhoEhColecaoRecursosAvancados(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursosavançados')or
+            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'coletaemmassaderecursosavançados'))
+
+def trabalhoEhColecaoRecursosComuns(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'grandecoleçãoderecursoscomuns')
+
+def trabalhoEhMelhoriaCatalisadorComposto(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadocatalizadoramplificado'))
+
+def trabalhoEhMelhoriaCatalisadorComum(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadocatalizadorcomum'))
+
+def trabalhoEhMelhoriaSubstanciaComposta(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadasubstânciacomposta'))
+
+def trabalhoEhMelhoriaSubstanciaComum(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadasubstânciacomum'))
+
+def trabalhoEhMelhoriaEssenciaComposta(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadaessênciacomposta'))
+
+def trabalhoEhMelhoriaEssenciaComum(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhoriadaessênciacomum'))
+
+def trabalhoEhProducaoLicenca(dicionarioTrabalho):
+    return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhorarlicençacomum')or
+            textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
+
 def linhaSeparacao():
     print(f'____________________________________________________')
