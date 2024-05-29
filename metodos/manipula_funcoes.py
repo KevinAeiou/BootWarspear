@@ -589,12 +589,11 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
         'recebendofibradebronze','recebendoprata','recebendoinsígniadeestudante',
         'recebendofibradeplatina','recebendoâmbar','recebendodistintivodeaprendiz']
     for recurso in listaProducaoRecurso:
-        if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME]):
-            confirmacao=True
-            break
+        if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME_PRODUCAO]):
+            return True
     # print(f'{D}: {dicionarioTrabalhoLista[CHAVE_NOME]} é recurso de produção? {confirmacao}.')
     # linhaSeparacao()
-    return confirmacao
+    return False
 
 def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     time.sleep(1)
@@ -2353,6 +2352,7 @@ def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
                 CHAVE_ESTADO:2,
                 CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
                 CHAVE_ID:dicionarioTrabalhoConcluido[CHAVE_ID],
+                CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO],
                 CHAVE_NIVEL:dicionarioTrabalhoConcluido[CHAVE_NIVEL],
                 CHAVE_NOME:dicionarioTrabalhoConcluido[CHAVE_NOME],
                 CHAVE_PROFISSAO:dicionarioTrabalhoConcluido[CHAVE_PROFISSAO],
@@ -2370,10 +2370,11 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
         if trabalhoEhProducaoLicenca(dicionarioTrabalhoConcluido):
             dicionarioTrabalhoEstoque = {
                 CHAVE_NIVEL:0,
-                CHAVE_NOME:'Licença de produção do aprendiz',
+                CHAVE_NOME:CHAVE_LICENCA_APRENDIZ,
                 CHAVE_QUANTIDADE:2,
                 CHAVE_PROFISSAO:None,
-                CHAVE_RARIDADE:'Recurso'
+                CHAVE_RARIDADE:'Recurso',
+                CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID]
             }
         else:
             if trabalhoEhMelhoriaEssenciaComum(dicionarioTrabalhoConcluido):
@@ -2425,96 +2426,62 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
                     CHAVE_RARIDADE:'Recurso'
                 }
             if not tamanhoIgualZero(dicionarioTrabalhoEstoque):
-                if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA], 'licençadeproduçãodoaprendiz'):
+                if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA], CHAVE_LICENCA_APRENDIZ):
                     dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] * 2
         if not tamanhoIgualZero(dicionarioTrabalhoEstoque):
             listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
-        if trabalhoEhColecaoRecursosComuns(dicionarioTrabalhoConcluido):
-                DPC = {
-                    CHAVE_NOME:None,
-                    CHAVE_NIVEL:1,
-                    CHAVE_PROFISSAO:None,
-                    CHAVE_RARIDADE:CHAVE_RARIDADE_COMUM,
-                    CHAVE_QUANTIDADE:4}
-                DSC = {
-                    CHAVE_NOME:None,
-                    CHAVE_NIVEL:1,
-                    CHAVE_PROFISSAO:None,
-                    CHAVE_RARIDADE:CHAVE_RARIDADE_COMUM,
-                    CHAVE_QUANTIDADE:3}
-                DTC = {
-                    CHAVE_NOME:None,
-                    CHAVE_NIVEL:1,
-                    CHAVE_PROFISSAO:None,
-                    CHAVE_RARIDADE:CHAVE_RARIDADE_COMUM,
-                    CHAVE_QUANTIDADE:2}
-                chaveProfissao = limpaRuidoTexto(dicionarioTrabalhoConcluido[CHAVE_PROFISSAO])
-                nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario= retornaNomesRecursos(chaveProfissao, 1)
-                DPC[CHAVE_NOME] = nomeRecursoPrimario
-                DSC[CHAVE_NOME] = nomeRecursoSecundario
-                DTC[CHAVE_NOME] = nomeRecursoTerciario
-                DPC[CHAVE_PROFISSAO] = dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
-                DSC[CHAVE_PROFISSAO] = dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
-                DTC[CHAVE_PROFISSAO] = dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
-                if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA],'licençadeproduçãodoaprendiz'):
-                    DPC[CHAVE_QUANTIDADE]=DPC[CHAVE_QUANTIDADE]*2
-                    DSC[CHAVE_QUANTIDADE]=DSC[CHAVE_QUANTIDADE]*2
-                    DTC[CHAVE_QUANTIDADE]=DTC[CHAVE_QUANTIDADE]*2
-                listaDicionarioTrabalhoProduzido=[DPC,DSC,DTC]
-        if trabalhoEhColecaoRecursosAvancados(dicionarioTrabalhoConcluido):
-                DPA={
-                    CHAVE_NOME:None,
-                    CHAVE_NIVEL:8,
-                    CHAVE_PROFISSAO:None,
-                    CHAVE_RARIDADE:'Avançado',
-                    CHAVE_QUANTIDADE:5}
-                DSA={
-                    CHAVE_NOME:None,
-                    CHAVE_NIVEL:8,
-                    CHAVE_PROFISSAO:None,
-                    CHAVE_RARIDADE:'Avançado',
-                    CHAVE_QUANTIDADE:4}
-                DTA={
-                    CHAVE_NOME:None,
-                    CHAVE_NIVEL:8,
-                    CHAVE_PROFISSAO:None,
-                    CHAVE_RARIDADE:'Avançado',
-                    CHAVE_QUANTIDADE:3}
-                chaveProfissao = limpaRuidoTexto(dicionarioTrabalhoConcluido[CHAVE_PROFISSAO])
-                nomeRecursoPrimario, nomeRecursoSecundario, nomeRecursoTerciario = retornaNomesRecursos(chaveProfissao, 8)
-                DPA[CHAVE_NOME] = nomeRecursoPrimario
-                DSA[CHAVE_NOME] = nomeRecursoSecundario
-                DTA[CHAVE_NOME] = nomeRecursoTerciario
-                DPA[CHAVE_PROFISSAO]=dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
-                DSA[CHAVE_PROFISSAO]=dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
-                DTA[CHAVE_PROFISSAO]=dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
-                if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA],'licençadeproduçãodoaprendiz'):
-                    DPA[CHAVE_QUANTIDADE]=DPA[CHAVE_QUANTIDADE]*2
-                    DSA[CHAVE_QUANTIDADE]=DSA[CHAVE_QUANTIDADE]*2
-                    DTA[CHAVE_QUANTIDADE]=DTA[CHAVE_QUANTIDADE]*2
-                listaDicionarioTrabalhoProduzido=[DPA,DSA,DTA]
+        if trabalhoEhColecaoRecursosComuns(dicionarioTrabalhoConcluido) or trabalhoEhColecaoRecursosAvancados(dicionarioTrabalhoConcluido):
+                nivelColecao = 1
+                if trabalhoEhColecaoRecursosAvancados(dicionarioTrabalhoConcluido):
+                    nivelColecao = 8
+                listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+                for dicionarioTrabalho in listaDicionariosTrabalhos:
+                    condicoes = (
+                        textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoConcluido[CHAVE_PROFISSAO])
+                        and dicionarioTrabalho[CHAVE_NIVEL] == nivelColecao
+                        and textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_COMUM))
+                    if condicoes:
+                        dicionarioTrabalhoEstoque = {
+                            CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
+                            CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+                            CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
+                            CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
+                            CHAVE_ID_TRABALHO:dicionarioTrabalho[CHAVE_ID]}
+                        listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
+                for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
+                    tipoRecurso = retornaChaveTipoRecurso(dicionarioTrabalhoProduzido)
+                    if variavelExiste(tipoRecurso):
+                        if tipoRecurso == CHAVE_RCT:
+                            dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE] = 2
+                        if tipoRecurso == CHAVE_RAT or tipoRecurso == CHAVE_RCS:
+                            dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE] = 3
+                        elif tipoRecurso == CHAVE_RAS or tipoRecurso == CHAVE_RCP:
+                            dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE] = 4
+                        elif tipoRecurso == CHAVE_RAP:
+                            dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE] = 5
+                        if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA], CHAVE_LICENCA_APRENDIZ):
+                            dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE] = dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE] * 2
+                    else:
+                        print(f'{D}: Tipo de recurso não encontrado!')
+                        linhaSeparacao()
         if tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
-            nomeRecurso = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoConcluido[CHAVE_NOME])
-            if variavelExiste(nomeRecurso):
                 dicionarioTrabalhoEstoque[CHAVE_NIVEL] = dicionarioTrabalhoConcluido[CHAVE_NIVEL]
-                dicionarioTrabalhoEstoque[CHAVE_NOME] = nomeRecurso
+                dicionarioTrabalhoEstoque[CHAVE_NOME] = dicionarioTrabalhoConcluido[CHAVE_NOME]
                 dicionarioTrabalhoEstoque[CHAVE_PROFISSAO] = dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
                 dicionarioTrabalhoEstoque[CHAVE_RARIDADE] = dicionarioTrabalhoConcluido[CHAVE_RARIDADE]
+                dicionarioTrabalhoEstoque[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
                 tipoRecurso = retornaChaveTipoRecurso(dicionarioTrabalhoEstoque)
                 if variavelExiste(tipoRecurso):
                     if tipoRecurso == CHAVE_RCS or tipoRecurso == CHAVE_RCT:
                         dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = 1
                     elif tipoRecurso == CHAVE_RCP or tipoRecurso == CHAVE_RAP or tipoRecurso == CHAVE_RAS or tipoRecurso == CHAVE_RAT:
                         dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = 2
-                    if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA],'licençadeproduçãodoaprendiz'):
+                    if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_LICENCA], CHAVE_LICENCA_APRENDIZ):
                         dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] * 2
                     listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
                 else:
                     print(f'{D}: Tipo de recurso não encontrado!')
                     linhaSeparacao()
-            else:
-                print(f'Erro ao definir nome da produção de recurso de {dicionarioTrabalhoConcluido[CHAVE_NOME]}.')
-                linhaSeparacao()
     else:
         dicionarioTrabalhoEstoque = {
             CHAVE_NIVEL:dicionarioTrabalhoConcluido[CHAVE_NIVEL],
@@ -2528,7 +2495,7 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
     print(f'{D}: Lista de dicionários trabalhos concluídos:')
     for dicionarioTrabalhoConcluido in listaDicionarioTrabalhoProduzido:
         for atributo in dicionarioTrabalhoConcluido:
-            print(f'{D}: {atributo} = {dicionarioTrabalhoConcluido[atributo]}.')
+            print(f'{D}: {atributo} - {dicionarioTrabalhoConcluido[atributo]}.')
         linhaSeparacao()
     linhaSeparacao()
     return listaDicionarioTrabalhoProduzido
@@ -2597,14 +2564,19 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
             if not erroEncontrado(erro):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
+                # retorna dicionario da lista de trabalhos onde o nomeTrabalhoConcluido corresponde ao nome
                 dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
                 if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
                     listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
                     for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
-                        condicao = (trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
+                        condicao = (
+                            trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
                             and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
                         if condicao:
+                            dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
                             dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
+                            dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
+                            dicionarioTrabalhoConcluido[CHAVE_ID] = dicionarioTrabalhoProduzirProduzindo[CHAVE_ID]
                 clickContinuo(3, 'up')
                 linhaSeparacao()
             else:
@@ -2617,7 +2589,7 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
     if not tamanhoIgualZero(listaDicionariosTrabalhos):
         for dicionarioTrabalho in listaDicionariosTrabalhos:
-            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME]):
+            if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME_PRODUCAO]):
                 dicionarioTrabalhoConcluido = dicionarioTrabalho
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
                 dicionarioTrabalhoConcluido[CHAVE_ESTADO] = CODIGO_CONCLUIDO
@@ -4258,13 +4230,16 @@ def funcao_teste(dicionarioUsuario):
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         dicionarioUsuario[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado('alabardadodemolidorcruel')
+        dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_APRENDIZ
+        retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido)
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
-        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
-        adicionaAtributoTrabalhoId(dicionarioUsuario, dicionarioPersonagemAtributos, listaDicionarioTrabalhoEstoque)
-        listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
-        for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
-            if not CHAVE_ID_TRABALHO in dicionarioTrabalhoEstoque:
-                print(f'{D}: {dicionarioTrabalhoEstoque[CHAVE_NOME]} - {dicionarioTrabalhoEstoque[CHAVE_PROFISSAO]} - {dicionarioTrabalhoEstoque[CHAVE_NIVEL]}.')
+        # listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+        # adicionaAtributoTrabalhoId(dicionarioUsuario, dicionarioPersonagemAtributos, listaDicionarioTrabalhoEstoque)
+        # listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+        # for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
+        #     if not CHAVE_ID_TRABALHO in dicionarioTrabalhoEstoque:
+        #         print(f'{D}: {dicionarioTrabalhoEstoque[CHAVE_NOME]} - {dicionarioTrabalhoEstoque[CHAVE_PROFISSAO]} - {dicionarioTrabalhoEstoque[CHAVE_NIVEL]}.')
         # dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
         # print("\n" * os.get_terminal_size().lines)
         # print(f'{D}: {porcentagem:,.2f}% concluído...')
@@ -4272,9 +4247,3 @@ def funcao_teste(dicionarioUsuario):
         # listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
         # produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
-
-def valorEhPar(nivel):
-    return nivel % 2 == 0
-
-def valorEhImpar(nivel):
-    return nivel % 2 == 1
