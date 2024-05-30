@@ -2347,7 +2347,7 @@ def estaMenuInicial(menu):
     return menu==menu_inicial
 
 def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
-    dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = defineDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos)
+    dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = reconheceRecuperaTrabalhoConcluido(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         if trabalhoEhProducaoRecursos(dicionarioTrabalhoConcluido):
             dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = True
@@ -2531,7 +2531,7 @@ def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
 def trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
     return CHAVE_EXPERIENCIA in dicionarioTrabalho
 
-def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
+def reconheceRecuperaTrabalhoConcluido(dicionarioPersonagem):
     dicionarioTrabalhoConcluido = {}
     telaInteira = retornaAtualizacaoTela()
     frameNomeTrabalho = telaInteira[285:285+37, 233:486]
@@ -2548,18 +2548,7 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
                 # retorna dicionario da lista de trabalhos onde o nomeTrabalhoConcluido corresponde ao nome
-                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
-                if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-                    listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
-                    for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
-                        condicao = (
-                            trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
-                            and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
-                        if condicao:
-                            dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
-                            dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
-                            dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
-                            dicionarioTrabalhoConcluido[CHAVE_ID] = dicionarioTrabalhoProduzirProduzindo[CHAVE_ID]
+                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido)
                 clickContinuo(3, 'up')
                 linhaSeparacao()
             else:
@@ -2567,6 +2556,21 @@ def defineDicionarioTrabalhoConcluido(dicionarioPersonagem):
                 clickContinuo(1, 'up')
                 clickEspecifico(1, 'left')
     return dicionarioPersonagem, dicionarioTrabalhoConcluido
+
+def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido):
+    dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
+    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+        listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
+        for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
+            condicao = (
+                trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
+                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
+            if condicao:
+                dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
+                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
+                dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
+                dicionarioTrabalhoConcluido[CHAVE_ID] = dicionarioTrabalhoProduzirProduzindo[CHAVE_ID]
+    return dicionarioTrabalhoConcluido
 
 def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
@@ -4227,6 +4231,9 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Produzindocabeçadecajadodeônix')
+        # print(retornaTrabalhoCaminhoEspecifico('HJRUF67a9DNky9X39rtDfOJoS84J'))
+        # atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
@@ -4240,7 +4247,4 @@ def funcao_teste(dicionarioUsuario):
         # print("\n" * os.get_terminal_size().lines)
         # print(f'{D}: {porcentagem:,.2f}% concluído...')
         # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
-        listaDicionariosProdutosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendidos, dicionarioPersonagemAtributos)
-        produzProdutoMaisVendido(dicionarioPersonagemAtributos, listaDicionariosProdutosRarosVendidos)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
