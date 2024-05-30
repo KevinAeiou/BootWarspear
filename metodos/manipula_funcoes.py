@@ -3702,16 +3702,20 @@ def recuperaCorrespondencia(dicionarioPersonagemAtributos):
 def atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioVenda):
     listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
     for trabalhoEstoque in listaDicionarioTrabalhoEstoque:
-        if (texto1PertenceTexto2(trabalhoEstoque[CHAVE_NOME], dicionarioVenda['nomeProduto']) and
-                textoEhIgual(dicionarioVenda['nomePersonagem'], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME])):
-            novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - 1
+        if texto1PertenceTexto2(trabalhoEstoque[CHAVE_ID_TRABALHO], dicionarioVenda[CHAVE_ID_TRABALHO]):
+            quantidadeVendida = dicionarioVenda['quantidadeProduto']
+            if quantidadeVendida == 0:
+                quantidadeVendida = 1
+            novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] - quantidadeVendida
+            if novaQuantidade < 0:
+                novaQuantidade = 0
             caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
             dados = {CHAVE_QUANTIDADE:novaQuantidade}
             modificaAtributo(caminhoRequisicao, dados)
-            print(f'{D}: Quantidade de {trabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
+            print(f'{D}: Quantidade do trabalho ({trabalhoEstoque[CHAVE_NOME]}) atualizada para {novaQuantidade}.')
             break
     else:
-        print(f'{D}: Trabalho vendido não encontrado no estoque.')
+        print(f'{D}: Trabalho ({dicionarioVenda[CHAVE_NOME]}) não encontrado no estoque.')
     linhaSeparacao()
 
 def existePixelCorrespondencia():
