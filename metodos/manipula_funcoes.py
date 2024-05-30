@@ -2935,6 +2935,7 @@ def retornaListaDicionariosTrabalhosRarosVendidos(listaDicionariosProdutosVendid
                     dicionarioTrabalhoRaroVendido = {
                         CHAVE_ID:dicionarioTrabalho[CHAVE_ID],
                         CHAVE_NOME:dicionarioTrabalho[CHAVE_NOME],
+                        CHAVE_NOME_PRODUCAO:dicionarioTrabalho[CHAVE_NOME_PRODUCAO],
                         CHAVE_NIVEL:dicionarioTrabalho[CHAVE_NIVEL],
                         CHAVE_RARIDADE:dicionarioTrabalho[CHAVE_RARIDADE],
                         CHAVE_PROFISSAO:dicionarioTrabalho[CHAVE_PROFISSAO],
