@@ -2620,11 +2620,10 @@ def removeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalhoProdu
         if textoEhIgual(dicionarioTrabalhoProduzindo[CHAVE_RARIDADE], CHAVE_RARIDADE_COMUM):
             if trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzindo):
                 print(f'{D}: Trabalho é recurso de produção!')
-                nomeRecurso = retornaNomeRecursoTrabalhoProducao(dicionarioTrabalhoProduzindo[CHAVE_NOME])
-                print(f'{D}: Nome recurso produzido: {nomeRecurso}')
+                print(f'{D}: Nome recurso produzido: {dicionarioTrabalhoProduzindo[CHAVE_NOME]}')
                 linhaSeparacao()
                 dicionarioRecurso = {
-                    CHAVE_NOME:nomeRecurso,
+                    CHAVE_NOME:dicionarioTrabalhoProduzindo[CHAVE_NOME],
                     CHAVE_PROFISSAO:dicionarioTrabalhoProduzindo[CHAVE_PROFISSAO],
                     CHAVE_NIVEL:dicionarioTrabalhoProduzindo[CHAVE_NIVEL]
                 }
