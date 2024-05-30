@@ -586,7 +586,7 @@ def menuExcluiTrabalho(dicionarioUsuario):
             return
         else:
             dicionarioTrabalho=defineDicionarioTrabalho(dicionarioUsuario,opcaoExclui)
-            excluiTrabalho(dicionarioUsuario,dicionarioTrabalho)
+            excluiTrabalhoListaDesejos(dicionarioUsuario,dicionarioTrabalho)
 
 def menuPersonagem(dicionarioUsuario):
     print(f'Personagens.')
