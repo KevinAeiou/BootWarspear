@@ -2761,23 +2761,20 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
     while True:
         menu = retornaMenu()
         if menuTrabalhosAtuaisReconhecido(menu):
-            if trabalhoERecorrente(dicionarioTrabalho):
-                print(f'Recorrencia está ligada.')
-                cloneDicionarioTrabalhoDesejado = defineCloneDicionarioTrabalhoDesejado(dicionarioTrabalhoDesejado)
-                dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = adicionaTrabalhoDesejo(dicionarioPersonagem, cloneDicionarioTrabalhoDesejado)
+            if not tamanhoIgualZero(dicionarioTrabalhoDesejado):
+                if trabalhoERecorrente(dicionarioTrabalho):
+                    clonaDicionarioTrabalhoDesejado(dicionarioTrabalho, dicionarioPersonagem, dicionarioTrabalhoDesejado)
+                elif not trabalhoERecorrente(dicionarioTrabalho):
+                    modificaEstadoDicionarioTrabalhoDesejado(dicionarioPersonagem, dicionarioTrabalhoDesejado)
+                dicionarioTrabalho[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
+                removeTrabalhoEstoque(dicionarioPersonagem, dicionarioTrabalhoDesejado)
+                clickContinuo(12,'up')
+                dicionarioPersonagem[CHAVE_CONFIRMACAO] = True
+                break
+            else:
+                print(f'{D}: Dicionário trabalho desejado está vazio!')
                 linhaSeparacao()
-            elif not trabalhoERecorrente(dicionarioTrabalho):
-                print(f'Recorrencia está desligada.')
-                caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
-                dados = {CHAVE_ESTADO:1,
-                         CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA]}
-                modificaAtributo(caminhoRequisicao, dados)
-                linhaSeparacao()
-            dicionarioTrabalho[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
-            removeTrabalhoEstoque(dicionarioPersonagem, dicionarioTrabalhoDesejado)
-            clickContinuo(12,'up')
-            dicionarioPersonagem[CHAVE_CONFIRMACAO] = True
-            break
+                break
         elif menuTrabalhoEspecificoReconhecido(menu):
             if primeiraBusca:
                 print(f'{D}: Entra menu licença.')
@@ -2888,6 +2885,20 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
             break
         primeiraBusca = False
     return dicionarioTrabalho, dicionarioPersonagem
+
+def modificaEstadoDicionarioTrabalhoDesejado(dicionarioPersonagem, dicionarioTrabalhoDesejado):
+    print(f'Recorrencia está desligada.')
+    caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
+    dados = {CHAVE_ESTADO:1,
+                            CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA]}
+    modificaAtributo(caminhoRequisicao, dados)
+    linhaSeparacao()
+
+def clonaDicionarioTrabalhoDesejado(dicionarioTrabalho, dicionarioPersonagem, dicionarioTrabalhoDesejado):
+    print(f'Recorrencia está ligada.')
+    cloneDicionarioTrabalhoDesejado = defineCloneDicionarioTrabalhoDesejado(dicionarioTrabalhoDesejado)
+    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = adicionaTrabalhoDesejo(dicionarioPersonagem, cloneDicionarioTrabalhoDesejado)
+    linhaSeparacao()
 
 def menuAtributosEquipamentoReconhecido(menu):
     return menu == menu_trab_atributos
