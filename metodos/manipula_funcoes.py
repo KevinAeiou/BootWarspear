@@ -417,9 +417,11 @@ def retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioPersonagemAtrib
     print(f'Buscando trabalho {raridade} na lista...')
     for trabalhoDesejado in listaDesejos:#retorna o nome do trabalho na lista de desejo na posição tamanho_lista_desejo-1
         #se o trabalho na lista de desejo NÃO for da profissão verificada no momento, passa para o proximo trabalho na lista
-        if (textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade) and
-            textoEhIgual(trabalhoDesejado[CHAVE_PROFISSAO], dicionarioTrabalho[CHAVE_PROFISSAO]) and
-            trabalhoDesejado[CHAVE_ESTADO] == 0):
+        condicoes = (
+            textoEhIgual(trabalhoDesejado[CHAVE_RARIDADE], raridade)
+            and textoEhIgual(trabalhoDesejado[CHAVE_PROFISSAO], dicionarioTrabalho[CHAVE_PROFISSAO])
+            and trabalhoDesejado[CHAVE_ESTADO] == CODIGO_PARA_PRODUZIR)
+        if (condicoes):
             for dicionarioTrabalhoDesejado in listaDicionariosTrabalhosDesejados:
                 if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_NOME], trabalhoDesejado[CHAVE_NOME]):
                     break
