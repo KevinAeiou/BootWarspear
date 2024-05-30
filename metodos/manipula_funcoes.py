@@ -2510,17 +2510,20 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
 def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
     dicionarioPersonagem = defineListaDicionariosProfissoesNecessarias(dicionarioPersonagem)
     for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
-        if textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO]):
-            if trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
-                caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json'
-                experiencia = profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
-                dados = {CHAVE_EXPERIENCIA:experiencia}
-                modificaAtributo(caminhoRequisicao,dados)
-                print(f'Experiência de {profissao[CHAVE_NOME]} atualizada para {experiencia}.')
-                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
-                break
-            else:
-                print(f'Trabalho concluido não possui atributo "experiência".')
+        condicoes = (
+           textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO])
+           and trabalhoPossuiAtributoExperiencia(dicionarioTrabalho))
+        if condicoes:
+            caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json'
+            experiencia = profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
+            if experiencia > 830000:
+                experiencia = 830000
+            dados = {CHAVE_EXPERIENCIA:experiencia}
+            modificaAtributo(caminhoRequisicao,dados)
+            print(f'Experiência de {profissao[CHAVE_NOME]} atualizada para {experiencia}.')
+            break
+        else:
+            print(f'Trabalho ({dicionarioTrabalho[CHAVE_NOME]}) não possui atributo "experiência".')
     linhaSeparacao()
 
 def trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
