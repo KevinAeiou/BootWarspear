@@ -1483,11 +1483,20 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                 if chaveUnicaConexaoForVerdadeira(dicionarioPersonagemAtributos):
                     if chaveEspacoBolsaForVerdadeira(dicionarioPersonagemAtributos):
                         if retornaEstadoTrabalho() == CODIGO_CONCLUIDO:
-                            dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
-                            if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-                                modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                                atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
-                                verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                            dicionarioPersonagemAtributos, nomeTrabalhoConcluido = reconheceRecuperaTrabalhoConcluido(dicionarioPersonagemAtributos)
+                            if variavelExiste(nomeTrabalhoConcluido):
+                                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, nomeTrabalhoConcluido)
+                                if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                                    dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                                    modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                                    atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
+                                    verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                                else:
+                                    print(f'{D}: Dicionário trabalho concluido não reconhecido.')
+                                    linhaSeparacao()
+                            else:
+                                print(f'{D}: Dicionário trabalho concluido não reconhecido.')
+                                linhaSeparacao()
                         elif not existeEspacoProducao(dicionarioPersonagemAtributos):
                             break
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
@@ -2346,30 +2355,31 @@ def vaiParaMenuCorrespondencia():
 def estaMenuInicial(menu):
     return menu==menu_inicial
 
-def verificaTrabalhoConcluido(dicionarioPersonagemAtributos):
-    dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = reconheceRecuperaTrabalhoConcluido(dicionarioPersonagemAtributos)
-    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-        if trabalhoEhProducaoRecursos(dicionarioTrabalhoConcluido):
-            dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = True
-        if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
-            print(f'Trabalho recorrente.')
-            excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-        else:
-            print(f'Trabalho sem recorrencia.')
-            caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json'
-            dados = {
-                CHAVE_ESTADO:2,
-                CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
-                CHAVE_ID:dicionarioTrabalhoConcluido[CHAVE_ID],
-                CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO],
-                CHAVE_NIVEL:dicionarioTrabalhoConcluido[CHAVE_NIVEL],
-                CHAVE_NOME:dicionarioTrabalhoConcluido[CHAVE_NOME],
-                CHAVE_PROFISSAO:dicionarioTrabalhoConcluido[CHAVE_PROFISSAO],
-                CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
-                CHAVE_RECORRENCIA:dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA],
-                CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]}
-            modificaAtributo(caminhoRequisicao, dados)
-        linhaSeparacao()
+def modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido):
+    if trabalhoEhProducaoRecursos(dicionarioTrabalhoConcluido):
+        dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = True
+    if dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]:
+        print(f'Trabalho recorrente.')
+        excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+    else:
+        print(f'Trabalho sem recorrencia.')
+        caminhoRequisicao = (
+            f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/
+            Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/
+            Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json')
+        dados = {
+            CHAVE_ESTADO:2,
+            CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
+            CHAVE_ID:dicionarioTrabalhoConcluido[CHAVE_ID],
+            CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO],
+            CHAVE_NIVEL:dicionarioTrabalhoConcluido[CHAVE_NIVEL],
+            CHAVE_NOME:dicionarioTrabalhoConcluido[CHAVE_NOME],
+            CHAVE_PROFISSAO:dicionarioTrabalhoConcluido[CHAVE_PROFISSAO],
+            CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
+            CHAVE_RECORRENCIA:dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA],
+            CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]}
+        modificaAtributo(caminhoRequisicao, dados)
+    linhaSeparacao()
     return dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido
 
 def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
@@ -2532,7 +2542,6 @@ def trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
     return CHAVE_EXPERIENCIA in dicionarioTrabalho
 
 def reconheceRecuperaTrabalhoConcluido(dicionarioPersonagem):
-    dicionarioTrabalhoConcluido = {}
     telaInteira = retornaAtualizacaoTela()
     frameNomeTrabalho = telaInteira[285:285+37, 233:486]
     frameNomeTrabalhoBinarizado = retornaImagemBinarizada(frameNomeTrabalho)
@@ -2547,15 +2556,14 @@ def reconheceRecuperaTrabalhoConcluido(dicionarioPersonagem):
             if not erroEncontrado(erro):
                 if not dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]:
                     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA] = True
-                # retorna dicionario da lista de trabalhos onde o nomeTrabalhoConcluido corresponde ao nome
-                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido)
                 clickContinuo(3, 'up')
                 linhaSeparacao()
+                return dicionarioPersonagem, nomeTrabalhoConcluido
             else:
                 dicionarioPersonagem[CHAVE_ESPACO_BOLSA] = False
                 clickContinuo(1, 'up')
                 clickEspecifico(1, 'left')
-    return dicionarioPersonagem, dicionarioTrabalhoConcluido
+    return dicionarioPersonagem, None
 
 def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido):
     dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
@@ -2589,30 +2597,6 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
         print(f'{D}: Erro ao definir lista de trabalhos.')
         linhaSeparacao()
     return {}
-
-def trataErros(dicionarioTrabalho, dicionarioPersonagem):
-    print(f'Tratando possíveis erros...')
-    dicionarioPersonagem[CHAVE_CONFIRMACAO] = True
-    tentativas = 1
-    erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-    while erroEncontrado(erro):
-        if erroNaoHaRecursosSuficientes(erro):
-            excluiTrabalhoListaDesejos(dicionarioPersonagem, dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-        elif erro == erroSemEspacosProducao or erro == erroOutraConexao or erro == erroConectando or erro == erroRestaurandoConexao:
-            dicionarioPersonagem[CHAVE_CONFIRMACAO] = False
-            dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
-            if erro == erroSemEspacosProducao:
-                pass
-            elif erro == erroOutraConexao:
-                dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
-            elif erro == erroConectando:
-                if tentativas > 10:
-                    clickEspecifico(1, 'enter')
-                    tentativas = 0
-                tentativas+=1
-        erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
-    linhaSeparacao()
-    return dicionarioTrabalho, dicionarioPersonagem
 
 def menuLicencasReconhecido(menu):
     return menu==menu_licencas
@@ -2861,14 +2845,13 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
             clickEspecifico(1, 'f2')
         else:
             break
-        # dicionarioTrabalho, dicionarioPersonagem = trataErros(dicionarioTrabalho,dicionarioPersonagem)
         print(f'Tratando possíveis erros...')
         dicionarioPersonagem[CHAVE_CONFIRMACAO] = True
         tentativas = 1
-        erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+        erro = verificaErro(dicionarioTrabalhoDesejado)
         while erroEncontrado(erro):
             if erroNaoHaRecursosSuficientes(erro):
-                excluiTrabalhoListaDesejos(dicionarioPersonagem, dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+                excluiTrabalhoListaDesejos(dicionarioPersonagem, dicionarioTrabalhoDesejado)
                 dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
             elif erroNaoHaEspacosDeProducao(erro) or erroHaOutraConexao(erro) or erroEstaConectando(erro) or erroReconectando(erro):
                 dicionarioPersonagem[CHAVE_CONFIRMACAO] = False
@@ -2882,7 +2865,7 @@ def iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagem):
                         clickEspecifico(1, 'enter')
                         tentativas = 0
                     tentativas+=1
-            erro = verificaErro(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO])
+            erro = verificaErro(dicionarioTrabalhoDesejado)
         linhaSeparacao()
         if not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
             break
@@ -3489,11 +3472,20 @@ def trataMenu(menu,dicionarioPersonagemAtributos):
     elif menu==menu_trab_atuais:
         estado_trabalho=retornaEstadoTrabalho()
         if estado_trabalho==CODIGO_CONCLUIDO:
-            dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = verificaTrabalhoConcluido(dicionarioPersonagemAtributos)
-            if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-                modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-                verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+            dicionarioPersonagemAtributos, nomeTrabalhoConcluido = reconheceRecuperaTrabalhoConcluido(dicionarioPersonagemAtributos)
+            if variavelExiste(nomeTrabalhoConcluido):
+                dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, nomeTrabalhoConcluido)
+                if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+                    dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                    modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                    atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                    verificaProducaoTrabalhoRaro(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+                else:
+                    print(f'{D}: Dicionário trabalho concluido não reconhecido.')
+                    linhaSeparacao()
+            else:
+                print(f'{D}: Nome trabalho concluído não reconhecido.')
+                linhaSeparacao()
         elif estado_trabalho==CODIGO_PRODUZINDO:
             # lista_profissao.clear()
             if not existeEspacoProducao(dicionarioPersonagemAtributos):
@@ -4231,9 +4223,10 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Produzindocabeçadecajadodeônix')
         # print(retornaTrabalhoCaminhoEspecifico('HJRUF67a9DNky9X39rtDfOJoS84J'))
-        # atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, '')
+        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+            dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
