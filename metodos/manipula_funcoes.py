@@ -2565,10 +2565,6 @@ def reconheceRecuperaTrabalhoConcluido(dicionarioPersonagem):
 
 def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido):
     dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
-    print(f'{D}: Dicionário encontrado na lista de trabalhos.')
-    for atributo in dicionarioTrabalhoConcluido:
-        print(f'{D}: {atributo} - {dicionarioTrabalhoConcluido[atributo]}.')
-    linhaSeparacao()
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
         for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
@@ -2581,6 +2577,10 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
                 dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
                 dicionarioTrabalhoConcluido[CHAVE_ID] = dicionarioTrabalhoProduzirProduzindo[CHAVE_ID]
+                return dicionarioTrabalhoConcluido
+        else:
+            print(f'{D}: Trabalho concluído ({dicionarioTrabalhoConcluido[CHAVE_NOME]}) não encontrado na lista produzindo...')
+            linhaSeparacao()
     return dicionarioTrabalhoConcluido
 
 def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
