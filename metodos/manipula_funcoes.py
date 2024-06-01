@@ -2391,7 +2391,7 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
                 CHAVE_QUANTIDADE:2,
                 CHAVE_PROFISSAO:None,
                 CHAVE_RARIDADE:'Recurso',
-                CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID]
+                CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO]
             }
         else:
             if trabalhoEhMelhoriaEssenciaComum(dicionarioTrabalhoConcluido):
@@ -2486,7 +2486,7 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
                 dicionarioTrabalhoEstoque[CHAVE_NOME] = dicionarioTrabalhoConcluido[CHAVE_NOME]
                 dicionarioTrabalhoEstoque[CHAVE_PROFISSAO] = dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]
                 dicionarioTrabalhoEstoque[CHAVE_RARIDADE] = dicionarioTrabalhoConcluido[CHAVE_RARIDADE]
-                dicionarioTrabalhoEstoque[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
+                dicionarioTrabalhoEstoque[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO]
                 tipoRecurso = retornaChaveTipoRecurso(dicionarioTrabalhoEstoque)
                 if variavelExiste(tipoRecurso):
                     if tipoRecurso == CHAVE_RCS or tipoRecurso == CHAVE_RCT:
@@ -2506,7 +2506,7 @@ def retornaListaDicionarioTrabalhoProduzido(dicionarioTrabalhoConcluido):
             CHAVE_QUANTIDADE:1,
             CHAVE_PROFISSAO:dicionarioTrabalhoConcluido[CHAVE_PROFISSAO],
             CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
-            CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID]
+            CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO]
         }
         listaDicionarioTrabalhoProduzido.append(dicionarioTrabalhoEstoque)
     print(f'{D}: Lista de dicionários trabalhos concluídos:')
@@ -2532,8 +2532,6 @@ def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
             modificaAtributo(caminhoRequisicao,dados)
             print(f'Experiência de {profissao[CHAVE_NOME]} atualizada para {experiencia}.')
             break
-        else:
-            print(f'Trabalho ({dicionarioTrabalho[CHAVE_NOME]}) não possui atributo "experiência".')
     linhaSeparacao()
 
 def trabalhoPossuiAtributoExperiencia(dicionarioTrabalho):
@@ -2575,7 +2573,6 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
                 dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
                 dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
-                dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
                 dicionarioTrabalhoConcluido[CHAVE_ID] = dicionarioTrabalhoProduzirProduzindo[CHAVE_ID]
                 return dicionarioTrabalhoConcluido
         else:
@@ -4230,9 +4227,9 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
         dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Capuz da perseverança inesgotável')
-        print(f'{D}: Dicionário encontrado na lista produzindo.')
-        for atributo in dicionarioTrabalhoConcluido:
-            print(f'{D}: {atributo} - {dicionarioTrabalhoConcluido[atributo]}.')
+        dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
