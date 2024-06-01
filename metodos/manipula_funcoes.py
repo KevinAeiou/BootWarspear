@@ -2570,7 +2570,7 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
         for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
             condicao = (
                 trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
-                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
+                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
             if condicao:
                 dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
