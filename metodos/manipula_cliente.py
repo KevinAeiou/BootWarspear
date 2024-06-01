@@ -357,7 +357,7 @@ def muda_quantidade_personagem(usuario_id,nova_quantidade):
         return True
     return False
 
-def excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos,dicionarioTrabalho):
+def excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_ID]}/.json'
     if retornaRequisicao(DELETE,caminhoRequisicao,None):
         pass
