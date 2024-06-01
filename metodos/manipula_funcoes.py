@@ -2565,13 +2565,18 @@ def reconheceRecuperaTrabalhoConcluido(dicionarioPersonagem):
 
 def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido):
     dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
+    print(f'{D}: Dicionário encontrado na lista de trabalhos.')
+    for atributo in dicionarioTrabalhoConcluido:
+        print(f'{D}: {atributo} - {dicionarioTrabalhoConcluido[atributo]}.')
+    linhaSeparacao()
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
         for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
             condicao = (
                 trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
-                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
+                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
             if condicao:
+                dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
                 dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
                 dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalhoConcluido[CHAVE_ID]
@@ -2584,6 +2589,7 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
         for dicionarioTrabalho in listaDicionariosTrabalhos:
             if texto1PertenceTexto2(nomeTrabalhoConcluido[1:-1], dicionarioTrabalho[CHAVE_NOME_PRODUCAO]):
                 dicionarioTrabalhoConcluido = dicionarioTrabalho
+                dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO] = dicionarioTrabalho[CHAVE_ID]
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
                 dicionarioTrabalhoConcluido[CHAVE_ESTADO] = CODIGO_CONCLUIDO
                 dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
@@ -4222,10 +4228,11 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
-        # print(retornaTrabalhoCaminhoEspecifico('HJRUF67a9DNky9X39rtDfOJoS84J'))
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Capa do arrependimento')
-        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-            dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Capuz da perseverança inesgotável')
+        print(f'{D}: Dicionário encontrado na lista produzindo.')
+        for atributo in dicionarioTrabalhoConcluido:
+            print(f'{D}: {atributo} - {dicionarioTrabalhoConcluido[atributo]}.')
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
