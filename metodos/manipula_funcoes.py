@@ -3732,7 +3732,8 @@ def atualizaQuantidadeTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioV
             print(f'{D}: Quantidade do trabalho ({trabalhoEstoque[CHAVE_NOME]}) atualizada para {novaQuantidade}.')
             break
     else:
-        print(f'{D}: Trabalho ({dicionarioVenda[CHAVE_NOME]}) não encontrado no estoque.')
+        nomeProduto = dicionarioVenda["nomeProduto"]
+        print(f'{D}: Trabalho ({nomeProduto}) não encontrado no estoque.')
     linhaSeparacao()
 
 def existePixelCorrespondencia():

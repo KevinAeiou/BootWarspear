@@ -173,7 +173,7 @@ def retornaListaDicionarioProfissao(dicionarioPersonagem):
                     dados = {CHAVE_EXPERIENCIA:0}
                     modificaAtributo(caminhoRequisicao,dados)
                     dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA] = 0
-                if not CHAVE_PRIORIDADE in dicionarioProfissoes[idProfissao]:
+                if not CHAVE_PRIORIDADE in dicionarioProfissoes[idProfissao]: 
                     caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
                     dados = {CHAVE_PRIORIDADE:False}
                     modificaAtributo(caminhoRequisicao,dados)
