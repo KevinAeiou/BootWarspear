@@ -2363,10 +2363,7 @@ def modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtribut
         excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
     else:
         print(f'Trabalho sem recorrencia.')
-        caminhoRequisicao = (
-            f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/
-            Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/
-            Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json')
+        caminhoRequisicao = (f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json')
         dados = {
             CHAVE_ESTADO:2,
             CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
@@ -2378,6 +2375,7 @@ def modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtribut
             CHAVE_RARIDADE:dicionarioTrabalhoConcluido[CHAVE_RARIDADE],
             CHAVE_RECORRENCIA:dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA],
             CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]}
+        print(f'{D}: Trabalho ({dicionarioTrabalhoConcluido[CHAVE_NOME]}) modificado para concluído.')
         modificaAtributo(caminhoRequisicao, dados)
     linhaSeparacao()
     return dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido
@@ -4225,7 +4223,7 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         # print(retornaTrabalhoCaminhoEspecifico('HJRUF67a9DNky9X39rtDfOJoS84J'))
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, '')
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Capa do arrependimento')
         if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
             dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
