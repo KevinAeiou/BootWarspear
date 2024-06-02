@@ -108,23 +108,27 @@ def verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida):
             dicionarioAux1 = listaDicionarioProfissao[posicao]
             dicionarioAux2 = defineDicionarioAux2(listaDicionarioProfissao, listaProfissaoReconhecida[posicao])
             if not tamanhoIgualZero(dicionarioAux2):
-                dados={CHAVE_NOME:dicionarioAux2[CHAVE_NOME],CHAVE_EXPERIENCIA:dicionarioAux2[CHAVE_EXPERIENCIA],CHAVE_PRIORIDADE:dicionarioAux2[CHAVE_PRIORIDADE]}
-                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux1[CHAVE_ID]}/.json'
+                dados = {
+                    CHAVE_NOME:dicionarioAux2[CHAVE_NOME],
+                    CHAVE_EXPERIENCIA:dicionarioAux2[CHAVE_EXPERIENCIA],
+                    CHAVE_PRIORIDADE:dicionarioAux2[CHAVE_PRIORIDADE]}
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux1[CHAVE_ID]}/.json'
                 modificaAtributo(caminhoRequisicao,dados)
-                dados={CHAVE_NOME:dicionarioAux1[CHAVE_NOME],CHAVE_EXPERIENCIA:dicionarioAux1[CHAVE_EXPERIENCIA],CHAVE_PRIORIDADE:dicionarioAux1[CHAVE_PRIORIDADE]}
-                caminhoRequisicao=f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux2[CHAVE_ID]}/.json'
+                dados = {
+                    CHAVE_NOME:dicionarioAux1[CHAVE_NOME],
+                    CHAVE_EXPERIENCIA:dicionarioAux1[CHAVE_EXPERIENCIA],
+                    CHAVE_PRIORIDADE:dicionarioAux1[CHAVE_PRIORIDADE]}
+                caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux2[CHAVE_ID]}/.json'
                 modificaAtributo(caminhoRequisicao,dados)
                 dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
                 verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida)
                 break
 
 def defineDicionarioAux2(listaDicionarioProfissao, profissaoReconhecida):
-    dicionarioAux2={}
     for dicionarioProfissao in listaDicionarioProfissao:
         if textoEhIgual(profissaoReconhecida,dicionarioProfissao[CHAVE_NOME]):
-            dicionarioAux2=dicionarioProfissao
-            break
-    return dicionarioAux2
+            return dicionarioProfissao
+    return {}
 
 def defineListaProfissaoReconhecida():
     yinicialProfissao=285
@@ -1009,14 +1013,11 @@ def preparaPersonagem(dicionarioUsuario):
 
 def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
     print(f'Definindo lista de personagem ativo.')
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]=[]
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO] = []
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        if (personagem[CHAVE_ESTADO]or
-            personagem[CHAVE_ESTADO]==1):
+        condicoes = (personagem[CHAVE_ESTADO] or personagem[CHAVE_ESTADO] == 1)
+        if condicoes:
             dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO].append(personagem)
-    # print(f'{D}:Lista de personagens ativos:')
-    # for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-    #     # print(f'{D}:{personagem[CHAVE_NOME]}.')
     linhaSeparacao()
     return dicionarioPersonagem
 
@@ -1315,20 +1316,17 @@ def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
     return dicionarioPersonagemAtributos
 
 def defineDicionarioPersonagemEmUso(dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
-    nomePersonagemReconhecidoTratado=retornaNomePersonagem(0)
-    # # print(f'{D}:Nome personagem na posição 0:{nomePersonagemReconhecidoTratado}')
+    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = None
+    nomePersonagemReconhecidoTratado = retornaNomePersonagem(0)
     if variavelExiste(nomePersonagemReconhecidoTratado):
         for dicionarioPersonagemVerificado in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-            if textoEhIgual(nomePersonagemReconhecidoTratado,dicionarioPersonagemVerificado[CHAVE_NOME]):
+            if textoEhIgual(nomePersonagemReconhecidoTratado, dicionarioPersonagemVerificado[CHAVE_NOME]):
                 print(f'Personagem {nomePersonagemReconhecidoTratado} confirmado!')
                 linhaSeparacao()
-                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=dicionarioPersonagemVerificado
-    elif nomePersonagemReconhecidoTratado=='provisorioatecair':
+                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioPersonagemVerificado
+    elif nomePersonagemReconhecidoTratado == 'provisorioatecair':
         print(f'Nome personagem diferente!')
         linhaSeparacao()
-    # print(f'{D}:Personagem ativo reconhecido: {dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]}.')
-    # linhaSeparacao()
     return dicionarioPersonagem
 
 def configuraLoginPersonagem(listaDicionarioPersonagensAtivos):
@@ -2269,9 +2267,7 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
                 break
             elif dicionarioProfissao[CHAVE_NOME] == 'capotes':
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioProfissao[CHAVE_ID]}/.json'
-                dados = {
-                    CHAVE_NOME:'Capotes'
-                }
+                dados = {CHAVE_NOME:'Capotes'}
                 modificaAtributo(caminhoRequisicao, dados)
         else:
             print(f'{D}:Nenhuma profissão priorizada!')
@@ -2363,7 +2359,7 @@ def modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtribut
         excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
     else:
         print(f'Trabalho sem recorrencia.')
-        caminhoRequisicao = (f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json')
+        caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json'
         dados = {
             CHAVE_ESTADO:2,
             CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
@@ -2524,7 +2520,7 @@ def modificaExperienciaProfissao(dicionarioPersonagem, dicionarioTrabalho):
            textoEhIgual(profissao[CHAVE_NOME],dicionarioTrabalho[CHAVE_PROFISSAO])
            and trabalhoPossuiAtributoExperiencia(dicionarioTrabalho))
         if condicoes:
-            caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json'
+            caminhoRequisicao = (f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{profissao[CHAVE_ID]}/.json')
             experiencia = profissao[CHAVE_EXPERIENCIA]+dicionarioTrabalho[CHAVE_EXPERIENCIA]
             if experiencia > 830000:
                 experiencia = 830000
@@ -2566,10 +2562,10 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
     if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
         listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
         for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
-            condicao = (
+            condicoes = (
                 trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
-                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME_PRODUCAO]))
-            if condicao:
+                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME]))
+            if condicoes:
                 dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
                 dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
@@ -2877,7 +2873,7 @@ def modificaEstadoDicionarioTrabalhoDesejado(dicionarioPersonagem, dicionarioTra
     print(f'Recorrencia está desligada.')
     caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
     dados = {CHAVE_ESTADO:1,
-                            CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA]}
+            CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA]}
     modificaAtributo(caminhoRequisicao, dados)
     linhaSeparacao()
 
@@ -3588,7 +3584,7 @@ def modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, dicionar
     for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
         if textoEhIgual(dicionarioTrabalhoProduzido[CHAVE_NOME], trabalhoEstoque[CHAVE_NOME]):
             novaQuantidade = trabalhoEstoque[CHAVE_QUANTIDADE] + dicionarioTrabalhoProduzido[CHAVE_QUANTIDADE]
-            caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json'
+            caminhoRequisicao = (f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{trabalhoEstoque[CHAVE_ID]}/.json')
             dados = {CHAVE_QUANTIDADE:novaQuantidade}
             modificaAtributo(caminhoRequisicao, dados)
             print(f'{trabalhoEstoque[CHAVE_NOME]} - Quantidade: {novaQuantidade}.')
@@ -3648,12 +3644,13 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                     if texto1PertenceTexto2(dicionarioTrabalho[CHAVE_NOME], listaTextoCarta):
                         chaveIdTrabalho = dicionarioTrabalho[CHAVE_ID]
                         break
-                dicionarioVenda = {CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID],
-                                 CHAVE_ID_TRABALHO:chaveIdTrabalho,
-                                 'nomeProduto':listaTextoCarta,
-                                 'quantidadeProduto':quantidadeProduto,
-                                 'valorProduto':int(ouro),
-                                 'dataVenda':dataAtual}
+                dicionarioVenda = {
+                    CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID],
+                    CHAVE_ID_TRABALHO:chaveIdTrabalho,
+                    'nomeProduto':listaTextoCarta,
+                    'quantidadeProduto':quantidadeProduto,
+                    'valorProduto':int(ouro),
+                    'dataVenda':dataAtual}
                 adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
                 # print(dicionarioVenda)
                 linhaSeparacao()
@@ -4226,7 +4223,7 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Capuz da perseverança inesgotável')
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Criar esfera do neófito')
         dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
