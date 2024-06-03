@@ -3276,27 +3276,25 @@ def reconheceMenuRecompensa(menu):
         linhaSeparacao()
 
 def retornaNomePersonagem(posicao):
-    nome=None
     print(f'Verificando nome personagem...')
-    posicaoNome=[[2,33,169,27],[190,351,177,30]]
-    telaInteira=retornaAtualizacaoTela()
-    frameNomePersonagem=telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3],posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
-    frameNomePersonagemTratado=retornaImagemCinza(frameNomePersonagem)
-    frameNomePersonagemTratado=retornaImagemEqualizada(frameNomePersonagemTratado)
-    frameNomePersonagemTratado=retornaImagemBinarizada(frameNomePersonagemTratado)
-    contadorPixelPreto=np.sum(frameNomePersonagemTratado==0)
+    posicaoNome = [[2,33,169,27], [190,351,177,30]]
+    telaInteira = retornaAtualizacaoTela()
+    frameNomePersonagem = telaInteira[posicaoNome[posicao][1]:posicaoNome[posicao][1]+posicaoNome[posicao][3], posicaoNome[posicao][0]:posicaoNome[posicao][0]+posicaoNome[posicao][2]]
+    frameNomePersonagemTratado = retornaImagemCinza(frameNomePersonagem)
+    frameNomePersonagemTratado = retornaImagemEqualizada(frameNomePersonagemTratado)
+    frameNomePersonagemTratado = retornaImagemBinarizada(frameNomePersonagemTratado)
+    contadorPixelPreto = np.sum(frameNomePersonagemTratado == 0)
     # # print(f'{D}:{contadorPixelPreto}')
     # mostraImagem(0,frameNomePersonagemTratado,None)
-    if contadorPixelPreto>50:
-        nomePersonagemReconhecido=reconheceTexto(frameNomePersonagemTratado)
-        # # print(f'{D}:{nomePersonagemReconhecido}.')
+    if contadorPixelPreto > 50:
+        nomePersonagemReconhecido = reconheceTexto(frameNomePersonagemTratado)
         if variavelExiste(nomePersonagemReconhecido):
-            nome=limpaRuidoTexto(nomePersonagemReconhecido)
-            print(f'{D}:Personagem reconhecido: {nome}')
-            # linhaSeparacao()
-        elif contadorPixelPreto>50:
-            nome='provisorioatecair'
-    return nome
+            nome = limpaRuidoTexto(nomePersonagemReconhecido)
+            print(f'{D}: Personagem reconhecido: {nome}.')
+            return nome
+        elif contadorPixelPreto > 50:
+            return 'provisorioatecair'
+    return None
 
 def entraPersonagem(listaPersonagemPresenteRecuperado):
     confirmacao = False
@@ -4223,10 +4221,6 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Criar esfera do neófito')
-        dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-        modificaExperienciaProfissao(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-        atualizaEstoquePersonagem(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
