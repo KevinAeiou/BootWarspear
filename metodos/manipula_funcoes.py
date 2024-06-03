@@ -909,9 +909,8 @@ def entraPersonagemAtivo(dicionarioPersonagem):
             clickEspecifico(1, 'f2')
             clickContinuo(10, 'left')   
             personagemReconhecido = retornaNomePersonagem(1)
-            dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = None
             while variavelExiste(personagemReconhecido) and contadorPersonagem < 13:
-                dicionarioPersonagem = confirmaNomePersonagem(personagemReconhecido, dicionarioPersonagem)
+                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = confirmaNomePersonagem(personagemReconhecido, dicionarioPersonagem)
                 if variavelExiste(dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
                     modificaAtributoUso(dicionarioPersonagem, True)
                     clickEspecifico(1, 'f2')
@@ -948,16 +947,13 @@ def entraPersonagemAtivo(dicionarioPersonagem):
         clickMouseEsquerdo(1,2,35)
     return dicionarioPersonagem
 
-def confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
+def confirmaNomePersonagem(personagemReconhecido, dicionarioPersonagem):
     for dicionarioPersonagemAtivo in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-        # # print(f'{D}:{personagemReconhecido} e {dicionarioPersonagemAtivo[CHAVE_NOME]}.')
-        if textoEhIgual(personagemReconhecido,dicionarioPersonagemAtivo[CHAVE_NOME]):
+        if textoEhIgual(personagemReconhecido, dicionarioPersonagemAtivo[CHAVE_NOME]):
             print(f'Personagem {personagemReconhecido} confirmado!')
             linhaSeparacao()
-            dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=dicionarioPersonagemAtivo
-            break
-    return dicionarioPersonagem
+            return dicionarioPersonagemAtivo
+    return None
 
 def defineListaDicionarioPersonagemMesmoEmail(dicionarioPersonagemAtributos, dicionarioPersonagemEmUso):
     listaDicionarioPersonagemMesmoEmail=[]
