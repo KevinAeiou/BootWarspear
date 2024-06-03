@@ -3643,7 +3643,8 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                     'valorProduto':int(ouro),
                     'dataVenda':dataAtual}
                 adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
-                # print(dicionarioVenda)
+                for atributo in dicionarioVenda:
+                    print(f'{D}: {atributo} - {dicionarioVenda[atributo]}')
                 linhaSeparacao()
             else:
                 print(f'Produto expirado:')
@@ -4214,6 +4215,37 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
+        listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
+            if textoEhIgual(dicionarioTrabalhoVendido[CHAVE_NOME_PERSONAGEM], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]):
+                print(f'{D}: {dicionarioTrabalhoVendido["nomeProduto"]}.')
+                if CHAVE_ID_TRABALHO in dicionarioTrabalhoVendido:
+                    trabalho = retornaTrabalhoCaminhoEspecifico(dicionarioTrabalhoVendido[CHAVE_ID_TRABALHO])
+                    if tamanhoIgualZero(trabalho):
+                        print(f'{D} - IDTRABALHO ({dicionarioTrabalhoVendido["nomeProduto"]}) é inválido!')
+                        for trabalho2 in listaDicionariosTrabalhos:
+                            if texto1PertenceTexto2(trabalho2[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoVendido["nomeProduto"]):
+                                caminho = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
+                                dados = {dicionarioTrabalhoVendido[CHAVE_ID_TRABALHO]:trabalho2[CHAVE_ID]}
+                                modificaAtributo(caminho, dados)
+                                break
+                        linhaSeparacao()
+                    else:
+                        print(f'Nome: {trabalho[CHAVE_NOME]}.')
+                        print(f'Nível: {trabalho[CHAVE_NIVEL]}.')
+                        print(f'Profissão: {trabalho[CHAVE_PROFISSAO]}.')
+                        linhaSeparacao()
+                else:
+                    print(f'{D}: Trabalho ({dicionarioTrabalhoVendido["nomeProduto"]}) não possuI idTrabalho!')
+                    for trabalho2 in listaDicionariosTrabalhos:
+                        if texto1PertenceTexto2(trabalho2[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoVendido["nomeProduto"]):
+                            caminho = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
+                            dados = {dicionarioTrabalhoVendido[CHAVE_ID_TRABALHO]:trabalho2[CHAVE_ID]}
+                            modificaAtributo(caminho, dados)
+                            break
+                    else:
+                        excluiTrabalhoVendido(dicionarioTrabalhoVendido)
+                    linhaSeparacao()
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
@@ -4226,5 +4258,4 @@ def funcao_teste(dicionarioUsuario):
         # dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
         # print("\n" * os.get_terminal_size().lines)
         # print(f'{D}: {porcentagem:,.2f}% concluído...')
-        # adicionaVenda(dicionarioPersonagemAtributos, dicionarioVenda)
         # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)

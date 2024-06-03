@@ -79,12 +79,13 @@ def adicionaVenda(dicionarioPersonagem, dicionarioVenda):
             requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados = {'id':idProdutoVendido})
             if requisicao:
                 print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
+                return True
             else:
                 print(f'Falha ao adicionar ({dicionarioVenda["nomeProduto"]}).')
                 requisicao = retornaRequisicao(DELETE, caminhoRequisicao, None)
     else:
         print(f'Limite de tentativas de conexão atingido.')
-    return dicionarioVenda
+    return False
 
 def retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagem):
     listaDicionarioEstoque=[]
@@ -124,6 +125,16 @@ def retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagem):
     else:
         print(f'Resultado requisição: {requisicao}.')
     return listaDicionariosTrabalhosVendidos
+
+def excluiTrabalhoVendido(dicionarioPersonagem, dicionarioTrabalhoVendido):
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
+    requisicao = retornaRequisicao(DELETE, caminhoRequisicao, None)
+    if requisicao:
+        print(f'{dicionarioTrabalhoVendido["nomeProduto"]} foi removido!')
+        return True
+    else:
+        print(f'Erro a remover {dicionarioTrabalhoVendido["nomeProduto"]}!')
+    return False
 
 def adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
