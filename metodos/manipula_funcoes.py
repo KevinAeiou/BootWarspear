@@ -894,56 +894,54 @@ def entraPersonagemAtivo(dicionarioPersonagem):
     menu = retornaMenu()
     if menu == menu_jogar:
         print(f'Buscando personagem ativo...')
-        clickEspecifico(1,'enter')
+        clickEspecifico(1, 'enter')
         time.sleep(1)
-        tentativas=1
-        erro=verificaErro(None)
+        tentativas = 1
+        erro = verificaErro(None)
         while erroEncontrado(erro):
-            if erro==erroConectando:
-                if tentativas>10:
-                    clickEspecifico(2,'enter')
+            if erro == erroConectando:
+                if tentativas > 10:
+                    clickEspecifico(2, 'enter')
                     tentativas = 0
-                tentativas+=1
-            erro=verificaErro(None)
+                tentativas += 1
+            erro = verificaErro(None)
         else:
-            clickEspecifico(1,'f2')
-            clickContinuo(10,'left')   
-            personagemReconhecido=retornaNomePersonagem(1)
-            # print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
-            dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=None
-            while variavelExiste(personagemReconhecido) and contadorPersonagem<13:
-                dicionarioPersonagem=confirmaNomePersonagem(personagemReconhecido,dicionarioPersonagem)
+            clickEspecifico(1, 'f2')
+            clickContinuo(10, 'left')   
+            personagemReconhecido = retornaNomePersonagem(1)
+            dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = None
+            while variavelExiste(personagemReconhecido) and contadorPersonagem < 13:
+                dicionarioPersonagem = confirmaNomePersonagem(personagemReconhecido, dicionarioPersonagem)
                 if variavelExiste(dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
-                    modificaAtributoUso(dicionarioPersonagem,True)
-                    clickEspecifico(1,'f2')
+                    modificaAtributoUso(dicionarioPersonagem, True)
+                    clickEspecifico(1, 'f2')
                     time.sleep(1)
-                    tentativas=1
-                    erro=verificaErro(None)
+                    tentativas = 1
+                    erro = verificaErro(None)
                     while erroEncontrado(erro):
-                        if erro==erroOutraConexao:
-                            dicionarioPersonagem[CHAVE_UNICA_CONEXAO]=False
-                            contadorPersonagem=14
+                        if erro == erroOutraConexao:
+                            dicionarioPersonagem[CHAVE_UNICA_CONEXAO] = False
+                            contadorPersonagem = 14
                             break
-                        elif erro==erroConectando:
-                            if tentativas>10:
-                                clickEspecifico(2,'enter')
+                        elif erro == erroConectando:
+                            if tentativas > 10:
+                                clickEspecifico(2, 'enter')
                                 tentativas = 0
-                            tentativas+=1
-                        erro=verificaErro(None)
+                            tentativas += 1
+                        erro = verificaErro(None)
                     else:
                         print(f'Login efetuado com sucesso!')
                         linhaSeparacao()
                         break
                 else:
-                    clickEspecifico(1,'right')
-                    personagemReconhecido=retornaNomePersonagem(1)
-                    # # print(f'{D}:personagem reconhecido: {personagemReconhecido}.')
-                contadorPersonagem+=1
+                    clickEspecifico(1, 'right')
+                    personagemReconhecido = retornaNomePersonagem(1)
+                contadorPersonagem += 1
             else:
                 print(f'Personagem não encontrado!')
                 linhaSeparacao()
-                if retornaMenu()==menu_escolha_p:
-                    clickEspecifico(1,'f1')
+                if retornaMenu() == menu_escolha_p:
+                    clickEspecifico(1, 'f1')
     elif menu == menu_inicial:
         deslogaPersonagem(dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO][-1][CHAVE_EMAIL], dicionarioPersonagem)
     else:
