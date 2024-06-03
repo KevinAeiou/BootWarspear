@@ -1310,14 +1310,9 @@ def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
     return dicionarioPersonagemAtributos
 
 def defineDicionarioPersonagemEmUso(dicionarioPersonagem):
-    dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = None
     nomePersonagemReconhecidoTratado = retornaNomePersonagem(0)
     if variavelExiste(nomePersonagemReconhecidoTratado):
-        for dicionarioPersonagemVerificado in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]:
-            if textoEhIgual(nomePersonagemReconhecidoTratado, dicionarioPersonagemVerificado[CHAVE_NOME]):
-                print(f'Personagem {nomePersonagemReconhecidoTratado} confirmado!')
-                linhaSeparacao()
-                dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioPersonagemVerificado
+        dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = confirmaNomePersonagem(nomePersonagemReconhecidoTratado, dicionarioPersonagem)
     elif nomePersonagemReconhecidoTratado == 'provisorioatecair':
         print(f'Nome personagem diferente!')
         linhaSeparacao()
