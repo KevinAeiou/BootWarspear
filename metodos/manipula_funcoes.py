@@ -915,6 +915,8 @@ def entraPersonagemAtivo(dicionarioPersonagem):
                     modificaAtributoUso(dicionarioPersonagem, True)
                     clickEspecifico(1, 'f2')
                     time.sleep(1)
+                    print(f'{D}: Personagem ({dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME]}) ESTÁ EM USO.')
+                    linhaSeparacao()
                     tentativas = 1
                     erro = verificaErro(None)
                     while erroEncontrado(erro):
@@ -1035,6 +1037,8 @@ def iniciaProcessoBusca(dicionarioUsuario):
                 dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO] = True
                 dicionarioPersonagemAtributos[CHAVE_ESPACO_BOLSA] = True
                 dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_MODIFICADA] = False
+                print(f'{D}: Personagem ({dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME]}) ESTÁ EM USO.')
+                linhaSeparacao()
                 print('Inicia busca...')
                 linhaSeparacao()
                 dicionarioPersonagemAtributos = vaiParaMenuProduzir(dicionarioPersonagemAtributos)
