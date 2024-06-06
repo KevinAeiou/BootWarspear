@@ -2551,25 +2551,24 @@ def reconheceRecuperaTrabalhoConcluido(dicionarioPersonagem):
     return dicionarioPersonagem, None
 
 def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConcluido):
-    dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido)
-    if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+    listaPossiveisDicionariosTrabalhos = retornaListaPossiveisDicionariosTrabalhoRecuperado(nomeTrabalhoConcluido)
+    if not tamanhoIgualZero(listaPossiveisDicionariosTrabalhos):
         listaDicionariosTrabalhosProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagem)
-        for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
-            condicoes = (
-                trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
-                and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], dicionarioTrabalhoConcluido[CHAVE_NOME]))
-            if condicoes:
-                dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_EXPERIENCIA]
-                dicionarioTrabalhoConcluido[CHAVE_PROFISSAO] = dicionarioTrabalhoProduzirProduzindo[CHAVE_PROFISSAO]
-                dicionarioTrabalhoConcluido[CHAVE_LICENCA] = dicionarioTrabalhoProduzirProduzindo[CHAVE_LICENCA]
-                dicionarioTrabalhoConcluido[CHAVE_ID] = dicionarioTrabalhoProduzirProduzindo[CHAVE_ID]
-                return dicionarioTrabalhoConcluido
+        for possivelDicionarioTrabalho in listaPossiveisDicionariosTrabalhos:
+            for dicionarioTrabalhoProduzirProduzindo in listaDicionariosTrabalhosProduzirProduzindo:
+                condicoes = (
+                    trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
+                    and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], possivelDicionarioTrabalho[CHAVE_NOME]))
+                if condicoes:
+                    return dicionarioTrabalhoProduzirProduzindo
         else:
-            print(f'{D}: Trabalho concluído ({dicionarioTrabalhoConcluido[CHAVE_NOME]}) não encontrado na lista produzindo...')
+            print(f'{D}: Trabalho concluído ({listaPossiveisDicionariosTrabalhos[0][CHAVE_NOME]}) não encontrado na lista produzindo...')
             linhaSeparacao()
-    return dicionarioTrabalhoConcluido
+            return listaPossiveisDicionariosTrabalhos[0]
+    return {}
 
-def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
+def retornaListaPossiveisDicionariosTrabalhoRecuperado(nomeTrabalhoConcluido):
+    listaPossiveisDicionariosTrabalhos = []
     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
     if not tamanhoIgualZero(listaDicionariosTrabalhos):
         for dicionarioTrabalho in listaDicionariosTrabalhos:
@@ -2579,14 +2578,11 @@ def retornaDicionarioTrabalhoRecuperado(nomeTrabalhoConcluido):
                 dicionarioTrabalhoConcluido[CHAVE_LICENCA] = CHAVE_LICENCA_INICIANTE
                 dicionarioTrabalhoConcluido[CHAVE_ESTADO] = CODIGO_CONCLUIDO
                 dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA] = False
-                return dicionarioTrabalho
-        else:
-            print(f'{D}: {nomeTrabalhoConcluido} não encontrado na lista de trabalhos.')
-            linhaSeparacao()
+                listaPossiveisDicionariosTrabalhos.append(dicionarioTrabalho)
     else:
         print(f'{D}: Erro ao definir lista de trabalhos.')
         linhaSeparacao()
-    return {}
+    return listaPossiveisDicionariosTrabalhos
 
 def menuLicencasReconhecido(menu):
     return menu==menu_licencas
@@ -4202,7 +4198,7 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_DICIONARIO_PERSONAGEM_EM_USO:dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO],
         CHAVE_LISTA_PROFISSAO_MODIFICADA:False}
     dicionarioVenda = {
-        CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_NOME],
+        CHAVE_NOME_PERSONAGEM:dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID],
         'nomeProduto':'Produto vendido teste',
         'quantidadeProduto':1,
         'valorProduto':5000,
@@ -4215,37 +4211,9 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
-            if textoEhIgual(dicionarioTrabalhoVendido[CHAVE_NOME_PERSONAGEM], dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]):
-                print(f'{D}: {dicionarioTrabalhoVendido["nomeProduto"]}.')
-                if CHAVE_ID_TRABALHO in dicionarioTrabalhoVendido:
-                    trabalho = retornaTrabalhoCaminhoEspecifico(dicionarioTrabalhoVendido[CHAVE_ID_TRABALHO])
-                    if tamanhoIgualZero(trabalho):
-                        print(f'{D} - IDTRABALHO ({dicionarioTrabalhoVendido["nomeProduto"]}) é inválido!')
-                        for trabalho2 in listaDicionariosTrabalhos:
-                            if texto1PertenceTexto2(trabalho2[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoVendido["nomeProduto"]):
-                                caminho = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
-                                dados = {dicionarioTrabalhoVendido[CHAVE_ID_TRABALHO]:trabalho2[CHAVE_ID]}
-                                modificaAtributo(caminho, dados)
-                                break
-                        linhaSeparacao()
-                    else:
-                        print(f'Nome: {trabalho[CHAVE_NOME]}.')
-                        print(f'Nível: {trabalho[CHAVE_NIVEL]}.')
-                        print(f'Profissão: {trabalho[CHAVE_PROFISSAO]}.')
-                        linhaSeparacao()
-                else:
-                    print(f'{D}: Trabalho ({dicionarioTrabalhoVendido["nomeProduto"]}) não possuI idTrabalho!')
-                    for trabalho2 in listaDicionariosTrabalhos:
-                        if texto1PertenceTexto2(trabalho2[CHAVE_NOME_PRODUCAO], dicionarioTrabalhoVendido["nomeProduto"]):
-                            caminho = f'Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
-                            dados = {dicionarioTrabalhoVendido[CHAVE_ID_TRABALHO]:trabalho2[CHAVE_ID]}
-                            modificaAtributo(caminho, dados)
-                            break
-                    else:
-                        excluiTrabalhoVendido(dicionarioTrabalhoVendido)
-                    linhaSeparacao()
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Pulseiras do Poder')
+        dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
+        atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
