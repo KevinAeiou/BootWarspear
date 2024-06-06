@@ -1113,24 +1113,24 @@ def retornaMenu():
         if texto1PertenceTexto2('spearonline',textoMenu):
             textoMenu=retornaTextoMenuReconhecido(216,194,270)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('notícias',textoMenu):
+                if texto1PertenceTexto2('Notícias',textoMenu):
                     print(f'Menu notícias...')
                     linhaSeparacao()
                     fim = time.time()
                     # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_noticias
-                elif texto1PertenceTexto2('seleçãodepersonagem',textoMenu):
+                elif texto1PertenceTexto2('Personagens',textoMenu):
                     print(f'Menu escolha de personagem...')
                     linhaSeparacao()
                     fim = time.time()
                     # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                     linhaSeparacao()
                     return menu_escolha_p
-                elif texto1PertenceTexto2('produzir',textoMenu):
+                elif texto1PertenceTexto2('Produção',textoMenu):
                     textoMenu=retornaTextoMenuReconhecido(266,242,150)
                     if variavelExiste(textoMenu):
-                        if texto1PertenceTexto2('profissões',textoMenu):
+                        if texto1PertenceTexto2('Artesanatos',textoMenu):
                             textoMenu=retornaTextoMenuReconhecido(191,609,100)
                             if variavelExiste(textoMenu):
                                 if texto1PertenceTexto2('fechar',textoMenu):
@@ -1147,7 +1147,7 @@ def retornaMenu():
                                     # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                                     linhaSeparacao()
                                     return menu_trab_disponiveis
-                        elif texto1PertenceTexto2('trabalhosatuais',textoMenu):
+                        elif texto1PertenceTexto2('Pedidos ativos',textoMenu):
                             print(f'Menu trabalhos atuais...')
                             linhaSeparacao()
                             fim = time.time()
@@ -1223,7 +1223,7 @@ def retornaMenu():
                     return menu_ofe_diaria
             textoMenu=retornaTextoMenuReconhecido(181,71,150)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('lojamilagrosa',textoMenu):
+                if texto1PertenceTexto2('Loja Milagrosa',textoMenu):
                     print(f'Menu loja milagrosa...')
                     linhaSeparacao()
                     fim = time.time()
@@ -1232,7 +1232,7 @@ def retornaMenu():
                     return menu_loja_milagrosa
             textoMenu=retornaTextoMenuReconhecido(180,40,300)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('recompensasdiarias',textoMenu):
+                if texto1PertenceTexto2('Recompensas diárias',textoMenu):
                     # # print(f'{D}:Menu recompensas diárias...')
                     linhaSeparacao()
                     fim = time.time()
@@ -1241,7 +1241,7 @@ def retornaMenu():
                     return menu_rec_diarias
             textoMenu=retornaTextoMenuReconhecido(180,60,300)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('recompensasdiarias',textoMenu):
+                if texto1PertenceTexto2('Recompensas diárias',textoMenu):
                     print(f'Menu recompensas diárias...')
                     linhaSeparacao()
                     fim = time.time()
@@ -1259,7 +1259,7 @@ def retornaMenu():
                     return menu_meu_perfil           
             textoMenu=retornaTextoMenuReconhecido(169,97,75)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('bolsa',textoMenu):
+                if texto1PertenceTexto2('Bolsa',textoMenu):
                     print(f'Menu bolsa...')
                     linhaSeparacao()
                     fim=time.time()
