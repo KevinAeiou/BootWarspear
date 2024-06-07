@@ -3632,9 +3632,10 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                 listaTextoCarta = textoCarta.split()
                 quantidadeProduto = retornaQuantidadeProdutoVendido(listaTextoCarta)
                 # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
-                frameTela = telaInteira[415:415+30,250:250+260]
+                frameTela = telaInteira[490:490+30,410:410+100]
                 frameTelaTratado = retornaImagemCinza(frameTela)
                 frameTelaTratado = retornaImagemBinarizada(frameTelaTratado)
+                # mostraImagem(0, frameTelaTratado, None)
                 ouro = reconhece_digito(frameTelaTratado)
                 ouro = re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
@@ -3676,7 +3677,7 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
     x=0
     quantidadeProduto=0
     for texto in listaTextoCarta:
-        if texto1PertenceTexto2('un',texto):
+        if texto1PertenceTexto2('x',texto):
             quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x])
             if not quantidadeProduto.isdigit():
                 quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x-1])
@@ -3688,9 +3689,9 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
     return int(quantidadeProduto)
 
 def verificaVendaProduto(texto):
-    if 'vendeu'in texto.lower():
+    if texto1PertenceTexto2('Lote vendido', texto):
         return True
-    elif 'expirou'in texto.lower():
+    elif texto1PertenceTexto2('Expirou', texto):
         return False
     return None
 
@@ -4227,7 +4228,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        print(retornaMenu())
+        dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = listaDicionariosTrabalhos
+        retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)        
         # print(retornaTextoMenuReconhecido(275,400,150))
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
