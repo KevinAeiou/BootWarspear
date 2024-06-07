@@ -739,7 +739,7 @@ def retornaTipoErro():
     erro=0
     telaInteira=retornaAtualizacaoTela()
     frameErro=telaInteira[335:335+100,150:526]
-    mostraImagem(0, frameErro, None)
+    # mostraImagem(0, frameErro, None)
     textoErroEncontrado=reconheceTexto(frameErro)
     print(f'{D}:{textoErroEncontrado}')
     linhaSeparacao()
@@ -1091,7 +1091,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
         frameTela = retornaImagemCinza(frameTela)
         frameTela = retornaImagemEqualizada(frameTela)
         frameTela = retornaImagemBinarizada(frameTela)
-        mostraImagem(0,frameTela,None)
+        # mostraImagem(0,frameTela,None)
     contadorPixelPreto = np.sum(frameTela==0)
     # print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
     if existePixelPretoSuficiente(contadorPixelPreto):
