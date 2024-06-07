@@ -1089,7 +1089,7 @@ def retornaTextoMenuReconhecido(x,y,largura):
         frameTela = retornaImagemCinza(frameTela)
         frameTela = retornaImagemEqualizada(frameTela)
         frameTela = retornaImagemBinarizada(frameTela)
-        # mostraImagem(0,frameTela,None)
+        mostraImagem(0,frameTela,None)
     contadorPixelPreto = np.sum(frameTela==0)
     # print(f'Quantidade de pixels pretos: {contadorPixelPreto}')
     if existePixelPretoSuficiente(contadorPixelPreto):
@@ -1111,7 +1111,7 @@ def retornaMenu():
     textoMenu = retornaTextoMenuReconhecido(26,1,150)
     if variavelExiste(textoMenu):
         if texto1PertenceTexto2('spearonline',textoMenu):
-            textoMenu=retornaTextoMenuReconhecido(216,194,270)
+            textoMenu=retornaTextoMenuReconhecido(216,197,270)
             if variavelExiste(textoMenu):
                 if texto1PertenceTexto2('Notícias',textoMenu):
                     print(f'Menu notícias...')
@@ -1131,7 +1131,7 @@ def retornaMenu():
                     textoMenu=retornaTextoMenuReconhecido(266,242,150)
                     if variavelExiste(textoMenu):
                         if texto1PertenceTexto2('Artesanatos',textoMenu):
-                            textoMenu=retornaTextoMenuReconhecido(191,609,100)
+                            textoMenu=retornaTextoMenuReconhecido(191,612,100)
                             if variavelExiste(textoMenu):
                                 if texto1PertenceTexto2('fechar',textoMenu):
                                     print(f'Menu produzir...')
@@ -1170,7 +1170,7 @@ def retornaMenu():
                 # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                 linhaSeparacao()
                 return menu_inicial
-            textoMenu=retornaTextoMenuReconhecido(291,409,100)
+            textoMenu=retornaTextoMenuReconhecido(291,412,100)
             if variavelExiste(textoMenu):
                 if texto1PertenceTexto2('conquistas',textoMenu):
                     print(f'Menu personagem...')
@@ -1203,9 +1203,9 @@ def retornaMenu():
                         # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
                         linhaSeparacao()
                         return menu_licencas
-            textoMenu=retornaTextoMenuReconhecido(281,429,120)
+            textoMenu=retornaTextoMenuReconhecido(275,400,150)
             if variavelExiste(textoMenu):
-                if texto1PertenceTexto2('profissional',textoMenu):
+                if texto1PertenceTexto2('Recompensa',textoMenu):
                     print(f'Menu trabalho específico...')
                     linhaSeparacao()
                     fim = time.time()
@@ -4211,9 +4211,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(dicionarioPersonagemAtributos, 'Pulseiras do Poder')
-        dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioPersonagemAtributos, dicionarioTrabalhoConcluido)
-        atualizaEstoquePersonagem(dicionarioPersonagemAtributos,dicionarioTrabalhoConcluido)
+        print(retornaMenu())
+        # print(retornaTextoMenuReconhecido(275,400,150))
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
         # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
