@@ -301,7 +301,7 @@ def retornaEstadoTrabalho():
     texto=reconheceTexto(frameTelaInteira)
     if variavelExiste(texto):
         if textoEhIgual("trabalhoconcluído",texto):
-            print(f'Trabalho concluído!')
+            print(f'Pedido concluído!')
             estadoTrabalho=CODIGO_CONCLUIDO
         elif texto1PertenceTexto2('adicionarnovo',texto):
             print(f'Nem um trabalho!')
@@ -748,11 +748,13 @@ def retornaTipoErro():
         textoErroEncontrado=retiraDigitos(textoErroEncontrado)
         tipoErro = ['Você precisa de uma licença defabricação para iniciar este pedido',
             'Nãofoipossívelseconectaraoservidor',
-            'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
-            'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
+            'Vocênãotemosrecursosnecessáriasparaessetrabalho',
+            'Selecione um item para produzir',
+            'Conectando',
+            'precisomaisexperiênciaprofissionalparainiciarotrabalho','Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
             'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
             'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
+            'Vocêprecisademaismoedas','Nome de usuário ou senha inválida','otempodevidada',
             'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução','Bolsa chela Deseja liberar']
         for posicaoTipoErro in range(len(tipoErro)):
             textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
