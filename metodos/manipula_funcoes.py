@@ -739,19 +739,21 @@ def retornaTipoErro():
     erro=0
     telaInteira=retornaAtualizacaoTela()
     frameErro=telaInteira[335:335+100,150:526]
+    mostraImagem(0, frameErro, None)
     textoErroEncontrado=reconheceTexto(frameErro)
     print(f'{D}:{textoErroEncontrado}')
     linhaSeparacao()
     if variavelExiste(textoErroEncontrado):
         textoErroEncontrado=limpaRuidoTexto(textoErroEncontrado)
         textoErroEncontrado=retiraDigitos(textoErroEncontrado)
-        tipoErro=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
-                    'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
-                    'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
-                    'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
-                    'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-                    'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
-                    'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução','Bolsa chela Deseja liberar']
+        tipoErro = ['Você precisa de uma licença defabricação para iniciar este pedido',
+            'Nãofoipossívelseconectaraoservidor',
+            'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
+            'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
+            'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
+            'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
+            'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
+            'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução','Bolsa chela Deseja liberar']
         for posicaoTipoErro in range(len(tipoErro)):
             textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
             if textoErro in textoErroEncontrado:
