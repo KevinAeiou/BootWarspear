@@ -52,7 +52,6 @@ erroSemEspacosProducao=8
 erroConcluirTrabalho=9
 erroManutencaoServidor=10
 erroOutraConexao=11
-erroSemEspacosBolsa=12
 erroConexaoInterrompida=13
 erroSemMoedas=14
 erroEmailSenhaIncorreta=15
@@ -61,6 +60,7 @@ erroReinoIndisponivel=17
 erroAtualizaJogo=18
 erroRestaurandoConexao=19
 erroUsarObjetoParaProduzir=20
+erroSemEspacosBolsa=21
 
 lista_personagem_ativo=[]
 
@@ -751,11 +751,22 @@ def retornaTipoErro():
             'Vocênãotemosrecursosnecessáriasparaessetrabalho',
             'Selecione um item para produzir',
             'Conectando',
-            'precisomaisexperiênciaprofissionalparainiciarotrabalho','Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
-            'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
-            'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
-            'Vocêprecisademaismoedas','Nome de usuário ou senha inválida','otempodevidada',
-            'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução','Bolsa chela Deseja liberar']
+            'precisomaisexperiênciaprofissionalparainiciarotrabalho',
+            'Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
+            'Vocênãotemespaçoslivresparaotrabalho',
+            'agorapormoedas',
+            'Oservidorestáemmanutenção',
+            'Foidetectadaoutraconexãousandoseuperfil',
+            'Gostanadecomprar',
+            'conexãocomoservidorfoiinterrompida',
+            'Vocêprecisademaismoedas',
+            'Nome de usuário ou senha inválida',
+            'otempodevidada',
+            'reinodejogoselecionado',
+            'jogoestadesatualizada',
+            'restaurandoconexão',
+            'paraatarefadeprodução',
+            'Bolsa chela Deseja liberar']
         for posicaoTipoErro in range(len(tipoErro)):
             textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
             if textoErro in textoErroEncontrado:
