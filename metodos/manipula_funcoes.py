@@ -2564,6 +2564,7 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
                     trabalhoEhProduzindo(dicionarioTrabalhoProduzirProduzindo)
                     and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], possivelDicionarioTrabalho[CHAVE_NOME]))
                 if condicoes:
+                    dicionarioTrabalhoProduzirProduzindo[CHAVE_ID_TRABALHO] = possivelDicionarioTrabalho[CHAVE_ID]
                     return dicionarioTrabalhoProduzirProduzindo
         else:
             print(f'{D}: Trabalho concluído ({listaPossiveisDicionariosTrabalhos[0][CHAVE_NOME]}) não encontrado na lista produzindo...')
