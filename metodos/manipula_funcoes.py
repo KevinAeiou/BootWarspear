@@ -740,22 +740,22 @@ def retornaTipoErro():
     telaInteira=retornaAtualizacaoTela()
     frameErro=telaInteira[335:335+100,150:526]
     textoErroEncontrado=reconheceTexto(frameErro)
-    # # print(f'{D}:{textoErroEncontrado}')
+    print(f'{D}:{textoErroEncontrado}')
     linhaSeparacao()
     if variavelExiste(textoErroEncontrado):
         textoErroEncontrado=limpaRuidoTexto(textoErroEncontrado)
         textoErroEncontrado=retiraDigitos(textoErroEncontrado)
         tipoErro=['precisoumalicençadeproduçãoparainiciarotrabalho','Nãofoipossívelseconectaraoservidor',
                     'Vocênãotemosrecursosnecessáriasparaessetrabalho','Vocêprecisaescolherumitemparainiciarumtrabalhodeprodução',
-                    'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','GostariadeiràLojaMilagrosaparaveralistadepresentes',
+                    'Conectando','precisomaisexperiênciaprofissionalparainiciarotrabalho','Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
                     'Vocênãotemespaçoslivresparaotrabalho','agorapormoedas','Oservidorestáemmanutenção',
                     'Foidetectadaoutraconexãousandoseuperfil','Gostanadecomprar','conexãocomoservidorfoiinterrompida',
                     'Vocêprecisademaismoedas','Loginousenhaincorreta','otempodevidada',
-                    'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução']
+                    'reinodejogoselecionado','jogoestadesatualizada','restaurandoconexão','paraatarefadeprodução','Bolsa chela Deseja liberar']
         for posicaoTipoErro in range(len(tipoErro)):
             textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
             if textoErro in textoErroEncontrado:
-                # # print(f'{D}:"{textoErro}" encontrado em "{textoErroEncontrado}".')
+                print(f'{D}:"{textoErro}" encontrado em "{textoErroEncontrado}".')
                 linhaSeparacao()
                 erro=posicaoTipoErro+1
     return erro
