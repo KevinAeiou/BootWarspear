@@ -300,7 +300,7 @@ def retornaEstadoTrabalho():
     frameTelaInteira=telaInteira[311:311+43, 233:486]
     texto=reconheceTexto(frameTelaInteira)
     if variavelExiste(texto):
-        if textoEhIgual("trabalhoconcluído",texto):
+        if textoEhIgual("pedidoconcluído",texto):
             print(f'Pedido concluído!')
             estadoTrabalho=CODIGO_CONCLUIDO
         elif texto1PertenceTexto2('adicionarnovo',texto):
