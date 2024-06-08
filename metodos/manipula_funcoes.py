@@ -2718,6 +2718,7 @@ def defineCloneDicionarioTrabalhoDesejado(dicionarioTrabalhoDesejado):
     cloneDicionarioTrabalho = {
         CHAVE_ID:None,
         CHAVE_NOME:dicionarioTrabalhoDesejado[CHAVE_NOME],
+        CHAVE_NOME_PRODUCAO:dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO],
         CHAVE_ESTADO:CODIGO_PRODUZINDO,
         CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA],
         CHAVE_NIVEL:dicionarioTrabalhoDesejado[CHAVE_NIVEL],
