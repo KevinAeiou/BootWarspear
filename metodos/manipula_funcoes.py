@@ -748,7 +748,7 @@ def retornaTipoErro():
         textoErroEncontrado=retiraDigitos(textoErroEncontrado)
         tipoErro = ['Você precisa de uma licença defabricação para iniciar este pedido',
             'Nãofoipossívelseconectaraoservidor',
-            'Vocênãotemosrecursosnecessáriasparaessetrabalho',
+            'Você precisa de mais recursos parainiciar este pedido',
             'Selecione um item para produzir',
             'Conectando',
             'precisomaisexperiênciaprofissionalparainiciarotrabalho',
