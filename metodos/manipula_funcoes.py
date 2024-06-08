@@ -761,7 +761,7 @@ def retornaTipoErro():
             'conexãocomoservidorfoiinterrompida',
             'Vocêprecisademaismoedas',
             'Nome de usuário ou senha inválida',
-            'otempodevidada',
+            'Pedido de produção expirado',
             'reinodejogoselecionado',
             'jogoestadesatualizada',
             'restaurandoconexão',
@@ -2576,6 +2576,7 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
                     and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], possivelDicionarioTrabalho[CHAVE_NOME]))
                 if condicoes:
                     dicionarioTrabalhoProduzirProduzindo[CHAVE_ID_TRABALHO] = possivelDicionarioTrabalho[CHAVE_ID]
+                    dicionarioTrabalhoProduzirProduzindo[CHAVE_ID_TRABALHO] = possivelDicionarioTrabalho[CHAVE_NOME_PRODUCAO]
                     return dicionarioTrabalhoProduzirProduzindo
         else:
             print(f'{D}: Trabalho concluído ({listaPossiveisDicionariosTrabalhos[0][CHAVE_NOME]}) não encontrado na lista produzindo...')
