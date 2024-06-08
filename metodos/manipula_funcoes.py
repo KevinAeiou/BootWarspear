@@ -756,7 +756,7 @@ def retornaTipoErro():
             'Vocênãotemespaçoslivresparaotrabalho',
             'agorapormoedas',
             'Oservidorestáemmanutenção',
-            'Foidetectadaoutraconexãousandoseuperfil',
+            'No momento esta conta está sendousada em outro dispositivo',
             'Gostanadecomprar',
             'conexãocomoservidorfoiinterrompida',
             'Vocêprecisademaismoedas',
