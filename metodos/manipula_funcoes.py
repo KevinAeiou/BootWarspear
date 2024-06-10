@@ -748,20 +748,20 @@ def retornaTipoErro():
         textoErroEncontrado=retiraDigitos(textoErroEncontrado)
         tipoErro = ['Você precisa de uma licença defabricação para iniciar este pedido',
             'Nãofoipossívelseconectaraoservidor',
-            'Vocênãotemosrecursosnecessáriasparaessetrabalho',
+            'Você precisa de mais recursos parainiciar este pedido',
             'Selecione um item para produzir',
             'Conectando',
-            'precisomaisexperiênciaprofissionalparainiciarotrabalho',
+            'Você precisa de mais experiência de produção para iniciar este pedido',
             'Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
-            'Vocênãotemespaçoslivresparaotrabalho',
+            'Todos os espaços de fabricaçãoestão ocupados',
             'agorapormoedas',
             'Oservidorestáemmanutenção',
-            'Foidetectadaoutraconexãousandoseuperfil',
+            'No momento esta conta está sendousada em outro dispositivo',
             'Gostanadecomprar',
             'conexãocomoservidorfoiinterrompida',
             'Vocêprecisademaismoedas',
             'Nome de usuário ou senha inválida',
-            'otempodevidada',
+            'Pedido de produção expirado',
             'reinodejogoselecionado',
             'jogoestadesatualizada',
             'restaurandoconexão',
@@ -2576,6 +2576,7 @@ def retornaDicionarioTrabalhoConcluido(dicionarioPersonagem, nomeTrabalhoConclui
                     and textoEhIgual(dicionarioTrabalhoProduzirProduzindo[CHAVE_NOME], possivelDicionarioTrabalho[CHAVE_NOME]))
                 if condicoes:
                     dicionarioTrabalhoProduzirProduzindo[CHAVE_ID_TRABALHO] = possivelDicionarioTrabalho[CHAVE_ID]
+                    dicionarioTrabalhoProduzirProduzindo[CHAVE_ID_TRABALHO] = possivelDicionarioTrabalho[CHAVE_NOME_PRODUCAO]
                     return dicionarioTrabalhoProduzirProduzindo
         else:
             print(f'{D}: Trabalho concluído ({listaPossiveisDicionariosTrabalhos[0][CHAVE_NOME]}) não encontrado na lista produzindo...')
@@ -2717,6 +2718,7 @@ def defineCloneDicionarioTrabalhoDesejado(dicionarioTrabalhoDesejado):
     cloneDicionarioTrabalho = {
         CHAVE_ID:None,
         CHAVE_NOME:dicionarioTrabalhoDesejado[CHAVE_NOME],
+        CHAVE_NOME_PRODUCAO:dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO],
         CHAVE_ESTADO:CODIGO_PRODUZINDO,
         CHAVE_EXPERIENCIA:dicionarioTrabalhoDesejado[CHAVE_EXPERIENCIA],
         CHAVE_NIVEL:dicionarioTrabalhoDesejado[CHAVE_NIVEL],
@@ -3632,9 +3634,10 @@ def retornaConteudoCorrespondencia(dicionarioPersonagemAtributos):
                 listaTextoCarta = textoCarta.split()
                 quantidadeProduto = retornaQuantidadeProdutoVendido(listaTextoCarta)
                 # nomeProduto=retornaNomeProdutoVendido(listaTextoCarta)
-                frameTela = telaInteira[415:415+30,250:250+260]
+                frameTela = telaInteira[490:490+30,410:410+100]
                 frameTelaTratado = retornaImagemCinza(frameTela)
                 frameTelaTratado = retornaImagemBinarizada(frameTelaTratado)
+                # mostraImagem(0, frameTelaTratado, None)
                 ouro = reconhece_digito(frameTelaTratado)
                 ouro = re.sub('[^0-9]','',ouro)
                 if ouro.isdigit():
@@ -3676,7 +3679,7 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
     x=0
     quantidadeProduto=0
     for texto in listaTextoCarta:
-        if texto1PertenceTexto2('un',texto):
+        if texto1PertenceTexto2('x',texto):
             quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x])
             if not quantidadeProduto.isdigit():
                 quantidadeProduto=re.sub('[^0-9]','',listaTextoCarta[x-1])
@@ -3688,9 +3691,9 @@ def retornaQuantidadeProdutoVendido(listaTextoCarta):
     return int(quantidadeProduto)
 
 def verificaVendaProduto(texto):
-    if 'vendeu'in texto.lower():
+    if texto1PertenceTexto2('Lote vendido', texto):
         return True
-    elif 'expirou'in texto.lower():
+    elif texto1PertenceTexto2('Expirou', texto):
         return False
     return None
 
@@ -4227,8 +4230,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        dicionarioTrabalho[CHAVE_POSICAO]=int(input(print(f'Posicao teste: ')))
-        print(retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho))
+        dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = listaDicionariosTrabalhos
+        retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)        
         # print(retornaTextoMenuReconhecido(275,400,150))
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
