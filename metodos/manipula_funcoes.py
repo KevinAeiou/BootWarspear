@@ -604,24 +604,16 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
 
 def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     time.sleep(1)
-    nomeTrabalhoReconhecido = None
-    if identificador == 0:
-        altura = 34
-    elif identificador == 1:
+    altura = 34
+    if identificador == 1:
         altura = 68
-    #tira novo print da tela
     telaInteira = retornaAtualizacaoTela()
     frameTelaInteira = telaInteira[yinicialNome:yinicialNome + altura, 233:478]
-    # mostraImagem(0,frameTelaInteira,None)
-    #teste trata frame trabalho comum
     frameNomeTrabalhoTratado = retornaImagemCinza(frameTelaInteira)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalhoTratado)
-    contadorPixelPreto=np.sum(frameNomeTrabalhoTratado == 0)
-    # # print(f'{D}:Quantidade de pixels pretos: {contadorPixelPreto}')
-    if contadorPixelPreto > 0:
-        nomeTrabalhoReconhecido = reconheceTexto(frameNomeTrabalhoTratado)
-    # # print(f'{D}:Trabalho reconhecido {nomeTrabalhoReconhecido}.')
-    return nomeTrabalhoReconhecido
+    if np.sum(frameNomeTrabalhoTratado == 0) > 0:
+        return reconheceTexto(frameNomeTrabalhoTratado)
+    return None
 
 def verificaErro(dicionarioTrabalho):
     dicionarioTrabalho = configuraLicenca(dicionarioTrabalho)
@@ -2290,9 +2282,8 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
     return dicionarioProfissaoPrioridade
 
 def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
-    time.sleep(2)
-    yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO] * 72) + 289
-    return retornaNomeTrabalhoReconhecido(yinicialNome,0)
+    time.sleep(1)
+    return retornaNomeTrabalhoReconhecido((dicionarioTrabalho[CHAVE_POSICAO]*72)+89, 0)
 
 def existeEspacoProducao(dicionarioPersonagemAtributos):
     espacoProducao = dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
