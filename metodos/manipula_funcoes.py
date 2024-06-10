@@ -2277,9 +2277,8 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
     return dicionarioProfissaoPrioridade
 
 def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
-    time.sleep(2)
-    yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO] * 72) + 289
-    return retornaNomeTrabalhoReconhecido(yinicialNome,0)
+    time.sleep(1)
+    return retornaNomeTrabalhoReconhecido((dicionarioTrabalho[CHAVE_POSICAO]*72)+89, 0)
 
 def existeEspacoProducao(dicionarioPersonagemAtributos):
     espacoProducao = dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
