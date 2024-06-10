@@ -61,6 +61,7 @@ erroAtualizaJogo=18
 erroRestaurandoConexao=19
 erroUsarObjetoParaProduzir=20
 erroSemEspacosBolsa=21
+erroSairWarspear = 22
 
 lista_personagem_ativo=[]
 
@@ -611,7 +612,7 @@ def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     #tira novo print da tela
     telaInteira = retornaAtualizacaoTela()
     frameTelaInteira = telaInteira[yinicialNome:yinicialNome + altura, 233:478]
-    mostraImagem(0,frameTelaInteira,None)
+    # mostraImagem(0,frameTelaInteira,None)
     #teste trata frame trabalho comum
     frameNomeTrabalhoTratado = retornaImagemCinza(frameTelaInteira)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalhoTratado)
@@ -671,12 +672,15 @@ def verificaErro(dicionarioTrabalho):
             print(f'Restaurando conexão...')
         linhaSeparacao()
         time.sleep(1)
-    elif erro==erroReceberRecompensas or erro==erroAtualizaJogo or erro==erroUsarObjetoParaProduzir:
+    elif (erro==erroReceberRecompensas or erro==erroAtualizaJogo or erro==erroUsarObjetoParaProduzir
+          or erro == erroSairWarspear):
         clickEspecifico(1,'f2')
         if erro==erroReceberRecompensas:
             print(f'Recuperar presente.')
         elif erro==erroUsarObjetoParaProduzir:
             print(f'Usa objeto para produzir outro.')
+        elif erro==erroSairWarspear:
+            print(f'Sair do jogo.')
         elif erro==erroAtualizaJogo:
             print(f'Atualizando jogo...')
             clickEspecifico(1,'f1')
@@ -766,7 +770,8 @@ def retornaTipoErro():
             'jogoestadesatualizada',
             'restaurandoconexão',
             'paraatarefadeprodução',
-            'Bolsa chela Deseja liberar']
+            'Bolsa chela Deseja liberar',
+            'Desgeja sair do Warspear Online']
         for posicaoTipoErro in range(len(tipoErro)):
             textoErro=limpaRuidoTexto(tipoErro[posicaoTipoErro])
             if textoErro in textoErroEncontrado:
