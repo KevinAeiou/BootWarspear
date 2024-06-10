@@ -605,13 +605,13 @@ def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     time.sleep(1)
     nomeTrabalhoReconhecido = None
     if identificador == 0:
-        altura = 39
+        altura = 34
     elif identificador == 1:
         altura = 68
     #tira novo print da tela
     telaInteira = retornaAtualizacaoTela()
     frameTelaInteira = telaInteira[yinicialNome:yinicialNome + altura, 233:478]
-    # mostraImagem(0,frameTelaInteira,None)
+    mostraImagem(0,frameTelaInteira,None)
     #teste trata frame trabalho comum
     frameNomeTrabalhoTratado = retornaImagemCinza(frameTelaInteira)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalhoTratado)
@@ -2286,7 +2286,7 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
 
 def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     time.sleep(2)
-    yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO] * 70) + 285
+    yinicialNome = (dicionarioTrabalho[CHAVE_POSICAO] * 72) + 289
     return retornaNomeTrabalhoReconhecido(yinicialNome,0)
 
 def existeEspacoProducao(dicionarioPersonagemAtributos):
@@ -4202,7 +4202,7 @@ def funcao_teste(dicionarioUsuario):
 
     dicionarioTrabalho={
         CHAVE_CONFIRMACAO:True,
-        CHAVE_POSICAO:-1,
+        CHAVE_POSICAO:1,
         CHAVE_PROFISSAO:'Armadura de tecido',
         CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
         }
@@ -4227,7 +4227,8 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        print(retornaMenu())
+        dicionarioTrabalho[CHAVE_POSICAO]=int(input(print(f'Posicao teste: ')))
+        print(retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho))
         # print(retornaTextoMenuReconhecido(275,400,150))
         # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
         # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
