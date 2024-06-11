@@ -3,8 +3,8 @@ import os
 import numpy as np
 import pytesseract
 from PIL import Image
-from manipula_teclado import *
-from lista_chaves import *
+from metodos.manipula_teclado import *
+from metodos.lista_chaves import *
 # from keras.models import load_model
 # import mahotas
 import time

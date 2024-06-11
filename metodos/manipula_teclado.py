@@ -1,6 +1,6 @@
 import time
 import cv2
-from lista_chaves import *
+from metodos.lista_chaves import *
 import pyautogui as tecla
 
 tela = 'boot_warspear\atualizacao_tela.png'

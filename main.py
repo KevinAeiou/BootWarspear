@@ -1,7 +1,7 @@
 import time, sys
-from manipula_funcoes import *
-from manipula_cliente import *
-from Utilitarios import *
+from metodos.manipula_funcoes import *
+from metodos.manipula_cliente import *
+from metodos.Utilitarios import *
 
 def mostraMenuListaDesejo(dicionarioUsuario):
     print(f'Lista de trabalhos desejados:')

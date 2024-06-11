@@ -4,7 +4,7 @@ import json
 import time
 # import pyrebase
 import uuid 
-from lista_chaves import *
+from metodos.lista_chaves import *
 
 link_database = 'https://bootwarspear-default-rtdb.firebaseio.com/'
 link_storage = 'gs://bootwarspear.appspot.com'

@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
-from manipula_imagem import *
-from manipula_teclado import *
-from manipula_cliente import *
-from Utilitarios import *
-from lista_chaves import *
+from metodos.manipula_imagem import *
+from metodos.manipula_teclado import *
+from metodos.manipula_cliente import *
+from metodos.Utilitarios import *
+from metodos.lista_chaves import *
+from modelos.objetoTrabalho import Trabalho
 import time
 import datetime
 import os.path
@@ -4227,18 +4228,14 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
         dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = listaDicionariosTrabalhos
-        retornaConteudoCorrespondencia(dicionarioPersonagemAtributos)        
-        # print(retornaTextoMenuReconhecido(275,400,150))
-        # listaDicionarioTrabalhoProduzirProduzindo = retornaListaDicionariosTrabalhosParaProduzirProduzindo(dicionarioPersonagemAtributos)
-        # dicionarioTrabalho[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoProduzirProduzindo
-        # defineTrabalhoComumProfissaoPriorizada(dicionarioPersonagemAtributos)
-        # listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
-        # adicionaAtributoTrabalhoId(dicionarioUsuario, dicionarioPersonagemAtributos, listaDicionarioTrabalhoEstoque)
-        # listaDicionarioTrabalhoEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
-        # for dicionarioTrabalhoEstoque in listaDicionarioTrabalhoEstoque:
-        #     if not CHAVE_ID_TRABALHO in dicionarioTrabalhoEstoque:
-        #         print(f'{D}: {dicionarioTrabalhoEstoque[CHAVE_NOME]} - {dicionarioTrabalhoEstoque[CHAVE_PROFISSAO]} - {dicionarioTrabalhoEstoque[CHAVE_NIVEL]}.')
-        # dicionarioTrabalhoEspecifico = retornaTrabalhoCaminhoEspecifico(dicionarioUsuario[CHAVE_LISTA_TRABALHO][0][CHAVE_ID])
-        # print("\n" * os.get_terminal_size().lines)
-        # print(f'{D}: {porcentagem:,.2f}% concluído...')
-        # iniciaProcessoDeProducao(dicionarioTrabalho, dicionarioPersonagemAtributos)
+        for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
+            if CHAVE_EXPERIENCIA in dicionarioTrabalho:
+                trabalho = Trabalho(
+                    dicionarioTrabalho[CHAVE_ID],
+                    dicionarioTrabalho[CHAVE_NOME],
+                    dicionarioTrabalho[CHAVE_NOME_PRODUCAO],
+                    dicionarioTrabalho[CHAVE_EXPERIENCIA],
+                    dicionarioTrabalho[CHAVE_PROFISSAO],
+                    dicionarioTrabalho[CHAVE_RARIDADE],
+                    dicionarioTrabalho[CHAVE_NIVEL])
+        Trabalho.mostraListaTrabalhos()
