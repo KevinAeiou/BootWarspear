@@ -1462,6 +1462,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                             break
                     elif raridadeTrabalhoEhMelhorado(dicionarioTrabalhoVerificado)or raridadeTrabalhoEhComum(dicionarioTrabalhoVerificado):
                         dicionarioTrabalho = defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+                        dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, 1)
                         dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = dicionarioTrabalho[CHAVE_CONFIRMACAO]
                         if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho) or not chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
                             break
