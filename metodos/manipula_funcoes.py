@@ -610,10 +610,8 @@ def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
         altura = 68
     telaInteira = retornaAtualizacaoTela()
     frameTelaInteira = telaInteira[yinicialNome:yinicialNome + altura, 233:478]
-    mostraImagem(0, frameTelaInteira, None)
     frameNomeTrabalhoTratado = retornaImagemCinza(frameTelaInteira)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalhoTratado)
-    mostraImagem(0, frameNomeTrabalhoTratado, None)
     if np.sum(frameNomeTrabalhoTratado == 0) > 0:
         return reconheceTexto(frameNomeTrabalhoTratado)
     return None
