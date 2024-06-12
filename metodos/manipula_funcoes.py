@@ -610,8 +610,10 @@ def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
         altura = 68
     telaInteira = retornaAtualizacaoTela()
     frameTelaInteira = telaInteira[yinicialNome:yinicialNome + altura, 233:478]
+    mostraImagem(0, frameTelaInteira, None)
     frameNomeTrabalhoTratado = retornaImagemCinza(frameTelaInteira)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalhoTratado)
+    mostraImagem(0, frameNomeTrabalhoTratado, None)
     if np.sum(frameNomeTrabalhoTratado == 0) > 0:
         return reconheceTexto(frameNomeTrabalhoTratado)
     return None
@@ -2285,7 +2287,7 @@ def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
 
 def retornaNomeTrabalhoPosicaoTrabalhoRaroEspecial(dicionarioTrabalho):
     time.sleep(1)
-    return retornaNomeTrabalhoReconhecido((dicionarioTrabalho[CHAVE_POSICAO]*72)+89, 0)
+    return retornaNomeTrabalhoReconhecido((dicionarioTrabalho[CHAVE_POSICAO]*72)+289, 0)
 
 def existeEspacoProducao(dicionarioPersonagemAtributos):
     espacoProducao = dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ESPACO_PRODUCAO]
@@ -4203,7 +4205,7 @@ def funcao_teste(dicionarioUsuario):
 
     dicionarioTrabalho={
         CHAVE_CONFIRMACAO:True,
-        CHAVE_POSICAO:1,
+        CHAVE_POSICAO:0,
         CHAVE_PROFISSAO:'Armadura de tecido',
         CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
         }
@@ -4228,15 +4230,5 @@ def funcao_teste(dicionarioUsuario):
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
         listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = listaDicionariosTrabalhos
-        for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
-            if CHAVE_EXPERIENCIA in dicionarioTrabalho:
-                trabalho = Trabalho(
-                    dicionarioTrabalho[CHAVE_ID],
-                    dicionarioTrabalho[CHAVE_NOME],
-                    dicionarioTrabalho[CHAVE_NOME_PRODUCAO],
-                    dicionarioTrabalho[CHAVE_EXPERIENCIA],
-                    dicionarioTrabalho[CHAVE_PROFISSAO],
-                    dicionarioTrabalho[CHAVE_RARIDADE],
-                    dicionarioTrabalho[CHAVE_NIVEL])
-        Trabalho.mostraListaTrabalhos()
+        yinicialNome = (2 * 70) + 285
+        nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
