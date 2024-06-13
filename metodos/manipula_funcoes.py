@@ -752,7 +752,7 @@ def retornaTipoErro():
             'Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
             'Todos os espaços de fabricaçãoestão ocupados',
             'agorapormoedas',
-            'Oservidorestáemmanutenção',
+            'Estamos fazendo de tudo paraconcluíla o mais rápido possível',
             'No momento esta conta está sendousada em outro dispositivo',
             'Gostanadecomprar',
             'conexãocomoservidorfoiinterrompida',
