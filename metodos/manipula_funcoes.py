@@ -1544,7 +1544,7 @@ def primeiroTrabalhoDaListaEhComum(dicionarioTrabalho):
 def saiProfissaoVerificada(dicionarioProfissao):
     print(f'Nem um trabalho disponível está na lista de desejos.')
     clickEspecifico(1,'f1')
-    clickContinuo(dicionarioProfissao[CHAVE_POSICAO] + 8,'up')
+    clickContinuo(dicionarioProfissao[CHAVE_POSICAO] + 10,'up')
     clickEspecifico(1,'left')
     time.sleep(1)
     linhaSeparacao()
