@@ -744,7 +744,7 @@ def retornaTipoErro():
         textoErroEncontrado=limpaRuidoTexto(textoErroEncontrado)
         textoErroEncontrado=retiraDigitos(textoErroEncontrado)
         tipoErro = ['Você precisa de uma licença defabricação para iniciar este pedido',
-            'Nãofoipossívelseconectaraoservidor',
+            'Falha ao se conectar ao servidor',
             'Você precisa de mais recursos parainiciar este pedido',
             'Selecione um item para produzir',
             'Conectando',
@@ -752,7 +752,7 @@ def retornaTipoErro():
             'Você recebeu um novo presenteDessgja ir à Loja Milagrosa paraconferir',
             'Todos os espaços de fabricaçãoestão ocupados',
             'agorapormoedas',
-            'Oservidorestáemmanutenção',
+            'Estamos fazendo de tudo paraconcluíla o mais rápido possível',
             'No momento esta conta está sendousada em outro dispositivo',
             'Gostanadecomprar',
             'conexãocomoservidorfoiinterrompida',
