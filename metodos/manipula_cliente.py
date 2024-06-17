@@ -69,13 +69,13 @@ def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
     return requisicaoRetorno
 
 def adicionaVenda(dicionarioPersonagem, dicionarioVenda):
-    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_vendas/.json'
     requisicao = retornaRequisicao(POST,caminhoRequisicao,dicionarioVenda)
     if requisicao:
         dicionarioRequisicao = requisicao.json()
         if dicionarioRequisicao:
             idProdutoVendido = dicionarioRequisicao['name']
-            caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/{idProdutoVendido}.json'
+            caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_vendas/{idProdutoVendido}.json'
             requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados = {'id':idProdutoVendido})
             if requisicao:
                 print(f'Nova venda foi adicionada: {dicionarioVenda["nomeProduto"]}.')
@@ -106,14 +106,14 @@ def retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagem):
 def retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagem):
     print(f'Definindo lista dicionários produtos vendidos...')
     listaDicionariosTrabalhosVendidos = []
-    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/.json'
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_vendas/.json'
     requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dicionarioRequisicao = requisicao.json()
         if dicionarioRequisicao:
             for chave in dicionarioRequisicao:
                 # print(f'{D}:{dicionarioRequisicao[chave]}')
-                caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/{chave}.json'
+                caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_vendas/{chave}.json'
                 if not CHAVE_ID in dicionarioRequisicao[chave]:
                     requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados = {'id':chave})
                 if dicionarioRequisicao[chave]['valorProduto']=="":
@@ -127,7 +127,7 @@ def retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagem):
     return listaDicionariosTrabalhosVendidos
 
 def excluiTrabalhoVendido(dicionarioPersonagem, dicionarioTrabalhoVendido):
-    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_vendas/{dicionarioTrabalhoVendido[CHAVE_ID]}/.json'
     requisicao = retornaRequisicao(DELETE, caminhoRequisicao, None)
     if requisicao:
         print(f'{dicionarioTrabalhoVendido["nomeProduto"]} foi removido!')

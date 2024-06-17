@@ -4227,6 +4227,8 @@ def funcao_teste(dicionarioUsuario):
         listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
-        listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-        yinicialNome = (2 * 70) + 285
-        nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
+        listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioPersonagemAtributos)
+        for dicionarioTrabalhoVendido in listaDicionariosTrabalhosVendidos:
+            dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID] = dicionarioTrabalhoVendido[CHAVE_NOME_PERSONAGEM]
+            adicionaVenda(dicionarioPersonagemAtributos, dicionarioTrabalhoVendido)

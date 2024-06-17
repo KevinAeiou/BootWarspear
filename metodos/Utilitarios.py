@@ -1,5 +1,5 @@
 from unidecode import unidecode
-from lista_chaves import *
+from metodos.lista_chaves import *
 
 def variavelExiste(variavelVerificada):
     return variavelVerificada!=None
