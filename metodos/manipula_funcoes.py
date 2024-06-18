@@ -495,7 +495,7 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
                     contadorParaBaixo += 1
                     linhaSeparacao()
                     dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, 0)
-                    if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]):
+                    if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                         break
                     else:
                         clickEspecifico(1, 'f1')
