@@ -401,7 +401,8 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     if variavelExiste(nomeTrabalhoReconhecido):
         if CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-                if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')):
+                if (textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-',''))
+                    or textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                     print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
                     linhaSeparacao()
