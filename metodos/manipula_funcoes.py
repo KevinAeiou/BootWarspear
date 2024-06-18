@@ -496,7 +496,10 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                     contadorParaBaixo += 1
                     linhaSeparacao()
-                    dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, 0)
+                    tipoTrabalho = 0
+                    if trabalhoEhProducaoRecursos(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]):
+                        tipoTrabalho = 1
+                    dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho)
                     if chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                         break
                     else:
@@ -548,69 +551,6 @@ def vaiParaMenuProduzir(dicionarioPersonagemAtributos):
     elif existeOutraConexao(erro):
         dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO] = False
     return dicionarioPersonagemAtributos
-
-def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
-    return raridadeTrabalhoEhComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
-
-def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
-    return trabalhoListaDesejo[CHAVE_ESTADO]==CODIGO_PARA_PRODUZIR
-
-def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
-    return textoEhIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
-
-def raridadeTrabalhoEhComum(dicionarioTrabalho):
-    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],CHAVE_RARIDADE_COMUM)
-
-def raridadeTrabalhoEhMelhorado(dicionarioTrabalho):
-    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO)
-
-def raridadeTrabalhoEhRaro(dicionarioTrabalho):
-    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO)
-
-def raridadeTrabalhoEhEspecial(dicionarioTrabalho):
-    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_ESPECIAL)
-
-def primeiraBusca(dicionarioTrabalho):
-    return dicionarioTrabalho[CHAVE_POSICAO] == -1
-
-def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
-    confirmacao=False
-    listaProducaoRecurso=[
-        'melhorarlicençacomum',
-        'licençadeproduçãodoaprendiz',
-        'grandecoleçãoderecursoscomuns',
-        'grandecoleçãoderecursosavançados',
-        'coletaemmassaderecursosavançados',
-        'melhoriadaessênciacomum',
-        'melhoriadasubstânciacomum',
-        'melhoriadocatalizadorcomum',
-        'melhoriadaessênciacomposta',
-        'melhoriadasubtânciacomposta',
-        'melhoriadocatalizadoramplificado',
-        'criaresferadoaprendiz','produzindoavarinhademadeira','produzindocabeçadocajadodejade',
-        'produzindocabeçadecajadodeônix','criaresferadoneófito','produzindoavarinhadeaço',
-        'extraçãodelascas','manipulaçãodelascas','fazermódoaprendiz',
-        'preparandolascasdequartzo','manipulaçãodeminériodecobre','fazermódoprincipiante',
-        'adquirirtesouradoaprendiz','produzindofioresistente','fazendotecidodelinho',
-        'fazendotecidodecetim','comprartesouradoprincipiante','produzindofiogrosso',
-        'adquirirfacadoaprendiz','recebendoescamasdaserpente','concluindocouroresistente',
-        'adquirirfacadoprincipiante','recebendoescamasdolagarto','curtindocourogrosso',
-        'adquirirmarretãodoaprendiz','forjandoplacasdecobre','fazendoplacasdebronze',
-        'adquirirmarretãodoprincipiante','forjandoplacasdeferro','fazendoanéisdeaço',
-        'adquirirmoldedoaprendiz','extraçãodepepitasdecobre','recebendogemadassombras',
-        'adquirirmoldedoprincipiante','extraçãodepepitasdeprata','recebendogemadaluz',
-        'adquirirpinçadoaprendiz','extraçãodejadebruta','recebendoenergiainicial',
-        'adquirirpinçasdoprincipiante','extraçãodeônixextraordinária','recebendoéterinicial',
-        'adquirirfuradordoaprendiz','produzindotecidodelicado','extraçãodesubstânciainstável',
-        'adquirirfuradordoprincipiante','produzindotecidodenso','extraçãodesubstânciaestável',
-        'recebendofibradebronze','recebendoprata','recebendoinsígniadeestudante',
-        'recebendofibradeplatina','recebendoâmbar','recebendodistintivodeaprendiz']
-    for recurso in listaProducaoRecurso:
-        if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME_PRODUCAO]):
-            return True
-    # print(f'{D}: {dicionarioTrabalhoLista[CHAVE_NOME]} é recurso de produção? {confirmacao}.')
-    # linhaSeparacao()
-    return False
 
 def retornaNomeTrabalhoReconhecido(yinicialNome, identificador):
     time.sleep(1)

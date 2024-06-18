@@ -60,5 +60,70 @@ def trabalhoEhProducaoLicenca(dicionarioTrabalho):
     return (textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'melhorarlicençacomum')or
             textoEhIgual(dicionarioTrabalho[CHAVE_NOME],'licençadeproduçãodoaprendiz'))
 
+
+def requisitoRaridadecomumProfissaoEstadoproduzirSatisteito(dicionarioTrabalho, trabalhoListaDesejo):
+    return raridadeTrabalhoEhComum(trabalhoListaDesejo)and profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo)and estadoTrabalhoEParaProduzir(trabalhoListaDesejo)
+
+def estadoTrabalhoEParaProduzir(trabalhoListaDesejo):
+    return trabalhoListaDesejo[CHAVE_ESTADO]==CODIGO_PARA_PRODUZIR
+
+def profissaoEIgual(dicionarioTrabalho, trabalhoListaDesejo):
+    return textoEhIgual(trabalhoListaDesejo[CHAVE_PROFISSAO],dicionarioTrabalho[CHAVE_PROFISSAO])
+
+def raridadeTrabalhoEhComum(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE],CHAVE_RARIDADE_COMUM)
+
+def raridadeTrabalhoEhMelhorado(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO)
+
+def raridadeTrabalhoEhRaro(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO)
+
+def raridadeTrabalhoEhEspecial(dicionarioTrabalho):
+    return textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_ESPECIAL)
+
+def primeiraBusca(dicionarioTrabalho):
+    return dicionarioTrabalho[CHAVE_POSICAO] == -1
+
+def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
+    listaProducaoRecurso = [
+        'melhorarlicençacomum',
+        'licençadeproduçãodoaprendiz',
+        'grandecoleçãoderecursoscomuns',
+        'grandecoleçãoderecursosavançados',
+        'coletaemmassaderecursosavançados',
+        'melhoriadaessênciacomum',
+        'melhoriadasubstânciacomum',
+        'melhoriadocatalizadorcomum',
+        'melhoriadaessênciacomposta',
+        'melhoriadasubtânciacomposta',
+        'melhoriadocatalizadoramplificado',
+        'criaresferadoaprendiz','produzindoavarinhademadeira','produzindocabeçadocajadodejade',
+        'produzindocabeçadecajadodeônix','criaresferadoneófito','produzindoavarinhadeaço',
+        'extraçãodelascas','manipulaçãodelascas','fazermódoaprendiz',
+        'preparandolascasdequartzo','manipulaçãodeminériodecobre','fazermódoprincipiante',
+        'adquirirtesouradoaprendiz','produzindofioresistente','fazendotecidodelinho',
+        'fazendotecidodecetim','comprartesouradoprincipiante','produzindofiogrosso',
+        'adquirirfacadoaprendiz','recebendoescamasdaserpente','concluindocouroresistente',
+        'adquirirfacadoprincipiante','recebendoescamasdolagarto','curtindocourogrosso',
+        'adquirirmarretãodoaprendiz','forjandoplacasdecobre','fazendoplacasdebronze',
+        'adquirirmarretãodoprincipiante','forjandoplacasdeferro','fazendoanéisdeaço',
+        'adquirirmoldedoaprendiz','extraçãodepepitasdecobre','recebendogemadassombras',
+        'adquirirmoldedoprincipiante','extraçãodepepitasdeprata','recebendogemadaluz',
+        'adquirirpinçadoaprendiz','extraçãodejadebruta','recebendoenergiainicial',
+        'adquirirpinçasdoprincipiante','extraçãodeônixextraordinária','recebendoéterinicial',
+        'adquirirfuradordoaprendiz','produzindotecidodelicado','extraçãodesubstânciainstável',
+        'adquirirfuradordoprincipiante','produzindotecidodenso','extraçãodesubstânciaestável',
+        'recebendofibradebronze','recebendoprata','recebendoinsígniadeestudante',
+        'recebendofibradeplatina','recebendoâmbar','recebendodistintivodeaprendiz']
+    for recurso in listaProducaoRecurso:
+        if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME_PRODUCAO]):
+            print(f'{dicionarioTrabalhoLista[CHAVE_NOME]} é recurso!')
+            linhaSeparacao()
+            return True
+    print(f'{dicionarioTrabalhoLista[CHAVE_NOME]} não é recurso!')
+    linhaSeparacao()
+    return False
+
 def linhaSeparacao():
     print(f'____________________________________________________')
