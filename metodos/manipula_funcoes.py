@@ -389,7 +389,9 @@ def verifica_ciclo(lista):
 
 def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     print(f'Confirmando nome do trabalho...')
-    frameTelaTrabalhoEspecifico = retornaFrameTelaTrabalhoEspecifico()
+    frameTelaTrabalhoEspecifico = retornaAtualizacaoTela()
+    if  tipoTrabalho == 0:
+        frameTelaTrabalhoEspecifico = retornaFrameTelaTrabalhoEspecifico()
     listaFrames = [[169, 280, 303, 33], [183, 195, 318, 31]]
     posicao = listaFrames[tipoTrabalho]
     frameNomeTrabalho = frameTelaTrabalhoEspecifico[posicao[1]:posicao[1] + posicao[3], posicao[0]:posicao[0] + posicao[2]]
@@ -1454,7 +1456,10 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                                 if texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoVerificado[CHAVE_NOME_PRODUCAO]):
                                     dicionarioTrabalho = entraTrabalhoEncontrado(dicionarioTrabalho, dicionarioTrabalhoVerificado)
                                     if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                                        dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, 0)
+                                        tipoTrabalho = 0
+                                        if trabalhoEhProducaoRecursos(dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO]):
+                                            tipoTrabalho = 1
+                                        dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho)
                                         if not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                                             clickEspecifico(1,'f1')
                                             clickContinuo(dicionarioTrabalho[CHAVE_POSICAO]+1,'up')
