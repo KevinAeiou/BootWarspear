@@ -399,7 +399,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     if variavelExiste(nomeTrabalhoReconhecido):
         if CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-                if textoEhIgual(nomeTrabalhoReconhecido[3: -1], dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')):
+                if textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')):
                     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                     print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
                     linhaSeparacao()
@@ -1454,7 +1454,7 @@ def iniciaBuscaTrabalho(dicionarioPersonagemAtributos, dicionarioTrabalho):
                                 if texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoVerificado[CHAVE_NOME_PRODUCAO]):
                                     dicionarioTrabalho = entraTrabalhoEncontrado(dicionarioTrabalho, dicionarioTrabalhoVerificado)
                                     if chaveConfirmacaoForVerdadeira(dicionarioTrabalho):
-                                        dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, 1)
+                                        dicionarioTrabalho = confirmaNomeTrabalho(dicionarioTrabalho, 0)
                                         if not chaveDicionarioTrabalhoDesejadoExiste(dicionarioTrabalho):
                                             clickEspecifico(1,'f1')
                                             clickContinuo(dicionarioTrabalho[CHAVE_POSICAO]+1,'up')
