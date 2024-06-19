@@ -171,7 +171,7 @@ def adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho):
         print(f'Erro ao adicionar {dicionarioTrabalho[CHAVE_NOME]} a lista de desejo.')
     return dicionarioTrabalho
 
-def retornaListaDicionarioProfissao(dicionarioPersonagem):
+def retornaListaDicionariosProfissoes(dicionarioPersonagem):
     listaDicionarioProfissao = []
     caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
     requisicao = retornaRequisicao(GET,caminhoRequisicao,None)

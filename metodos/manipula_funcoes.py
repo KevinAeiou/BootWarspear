@@ -80,7 +80,7 @@ def atualizaListaProfissao(dicionarioPersonagem):
     listaProfissaoReconhecida = defineListaProfissaoReconhecida()
     if len(listaProfissaoReconhecida) == CHAVE_QUANTIDADE_PROFISSAO:
         verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida)
-        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionariosProfissoes(dicionarioPersonagem)
         dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_MODIFICADA]=False
         print(f'Processo de verificação concluído com sucesso!')
     else:
@@ -122,7 +122,7 @@ def verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida):
                     CHAVE_PRIORIDADE:dicionarioAux1[CHAVE_PRIORIDADE]}
                 caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{dicionarioAux2[CHAVE_ID]}/.json'
                 modificaAtributo(caminhoRequisicao,dados)
-                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
+                dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioPersonagem)
                 verificaProfissao(dicionarioPersonagem, listaProfissaoReconhecida)
                 break
 
@@ -414,7 +414,7 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
                         linhaSeparacao()
                         return dicionarioTrabalho
                 else:
-                    if (texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
+                    if (texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-2], dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                         print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
                         linhaSeparacao()
@@ -800,7 +800,7 @@ def defineListaDicionariosProfissoesNecessarias(dicionarioPersonagem):
     #cria lista vazia
     dicionarioPersonagem[CHAVE_LISTA_PROFISSAO_VERIFICADA] = []
     #abre o arquivo lista de profissoes
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioPersonagem)
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioPersonagem)
     #abre o arquivo lista de desejos
     dicionarioPersonagem[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
     #percorre todas as linha do aquivo profissoes
@@ -2228,7 +2228,7 @@ def retornaNivelXpMinimoMaximo(dicionarioProfissaoPrioridade):
 
 def retornaDicionarioProfissaoPrioridade(dicionarioPersonagemAtributos):
     dicionarioProfissaoPrioridade = {}
-    listaDicionarioProfissao = retornaListaDicionarioProfissao(dicionarioPersonagemAtributos)
+    listaDicionarioProfissao = retornaListaDicionariosProfissoes(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(listaDicionarioProfissao):
         for dicionarioProfissao in listaDicionarioProfissao:
             if dicionarioProfissao[CHAVE_PRIORIDADE]:
@@ -3130,7 +3130,7 @@ def verificaTrabalhoComumNecessario(dicionarioPersonagemAtributos, nomeTrabalhoC
         linhaSeparacao()
 
 def retornaDicionarioProfissaoTrabalho(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido):
-    listaDicionarioProfissao = retornaListaDicionarioProfissao(dicionarioPersonagemAtributos)
+    listaDicionarioProfissao = retornaListaDicionariosProfissoes(dicionarioPersonagemAtributos)
     for dicionarioProfissao in listaDicionarioProfissao:
         if textoEhIgual(dicionarioProfissao[CHAVE_NOME], dicionarioProdutoRaroVendido[CHAVE_PROFISSAO]):
             return dicionarioProfissao
@@ -3857,7 +3857,7 @@ def implementaNovaProfissao(dicionarioPersonagem):
     dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
-        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioPersonagem)
+        dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionariosProfissoes(dicionarioPersonagem)
         for profissao in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
             if textoEhIgual(profissao[CHAVE_NOME],'Braceletes'):
                 break
@@ -3998,7 +3998,7 @@ def defineAtributoExperienciaTrabalho(dicionarioUsuario):
     linhaSeparacao()
 
 def definePrioridadeProfissao(dicionarioUsuario):
-    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioUsuario)
     if not tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]):
         mostraLista(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO])
         opcaoProfissao = input('Profissão escolhida: ')
@@ -4184,10 +4184,8 @@ def funcao_teste(dicionarioUsuario):
         'dataVenda':'00-00-00'
         }
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
-    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionarioProfissao(dicionarioUsuario)
+    dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionariosProfissoes(dicionarioUsuario)
     while retornaInputConfirmacao():
         listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
-        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionarioProfissao(dicionarioUsuario)
-        listaDicionariosTrabalhosVendidos = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
-        confirmaNomeTrabalho(dicionarioTrabalho, 0)
+        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioUsuario)
