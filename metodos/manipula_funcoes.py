@@ -248,13 +248,18 @@ def mostraLista(listaDicionarios):
     for dicionario in listaDicionarios:
         print(f'{x} - {dicionario[CHAVE_NOME]}.')
         x += 1
-    print(f'0 - Voltar.')
+    print(f'0 - Voltar\n')
 
-def mostraListaDesejo(listaDesejo):
-    for trabalhoDesejado in listaDesejo:
-        if estadoTrabalhoEParaProduzir(trabalhoDesejado):
-            print(f'{trabalhoDesejado[CHAVE_PROFISSAO]}: {trabalhoDesejado[CHAVE_NOME]}')
-    linhaSeparacao()
+def mostraListaDesejo(dicionarioUsuario):
+    listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
+    if not tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
+        for trabalhoDesejado in listaDicionariosTrabalhosDesejados:
+            if estadoTrabalhoEParaProduzir(trabalhoDesejado):
+                print(f'{trabalhoDesejado[CHAVE_PROFISSAO]}: {trabalhoDesejado[CHAVE_NOME]}')
+        linhaSeparacao()
+    else:
+        print(f'A lista está vazia.')
+        linhaSeparacao()
 
 def verifica_lista_inimigo(nome_reconhecido):
     lista_inimigos = ['Sombradapodridãofuriosa','Mineradorlouco','Lobocego','adecãoebuliente','Chamadasprofundezas','Párialouco','Harpialadra','Sombradapodridão','Goblinmestreminério','ChifraçoAncião']
@@ -401,12 +406,19 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     if variavelExiste(nomeTrabalhoReconhecido):
         if CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-                if (textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-',''))
-                    or textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
-                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
-                    print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
-                    linhaSeparacao()
-                    return dicionarioTrabalho
+                if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
+                    if (textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-',''))
+                        or textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
+                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
+                        print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
+                        linhaSeparacao()
+                        return dicionarioTrabalho
+                else:
+                    if (texto1PertenceTexto2(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
+                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
+                        print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
+                        linhaSeparacao()
+                        return dicionarioTrabalho
             else:
                 print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
     else:
@@ -4100,9 +4112,6 @@ def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
             break
         x+=1
     return dicionarioProfissao
-
-def opcaoInvalida(opcaoLista, tamanhoMenu):
-    return not ehValorNumerico(opcaoLista) or int(opcaoLista) < 0 or int(opcaoLista) > tamanhoMenu
 
 def entra_usuario():
     email = input(f'Email: ')

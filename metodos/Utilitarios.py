@@ -1,5 +1,6 @@
 from unidecode import unidecode
 from metodos.lista_chaves import *
+import os
 
 def variavelExiste(variavelVerificada):
     return variavelVerificada!=None
@@ -118,12 +119,14 @@ def trabalhoEhProducaoRecursos(dicionarioTrabalhoLista):
         'recebendofibradeplatina','recebendoâmbar','recebendodistintivodeaprendiz']
     for recurso in listaProducaoRecurso:
         if textoEhIgual(recurso,dicionarioTrabalhoLista[CHAVE_NOME_PRODUCAO]):
-            print(f'{dicionarioTrabalhoLista[CHAVE_NOME]} é recurso!')
-            linhaSeparacao()
             return True
-    print(f'{dicionarioTrabalhoLista[CHAVE_NOME]} não é recurso!')
-    linhaSeparacao()
     return False
+
+def limpaTela():
+    print("\n" * os.get_terminal_size().lines)
+    
+def opcaoInvalida(opcaoLista, tamanhoMenu):
+    return not ehValorNumerico(opcaoLista) or int(opcaoLista) < 0 or int(opcaoLista) > tamanhoMenu
 
 def linhaSeparacao():
     print(f'____________________________________________________')
