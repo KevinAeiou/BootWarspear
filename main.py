@@ -38,11 +38,12 @@ def defineLicenca():
     return defineOpcaoLicencaSelecionada()
 
 def exibirOpcoesLicencas():
-    print(f'1 - Licença do iniciante.')
-    print(f'2 - Licença do aprendiz.')
-    print(f'3 - Licença do mestre.')
-    print(f'4 - Licença do principiante.')
-    print(f'0 - Voltar\n')
+    print(f'{"Índice".ljust(6)}|Licença')
+    print(f'{"1".ljust(6)}|Licença do iniciante')
+    print(f'{"2".ljust(6)}|Licença do aprendiz')
+    print(f'{"3".ljust(6)}|Licença do mestre')
+    print(f'{"4".ljust(6)}|Licença do principiante')
+    print(f'{"0".ljust(6)}|Voltar\n')
 
 def defineOpcaoLicencaSelecionada():
     opcaoLicenca = input('Sua escolha: ')
@@ -89,17 +90,19 @@ def defineOpcaoRaridadeSelecionada():
     return tipoRaridade
 
 def exibirOpcoesRaridades():
-    print(f'1 - Comum.')
-    print(f'2 - Melhorado.')
-    print(f'3 - Raro.')
-    print(f'4 - Especial.')
-    print(f'0 - Voltar\n')
+    print(f'{"Índice".ljust(6)}|Raridade')
+    print(f'{"1".ljust(6)}|Comum')
+    print(f'{"2".ljust(6)}|Melhorado')
+    print(f'{"3".ljust(6)}|Raro')
+    print(f'{"4".ljust(6)}|Especial')
+    print(f'{"0".ljust(6)}|Voltar\n')
 
 def defineRecorrencia():
     exibirSubTitulo('Trabalho é recorrente?')
-    print(f'1 - Sim.')
-    print(f'2 - Não.')
-    print(f'0 - Voltar.')
+    exibirOpcoesRecorrencia()
+    return definirOpcaoRecorrenciaSelecionada()
+
+def definirOpcaoRecorrenciaSelecionada():
     opcaoRecorrencia=input('Sua escolha: ')
     linhaSeparacao()
     if opcaoInvalida(opcaoRecorrencia,2):
@@ -114,6 +117,11 @@ def defineRecorrencia():
         elif opcaoRecorrencia==2:
             recorrencia=False
     return recorrencia
+
+def exibirOpcoesRecorrencia():
+    print(f'1 - Sim.')
+    print(f'2 - Não.')
+    print(f'0 - Voltar.')
 
 def mostraMenuHabilidade():
     exibirSubTitulo('Habilidade.')
@@ -181,7 +189,7 @@ def defineOpcaoProfissaoSelecionada(dicionarioUsuario):
     opcaoProfissao = input('Profissão escolhida: ')
     if opcaoInvalida(opcaoProfissao, len(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO])):
         exibirMensagemOpcaoInvalida()
-        defineProfissao()
+        defineProfissao(dicionarioUsuario)
     else:
         opcaoProfissao=int(opcaoProfissao)
         if opcaoProfissao==0:
@@ -194,11 +202,11 @@ def exibirListaDeProfissoes(dicionarioUsuario):
         print(f'Lista de profissões está vazia!')
     else:
         x = 1
-        print(f'{"Índice".ljust(6)}|{"Profissão".ljust(21)}|{"Experiência"}')
+        print(f'{"Índice".ljust(6)}|{"Profissão".ljust(22)}|{"Experiência"}')
         for dicionarioProfissao in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
-            print(f'{str(x).ljust(6)}|{dicionarioProfissao[CHAVE_NOME].ljust(20)}|{dicionarioProfissao[CHAVE_EXPERIENCIA]}')
+            print(f'{str(x).ljust(6)}|{dicionarioProfissao[CHAVE_NOME].ljust(22)}|{dicionarioProfissao[CHAVE_EXPERIENCIA]}')
             x += 1
-    print(f'{"0 -".ljust(6)} Voltar\n')
+    print(f'{"0".ljust(6)}|Voltar\n')
 
 def defineTrabalho(dicionarioTrabalhoDesejado):
     exibirSubTitulo(f'Trabalhos')
@@ -224,12 +232,12 @@ def exibirOpcoesTrabalhos(listaDicionariosTrabalhosBuscadosOrdenados):
         linhaSeparacao()
     else:
         indice = 1
-        print(f'{"Índice".ljust(6)}|{"Nível".ljust(5)}|{"Nome".ljust(35)}|{"Trabalho necessário"}')
+        print(f'{"Índice".ljust(6)}|{"Nível".ljust(5)}|{"Nome".ljust(45)}|{"Trabalho necessário"}')
         for dicionarioTrabalhoBuscado in listaDicionariosTrabalhosBuscadosOrdenados:
             trabalhoNecessario = 'Indefinido' if (not CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoBuscado) else dicionarioTrabalhoBuscado[CHAVE_TRABALHO_NECESSARIO]
-            print(f'{str(indice).ljust(6)}|{str(dicionarioTrabalhoBuscado[CHAVE_NIVEL]).ljust(5)}|{dicionarioTrabalhoBuscado[CHAVE_NOME].ljust(35)}|{trabalhoNecessario}')
+            print(f'{str(indice).ljust(6)}|{str(dicionarioTrabalhoBuscado[CHAVE_NIVEL]).ljust(5)}|{dicionarioTrabalhoBuscado[CHAVE_NOME].ljust(45)}|{trabalhoNecessario}')
             indice += 1
-    print(f'{"0".ljust(6)}- Voltar\n')
+    print(f'{"0".ljust(6)}|Voltar\n')
 
 def definirListaDeTrabalhos(dicionarioTrabalhoDesejado):
     listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
@@ -580,16 +588,14 @@ def adicionarNovoTrabalhoDesejado(dicionarioUsuario):
     if variavelExiste(dicionarioTrabalho[CHAVE_RARIDADE]):
         dicionarioTrabalho[CHAVE_PROFISSAO] = defineProfissao(dicionarioUsuario)
         if variavelExiste(dicionarioTrabalho[CHAVE_PROFISSAO]):
-            dicionarioTrabalhoMelhoradoEscolhido = defineTrabalho(dicionarioTrabalho)
-            if variavelExiste(dicionarioTrabalhoMelhoradoEscolhido):
-                licenca = defineLicenca()
-                if variavelExiste(licenca):
-                    dicionarioTrabalhoMelhoradoEscolhido[CHAVE_LICENCA]=licenca
-                    recorrencia = defineRecorrencia()
-                    if variavelExiste(recorrencia):
-                        dicionarioTrabalhoMelhoradoEscolhido[CHAVE_RECORRENCIA] = recorrencia
-                        dicionarioTrabalhoMelhoradoEscolhido[CHAVE_ESTADO] = 0
-                        adicionaTrabalhoDesejo(dicionarioUsuario,dicionarioTrabalhoMelhoradoEscolhido)
+            dicionarioTrabalho = defineTrabalho(dicionarioTrabalho)
+            if variavelExiste(dicionarioTrabalho):
+                dicionarioTrabalho[CHAVE_LICENCA] = defineLicenca()
+                if variavelExiste(dicionarioTrabalho[CHAVE_LICENCA]):
+                    dicionarioTrabalho[CHAVE_RECORRENCIA] = defineRecorrencia()
+                    if variavelExiste(dicionarioTrabalho[CHAVE_RECORRENCIA]):
+                        dicionarioTrabalho[CHAVE_ESTADO] = 0
+                        adicionaTrabalhoDesejo(dicionarioUsuario,dicionarioTrabalho)
 
 def exibirOpcoesMenuPrincipal():
     print(f'1 - Produzir item.')
