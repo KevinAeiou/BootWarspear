@@ -737,7 +737,7 @@ def retornaTipoErro():
             'Estamos fazendo de tudo paraconcluíla o mais rápido possível',
             'No momento esta conta está sendousada em outro dispositivo',
             'Gostanadecomprar',
-            'conexãocomoservidorfoiinterrompida',
+            'Conexão perdida com o servidor',
             'Vocêprecisademaismoedas',
             'Nome de usuário ou senha inválida',
             'Pedido de produção expirado',
