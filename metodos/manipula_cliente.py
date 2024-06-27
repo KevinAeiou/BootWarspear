@@ -327,13 +327,11 @@ def retornaListaDicionariosPersonagens(dicionarioPersonagem):
                     CHAVE_SENHA:dicionarioRequisicao[personagemId][CHAVE_SENHA],
                     CHAVE_USO:dicionarioRequisicao[personagemId][CHAVE_USO]}
                 listaDicionariosPersonagens.append(personagem)
+            listaDicionariosPersonagens = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.') 
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    # print(f'{D}:Lista de personagens:')
-    # for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-    #     print(f'{D}:{personagem[CHAVE_NOME]}.')
     return listaDicionariosPersonagens
 
 def modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,atributo,valor):

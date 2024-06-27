@@ -253,13 +253,33 @@ def mostraLista(listaDicionarios):
 def mostraListaDesejo(dicionarioUsuario):
     listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
     if not tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
+        listaDicionariosTrabalhosDesejados = sorted(listaDicionariosTrabalhosDesejados,key=lambda dicionario:(dicionario[CHAVE_PROFISSAO],dicionario[CHAVE_RARIDADE],dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
+        print(f'{"Nível".ljust(5)}|{"Raridade".ljust(10)}|{"Profissão".ljust(22)}|{"Nome".ljust(45)}|{"Trabalho necessário"}')
         for trabalhoDesejado in listaDicionariosTrabalhosDesejados:
             if estadoTrabalhoEParaProduzir(trabalhoDesejado):
-                print(f'{trabalhoDesejado[CHAVE_PROFISSAO]}: {trabalhoDesejado[CHAVE_NOME]}')
+                trabalhoNecessario = 'Indefinido' if not CHAVE_TRABALHO_NECESSARIO in trabalhoDesejado else trabalhoDesejado[CHAVE_TRABALHO_NECESSARIO]
+                print(f'{str(trabalhoDesejado[CHAVE_NIVEL]).ljust(5)}|{trabalhoDesejado[CHAVE_RARIDADE].ljust(10)}|{trabalhoDesejado[CHAVE_PROFISSAO].ljust(22)}|{trabalhoDesejado[CHAVE_NOME].ljust(45)}|{trabalhoNecessario}')
         linhaSeparacao()
     else:
         print(f'A lista está vazia.')
         linhaSeparacao()
+
+def mostraListaDesejoComIndice(dicionarioUsuario):
+    listaDicionariosTrabalhosDesejados = retornaListaDicionariosTrabalhosDesejados(dicionarioUsuario)
+    if not tamanhoIgualZero(listaDicionariosTrabalhosDesejados):
+        listaDicionariosTrabalhosDesejados = sorted(listaDicionariosTrabalhosDesejados,key=lambda dicionario:(dicionario[CHAVE_ESTADO],dicionario[CHAVE_PROFISSAO],dicionario[CHAVE_RARIDADE],dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
+        print(f'{"Índice".ljust(6)}|{"Nível".ljust(5)}|{"Raridade".ljust(10)}|{"Profissão".ljust(22)}|{"Estado".ljust(11)}|{"Nome"}')
+        indice = 1
+        for trabalhoDesejado in listaDicionariosTrabalhosDesejados:
+            estadoProducao = 'Aguardando' if trabalhoDesejado[CHAVE_ESTADO] == 0 else 'Produzindo' if trabalhoDesejado[CHAVE_ESTADO] == 1 else 'Pronto'
+            print(f'{str(indice).ljust(6)}|{str(trabalhoDesejado[CHAVE_NIVEL]).ljust(5)}|{trabalhoDesejado[CHAVE_RARIDADE].ljust(10)}|{trabalhoDesejado[CHAVE_PROFISSAO].ljust(22)}|{estadoProducao.ljust(11)}|{trabalhoDesejado[CHAVE_NOME]}')
+            indice += 1
+        print(f'{"0".ljust(6)}|"Voltar"')
+        linhaSeparacao()
+    else:
+        print(f'A lista está vazia.')
+        linhaSeparacao()
+    return listaDicionariosTrabalhosDesejados
 
 def verifica_lista_inimigo(nome_reconhecido):
     lista_inimigos = ['Sombradapodridãofuriosa','Mineradorlouco','Lobocego','adecãoebuliente','Chamadasprofundezas','Párialouco','Harpialadra','Sombradapodridão','Goblinmestreminério','ChifraçoAncião']
@@ -968,15 +988,13 @@ def modificaAtributoUso(dicionarioPersonagemAtributos,Chave):
     return dicionarioPersonagemAtributos
         
 def preparaPersonagem(dicionarioUsuario):
-    #lista_profissao_necessaria é uma matrix onde o indice 0=posição da profissão
-    #e o indice 1=nome da profissão
-    click_atalho_especifico('alt','tab')
-    click_atalho_especifico('win','left')
-    dicionarioDadosPersonagem=retornaDicionarioDadosPersonagem(dicionarioUsuario)
+    click_atalho_especifico('alt', 'tab')
+    click_atalho_especifico('win', 'left')
+    dicionarioDadosPersonagem = retornaDicionarioDadosPersonagem(dicionarioUsuario)
     if not tamanhoIgualZero(dicionarioDadosPersonagem):
         if not dicionarioDadosPersonagem[CHAVE_ESTADO]:#se o personagem estiver inativo, troca o estado
-            listaPersonagemId=[dicionarioDadosPersonagem[CHAVE_ID]]
-            modificaAtributoPersonagem(dicionarioUsuario,listaPersonagemId,CHAVE_ESTADO,True)
+            listaPersonagemId = [dicionarioDadosPersonagem[CHAVE_ID]]
+            modificaAtributoPersonagem(dicionarioUsuario, listaPersonagemId, CHAVE_ESTADO, True)
         iniciaProcessoBusca(dicionarioUsuario)
     else:
         print(f'Erro ao configurar atributos do personagem!')
@@ -995,13 +1013,11 @@ def defineListaDicionarioPersonagemAtivo(dicionarioPersonagem):
 def iniciaProcessoBusca(dicionarioUsuario):
     dicionarioPersonagemAtributos = {CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO]}
     listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
-    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
     dicionarioPersonagemAtributos = defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO] = []
     while True:
         if tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_ATIVO]):
             listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
-            dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
             linhaSeparacao()
             dicionarioPersonagemAtributos = defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
             dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO] = []
@@ -1079,9 +1095,6 @@ def existePixelPretoSuficiente(contadorPixelPreto):
     return contadorPixelPreto>250 and contadorPixelPreto<3000
 
 def retornaMenu():
-    # 1050,1077,3006,1035,1251,1092,1215,1854,1863,1617,1377,2637,1344,
-    # 1947,2721
-    inicio = time.time()
     print(f'Reconhecendo menu.')
     textoMenu = retornaTextoMenuReconhecido(26,1,150)
     if variavelExiste(textoMenu):
@@ -1246,10 +1259,9 @@ def retornaMenu():
             click_atalho_especifico('win','left')
             click_atalho_especifico('win','left')
             linhaSeparacao()
-    print(f'Menu não reconhecido...')
-    linhaSeparacao()
-    fim = time.time()
-    # # print(f'{D}:Tempo de reconhece_texto: {fim - inicio}')
+    else:
+        print(f'Menu não reconhecido...')
+        linhaSeparacao()
     verificaErro(None)
     return menu_desconhecido
 
@@ -1268,8 +1280,7 @@ def deslogaPersonagem(personagemEmail, dicionarioPersonagemAtributos):
         modificaAtributoUso(dicionarioPersonagemAtributos, False)
 
 def retiraDicionarioPersonagemListaAtivo(dicionarioPersonagemAtributos):
-    listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioPersonagemAtributos)
-    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
+    dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = retornaListaDicionariosPersonagens(dicionarioPersonagemAtributos)
     linhaSeparacao()
     dicionarioPersonagemAtributos=defineListaDicionarioPersonagemAtivo(dicionarioPersonagemAtributos)
     for dicionarioPersonagemRemovido in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM_RETIRADO]:#percorre lista de personagem retirado
@@ -3853,8 +3864,7 @@ def salva_imagem():
 def implementaNovaProfissao(dicionarioPersonagem):
     novaProfissao={CHAVE_NOME:'Braceletes'}
     print(f'Implementando profissao: {novaProfissao[CHAVE_NOME]}.')
-    listaDicionariosPersonagens=retornaListaDicionariosPersonagens(dicionarioPersonagem)
-    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
+    dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = retornaListaDicionariosPersonagens(dicionarioPersonagem)
     for personagem in dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]=personagem
         dicionarioPersonagem[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionariosProfissoes(dicionarioPersonagem)
@@ -4186,6 +4196,5 @@ def funcao_teste(dicionarioUsuario):
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PROFISSAO]=retornaListaDicionariosProfissoes(dicionarioUsuario)
     while retornaInputConfirmacao():
-        listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
-        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
+        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = retornnaListaDicionariosPersonagens(dicionarioUsuario)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioUsuario)

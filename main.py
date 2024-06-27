@@ -15,17 +15,15 @@ def mostraMenuListaDesejo(dicionarioUsuario):
     exibirSubTitulo('Lista de trabalhos desejados:')
     mostraListaDesejo(dicionarioUsuario)
     exibirOpcoesListaDesejos()
-    return defineOpcaoHabilidadeSelecionada(dicionarioUsuario) 
+    return defineOpcaoListaDesejoSelecionada(dicionarioUsuario) 
 
-def defineOpcaoHabilidadeSelecionada(dicionarioUsuario):
+def defineOpcaoListaDesejoSelecionada(dicionarioUsuario):
     opcaoLista = input(f'Sua escolha: ')
     linhaSeparacao()
     if opcaoInvalida(opcaoLista,2):
         exibirMensagemOpcaoInvalida()
         mostraMenuListaDesejo(dicionarioUsuario)
-    else:
-        opcaoLista = int(opcaoLista)
-    return opcaoLista
+    return int(opcaoLista)
 
 def exibirOpcoesListaDesejos():
     print(f'1 - Iniciar a busca.')
@@ -287,23 +285,14 @@ def definirOpcaoMenuPrincipalSelecionada(dicionarioUsuario):
         elif opcaoEscolha==1:#Menu adicionar novo trabalho a lista
             adicionarNovoTrabalhoDesejado(dicionarioUsuario)
         elif opcaoEscolha==2:#Menu lista de desejo
-            opcaoLista=mostraMenuListaDesejo(dicionarioUsuario)
-            if opcaoLista == 0:#Volta ao menu anterior
-                print(f'Voltar.')
-                linhaSeparacao()
-            elif opcaoLista == 1:#Inicia busca
-                preparaPersonagem(dicionarioUsuario)
-                linhaSeparacao()
-            elif opcaoLista == 2:#Exclui trabalho da lista
-                menuExcluiTrabalho(dicionarioUsuario)
-                linhaSeparacao()
+            opcaoLista = mostraMenuListaDesejo(dicionarioUsuario)
+            tratrarOpcaoListaDesejoSelecionada(dicionarioUsuario, opcaoLista)
         elif opcaoEscolha==3:#Menu habilidade
             opcao_habilidade = mostraMenuHabilidade()
             if opcao_habilidade == 0:#Volta ao menu anterior
                 print(f'Voltar.')
                 linhaSeparacao()
             elif opcao_habilidade == 1:#Usa habilidades
-                #exec(open('metodos/manipula_tela.py').read())
                 usa_habilidade()
             elif opcao_habilidade == 2:#Cadastra novo modelo de habilidade
                 recorta_novo_modelo_habilidade()
@@ -582,6 +571,14 @@ def definirOpcaoMenuPrincipalSelecionada(dicionarioUsuario):
                         break
         menuPrincipal(dicionarioUsuario)
 
+def tratrarOpcaoListaDesejoSelecionada(dicionarioUsuario, opcaoLista):
+    if opcaoLista == 0:#Volta ao menu anterior
+        print(f'Voltar.')
+    elif opcaoLista == 1:#Inicia busca
+        preparaPersonagem(dicionarioUsuario)
+    elif opcaoLista == 2:#Exclui trabalho da lista
+        menuExcluiTrabalho(dicionarioUsuario)
+
 def adicionarNovoTrabalhoDesejado(dicionarioUsuario):
     dicionarioTrabalho = {}
     dicionarioTrabalho[CHAVE_RARIDADE] = defineRaridade()
@@ -608,33 +605,17 @@ def exibirOpcoesMenuPrincipal():
     print(f'8 - Estoque.')
     print(f'0 - Voltar.\n')
 
-def defineDicionarioTrabalho(dicionarioUsuario,opcaoExclui):
-    dicionarioTrabalhoExclui={}
-    contador=1
-    for dicionarioTrabalho in dicionarioUsuario[CHAVE_LISTA_DESEJO]:
-        if contador==opcaoExclui:
-            dicionarioTrabalhoExclui=dicionarioTrabalho
-            return dicionarioTrabalhoExclui
-        contador+=1
-    else:
-        print(f'Erro ao definir dicionarioTrabalho!')
-        linhaSeparacao()
-    return dicionarioTrabalhoExclui
-
 def menuExcluiTrabalho(dicionarioUsuario):
-    mostraLista(dicionarioUsuario[CHAVE_LISTA_DESEJO])
-    opcaoExclui=input(f'Qual trabalho deseja exluir?')
-    linhaSeparacao()
-    while opcaoInvalida(opcaoExclui,len(dicionarioUsuario[CHAVE_LISTA_DESEJO])):
-        print(f'Opção inválida! Selecione uma das opções.')
-        opcaoExclui = input(f'Sua escolha: ')
-        linhaSeparacao()
+    exibirSubTitulo('Lista todos trabalho desejados')
+    listaDicionariosTrabalhosDesejados = mostraListaDesejoComIndice(dicionarioUsuario)
+    opcaoExclui = input(f'Qual trabalho deseja exluir?')
+    if opcaoInvalida(opcaoExclui, len(listaDicionariosTrabalhosDesejados)):
+        exibirMensagemOpcaoInvalida()
+        menuExcluiTrabalho()
     else:
         opcaoExclui = int(opcaoExclui)
-        if opcaoExclui==0:
-            return
-        else:
-            dicionarioTrabalho=defineDicionarioTrabalho(dicionarioUsuario,opcaoExclui)
+        if opcaoExclui != 0:
+            dicionarioTrabalho = listaDicionariosTrabalhosDesejados[opcaoExclui-1]
             excluiTrabalhoListaDesejos(dicionarioUsuario,dicionarioTrabalho)
 
 def defineChavePersonagemEmUso(dicionarioUsuario,opcaoPersonagem):
