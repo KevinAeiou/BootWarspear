@@ -3,6 +3,8 @@ from metodos.manipula_funcoes import *
 from metodos.manipula_cliente import *
 from metodos.Utilitarios import *
 
+dicionarioUsuario = {}
+
 def exibirSubTitulo(subTitulo):
     limpaTela()
     print(f'{subTitulo}\n')
@@ -11,18 +13,18 @@ def exibirMensagemOpcaoInvalida():
     print(f'Opção inválida!')
     input(f'Digite qualquer tecla para voltar ao menu.')
 
-def mostraMenuListaDesejo(dicionarioUsuario):
+def mostraMenuListaDesejo():
     exibirSubTitulo('Lista de trabalhos desejados:')
-    mostraListaDesejo(dicionarioUsuario)
+    dicionarioUsuario = mostraListaDesejo(dicionarioUsuario)
     exibirOpcoesListaDesejos()
-    return defineOpcaoListaDesejoSelecionada(dicionarioUsuario) 
+    return defineOpcaoListaDesejoSelecionada() 
 
-def defineOpcaoListaDesejoSelecionada(dicionarioUsuario):
+def defineOpcaoListaDesejoSelecionada():
     opcaoLista = input(f'Sua escolha: ')
     linhaSeparacao()
     if opcaoInvalida(opcaoLista,2):
         exibirMensagemOpcaoInvalida()
-        mostraMenuListaDesejo(dicionarioUsuario)
+        mostraMenuListaDesejo()
     return int(opcaoLista)
 
 def exibirOpcoesListaDesejos():
@@ -267,26 +269,26 @@ def mostraMenuConfiuracao():
         opcaoConfiguracao = int(opcaoConfiguracao)
     return opcaoConfiguracao
 
-def menuPrincipal(dicionarioUsuario):
+def menuPrincipal():
     exibirSubTitulo(f'Menu principal')
     exibirOpcoesMenuPrincipal()
-    definirOpcaoMenuPrincipalSelecionada(dicionarioUsuario)
+    definirOpcaoMenuPrincipalSelecionada()
 
-def definirOpcaoMenuPrincipalSelecionada(dicionarioUsuario):
+def definirOpcaoMenuPrincipalSelecionada():
     opcaoEscolha = input('Sua escolha: ')
     if opcaoInvalida(opcaoEscolha, tamanhoMenu = 8):
         exibirMensagemOpcaoInvalida()
-        menuPrincipal(dicionarioUsuario)
+        menuPrincipal()
     else:
         opcaoEscolha = int(opcaoEscolha)
         if opcaoEscolha == 0:#Volta ao menu anterior
             print(f'Voltar...')
-            menuPersonagem(dicionarioUsuario)
+            menuPersonagem()
         elif opcaoEscolha==1:#Menu adicionar novo trabalho a lista
             adicionarNovoTrabalhoDesejado(dicionarioUsuario)
         elif opcaoEscolha==2:#Menu lista de desejo
-            opcaoLista = mostraMenuListaDesejo(dicionarioUsuario)
-            tratrarOpcaoListaDesejoSelecionada(dicionarioUsuario, opcaoLista)
+            opcaoLista = mostraMenuListaDesejo()
+            tratrarOpcaoListaDesejoSelecionada(opcaoLista)
         elif opcaoEscolha==3:#Menu habilidade
             opcao_habilidade = mostraMenuHabilidade()
             if opcao_habilidade == 0:#Volta ao menu anterior
@@ -569,15 +571,15 @@ def definirOpcaoMenuPrincipalSelecionada(dicionarioUsuario):
                                         break
                     else:
                         break
-        menuPrincipal(dicionarioUsuario)
+        menuPrincipal()
 
-def tratrarOpcaoListaDesejoSelecionada(dicionarioUsuario, opcaoLista):
+def tratrarOpcaoListaDesejoSelecionada(opcaoLista):
     if opcaoLista == 0:#Volta ao menu anterior
         print(f'Voltar.')
     elif opcaoLista == 1:#Inicia busca
         preparaPersonagem(dicionarioUsuario)
     elif opcaoLista == 2:#Exclui trabalho da lista
-        menuExcluiTrabalho(dicionarioUsuario)
+        menuExcluiTrabalho()
 
 def adicionarNovoTrabalhoDesejado(dicionarioUsuario):
     dicionarioTrabalho = {}
@@ -605,35 +607,27 @@ def exibirOpcoesMenuPrincipal():
     print(f'8 - Estoque.')
     print(f'0 - Voltar.\n')
 
-def menuExcluiTrabalho(dicionarioUsuario):
+def menuExcluiTrabalho():
     exibirSubTitulo('Lista todos trabalho desejados')
-    listaDicionariosTrabalhosDesejados = mostraListaDesejoComIndice(dicionarioUsuario)
+    mostraListaDesejoComIndice(dicionarioUsuario)
     opcaoExclui = input(f'Qual trabalho deseja exluir?')
-    if opcaoInvalida(opcaoExclui, len(listaDicionariosTrabalhosDesejados)):
+    if opcaoInvalida(opcaoExclui, len(dicionarioUsuario[CHAVE_LISTA_DESEJO])):
         exibirMensagemOpcaoInvalida()
         menuExcluiTrabalho()
     else:
         opcaoExclui = int(opcaoExclui)
         if opcaoExclui != 0:
-            dicionarioTrabalho = listaDicionariosTrabalhosDesejados[opcaoExclui-1]
-            excluiTrabalhoListaDesejos(dicionarioUsuario,dicionarioTrabalho)
+            dicionarioTrabalho = dicionarioUsuario[CHAVE_LISTA_DESEJO][opcaoExclui-1]
+            excluiTrabalhoListaDesejos(dicionarioUsuario, dicionarioTrabalho)
+            del dicionarioUsuario[CHAVE_LISTA_DESEJO][opcaoExclui-1]
 
-def defineChavePersonagemEmUso(dicionarioUsuario,opcaoPersonagem):
-    x = 1
-    for personagem in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
-        if x == opcaoPersonagem:
-            dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = personagem
-            return dicionarioUsuario
-        x += 1
-    return dicionarioUsuario
-
-def menuPersonagem(dicionarioUsuario):
+def menuPersonagem():
     exibirSubTitulo('Personagens')
-    dicionarioUsuario = definirListaDePersonagens(dicionarioUsuario)
-    exibirListaDePersonagens(dicionarioUsuario)
-    definirOpcaoPersonagemSelecionado(dicionarioUsuario)
+    definirListaDePersonagens()
+    exibirListaDePersonagens()
+    definirOpcaoPersonagemSelecionado()
 
-def exibirListaDePersonagens(dicionarioUsuario):
+def exibirListaDePersonagens():
     if tamanhoIgualZero(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]):
         print(f'Lista de personagens está vazia!')
     else:
@@ -646,34 +640,32 @@ def exibirListaDePersonagens(dicionarioUsuario):
             x += 1
     print(f'{"0 -".ljust(6)} Voltar\n')
 
-def definirOpcaoPersonagemSelecionado(dicionarioUsuario):
+def definirOpcaoPersonagemSelecionado():
     opcaoPersonagem = input('Personagem escolhido: ')
     if opcaoInvalida(opcaoPersonagem, len(dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM])):
         exibirMensagemOpcaoInvalida()
-        menuPersonagem(dicionarioUsuario)
+        menuPersonagem()
     else:
         opcaoPersonagem = int(opcaoPersonagem)
         if opcaoPersonagem == 0:
             menuUsuarios()
         else:
-            dicionarioUsuario = defineChavePersonagemEmUso(dicionarioUsuario, opcaoPersonagem)
+            dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM][opcaoPersonagem]
             if variavelExiste(dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
-                menuPrincipal(dicionarioUsuario)
+                menuPrincipal()
             else:
-                menuPersonagem(dicionarioUsuario)
+                menuPersonagem()
 
-def definirListaDePersonagens(dicionarioUsuario):
+def definirListaDePersonagens():
     listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
-    return dicionarioUsuario
 
 def menuUsuarios():
     exibirSubTitulo('Usuários')
-    dicionarioUsuario = {CHAVE_ID_USUARIO:None, CHAVE_LISTA_DICIONARIO_PERSONAGEM:[]}
     exibirOpcoesUsuarios()
-    escolherUsuario(dicionarioUsuario)
+    escolherUsuario()
 
-def escolherUsuario(dicionarioUsuario):
+def escolherUsuario():
     opcaoUsuario = input('Usuário escolhido: ')
     while opcaoInvalida(opcaoUsuario, 2):
         input(f'Opção inválida! Clique qualquer tecla para voltar ao menu.')
@@ -684,10 +676,10 @@ def escolherUsuario(dicionarioUsuario):
             finalizaApp()
         elif opcaoUsuario==1:
             dicionarioUsuario[CHAVE_ID_USUARIO]='eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
-            menuPersonagem(dicionarioUsuario)
+            menuPersonagem()
         elif opcaoUsuario==2:
             dicionarioUsuario[CHAVE_ID_USUARIO]='LA2UjmX7oBX3AlRJfmdWAD41OWg2'
-            menuPersonagem(dicionarioUsuario)
+            menuPersonagem()
 
 def exibirOpcoesUsuarios():
     print(f'1 - Usuario')

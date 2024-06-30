@@ -87,9 +87,9 @@ def adicionaVenda(dicionarioPersonagem, dicionarioVenda):
         print(f'Limite de tentativas de conexão atingido.')
     return False
 
-def retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagem):
+def retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos):
     listaDicionarioEstoque=[]
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
+    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
     requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao:
         dicionarioRequisicao=requisicao.json()
@@ -169,26 +169,15 @@ def adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho):
     else:
         print(f'Limite de tentativas de conexão atingido.')
         print(f'Erro ao adicionar {dicionarioTrabalho[CHAVE_NOME]} a lista de desejo.')
-    return dicionarioTrabalho
 
-def retornaListaDicionariosProfissoes(dicionarioPersonagem):
+def retornaListaDicionariosProfissoes(dicionarioPersonagemAtributos):
     listaDicionarioProfissao = []
-    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
     requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
     if requisicao != None:
         dicionarioProfissoes = requisicao.json()
         if dicionarioProfissoes != None:
             for idProfissao in dicionarioProfissoes:
-                if not CHAVE_EXPERIENCIA in dicionarioProfissoes[idProfissao]:
-                    caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
-                    dados = {CHAVE_EXPERIENCIA:0}
-                    modificaAtributo(caminhoRequisicao,dados)
-                    dicionarioProfissoes[idProfissao][CHAVE_EXPERIENCIA] = 0
-                if not CHAVE_PRIORIDADE in dicionarioProfissoes[idProfissao]: 
-                    caminhoRequisicao = f'Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/{idProfissao}/.json'
-                    dados = {CHAVE_PRIORIDADE:False}
-                    modificaAtributo(caminhoRequisicao,dados)
-                    dicionarioProfissoes[idProfissao][CHAVE_PRIORIDADE] = False
                 dicionarioProfissao = {
                     CHAVE_ID:idProfissao,
                     CHAVE_PRIORIDADE:dicionarioProfissoes[idProfissao][CHAVE_PRIORIDADE],
@@ -216,40 +205,6 @@ def cadastraNovoTrabalho(dicionarioTrabalho):
             print(f'Resultado da dicionario: {dicionarioRequisicao}.')
     else:
         print(f'Erro ao cadastrar novo trabalho!')
-
-def retornaIdPersonagemAtivo(dicionarioPersonagem):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
-    if requisicao!=None:
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
-            for id in dicionarioRequisicao:
-                if dicionarioRequisicao[id]['estado']==1:
-                    return id
-        else:
-            print(f'Resultado da dicionario: {dicionarioRequisicao}.')
-    else:
-        print(f'Erro verificar personagem ativo!')
-
-def retornaDicionarioDadosPersonagem(dicionarioPersonagem):
-    dadosPersonagem={}
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
-    if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
-            dadosPersonagem[CHAVE_ID]=dicionarioRequisicao[CHAVE_ID]
-            dadosPersonagem[CHAVE_NOME]=dicionarioRequisicao[CHAVE_NOME]
-            dadosPersonagem[CHAVE_EMAIL]=dicionarioRequisicao[CHAVE_EMAIL]
-            dadosPersonagem[CHAVE_SENHA]=dicionarioRequisicao[CHAVE_SENHA]
-            dadosPersonagem[CHAVE_ESTADO]=dicionarioRequisicao[CHAVE_ESTADO]
-            dadosPersonagem[CHAVE_USO]=dicionarioRequisicao[CHAVE_USO]
-            dadosPersonagem[CHAVE_ESPACO_PRODUCAO]=dicionarioRequisicao[CHAVE_ESPACO_PRODUCAO]
-        else:
-            print(f'Resultado da dicionario: {dicionarioRequisicao}.')
-    else:
-        print(f'Resultado da requisição: {requisicao}.')
-    return dadosPersonagem
 
 def retornaDicionarioUsuario(dicionarioUsuario):
     caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioUsuario[CHAVE_ID_USUARIO]}/.json'
@@ -285,29 +240,22 @@ def retornaListaDicionariosTrabalhos():
     return listaDicionariosTrabalhos
 
 def retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos):
-    listaDicionarioTrabalhoDesejado=[]
-    listaDicionariosOrdenada=[]
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+    listaDicionarioTrabalhoDesejado = []
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
+    requisicao = retornaRequisicao(GET, caminhoRequisicao, None)
     if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        if dicionarioRequisicao!=None:
+        dicionarioRequisicao = requisicao.json()
+        if dicionarioRequisicao != None:
             for trabalhoDesejadoId in dicionarioRequisicao:
-                dicionarioTrabalhoDesejado=dicionarioRequisicao[trabalhoDesejadoId]
-                dicionarioTrabalhoDesejado[CHAVE_ID]=trabalhoDesejadoId
+                dicionarioTrabalhoDesejado = dicionarioRequisicao[trabalhoDesejadoId]
+                dicionarioTrabalhoDesejado[CHAVE_ID] = trabalhoDesejadoId
                 listaDicionarioTrabalhoDesejado.append(dicionarioTrabalhoDesejado)
-                # listaDicionariosOrdenada=sorted(listaDicionarioTrabalhoDesejado,key=lambda dicionario:dicionario[CHAVE_PROFISSAO])
         else:
             print(f'Resultado do dicionario: {dicionarioRequisicao}.')  
     else:
         print(f'Resultado da requisição: {requisicao}.')
-    # print(f'{D}: Lista de todos os trabalhos desejados:')
-    # for dicionarioTrabalhoDesejado in listaDicionariosOrdenada:
-    #     for atributo in dicionarioTrabalhoDesejado:
-    #         print(f'{D}: {atributo} = {dicionarioTrabalhoDesejado[atributo]}.')
-    #     print(f'_______________________________________________________________')
-    # print(f'_______________________________________________________________')
-    return listaDicionarioTrabalhoDesejado
+    dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO] = listaDicionarioTrabalhoDesejado
+    return dicionarioPersonagemAtributos
 
 def retornaListaDicionariosPersonagens(dicionarioPersonagem):
     print(f'Definindo lista de personagem.')
@@ -320,11 +268,11 @@ def retornaListaDicionariosPersonagens(dicionarioPersonagem):
             for personagemId in dicionarioRequisicao:
                 personagem = {
                     CHAVE_ID:personagemId,
+                    CHAVE_NOME:dicionarioRequisicao[personagemId][CHAVE_NOME],
                     CHAVE_EMAIL:dicionarioRequisicao[personagemId][CHAVE_EMAIL],
+                    CHAVE_SENHA:dicionarioRequisicao[personagemId][CHAVE_SENHA],
                     CHAVE_ESPACO_PRODUCAO:dicionarioRequisicao[personagemId][CHAVE_ESPACO_PRODUCAO],
                     CHAVE_ESTADO:dicionarioRequisicao[personagemId][CHAVE_ESTADO],
-                    CHAVE_NOME:dicionarioRequisicao[personagemId][CHAVE_NOME],
-                    CHAVE_SENHA:dicionarioRequisicao[personagemId][CHAVE_SENHA],
                     CHAVE_USO:dicionarioRequisicao[personagemId][CHAVE_USO]}
                 listaDicionariosPersonagens.append(personagem)
             listaDicionariosPersonagens = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
@@ -334,11 +282,11 @@ def retornaListaDicionariosPersonagens(dicionarioPersonagem):
         print(f'Resultado da requisição: {requisicao}.')
     return listaDicionariosPersonagens
 
-def modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,atributo,valor):
-    dados={atributo:valor}
+def modificaAtributoPersonagem(dicionarioPersonagemAtributos, listaPersonagemId, atributo, valor):
+    dados = {atributo:valor}
     for personagemId in listaPersonagemId:
-        caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
-        requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
+        caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/.json'
+        requisicao = retornaRequisicao(GET,caminhoRequisicao,None)
         if requisicao:
             dicionarioRequisicao=requisicao.json()
             if dicionarioRequisicao!=None:
@@ -348,6 +296,10 @@ def modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,a
                         caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{id}/.json'
                         retornaRequisicao(PATCH,caminhoRequisicao,dados)
                         print(f'Atributo {atributo} do personagem {nome} agora é {valor}.')
+                        for dicionarioPersonagem in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
+                            if dicionarioPersonagem[CHAVE_ID] == personagemId:
+                                dicionarioPersonagem[atributo] = valor
+                                break
                         break
             else:
                 print(f'Erro ao modificar atributo!')
@@ -357,20 +309,12 @@ def modificaAtributoPersonagem(dicionarioPersonagemAtributos,listaPersonagemId,a
             print(f'Erro ao modificar atributo!')
             print(f'Resultado da requisição: {requisicao}.')
             break
-
-def muda_quantidade_personagem(usuario_id,nova_quantidade):
-    dados={'personagem_ativo':nova_quantidade}
-    caminhoRequisicao=f'{link_database}/Usuarios/{usuario_id}/.json'
-    requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-    if requisicao:
-        return True
-    return False
+    return dicionarioPersonagemAtributos
 
 def excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalho):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_ID]}/.json'
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalho[CHAVE_ID]}/.json'
     if retornaRequisicao(DELETE,caminhoRequisicao,None):
         pass
-        # print(f'Trabalho id: {dicionarioTrabalho[CHAVE_ID]} - {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
     else:
         print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
 
@@ -381,29 +325,6 @@ def excluiTrabalhoListaTrabalhos(dicionarioTrabalho):
         # print(f'Trabalho id: {dicionarioTrabalho[CHAVE_ID]} - {dicionarioTrabalho[CHAVE_NOME]} exluido da lista de desejo.')
     else:
         print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
-
-def excluir_lista_profissoes(dicionarioPersonagemAtributos):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_profissoes/.json'
-    if retornaRequisicao(DELETE,caminhoRequisicao,None):
-        print(f'Lista de profissões limpa!')
-    else:
-        print(f'Erro ao limpar lista de profissões!')
-
-def adicionaAtributoRecorrencia(dicionarioPersonagemAtributos):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/.json'
-    requisicao=retornaRequisicao(GET,caminhoRequisicao,None)
-    if requisicao:
-        dados={'recorrencia':False}
-        dicionario_requisicao=requisicao.json()
-        for id in dicionario_requisicao:
-            if dicionario_requisicao[id][CHAVE_RECORRENCIA]==0 or dicionario_requisicao[id][CHAVE_RECORRENCIA]==1:
-                nome=dicionario_requisicao[id][CHAVE_NOME]
-                caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{id}/.json'
-                requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
-                print(f'Atributo recorrencia atribuido a: {nome}.')
-                print('____________________________________________')
-        else:
-            print(f'Fim da lista.')
 
 def retornaTrabalhoCaminhoEspecifico(idEspecifico):
     caminhoRequisicao = f'{link_database}/Lista_trabalhos/{idEspecifico}/.json'
