@@ -14,6 +14,7 @@ def exibirMensagemOpcaoInvalida():
     input(f'Digite qualquer tecla para voltar ao menu.')
 
 def mostraMenuListaDesejo():
+    global dicionarioUsuario
     exibirSubTitulo('Lista de trabalhos desejados:')
     dicionarioUsuario = mostraListaDesejo(dicionarioUsuario)
     exibirOpcoesListaDesejos()
@@ -387,7 +388,7 @@ def definirOpcaoMenuPrincipalSelecionada():
                                                     for dicionarioPersonagem in dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM]:
                                                         dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioPersonagem
                                                         dicionarioPersonagem[CHAVE_ID_USUARIO] = dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]
-                                                        dicionarioPersonagem[CHAVE_LISTA_DESEJO] = retornaListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
+                                                        dicionarioPersonagem[CHAVE_LISTA_DESEJO] = defineChaveListaDicionariosTrabalhosDesejados(dicionarioPersonagem)
                                                         for dicionarioTrabalhoDesejado in dicionarioPersonagem[CHAVE_LISTA_DESEJO]:
                                                             if textoEhIgual(dicionarioTrabalhoDesejado[CHAVE_NOME], dicionarioTrabalhoEscolhido[CHAVE_NOME]):
                                                                 caminhoRequisicao = f'Usuarios/{dicionarioUsuarioModificacao[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoDesejado[CHAVE_ID]}/.json'
