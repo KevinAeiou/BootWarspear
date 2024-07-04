@@ -412,27 +412,30 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     frameNomeTrabalhoTratado = retornaImagemCinza(frameNomeTrabalho)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalho)
     nomeTrabalhoReconhecido = reconheceTexto(frameNomeTrabalhoTratado)
-    if variavelExiste(nomeTrabalhoReconhecido):
-        if CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
-            for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
-                if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
-                    if (textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-',''))
-                        or textoEhIgual(nomeTrabalhoReconhecido, dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
-                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
-                        print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
-                        linhaSeparacao()
-                        return dicionarioTrabalho
+    if variavelExiste(nomeTrabalhoReconhecido) and CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
+        for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
+            if CHAVE_NOME_PRODUCAO in dicionarioTrabalhoDesejado:
+                nomeTrabalhoDesejado = dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')
+                nomeProducaoTrabalhoDesejado = dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-','')
+                if len(dicionarioTrabalhoDesejado[CHAVE_NOME]) > 30:
+                    nomeTrabalhoDesejado = nomeTrabalhoDesejado[0:30]
+                if len(dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO]) > 30:
+                    nomeProducaoTrabalhoDesejado = nomeProducaoTrabalhoDesejado[0:30]
+                trabalhoDesejadoNaoEhProducaoRecursosENomeEhIgualAoReconhecidoOuNomeProducaoEhIgualAoReconhecido = (
+                    not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado)
+                    and (textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoDesejado)
+                    or textoEhIgual(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado)))
+                if trabalhoDesejadoNaoEhProducaoRecursosENomeEhIgualAoReconhecidoOuNomeProducaoEhIgualAoReconhecido:
+                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
+                    print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
+                    return dicionarioTrabalho
                 else:
-                    if (texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-2], dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-',''))):
+                    if texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-2], nomeProducaoTrabalhoDesejado):
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                         print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}!')
-                        linhaSeparacao()
                         return dicionarioTrabalho
-            else:
-                print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
-    else:
-        print(f'Trabalho não reconhecido!')
-    linhaSeparacao()
+        else:
+            print(f'Trabalho negado: {nomeTrabalhoReconhecido}!')
     dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = None
     return dicionarioTrabalho
 
@@ -4070,11 +4073,12 @@ def funcao_teste(dicionarioUsuario):
     }
     trabalhoDesejado={
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
-        CHAVE_NOME:'Pulseiras Unidade',
-        CHAVE_EXPERIENCIA:750,
-        CHAVE_NIVEL:14,
-        CHAVE_RARIDADE:'Avançado',
-        CHAVE_PROFISSAO:'Amuletos'
+        CHAVE_NOME:'Luvas do Senhor das profundezas',
+        CHAVE_NOME:'Luvas do Senhor das profundezas',
+        CHAVE_EXPERIENCIA:795,
+        CHAVE_NIVEL:20,
+        CHAVE_RARIDADE:'Melhorado',
+        CHAVE_PROFISSAO:'Armadura de tecido'
         }
     trabalhoComumDesejado={
         CHAVE_ID:None,
@@ -4106,7 +4110,7 @@ def funcao_teste(dicionarioUsuario):
         CHAVE_CONFIRMACAO:True,
         CHAVE_POSICAO:0,
         CHAVE_PROFISSAO:'Armadura de tecido',
-        CHAVE_DICIONARIO_TRABALHO_DESEJADO:None
+        CHAVE_DICIONARIO_TRABALHO_DESEJADO:trabalhoDesejado,
         }
     dicionarioPersonagemAtributos = {
         CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
@@ -4122,6 +4126,7 @@ def funcao_teste(dicionarioUsuario):
     
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     inicializaChavesPersonagem()
+    dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO]
     while retornaInputConfirmacao():
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido('Melhorar capa do céu Azure')
+        confirmaNomeTrabalho(dicionarioTrabalho, 0)
         pass

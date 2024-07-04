@@ -651,7 +651,7 @@ def definirOpcaoPersonagemSelecionado():
         if opcaoPersonagem == 0:
             menuUsuarios()
         else:
-            dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM][opcaoPersonagem]
+            dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM][opcaoPersonagem-1]
             if variavelExiste(dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
                 menuPrincipal()
             else:
