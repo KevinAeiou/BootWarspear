@@ -2125,8 +2125,7 @@ def defineQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoComum):
 
 def retornaListaDicionarioTrabalhoComumNivelEspecifico(dicionarioProfissaoPrioridade, nivelProduzTrabalhoComum):
     listaDicionarioTrabalhoComum = []
-    listaDicionarioTrabalhos = retornaListaDicionariosTrabalhos()
-    for dicionarioTrabalho in listaDicionarioTrabalhos:
+    for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
         if (textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioProfissaoPrioridade[CHAVE_NOME])
             and dicionarioTrabalho[CHAVE_NIVEL] == nivelProduzTrabalhoComum
             and textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_COMUM)):
@@ -2929,8 +2928,7 @@ def retornaQuantidadeTrabalhoListaProduzirProduzindo(nomeTrabalhoRaroVendido):
     return quantidadeTrabalhoParaProduzirOuProduzindo
 
 def retornaDicinarioTrabalhoNecessario(trabalhoNecessario):
-    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-    for dicionarioTrabalho in listaDicionariosTrabalhos:
+    for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
         if textoEhIgual(dicionarioTrabalho[CHAVE_NOME], trabalhoNecessario):
             return dicionarioTrabalho
     print(F'Diconário trabalho necessário ({trabalhoNecessario}) não encontrado!')
@@ -3034,7 +3032,7 @@ def verificaTrabalhoRaroNecessario(verificacoes, dicionarioProdutoRaroVendido):
 def verificaTrabalhoMelhoradoNecessario(licencaProducaoIdeal, nomeTrabalhoMelhoradoNecessario, quantidadeTrabalhoMelhoradoNecessarioFaltante):
     global dicionarioPersonagemAtributos
     dicionarioTrabalhoMelhoradoNecessario = retornaDicinarioTrabalhoNecessario(nomeTrabalhoMelhoradoNecessario)
-    if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoNecessario:
+    if variavelExiste(dicionarioTrabalhoMelhoradoNecessario) and CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoMelhoradoNecessario:
         listaTrabalhosComunsNecessarios = dicionarioTrabalhoMelhoradoNecessario[CHAVE_TRABALHO_NECESSARIO].split(',')
         if not tamanhoIgualZero(listaTrabalhosComunsNecessarios):
             if len(listaTrabalhosComunsNecessarios) == 1:
@@ -3140,8 +3138,7 @@ def retornaDicionarioTrabalhoGrandeProducaoRecursos(dicionarioTrabalhoComumNeces
     nivelTrabalhoProducaoRecursos = 3
     if dicionarioTrabalhoComumNecessario[CHAVE_NIVEL] >= 16:
         nivelTrabalhoProducaoRecursos = 10
-    listaDicionariosTrabalhos = retornaListaDicionariosTrabalhos()
-    for dicionarioTrabalho in listaDicionariosTrabalhos:
+    for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
         condicoes = (
             dicionarioTrabalho[CHAVE_NIVEL] == nivelTrabalhoProducaoRecursos
             and textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO)
