@@ -2916,9 +2916,12 @@ def retornaListaDicionariosTrabalhosRarosVendidosOrdenada(listaDicionariosProdut
         linhaSeparacao()
     return listaDicionariosProdutosRarosVendidosOrdenada
 
-def retornaQuantidadeTrabalhoNoEstoque(nomeTrabalhoRaroVendido):
+def retornaQuantidadeTrabalhoNoEstoque(dicionarioTrabalhoBuscado):
     for dicionarioTrabalhoEstoque in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-        if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], nomeTrabalhoRaroVendido):
+        nomeERaridadeTrabalhoBuscadoEhIgualAoTrabalhoNoEstoque = (
+            textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoBuscado[CHAVE_NOME])
+            and textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_RARIDADE], dicionarioTrabalhoBuscado[CHAVE_RARIDADE]))
+        if nomeERaridadeTrabalhoBuscadoEhIgualAoTrabalhoNoEstoque:
             return dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE]
     return 0
 
@@ -2952,7 +2955,7 @@ def produzProdutoMaisVendido(listaDicionariosProdutosRarosVendidos):
 def verificaTrabalhoRaroNecessario(verificacoes, dicionarioProdutoRaroVendido):
     global dicionarioPersonagemAtributos
     print(f'{D}: Verificando quantidade de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque...')
-    quantidadeTrabalhoRaroNoEstoque = retornaQuantidadeTrabalhoNoEstoque(dicionarioProdutoRaroVendido[CHAVE_NOME])
+    quantidadeTrabalhoRaroNoEstoque = retornaQuantidadeTrabalhoNoEstoque(dicionarioProdutoRaroVendido)
     quantidadeTrabalhoRaroNecessario = CODIGO_QUANTIDADE_MINIMA_TRABALHO_RARO_EM_ESTOQUE - quantidadeTrabalhoRaroNoEstoque
     if quantidadeTrabalhoRaroNecessario > 0:
         print(f'{D}: Quantidade de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) no estoque é ({quantidadeTrabalhoRaroNoEstoque}).')
@@ -2977,8 +2980,11 @@ def verificaTrabalhoRaroNecessario(verificacoes, dicionarioProdutoRaroVendido):
                         if xpMaximo >= 830000:
                             licencaProducaoIdeal = CHAVE_LICENCA_INICIANTE
                         nomeTrabalhoMelhoradoNecessario = listaTrabalhosMelhoradosNecessarios[0]
+                        dicionarioTrabalhoBuscado = {
+                            CHAVE_NOME:nomeTrabalhoMelhoradoNecessario,
+                            CHAVE_RARIDADE:CHAVE_RARIDADE_MELHORADO}
                         print(f'{D}: Verificando quantidade de ({nomeTrabalhoMelhoradoNecessario}) no estoque...')
-                        quantidadeTrabalhoMelhoradoNecessarioNoEstoque = retornaQuantidadeTrabalhoNoEstoque(nomeTrabalhoMelhoradoNecessario)
+                        quantidadeTrabalhoMelhoradoNecessarioNoEstoque = retornaQuantidadeTrabalhoNoEstoque(dicionarioTrabalhoBuscado)
                         print(f'{D}: Quantidade de ({nomeTrabalhoMelhoradoNecessario}) no estoque é ({quantidadeTrabalhoMelhoradoNecessarioNoEstoque}).')
                         if quantidadeTrabalhoMelhoradoNecessarioNoEstoque >= quantidadeTrabalhoRaroNecessario:
                             if quantidadeTrabalhoMelhoradoNecessarioNoEstoque > 0:
@@ -3040,8 +3046,11 @@ def verificaTrabalhoMelhoradoNecessario(licencaProducaoIdeal, nomeTrabalhoMelhor
         if not tamanhoIgualZero(listaTrabalhosComunsNecessarios):
             if len(listaTrabalhosComunsNecessarios) == 1:
                 nomeTrabalhoComumNecessario = listaTrabalhosComunsNecessarios[0]
+                dicionarioTrabalhoBuscado = {
+                    CHAVE_NOME:nomeTrabalhoComumNecessario,
+                    CHAVE_RARIDADE:CHAVE_RARIDADE_COMUM}
                 print(f'{D}: Verificando quantidade de ({nomeTrabalhoComumNecessario}) no estoque...')
-                quantidadeTrabalhoComumNecessarioNoEstoque = retornaQuantidadeTrabalhoNoEstoque(nomeTrabalhoComumNecessario)
+                quantidadeTrabalhoComumNecessarioNoEstoque = retornaQuantidadeTrabalhoNoEstoque(dicionarioTrabalhoBuscado)
                 print(f'{D}: Quantidade de ({nomeTrabalhoComumNecessario}) no estoque é ({quantidadeTrabalhoComumNecessarioNoEstoque}).')
                 if quantidadeTrabalhoComumNecessarioNoEstoque >= quantidadeTrabalhoMelhoradoNecessarioFaltante:
                     if quantidadeTrabalhoComumNecessarioNoEstoque > 0:
@@ -3528,13 +3537,13 @@ def atualizaEstoquePersonagem(dicionarioTrabalhoProduzido):
                 dicionarioTrabalhoEstoque = trabalhoEstoque
             else:
                 if not tamanhoIgualZero(listaDicionarioTrabalhoProduzido):
-                    for trabalhoProduzido in listaDicionarioTrabalhoProduzido:
-                        trabalhoProduzido = adicionaTrabalhoEstoque(dicionarioPersonagemAtributos, trabalhoProduzido)
-                        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE].append(trabalhoProduzido)
+                    for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
+                        dicionarioTrabalhoProduzido = adicionaTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalhoProduzido)
+                        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE].append(dicionarioTrabalhoProduzido)
         else:
-            for trabalhoProduzido in listaDicionarioTrabalhoProduzido:
-                trabalhoProduzido = adicionaTrabalhoEstoque(dicionarioPersonagemAtributos, trabalhoProduzido)
-                dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE].append(trabalhoProduzido)
+            for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
+                dicionarioTrabalhoProduzido = adicionaTrabalhoEstoque(dicionarioPersonagemAtributos, dicionarioTrabalhoProduzido)
+                dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE].append(dicionarioTrabalhoProduzido)
 
 def modificaQuantidadeTrabalhoEstoque(listaDicionarioTrabalhoProduzido, trabalhoEstoque):
     for dicionarioTrabalhoProduzido in listaDicionarioTrabalhoProduzido:
