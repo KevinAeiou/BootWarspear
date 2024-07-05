@@ -1047,13 +1047,13 @@ def iniciaProcessoBusca(dicionarioUsuario):
 
 def inicializaChavesPersonagem():
     global dicionarioPersonagemAtributos
-    dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
     dicionarioPersonagemAtributos[CHAVE_UNICA_CONEXAO] = True
     dicionarioPersonagemAtributos[CHAVE_ESPACO_BOLSA] = True
     dicionarioPersonagemAtributos[CHAVE_CONFIRMACAO] = True
     dicionarioPersonagemAtributos[CHAVE_LISTA_PROFISSAO_MODIFICADA] = False
-    dicionarioPersonagemAtributos[CHAVE_LISTA_VENDAS] = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioPersonagemAtributos)
+    dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
+    dicionarioPersonagemAtributos[CHAVE_LISTA_VENDAS] = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
     dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE] = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
     dicionarioPersonagemAtributos = defineChaveListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
 
