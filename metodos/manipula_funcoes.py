@@ -423,14 +423,12 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
                     nomeTrabalhoDesejado = nomeTrabalhoDesejado[0:31]
                 if len(dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO]) > 31:
                     nomeProducaoTrabalhoDesejado = nomeProducaoTrabalhoDesejado[0:31]
-                trabalhoDesejadoNaoEhProducaoRecursosENomeEhIgualAoReconhecidoOuNomeProducaoEhIgualAoReconhecido = (
-                    not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado)
-                    and (textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoDesejado)
-                    or textoEhIgual(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado)))
-                if trabalhoDesejadoNaoEhProducaoRecursosENomeEhIgualAoReconhecidoOuNomeProducaoEhIgualAoReconhecido:
-                    dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
-                    print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}')
-                    return dicionarioTrabalho
+                if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
+                    if (textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoDesejado)
+                        or textoEhIgual(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado)):
+                        dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
+                        print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}')
+                        return dicionarioTrabalho
                 else:
                     if texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-2], nomeProducaoTrabalhoDesejado):
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
@@ -4082,8 +4080,8 @@ def funcao_teste(dicionarioUsuario):
     }
     trabalhoDesejado={
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
-        CHAVE_NOME:'Cajado encantado do ent',
-        CHAVE_NOME_PRODUCAO:'Melhoria de cajado sobrenatural da meditação',
+        CHAVE_NOME:'Arco encantado do ent',
+        CHAVE_NOME_PRODUCAO:'Melhoria de arco do fantasma',
         CHAVE_EXPERIENCIA:795,
         CHAVE_NIVEL:20,
         CHAVE_RARIDADE:'Melhorado',
