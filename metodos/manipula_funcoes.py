@@ -412,17 +412,17 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     frameNomeTrabalhoTratado = retornaImagemCinza(frameNomeTrabalho)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalho)
     nomeTrabalhoReconhecido = reconheceTexto(frameNomeTrabalhoTratado)
-    if len(nomeTrabalhoReconhecido) > 31:
-        nomeTrabalhoReconhecido = nomeTrabalhoReconhecido[0:31]
+    if len(nomeTrabalhoReconhecido) >= 30:
+        nomeTrabalhoReconhecido = nomeTrabalhoReconhecido[:29]
     if variavelExiste(nomeTrabalhoReconhecido) and CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
         for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
             if CHAVE_NOME_PRODUCAO in dicionarioTrabalhoDesejado:
                 nomeTrabalhoDesejado = dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')
                 nomeProducaoTrabalhoDesejado = dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO].replace('-','')
-                if len(dicionarioTrabalhoDesejado[CHAVE_NOME]) > 31:
-                    nomeTrabalhoDesejado = nomeTrabalhoDesejado[0:31]
-                if len(dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO]) > 31:
-                    nomeProducaoTrabalhoDesejado = nomeProducaoTrabalhoDesejado[0:31]
+                if len(dicionarioTrabalhoDesejado[CHAVE_NOME]) >= 30:
+                    nomeTrabalhoDesejado = nomeTrabalhoDesejado[:29]
+                if len(dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO]) >= 30:
+                    nomeProducaoTrabalhoDesejado = nomeProducaoTrabalhoDesejado[:29]
                 if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
                     if (textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoDesejado)
                         or textoEhIgual(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado)):
@@ -4080,8 +4080,8 @@ def funcao_teste(dicionarioUsuario):
     }
     trabalhoDesejado={
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
-        CHAVE_NOME:'Arco encantado do ent',
-        CHAVE_NOME_PRODUCAO:'Melhoria de arco do fantasma',
+        CHAVE_NOME:'Báculo do Senhor das Profundezas',
+        CHAVE_NOME_PRODUCAO:'Melhoria de varinha sobrenatural da meditação',
         CHAVE_EXPERIENCIA:795,
         CHAVE_NIVEL:20,
         CHAVE_RARIDADE:'Melhorado',
