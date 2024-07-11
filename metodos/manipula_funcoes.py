@@ -423,14 +423,14 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
                     nomeTrabalhoDesejado = nomeTrabalhoDesejado[:29]
                 if len(dicionarioTrabalhoDesejado[CHAVE_NOME_PRODUCAO]) >= 30:
                     nomeProducaoTrabalhoDesejado = nomeProducaoTrabalhoDesejado[:29]
-                if not trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
-                    if (textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoDesejado)
-                        or textoEhIgual(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado)):
+                if trabalhoEhProducaoRecursos(dicionarioTrabalhoDesejado):
+                    if texto1PertenceTexto2(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado):
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                         print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}')
                         return dicionarioTrabalho
                 else:
-                    if texto1PertenceTexto2(nomeTrabalhoReconhecido[3:-2], nomeProducaoTrabalhoDesejado):
+                    if (textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoDesejado)
+                        or textoEhIgual(nomeTrabalhoReconhecido, nomeProducaoTrabalhoDesejado)):
                         dicionarioTrabalho[CHAVE_DICIONARIO_TRABALHO_DESEJADO] = dicionarioTrabalhoDesejado
                         print(f'Trabalho confirmado: {nomeTrabalhoReconhecido}')
                         return dicionarioTrabalho
@@ -4080,8 +4080,8 @@ def funcao_teste(dicionarioUsuario):
     }
     trabalhoDesejado={
         CHAVE_ID:'-Ni8Nu1ul0uTMioGLH--',
-        CHAVE_NOME:'Báculo do Senhor das Profundezas',
-        CHAVE_NOME_PRODUCAO:'Melhoria de varinha sobrenatural da meditação',
+        CHAVE_NOME:'Grande coleção de recursos avançados',
+        CHAVE_NOME_PRODUCAO:'Grande coleção de recursos avançados',
         CHAVE_EXPERIENCIA:795,
         CHAVE_NIVEL:20,
         CHAVE_RARIDADE:'Melhorado',
@@ -4133,8 +4133,8 @@ def funcao_teste(dicionarioUsuario):
     
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     inicializaChavesPersonagem()
-    listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_MELHORADO)
+    listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO)
     dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaDicionariosTrabalhosComuns
     while retornaInputConfirmacao():
-        confirmaNomeTrabalho(dicionarioTrabalho, 0)
+        confirmaNomeTrabalho(dicionarioTrabalho, 1)
         pass
