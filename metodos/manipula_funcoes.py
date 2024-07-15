@@ -485,8 +485,9 @@ def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao
     listaDicionariosTrabalhosBuscadosOrdenados=sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
     return listaDicionariosTrabalhosBuscadosOrdenados
 
-def git add .(dicionarioTrabalho):
+def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
     nomeTrabalhoReconhecidoAux = ''
+    nomeTrabalhoReconhecido = ''
     print(f'Buscando trabalho {dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE]}.')
     contadorParaBaixo = 0
     if not primeiraBusca(dicionarioTrabalho):
@@ -511,7 +512,9 @@ def git add .(dicionarioTrabalho):
             nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
         elif contadorParaBaixo > 4:
             nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(530, 1)
-        if variavelExiste(nomeTrabalhoReconhecido) or textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoReconhecidoAux):
+        nomeReconhecidoNaoEstaVazioEnomeReconhecidoNaoEhIgualAoAnterior = (
+            variavelExiste(nomeTrabalhoReconhecido) and not textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoReconhecidoAux))
+        if nomeReconhecidoNaoEstaVazioEnomeReconhecidoNaoEhIgualAoAnterior:
             nomeTrabalhoReconhecidoAux = nomeTrabalhoReconhecido
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
@@ -4116,9 +4119,9 @@ def funcao_teste(dicionarioUsuario):
 
     dicionarioTrabalho={
         CHAVE_CONFIRMACAO:True,
-        CHAVE_POSICAO:0,
-        CHAVE_PROFISSAO:'Arma de longo alcance',
-        CHAVE_DICIONARIO_TRABALHO_DESEJADO:trabalhoDesejado,
+        CHAVE_POSICAO:-1,
+        CHAVE_PROFISSAO:CHAVE_PROFISSAO_BRACELETES,
+        CHAVE_DICIONARIO_TRABALHO_DESEJADO:None,
         }
     dicionarioPersonagemAtributos = {
         CHAVE_ID_USUARIO:dicionarioUsuario[CHAVE_ID_USUARIO],
@@ -4134,12 +4137,8 @@ def funcao_teste(dicionarioUsuario):
     
     listaPersonagem=[dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]]
     inicializaChavesPersonagem()
-    listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO)
+    listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM)
     dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaDicionariosTrabalhosComuns
     while retornaInputConfirmacao():
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido('Quíton dos céus flamejantes')
-        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-            dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioTrabalhoConcluido)
-            atualizaEstoquePersonagem(dicionarioTrabalhoConcluido)
-n
-pass
+        defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+        pass
