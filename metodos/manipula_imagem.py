@@ -30,7 +30,7 @@ def salvaNovaTela(screenshot):
     cv2.imwrite(tela, imagem)
 
 def recortaFrame(frame):
-    imagem = abre_imagem(tela)
+    imagem = abreImagem(tela)
     if 'novo_modelo_habilidade' in frame:
         nome_arquivo = f'modelos/{frame}.png'
         fatia_imagem = imagem[719:719+33,85:85+43]
@@ -81,9 +81,8 @@ def trata_frame_nome_inimigo(imagem_original):
                 imagem_tratada[y,x] = (255,255,255)
     return imagem_tratada
 
-def abre_imagem(caminho_imagem):
-    imagem = cv2.imread(caminho_imagem)
-    return imagem
+def abreImagem(caminhoImagem):
+    return cv2.imread(caminhoImagem)
 
 def mostraImagem(indice,imagem,nome_frame):
     if nome_frame == None:
@@ -111,9 +110,13 @@ def retornaImagemCinza(screenshot):
     imagem = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2GRAY)
     return imagem
 
-def retornaImagemConcatenada(imagem,imagem2):
-    imagem_concatenada = cv2.vconcat([imagem,imagem2])
-    return imagem_concatenada
+def retornaImagemConcatenadaHorizontal(imagem,imagem2):
+    imagemConcatenada = cv2.hconcat([imagem,imagem2])
+    return retornaImagemRedimensionada(imagemConcatenada, 0.8)
+
+def retornaImagemConcatenadaVertical(imagem,imagem2):
+    imagemConcatenada = cv2.vconcat([imagem,imagem2])
+    return retornaImagemRedimensionada(imagemConcatenada, 0.5)
 
 def vconcat_resize(img_list, interpolation  
                    = cv2.INTER_CUBIC): 
@@ -241,6 +244,9 @@ def retornaImagemDitalata(imagem,kernel,iteracoes):
 
 def retornaImagemErodida(imagem,kernel,iteracoes):
     return cv2.erode(imagem,kernel,iterations=iteracoes)
+
+def retornaImagemBorrada(imagemCinza):
+    return cv2.GaussianBlur(imagemCinza, (3, 3), cv2.BORDER_DEFAULT)
 
 def retornaBackGround():
     return cv2.createBackgroundSubtractorMOG2(history=500,varThreshold=100,detectShadows=False)
@@ -445,7 +451,7 @@ def temporario():
 
 def temporario2():
     porcentagem=50
-    imagem=abre_imagem('/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS - frame.jpg')
+    imagem=abreImagem('/Users/Kevin/Videos/Captures/DG_MINAS_ABANDONADAS - frame.jpg')
     alturaDesejada=imagem.shape[0]*porcentagem/100
     larguraDesejada=imagem.shape[1]*porcentagem/100
     imagem=cv2.resize(imagem,(int(larguraDesejada),int(alturaDesejada)))
@@ -469,7 +475,7 @@ def temporario2():
             x,y,l,a=cv2.boundingRect(cnt)
             cv2.rectangle(imagemCinza,(x,y),(x+l,y+a),(0,255,0),2)
 
-        concatenada=retornaImagemConcatenada(imagemCinza,imagemPreProcessada)
+        concatenada=retornaImagemConcatenadaHorizontal(imagemCinza,imagemPreProcessada)
         mostraImagem(0,concatenada,None)
         # mostraImagem(0,imagemPreProcessada,None)
         if cv2.waitKey(25) & 0xFF == ord('q')or 0xFF == 27: 
@@ -498,10 +504,42 @@ def retornaReferencias():
     larguraTela = telaInteira.shape[1]
     frameReferencia1 = telaInteira[170:170+50, 0:50]
     frameReferencia2 = telaInteira[alturaTela - 170:alturaTela - 170 + 50, 0:50]
-    frameConcatenado = retornaImagemConcatenada(frameReferencia1, frameReferencia2)
+    frameConcatenado = retornaImagemConcatenadaHorizontal(frameReferencia1, frameReferencia2)
     # frameConcatenado = retornaImagemRedimensionada(frameConcatenado, 4)
     # mostraImagem(0, frameConcatenado, None)
     return frameReferencia1, frameReferencia2
 
+def desenhaRetangulo(imagem, contorno):
+    x,y,l,a=cv2.boundingRect(contorno)
+    return cv2.rectangle(imagem,(x,y),(x+l,y+a),(0,255,0),2)
+
+def retonaImagemRedimensionada(imagem, porcentagem):
+    return cv2.resize(imagem,(0,0),fx=porcentagem,fy=porcentagem)
+
 if __name__=='__main__':
-    encontraPersonagem()
+    imagem = abreImagem('menuProducao.png')
+    imagem = imagem[0:imagem.shape[0],0:imagem.shape[1]//2]
+    imagemCinza = retornaImagemCinza(imagem)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7,7))
+    chapeuPreto = cv2.morphologyEx(imagemCinza, cv2.MORPH_BLACKHAT, kernel)
+    sobelX = cv2.Sobel(chapeuPreto, ddepth = cv2.CV_32F, dx = 1, dy = 0, ksize = 1)
+    sobelX = np.absolute(sobelX)
+    sobelX = sobelX.astype('uint8')
+    mostraImagem(0,sobelX, None)
+    borrada = retornaImagemBorrada(imagemCinza)
+    valor, otsu = cv2.threshold(imagemCinza, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    dilatada = retornaImagemDitalata(otsu,(5,5),2)
+    erodida = retornaImagemErodida(dilatada,(5,5),2)
+    bordas = cv2.Canny(borrada,100,200)
+    contornos, __ = cv2.findContours(bordas, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contornos = sorted(contornos, key= cv2.contourArea, reverse=True)[:10]
+    for contorno in contornos:
+        epsilon = 0.02 * cv2.arcLength(contorno, True)
+        aproximacao = cv2.approxPolyDP(contorno, epsilon,True)
+        if cv2.isContourConvex(aproximacao) and len(aproximacao) == 4:
+            imagemCinza = desenhaRetangulo(imagemCinza, aproximacao)
+    imagemConcatenada1 = retornaImagemConcatenadaHorizontal(bordas, imagemCinza)
+    imagemConcatenada2 = retornaImagemConcatenadaHorizontal(dilatada, erodida)
+    imagemConcatenada3 = retornaImagemConcatenadaVertical(imagemConcatenada1, imagemConcatenada2)
+    mostraImagem(0,imagemConcatenada2, f'Imagem concatenada: {valor}')
+    mostraImagem(0,imagemConcatenada1, f'Imagem concatenada: {valor}')

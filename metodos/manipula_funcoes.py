@@ -485,7 +485,8 @@ def retornaListaDicionariosTrabalhosBuscados(listaDicionariosTrabalhos,profissao
     listaDicionariosTrabalhosBuscadosOrdenados=sorted(listaDicionariosTrabalhosBuscados,key=lambda dicionario:(dicionario[CHAVE_NIVEL],dicionario[CHAVE_NOME]))
     return listaDicionariosTrabalhosBuscadosOrdenados
 
-def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
+def git add .(dicionarioTrabalho):
+    nomeTrabalhoReconhecidoAux = ''
     print(f'Buscando trabalho {dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE]}.')
     contadorParaBaixo = 0
     if not primeiraBusca(dicionarioTrabalho):
@@ -510,7 +511,8 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
             nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(yinicialNome, 1)
         elif contadorParaBaixo > 4:
             nomeTrabalhoReconhecido = retornaNomeTrabalhoReconhecido(530, 1)
-        if variavelExiste(nomeTrabalhoReconhecido):
+        if variavelExiste(nomeTrabalhoReconhecido) or textoEhIgual(nomeTrabalhoReconhecido, nomeTrabalhoReconhecidoAux):
+            nomeTrabalhoReconhecidoAux = nomeTrabalhoReconhecido
             print(f'Trabalho reconhecido: {nomeTrabalhoReconhecido}')
             for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
                 print(f'Trabalho na lista: {dicionarioTrabalhoDesejado[CHAVE_NOME]}')
@@ -535,7 +537,6 @@ def defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho):
                 contadorParaBaixo += 1
         else:
             if not primeiraBusca(dicionarioTrabalho) and dicionarioTrabalho[CHAVE_POSICAO] > 5:
-                # dicionarioTrabalho[CHAVE_CONFIRMACAO] = False
                 print(f'Trabalho {dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA][0][CHAVE_RARIDADE]} não reconhecido!')
                 linhaSeparacao()
                 break
@@ -765,7 +766,7 @@ def retorna_lista_histograma_menu():
     linhaSeparacao()
     for x in range(10):
         #abre a imagem do modelo
-        modelo = abre_imagem(f'modelos/modelo_menu_{x}.png')
+        modelo = abreImagem(f'modelos/modelo_menu_{x}.png')
         #calcula histograma do modelo
         histograma_modelo = retornaHistograma(modelo)
         lista_histograma.append(histograma_modelo)
@@ -796,7 +797,7 @@ def retorna_lista_imagem_habilidade():
     lista_imagem_habilidade = []
     x=0
     while verifica_arquivo_existe(f'modelos/novo_modelo_habilidade_{x}.png'):
-        modelo = abre_imagem(f'modelos/novo_modelo_habilidade_{x}.png')
+        modelo = abreImagem(f'modelos/novo_modelo_habilidade_{x}.png')
         lista_imagem_habilidade.append(modelo)
         x+=1
     return lista_imagem_habilidade
@@ -2293,7 +2294,7 @@ def modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioTrabalhoConcluido
         print(f'Trabalho sem recorrencia.')
         caminhoRequisicao = f'Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_desejo/{dicionarioTrabalhoConcluido[CHAVE_ID]}/.json'
         dados = {
-            CHAVE_ESTADO:2,
+            CHAVE_ESTADO:CODIGO_CONCLUIDO,
             CHAVE_EXPERIENCIA:dicionarioTrabalhoConcluido[CHAVE_EXPERIENCIA],
             CHAVE_ID:dicionarioTrabalhoConcluido[CHAVE_ID],
             CHAVE_ID_TRABALHO:dicionarioTrabalhoConcluido[CHAVE_ID_TRABALHO],
@@ -2307,7 +2308,7 @@ def modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioTrabalhoConcluido
         modificaAtributo(caminhoRequisicao, dados)
         for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO]:
             if textoEhIgual(dicionarioTrabalho[CHAVE_ID], dicionarioTrabalhoConcluido[CHAVE_ID]):
-                dicionarioTrabalho[CHAVE_ESTADO] = 2
+                dicionarioTrabalho[CHAVE_ESTADO] = CODIGO_CONCLUIDO
                 CHAVE_RECORRENCIA:dicionarioTrabalhoConcluido[CHAVE_RECORRENCIA]
                 CHAVE_LICENCA:dicionarioTrabalhoConcluido[CHAVE_LICENCA]
                 break
@@ -4136,5 +4137,9 @@ def funcao_teste(dicionarioUsuario):
     listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_RARO)
     dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaDicionariosTrabalhosComuns
     while retornaInputConfirmacao():
-        confirmaNomeTrabalho(dicionarioTrabalho, 1)
-        pass
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido('Quíton dos céus flamejantes')
+        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+            dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioTrabalhoConcluido)
+            atualizaEstoquePersonagem(dicionarioTrabalhoConcluido)
+n
+pass
