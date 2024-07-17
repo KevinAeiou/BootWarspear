@@ -412,9 +412,9 @@ def confirmaNomeTrabalho(dicionarioTrabalho, tipoTrabalho):
     frameNomeTrabalhoTratado = retornaImagemCinza(frameNomeTrabalho)
     frameNomeTrabalhoTratado = retornaImagemBinarizada(frameNomeTrabalho)
     nomeTrabalhoReconhecido = reconheceTexto(frameNomeTrabalhoTratado)
-    if len(nomeTrabalhoReconhecido) >= 30:
-        nomeTrabalhoReconhecido = nomeTrabalhoReconhecido[:29]
     if variavelExiste(nomeTrabalhoReconhecido) and CHAVE_LISTA_DESEJO_PRIORIZADA in dicionarioTrabalho:
+        if len(nomeTrabalhoReconhecido) >= 30:
+            nomeTrabalhoReconhecido = nomeTrabalhoReconhecido[:29]
         for dicionarioTrabalhoDesejado in dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA]:
             if CHAVE_NOME_PRODUCAO in dicionarioTrabalhoDesejado:
                 nomeTrabalhoDesejado = dicionarioTrabalhoDesejado[CHAVE_NOME].replace('-','')
