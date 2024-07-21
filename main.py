@@ -709,10 +709,13 @@ def usuario():
                 time.sleep(1)
                 exit()
         elif escolha_usuario == 1:
-            if entra_usuario():
-                pass
+            usuarioId = entra_usuario()
+            if variavelExiste(usuarioId):
+                dicionarioUsuario[CHAVE_ID_USUARIO] = usuarioId
+                menuPersonagem()
+                return
         usuario()
     return
 
 if __name__=='__main__':
-    menuUsuarios()
+    usuario()

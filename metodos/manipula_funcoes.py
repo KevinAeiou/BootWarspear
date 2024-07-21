@@ -3,10 +3,10 @@ import numpy as np
 from metodos.manipula_imagem import *
 from metodos.manipula_teclado import *
 from metodos.manipula_cliente import *
+from metodos.firebase.autenticacao import *
 from metodos.Utilitarios import *
 from metodos.lista_chaves import *
 import metodos.lista_chaves as LC
-from modelos.objetoTrabalho import Trabalho
 import time
 import datetime
 import os.path
@@ -4066,9 +4066,7 @@ def retornaDicionarioProfissaoEscolhida(dicionarioUsuario, opcaoProfissao):
 def entra_usuario():
     email = input(f'Email: ')
     senha = input(f'Senha: ')
-    if autenticar_usuario(email,senha):
-        return True
-    return False
+    return autenticaUsuario(email,senha)
     
 def deleta_item_lista():
     lista=['a','b','c']
@@ -4140,5 +4138,9 @@ def funcao_teste(dicionarioUsuario):
     listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM)
     dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaDicionariosTrabalhosComuns
     while retornaInputConfirmacao():
-        defineDicionarioTrabalhoComumMelhorado(dicionarioTrabalho)
+        nomeTrabalhoConcluido = input(f'Trabalho: ')
+        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(nomeTrabalhoConcluido)
+        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
+            dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioTrabalhoConcluido)
+            atualizaEstoquePersonagem(dicionarioTrabalhoConcluido)
         pass
