@@ -137,23 +137,21 @@ def excluiTrabalhoVendido(dicionarioPersonagem, dicionarioTrabalhoVendido):
         print(f'Erro a remover {dicionarioTrabalhoVendido["nomeProduto"]}!')
     return False
 
-def adicionaTrabalhoEstoque(dicionarioPersonagem,dicionarioTrabalho):
-    caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
-    requisicao=retornaRequisicao(POST,caminhoRequisicao,dicionarioTrabalho)
+def adicionaTrabalhoEstoque(dicionarioPersonagem, dicionarioTrabalho):
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/.json'
+    requisicao = retornaRequisicao(POST, caminhoRequisicao, dicionarioTrabalho)
     if requisicao:
-        dicionarioRequisicao=requisicao.json()
-        dados={'id':dicionarioRequisicao['name']}
-        caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
-        requisicao=retornaRequisicao(PATCH,caminhoRequisicao,dados)
+        dicionarioRequisicao = requisicao.json()
+        dados = {'id':dicionarioRequisicao['name']}
+        caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
+        requisicao = retornaRequisicao(PATCH, caminhoRequisicao, dados)
         if requisicao:
-            dicionarioRequisicao=requisicao.json()
+            dicionarioRequisicao = requisicao.json()
             dicionarioTrabalho[CHAVE_ID] = dicionarioRequisicao[CHAVE_ID]
             return dicionarioTrabalho
-            # for id in dicionarioRequisicao:
-            #     print(f'Novo trabalho foi adicionado: {dicionarioRequisicao[id][CHAVE_NOME]}.')
         else:
-            caminhoRequisicao=f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
-            requisicao=retornaRequisicao(DELETE,caminhoRequisicao,None)
+            caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagem[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagem[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioRequisicao["name"]}/.json'
+            requisicao = retornaRequisicao(DELETE,caminhoRequisicao,None)
     return {}
 
 def adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalho):

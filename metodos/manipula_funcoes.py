@@ -2598,41 +2598,42 @@ def removeTrabalhoEstoque(dicionarioTrabalhoProduzindo):
                 dicionarioTrabalhoProduzindo = defineQuantidadeRecursos(dicionarioTrabalhoProduzindo)
                 dicionarioTrabalhoProduzindo = defineNomeRecursos(dicionarioTrabalhoProduzindo)
                 for dicionarioTrabalhoEstoque in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-                    caminhoRequisicao = f'{caminhoEstoque}{dicionarioTrabalhoEstoque[CHAVE_ID]}/.json'
-                    dados = {}
-                    if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_PRIMARIO]):
-                        if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAP]
-                        else:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCP]
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_SECUNDARIO]):
-                        if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAS]
-                        else:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCS]
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_TERCIARIO]):
-                        if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAT]
-                        else:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCT]
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_LICENCA]):
-                        novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - 1
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    if not tamanhoIgualZero(dados):
-                        print(f'{D}:Quantidade de {dicionarioTrabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
-                        modificaAtributo(caminhoRequisicao, dados)
-                        dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = dados[CHAVE_QUANTIDADE]
+                    if CHAVE_ID in dicionarioTrabalhoEstoque:
+                        caminhoRequisicao = f'{caminhoEstoque}{dicionarioTrabalhoEstoque[CHAVE_ID]}/.json'
+                        dados = {}
+                        if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_PRIMARIO]):
+                            if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAP]
+                            else:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCP]
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_SECUNDARIO]):
+                            if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAS]
+                            else:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCS]
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_TERCIARIO]):
+                            if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAT]
+                            else:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCT]
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_LICENCA]):
+                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - 1
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        if not tamanhoIgualZero(dados):
+                            print(f'{D}:Quantidade de {dicionarioTrabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
+                            modificaAtributo(caminhoRequisicao, dados)
+                            dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = dados[CHAVE_QUANTIDADE]
         elif textoEhIgual(dicionarioTrabalhoProduzindo[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO) or textoEhIgual(dicionarioTrabalhoProduzindo[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO):
             if not trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzindo):
                 if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoProduzindo:
