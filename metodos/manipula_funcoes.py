@@ -1024,7 +1024,7 @@ def iniciaProcessoBusca(dicionarioUsuario):
                         dicionarioTrabalho = {
                             CHAVE_LISTA_DESEJO: listaDicionariosTrabalhosParaProduzirProduzindo,
                             CHAVE_DICIONARIO_TRABALHO_DESEJADO: None}
-                        verificaProdutosRarosMaisVendidos()
+                        verificaProdutosRarosMaisVendidos(None)
                         iniciaBuscaTrabalho(dicionarioTrabalho)
                     else:
                         print(f'Lista de trabalhos desejados vazia.')
@@ -2870,9 +2870,18 @@ def retornaListaPersonagemRecompensaRecebida(listaPersonagemPresenteRecuperado):
         linhaSeparacao()
     return listaPersonagemPresenteRecuperado
 
-def retornaListaDicionariosTrabalhosRarosVendidos():
+def retornaListaDicionariosTrabalhosRarosVendidos(dicionarioUsuario):
     print(f'Definindo lista dicionários produtos raros vendidos...')
+    global dicionarioPersonagemAtributos
     listaDicionariosTrabalhosRarosVendidos = []
+    if dicionarioUsuario != None:
+        dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]
+        dicionarioPersonagemAtributos[CHAVE_ID_USUARIO] = dicionarioUsuario[CHAVE_ID_USUARIO]
+        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO] = retornaListaDicionariosProfissoes(dicionarioPersonagemAtributos)
+        dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO] = retornaListaDicionariosTrabalhos()
+        dicionarioPersonagemAtributos[CHAVE_LISTA_VENDAS] = retornaListaDicionariosTrabalhosVendidos(dicionarioPersonagemAtributos)
+        dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE] = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+        dicionarioPersonagemAtributos = defineChaveListaDicionariosTrabalhosDesejados(dicionarioPersonagemAtributos)
     if not tamanhoIgualZero(dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]):
         for dicionarioProdutoVendido in dicionarioPersonagemAtributos[CHAVE_LISTA_VENDAS]:
             for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
@@ -4035,8 +4044,8 @@ def retornaContadorEspacosProducao(contadorEspacosProducao, nivel):
             contadorEspacosProducao += 2
     return contadorEspacosProducao
 
-def verificaProdutosRarosMaisVendidos():
-    listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos()
+def verificaProdutosRarosMaisVendidos(dicionarioUsuario):
+    listaDicionariosProdutosRarosVendidos = retornaListaDicionariosTrabalhosRarosVendidos(dicionarioUsuario)
     if not tamanhoIgualZero(listaDicionariosProdutosRarosVendidos):
         produzProdutoMaisVendido(listaDicionariosProdutosRarosVendidos)
     else:

@@ -299,8 +299,8 @@ def definirOpcaoMenuPrincipalSelecionada():
                 usa_habilidade()
             elif opcao_habilidade == 2:#Cadastra novo modelo de habilidade
                 recorta_novo_modelo_habilidade()
-        elif opcaoEscolha==4:#Atualiza lista de profissões
-            pass
+        elif opcaoEscolha==4:#Verificar produção de trabalhos raros mais vendidos
+            verificaProdutosRarosMaisVendidos(dicionarioUsuario)
             # atualiza_lista_profissao(dicionarioUsuario)
         elif opcaoEscolha==5:#Menu cadastro
             opcao_cadastro = mostraMenuCadastrar()
@@ -601,7 +601,7 @@ def exibirOpcoesMenuPrincipal():
     print(f'1 - Produzir item.')
     print(f'2 - Lista de desejo.')
     print(f'3 - Usar habilidade.')
-    print(f'4 - Atualizar lista de profissões.')
+    print(f'4 - Verificar produção de trabalhos raros mais vendidos.')
     print(f'5 - Cadastrar.')
     print(f'6 - Configurações.')
     print(f'7 - Temporario.')
