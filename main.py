@@ -649,7 +649,7 @@ def definirOpcaoPersonagemSelecionado():
     else:
         opcaoPersonagem = int(opcaoPersonagem)
         if opcaoPersonagem == 0:
-            menuUsuarios()
+            usuario()
         else:
             dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO] = dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM][opcaoPersonagem-1]
             if variavelExiste(dicionarioUsuario[CHAVE_DICIONARIO_PERSONAGEM_EM_USO]):
@@ -661,58 +661,36 @@ def definirListaDePersonagens():
     listaDicionariosPersonagens = retornaListaDicionariosPersonagens(dicionarioUsuario)
     dicionarioUsuario[CHAVE_LISTA_DICIONARIO_PERSONAGEM] = sorted(listaDicionariosPersonagens,key=lambda dicionario:(dicionario[CHAVE_EMAIL],dicionario[CHAVE_NOME]))
 
-def menuUsuarios():
+def usuario():
     exibirSubTitulo('Usuários')
     exibirOpcoesUsuarios()
     escolherUsuario()
 
 def escolherUsuario():
-    opcaoUsuario = input('Usuário escolhido: ')
+    opcaoUsuario = input('Opção escolhida: ')
     while opcaoInvalida(opcaoUsuario, 2):
         input(f'Opção inválida! Clique qualquer tecla para voltar ao menu.')
-        menuUsuarios()
+        usuario()
     else:
         opcaoUsuario = int(opcaoUsuario)
         if opcaoUsuario == 0:
             finalizaApp()
         elif opcaoUsuario==1:
-            dicionarioUsuario[CHAVE_ID_USUARIO]='eEDku1Rvy7f7vbwJiVW7YMsgkIF2'
-            menuPersonagem()
+            usuarioId = entra_usuario()
+            if variavelExiste(usuarioId):
+                dicionarioUsuario[CHAVE_ID_USUARIO] = usuarioId
+                menuPersonagem()
+                return
         elif opcaoUsuario==2:
-            dicionarioUsuario[CHAVE_ID_USUARIO]='LA2UjmX7oBX3AlRJfmdWAD41OWg2'
-            menuPersonagem()
+            pass
 
 def exibirOpcoesUsuarios():
-    print(f'1 - Usuario')
-    print(f'2 - Usuario teste')
+    print(f'1 - Entrar.')
+    print(f'2 - Cadastrar.')
     print(f'0 - Sair\n')
 
 def finalizaApp():
     print(f'Saindo...')
 
-def usuario():
-    print(f'Usuario.')
-    print(f'1 - Entrar.')
-    print(f'2 - Cadastrar.')
-    print(f'0 - Sair.')
-    escolha_usuario = int(input(f'Sua escolha: '))
-    linhaSeparacao()
-    while escolha_usuario<0 or escolha_usuario>3:
-        print(f'Opção inválida! Selecione uma das opções.')
-        escolha_usuario = int(input(f'Sua escolha: '))
-    else:
-        if escolha_usuario==0:
-            print(f'Saindo...')
-            for i in range(0,10):
-                sys.stdout.write('\r{i}'.format(i))
-                sys.stdout.flush()
-                time.sleep(1)
-                exit()
-        elif escolha_usuario == 1:
-            if entra_usuario():
-                pass
-        usuario()
-    return
-
 if __name__=='__main__':
-    menuUsuarios()
+    usuario()

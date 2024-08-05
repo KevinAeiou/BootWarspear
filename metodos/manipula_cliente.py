@@ -1,8 +1,6 @@
-import socket
 import requests
 import json
 import time
-# import pyrebase
 import uuid 
 from metodos.lista_chaves import *
 
@@ -11,34 +9,6 @@ link_storage = 'gs://bootwarspear.appspot.com'
 nome_imagem_trabalho = 'imagem_trabalho.png'
 tempoConeccao=1
 tempoLeitura=1.5
-
-firebaseConfig = {
-    'apiKey': "AIzaSyCrQz9bYczFvF5S-HNlha48hXD7Mmiq6R8",
-    'authDomain': "bootwarspear.firebaseapp.com",
-    'databaseURL': "https://bootwarspear-default-rtdb.firebaseio.com",
-    'projectId': "bootwarspear",
-    'storageBucket': "bootwarspear.appspot.com",
-    'messagingSenderId': "882438857395",
-    'appId': "1:882438857395:web:1d0b926a94d0aacca086c6"}
-
-# firebase = pyrebase.initialize_app(firebaseConfig)
-# autenticacao = firebase.auth()
-
-def autenticar_usuario(email,senha):
-    try:
-        entrar = autenticacao.sign_in_with_email_and_password(email,senha)
-        print(autenticacao.get_account_info(entrar['idToken']))
-        print(f'Conecção bem sucedida')
-        return True
-    except:
-        print(f'Email ou senha invalidos!')
-    return False
-
-def envia_dados_servidor(coordenadas):
-    cliente = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    cliente.connect(("192.168.1.22",55555))
-    cliente.send(coordenadas.encode())
-    print(f'Enviado!')
             
 def retornaRequisicao(tipoRequisicao,caminhoRequisicao,dados):
     requisicaoRetorno=None
