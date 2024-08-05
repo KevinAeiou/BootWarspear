@@ -2598,41 +2598,42 @@ def removeTrabalhoEstoque(dicionarioTrabalhoProduzindo):
                 dicionarioTrabalhoProduzindo = defineQuantidadeRecursos(dicionarioTrabalhoProduzindo)
                 dicionarioTrabalhoProduzindo = defineNomeRecursos(dicionarioTrabalhoProduzindo)
                 for dicionarioTrabalhoEstoque in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-                    caminhoRequisicao = f'{caminhoEstoque}{dicionarioTrabalhoEstoque[CHAVE_ID]}/.json'
-                    dados = {}
-                    if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_PRIMARIO]):
-                        if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAP]
-                        else:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCP]
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_SECUNDARIO]):
-                        if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAS]
-                        else:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCS]
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_TERCIARIO]):
-                        if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAT]
-                        else:
-                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCT]
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_LICENCA]):
-                        novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - 1
-                        if novaQuantidade < 0:
-                            novaQuantidade = 0
-                        dados = {CHAVE_QUANTIDADE:novaQuantidade}
-                    if not tamanhoIgualZero(dados):
-                        print(f'{D}:Quantidade de {dicionarioTrabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
-                        modificaAtributo(caminhoRequisicao, dados)
-                        dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = dados[CHAVE_QUANTIDADE]
+                    if CHAVE_ID in dicionarioTrabalhoEstoque:
+                        caminhoRequisicao = f'{caminhoEstoque}{dicionarioTrabalhoEstoque[CHAVE_ID]}/.json'
+                        dados = {}
+                        if textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_PRIMARIO]):
+                            if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAP]
+                            else:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCP]
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_SECUNDARIO]):
+                            if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAS]
+                            else:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCS]
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_NOME_TERCIARIO]):
+                            if dicionarioTrabalhoProduzindo[CHAVE_NIVEL] > 14:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RAT]
+                            else:
+                                novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - dicionarioTrabalhoProduzindo[CHAVE_RCT]
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        elif textoEhIgual(dicionarioTrabalhoEstoque[CHAVE_NOME], dicionarioTrabalhoProduzindo[CHAVE_LICENCA]):
+                            novaQuantidade = dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] - 1
+                            if novaQuantidade < 0:
+                                novaQuantidade = 0
+                            dados = {CHAVE_QUANTIDADE:novaQuantidade}
+                        if not tamanhoIgualZero(dados):
+                            print(f'{D}:Quantidade de {dicionarioTrabalhoEstoque[CHAVE_NOME]} atualizada para {novaQuantidade}.')
+                            modificaAtributo(caminhoRequisicao, dados)
+                            dicionarioTrabalhoEstoque[CHAVE_QUANTIDADE] = dados[CHAVE_QUANTIDADE]
         elif textoEhIgual(dicionarioTrabalhoProduzindo[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO) or textoEhIgual(dicionarioTrabalhoProduzindo[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO):
             if not trabalhoEhProducaoRecursos(dicionarioTrabalhoProduzindo):
                 if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalhoProduzindo:
@@ -2977,47 +2978,48 @@ def verificaTrabalhoRaroNecessario(verificacoes, dicionarioProdutoRaroVendido):
                     print(f'{D}: Lista de trabalhos MELHORADOS necessários: ({listaTrabalhosMelhoradosNecessarios}).')
                     if len(listaTrabalhosMelhoradosNecessarios) == 1:
                         dicionarioProfissao = retornaDicionarioProfissaoTrabalho(dicionarioProdutoRaroVendido)
-                        _, _, xpMaximo = retornaNivelXpMinimoMaximo(dicionarioProfissao)
-                        licencaProducaoIdeal = CHAVE_LICENCA_PRINCIPIANTE
-                        if xpMaximo >= 830000:
-                            licencaProducaoIdeal = CHAVE_LICENCA_INICIANTE
-                        nomeTrabalhoMelhoradoNecessario = listaTrabalhosMelhoradosNecessarios[0]
-                        dicionarioTrabalhoBuscado = {
-                            CHAVE_NOME:nomeTrabalhoMelhoradoNecessario,
-                            CHAVE_RARIDADE:CHAVE_RARIDADE_MELHORADO}
-                        print(f'{D}: Verificando quantidade de ({nomeTrabalhoMelhoradoNecessario}) no estoque...')
-                        quantidadeTrabalhoMelhoradoNecessarioNoEstoque = retornaQuantidadeTrabalhoNoEstoque(dicionarioTrabalhoBuscado)
-                        print(f'{D}: Quantidade de ({nomeTrabalhoMelhoradoNecessario}) no estoque é ({quantidadeTrabalhoMelhoradoNecessarioNoEstoque}).')
-                        if quantidadeTrabalhoMelhoradoNecessarioNoEstoque >= quantidadeTrabalhoRaroNecessario:
-                            if quantidadeTrabalhoMelhoradoNecessarioNoEstoque > 0:
-                                print(f'{D}: Adicionando ({quantidadeTrabalhoRaroNecessario}) unidades de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) a lista para produzir/produzindo...')
+                        if not tamanhoIgualZero(dicionarioProfissao):
+                            _, _, xpMaximo = retornaNivelXpMinimoMaximo(dicionarioProfissao)
+                            licencaProducaoIdeal = CHAVE_LICENCA_PRINCIPIANTE
+                            if xpMaximo >= 830000:
+                                licencaProducaoIdeal = CHAVE_LICENCA_INICIANTE
+                            nomeTrabalhoMelhoradoNecessario = listaTrabalhosMelhoradosNecessarios[0]
+                            dicionarioTrabalhoBuscado = {
+                                CHAVE_NOME:nomeTrabalhoMelhoradoNecessario,
+                                CHAVE_RARIDADE:CHAVE_RARIDADE_MELHORADO}
+                            print(f'{D}: Verificando quantidade de ({nomeTrabalhoMelhoradoNecessario}) no estoque...')
+                            quantidadeTrabalhoMelhoradoNecessarioNoEstoque = retornaQuantidadeTrabalhoNoEstoque(dicionarioTrabalhoBuscado)
+                            print(f'{D}: Quantidade de ({nomeTrabalhoMelhoradoNecessario}) no estoque é ({quantidadeTrabalhoMelhoradoNecessarioNoEstoque}).')
+                            if quantidadeTrabalhoMelhoradoNecessarioNoEstoque >= quantidadeTrabalhoRaroNecessario:
+                                if quantidadeTrabalhoMelhoradoNecessarioNoEstoque > 0:
+                                    print(f'{D}: Adicionando ({quantidadeTrabalhoRaroNecessario}) unidades de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) a lista para produzir/produzindo...')
+                                    dicionarioProdutoRaroVendido[LC.CHAVE_RECORRENCIA] = False
+                                    dicionarioProdutoRaroVendido[CHAVE_LICENCA] = licencaProducaoIdeal
+                                    dicionarioProdutoRaroVendido[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
+                                    for x in range(quantidadeTrabalhoRaroNecessario):
+                                        dicionarioProdutoRaroVendido = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
+                                        dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO].append(dicionarioProdutoRaroVendido)
+                                    linhaSeparacao()
+                            elif quantidadeTrabalhoMelhoradoNecessarioNoEstoque < quantidadeTrabalhoRaroNecessario and quantidadeTrabalhoMelhoradoNecessarioNoEstoque >= 0:
+                                print(f'{D}: Adicionando ({quantidadeTrabalhoMelhoradoNecessarioNoEstoque}) unidades de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) a lista para produzir/produzindo...')
                                 dicionarioProdutoRaroVendido[LC.CHAVE_RECORRENCIA] = False
                                 dicionarioProdutoRaroVendido[CHAVE_LICENCA] = licencaProducaoIdeal
                                 dicionarioProdutoRaroVendido[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
-                                for x in range(quantidadeTrabalhoRaroNecessario):
+                                for x in range(quantidadeTrabalhoMelhoradoNecessarioNoEstoque):
                                     dicionarioProdutoRaroVendido = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
                                     dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO].append(dicionarioProdutoRaroVendido)
                                 linhaSeparacao()
-                        elif quantidadeTrabalhoMelhoradoNecessarioNoEstoque < quantidadeTrabalhoRaroNecessario and quantidadeTrabalhoMelhoradoNecessarioNoEstoque >= 0:
-                            print(f'{D}: Adicionando ({quantidadeTrabalhoMelhoradoNecessarioNoEstoque}) unidades de ({dicionarioProdutoRaroVendido[CHAVE_NOME]}) a lista para produzir/produzindo...')
-                            dicionarioProdutoRaroVendido[LC.CHAVE_RECORRENCIA] = False
-                            dicionarioProdutoRaroVendido[CHAVE_LICENCA] = licencaProducaoIdeal
-                            dicionarioProdutoRaroVendido[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
-                            for x in range(quantidadeTrabalhoMelhoradoNecessarioNoEstoque):
-                                dicionarioProdutoRaroVendido = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioProdutoRaroVendido)
-                                dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO].append(dicionarioProdutoRaroVendido)
-                            linhaSeparacao()
-                            quantidadeTrabalhoMelhoradoNecessarioFaltante = quantidadeTrabalhoRaroNecessario - quantidadeTrabalhoMelhoradoNecessarioNoEstoque
-                            quantidadeTrabalhoMelhoradoNecessarioNaListaProduzirProduzindo = retornaQuantidadeTrabalhoListaProduzirProduzindo(nomeTrabalhoMelhoradoNecessario)
-                            quantidadeTrabalhoMelhoradoNecessarioFaltante = quantidadeTrabalhoMelhoradoNecessarioFaltante - quantidadeTrabalhoMelhoradoNecessarioNaListaProduzirProduzindo
-                            print(f'{D}: Verificando se ({nomeTrabalhoMelhoradoNecessario}) já está sendo produzido...')
-                            print(f'{D}: Existem ({quantidadeTrabalhoMelhoradoNecessarioNaListaProduzirProduzindo}) unidades de ({nomeTrabalhoMelhoradoNecessario}) na lista para produzir/produzindo.')
-                            if quantidadeTrabalhoMelhoradoNecessarioFaltante <= 0:
-                                print(f'{D}: Passando para o próximo trabalho...')
-                                linhaSeparacao()
-                            else:
-                                verificacoes += 1
-                                verificaTrabalhoMelhoradoNecessario(licencaProducaoIdeal, nomeTrabalhoMelhoradoNecessario, quantidadeTrabalhoMelhoradoNecessarioFaltante)
+                                quantidadeTrabalhoMelhoradoNecessarioFaltante = quantidadeTrabalhoRaroNecessario - quantidadeTrabalhoMelhoradoNecessarioNoEstoque
+                                quantidadeTrabalhoMelhoradoNecessarioNaListaProduzirProduzindo = retornaQuantidadeTrabalhoListaProduzirProduzindo(nomeTrabalhoMelhoradoNecessario)
+                                quantidadeTrabalhoMelhoradoNecessarioFaltante = quantidadeTrabalhoMelhoradoNecessarioFaltante - quantidadeTrabalhoMelhoradoNecessarioNaListaProduzirProduzindo
+                                print(f'{D}: Verificando se ({nomeTrabalhoMelhoradoNecessario}) já está sendo produzido...')
+                                print(f'{D}: Existem ({quantidadeTrabalhoMelhoradoNecessarioNaListaProduzirProduzindo}) unidades de ({nomeTrabalhoMelhoradoNecessario}) na lista para produzir/produzindo.')
+                                if quantidadeTrabalhoMelhoradoNecessarioFaltante <= 0:
+                                    print(f'{D}: Passando para o próximo trabalho...')
+                                    linhaSeparacao()
+                                else:
+                                    verificacoes += 1
+                                    verificaTrabalhoMelhoradoNecessario(licencaProducaoIdeal, nomeTrabalhoMelhoradoNecessario, quantidadeTrabalhoMelhoradoNecessarioFaltante)
                     elif len(listaTrabalhosMelhoradosNecessarios) == 2:
                         print(f'{D}: Falta desenvolver...')
                         print(f'{D}: Passando para o próximo trabalho...')
@@ -3500,31 +3502,32 @@ def verificaProducaoTrabalhoRaro(dicionarioTrabalhoConcluido):
     global dicionarioPersonagemAtributos
     dicionarioTrabalhoRaro = {}
     dicionarioProfissao = retornaDicionarioProfissaoTrabalho(dicionarioTrabalhoConcluido)
-    _, _, xpMaximo = retornaNivelXpMinimoMaximo(dicionarioProfissao)
-    licencaProducaoIdeal = CHAVE_LICENCA_PRINCIPIANTE
-    if xpMaximo >= 830000:
-        licencaProducaoIdeal = CHAVE_LICENCA_INICIANTE
-    if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO):
-        print(f'{D}: Trabalhos MELHORADO. Profissão {dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]}. Nível {dicionarioTrabalhoConcluido[CHAVE_NIVEL]}.')
-        for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
-            condicoes = (
-                textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoConcluido[CHAVE_PROFISSAO])
-                and textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO)
-                and dicionarioTrabalho[CHAVE_NIVEL] == dicionarioTrabalhoConcluido[CHAVE_NIVEL])
-            if condicoes:    
-                if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalho:
-                    if textoEhIgual(dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO], dicionarioTrabalhoConcluido[CHAVE_NOME]):
-                        dicionarioTrabalho[CHAVE_LICENCA] = licencaProducaoIdeal
-                        dicionarioTrabalho[LC.CHAVE_RECORRENCIA] = False
-                        dicionarioTrabalho[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
-                        dicionarioTrabalho[CHAVE_EXPERIENCIA] = dicionarioTrabalho[CHAVE_EXPERIENCIA] * 1.5
-                        for atributo in dicionarioTrabalho:
-                            print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}.')
-                        linhaSeparacao()
-                        dicionarioTrabalhoRaro = dicionarioTrabalho
-                        break
-                else:
-                    print(f'{D}: Trabalho não possue CHAVE:{CHAVE_TRABALHO_NECESSARIO}.')
+    if not tamanhoIgualZero(dicionarioProfissao):
+        _, _, xpMaximo = retornaNivelXpMinimoMaximo(dicionarioProfissao)
+        licencaProducaoIdeal = CHAVE_LICENCA_PRINCIPIANTE
+        if xpMaximo >= 830000:
+            licencaProducaoIdeal = CHAVE_LICENCA_INICIANTE
+        if textoEhIgual(dicionarioTrabalhoConcluido[CHAVE_RARIDADE], CHAVE_RARIDADE_MELHORADO):
+            print(f'{D}: Trabalhos MELHORADO. Profissão {dicionarioTrabalhoConcluido[CHAVE_PROFISSAO]}. Nível {dicionarioTrabalhoConcluido[CHAVE_NIVEL]}.')
+            for dicionarioTrabalho in dicionarioPersonagemAtributos[CHAVE_LISTA_TRABALHO]:
+                condicoes = (
+                    textoEhIgual(dicionarioTrabalho[CHAVE_PROFISSAO], dicionarioTrabalhoConcluido[CHAVE_PROFISSAO])
+                    and textoEhIgual(dicionarioTrabalho[CHAVE_RARIDADE], CHAVE_RARIDADE_RARO)
+                    and dicionarioTrabalho[CHAVE_NIVEL] == dicionarioTrabalhoConcluido[CHAVE_NIVEL])
+                if condicoes:    
+                    if CHAVE_TRABALHO_NECESSARIO in dicionarioTrabalho:
+                        if textoEhIgual(dicionarioTrabalho[CHAVE_TRABALHO_NECESSARIO], dicionarioTrabalhoConcluido[CHAVE_NOME]):
+                            dicionarioTrabalho[CHAVE_LICENCA] = licencaProducaoIdeal
+                            dicionarioTrabalho[LC.CHAVE_RECORRENCIA] = False
+                            dicionarioTrabalho[CHAVE_ESTADO] = CODIGO_PARA_PRODUZIR
+                            dicionarioTrabalho[CHAVE_EXPERIENCIA] = dicionarioTrabalho[CHAVE_EXPERIENCIA] * 1.5
+                            for atributo in dicionarioTrabalho:
+                                print(f'{D}: {atributo} - {dicionarioTrabalho[atributo]}.')
+                            linhaSeparacao()
+                            dicionarioTrabalhoRaro = dicionarioTrabalho
+                            break
+                    else:
+                        print(f'{D}: Trabalho não possue CHAVE:{CHAVE_TRABALHO_NECESSARIO}.')
     if not tamanhoIgualZero(dicionarioTrabalhoRaro):
         dicionarioTrabalhoRaro = adicionaTrabalhoDesejo(dicionarioPersonagemAtributos, dicionarioTrabalhoRaro)
         dicionarioPersonagemAtributos[CHAVE_LISTA_DESEJO].append(dicionarioTrabalhoRaro)
@@ -3666,7 +3669,7 @@ def recuperaCorrespondencia():
 
 def atualizaQuantidadeTrabalhoEstoque(dicionarioVenda):
     for trabalhoEstoque in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_ESTOQUE]:
-        if texto1PertenceTexto2(trabalhoEstoque[CHAVE_ID_TRABALHO], dicionarioVenda[CHAVE_ID_TRABALHO]):
+        if CHAVE_ID_TRABALHO in trabalhoEstoque and texto1PertenceTexto2(trabalhoEstoque[CHAVE_ID_TRABALHO], dicionarioVenda[CHAVE_ID_TRABALHO]):
             quantidadeVendida = dicionarioVenda['quantidadeProduto']
             if quantidadeVendida == 0:
                 quantidadeVendida = 1
@@ -4005,8 +4008,9 @@ def retornaQuantidadeEspacosDeProducao():
     print(f'Define quantidade de espaços de produção...')
     quantidadeEspacosProducao = 2
     for dicionarioProfissao in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
-        nivel, _ , _= retornaNivelXpMinimoMaximo(dicionarioProfissao)
-        dicionarioProfissao[CHAVE_NIVEL] = nivel
+        if not tamanhoIgualZero(dicionarioProfissao):
+            nivel, _ , _= retornaNivelXpMinimoMaximo(dicionarioProfissao)
+            dicionarioProfissao[CHAVE_NIVEL] = nivel
     for dicionarioProfissao in dicionarioPersonagemAtributos[CHAVE_LISTA_DICIONARIO_PROFISSAO]:
         if dicionarioProfissao[CHAVE_NIVEL] >= 5:
             quantidadeEspacosProducao += 1
