@@ -4138,9 +4138,10 @@ def funcao_teste(dicionarioUsuario):
     listaDicionariosTrabalhosComuns = retornaListaDicionariosTrabalhosRaridadeEspecifica(dicionarioTrabalho, raridade = CHAVE_RARIDADE_COMUM)
     dicionarioTrabalho[CHAVE_LISTA_DESEJO_PRIORIZADA] = listaDicionariosTrabalhosComuns
     while retornaInputConfirmacao():
-        nomeTrabalhoConcluido = input(f'Trabalho: ')
-        dicionarioTrabalhoConcluido = retornaDicionarioTrabalhoConcluido(nomeTrabalhoConcluido)
-        if not tamanhoIgualZero(dicionarioTrabalhoConcluido):
-            dicionarioTrabalhoConcluido = modificaTrabalhoConcluidoListaProduzirProduzindo(dicionarioTrabalhoConcluido)
-            atualizaEstoquePersonagem(dicionarioTrabalhoConcluido)
-        pass
+        listaEstoque = retornaListaDicionariosTrabalhosEstoque(dicionarioPersonagemAtributos)
+        for trabalho in listaEstoque:
+            if not CHAVE_ID_TRABALHO in trabalho:
+                for atributo in trabalho:
+                    print(f'Atributo: {atributo} - {trabalho[atributo]}')
+                linhaSeparacao()
+                excluiTrabalhoListaEstoque(dicionarioPersonagemAtributos, trabalho)

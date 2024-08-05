@@ -298,6 +298,13 @@ def excluiTrabalhoListaDesejos(dicionarioPersonagemAtributos, dicionarioTrabalho
     else:
         print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
 
+def excluiTrabalhoListaEstoque(dicionarioPersonagemAtributos, dicionarioTrabalho):
+    caminhoRequisicao = f'{link_database}/Usuarios/{dicionarioPersonagemAtributos[CHAVE_ID_USUARIO]}/Lista_personagem/{dicionarioPersonagemAtributos[CHAVE_DICIONARIO_PERSONAGEM_EM_USO][CHAVE_ID]}/Lista_estoque/{dicionarioTrabalho[CHAVE_ID]}/.json'
+    if retornaRequisicao(DELETE,caminhoRequisicao,None):
+        pass
+    else:
+        print(f'Erro ao exluir {dicionarioTrabalho[CHAVE_NOME]} da lista de desejo.')
+
 def excluiTrabalhoListaTrabalhos(dicionarioTrabalho):
     caminhoRequisicao=f'{link_database}/Lista_trabalhos/{dicionarioTrabalho[CHAVE_ID]}/.json'
     if retornaRequisicao(DELETE,caminhoRequisicao,None):
@@ -347,6 +354,3 @@ def adicionaAtributoTrabalhoNecessario(dicionarioUsuario):
         print(f'Raridade de {dicionarioUsuario[CHAVE_PROFISSAO]}:{dicionarioUsuario[CHAVE_NOME]}.')
     else:
         print(f'Erro ao modificar raridade de {dicionarioUsuario[CHAVE_NOME]}.')
-# 0iQB1H7srqXMiufTR4HzqYQPj71hz
-# adicionaAtributoRecorrencia()
-# print(retornaListaPersonagemId('eEDku1Rvy7f7vbwJiVW7YMsgkIF2','caah.rm15@gmail.com'))
